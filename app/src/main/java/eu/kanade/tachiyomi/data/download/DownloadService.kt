@@ -15,7 +15,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.NetworkType
 import com.jakewharton.rxrelay.BehaviorRelay
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.library.LibraryUpdateService
+import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
@@ -171,9 +171,9 @@ class DownloadService : Service() {
         )
         callListeners(false)
         wakeLock.releaseIfNeeded()
-        if (LibraryUpdateService.runExtensionUpdatesAfter) {
+        if (LibraryUpdateJob.runExtensionUpdatesAfter) {
             ExtensionUpdateJob.runJobAgain(this, NetworkType.CONNECTED)
-            LibraryUpdateService.runExtensionUpdatesAfter = false
+            LibraryUpdateJob.runExtensionUpdatesAfter = false
         }
         super.onDestroy()
     }

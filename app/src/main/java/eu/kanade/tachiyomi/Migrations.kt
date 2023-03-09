@@ -215,6 +215,8 @@ object Migrations {
                 if (!oldGroupHistory) {
                     preferences.groupChaptersHistory().set(RecentsPresenter.GroupType.Never)
                 }
+                LibraryUpdateJob.cancelAllWorks(context)
+                LibraryUpdateJob.setupTask(context)
             }
 
             return true

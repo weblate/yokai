@@ -12,7 +12,7 @@ import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
-import eu.kanade.tachiyomi.data.library.LibraryUpdateService
+import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import okio.buffer
 import okio.gzip
 import okio.source
@@ -89,7 +89,7 @@ class BackupRestorer(context: Context, notifier: BackupNotifier) : AbstractBacku
 
         restoreProgress += 1
         showRestoreProgress(restoreProgress, restoreAmount, manga.title)
-        LibraryUpdateService.callListener(manga)
+        LibraryUpdateJob.updateChannel.trySend(manga)
     }
 
     /**

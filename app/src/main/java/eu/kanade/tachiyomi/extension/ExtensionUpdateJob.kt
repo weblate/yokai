@@ -18,7 +18,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.library.LibraryUpdateService
+import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -77,7 +77,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
             extensionsInstalledByApp.isNotEmpty()
         ) {
             val cm = context.connectivityManager
-            val libraryServiceRunning = LibraryUpdateService.isRunning()
+            val libraryServiceRunning = LibraryUpdateJob.isRunning(context)
             if (
                 (
                     preferences.autoUpdateExtensions() == AutoAppUpdaterJob.ALWAYS ||
@@ -104,7 +104,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
             } else if (!libraryServiceRunning) {
                 runJobAgain(context, NetworkType.UNMETERED)
             } else {
-                LibraryUpdateService.runExtensionUpdatesAfter = true
+                LibraryUpdateJob.runExtensionUpdatesAfter = true
             }
         }
         NotificationManagerCompat.from(context).apply {
@@ -202,7 +202,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
                     .setConstraints(constraints)
                     .build()
 
-                WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.REPLACE, request)
+                WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
             } else {
                 WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
             }

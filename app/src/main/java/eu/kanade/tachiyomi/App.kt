@@ -35,9 +35,8 @@ import kotlinx.coroutines.flow.onEach
 import org.conscrypt.Conscrypt
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.InjektScope
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import uy.kohesive.injekt.registry.default.DefaultRegistrar
 import java.security.Security
 
 open class App : Application(), DefaultLifecycleObserver {
@@ -62,7 +61,6 @@ open class App : Application(), DefaultLifecycleObserver {
             if (packageName != process) WebView.setDataDirectorySuffix(process)
         }
 
-        Injekt = InjektScope(DefaultRegistrar())
         Injekt.importModule(AppModule(this))
 
         CoilSetup(this)

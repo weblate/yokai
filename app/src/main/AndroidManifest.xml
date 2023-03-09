@@ -241,15 +241,12 @@
         </receiver>
 
         <service
-            android:name=".data.library.LibraryUpdateService"
-            android:exported="false" />
-
-        <service
             android:name=".extension.ExtensionInstallService"
             android:exported="false" />
 
         <service
             android:name=".data.download.DownloadService"
+            android:foregroundServiceType="dataSync"
             android:exported="false" />
 
         <service

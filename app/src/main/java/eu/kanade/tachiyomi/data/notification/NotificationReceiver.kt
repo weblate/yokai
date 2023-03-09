@@ -13,7 +13,7 @@ import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadService
-import eu.kanade.tachiyomi.data.library.LibraryUpdateService
+import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.updater.AppUpdateService
 import eu.kanade.tachiyomi.extension.ExtensionInstallService
@@ -171,7 +171,7 @@ class NotificationReceiver : BroadcastReceiver() {
      * @param notificationId id of notification
      */
     private fun cancelLibraryUpdate(context: Context) {
-        LibraryUpdateService.stop(context)
+        LibraryUpdateJob.stop(context)
         Handler().post { dismissNotification(context, Notifications.ID_LIBRARY_PROGRESS) }
     }
 
@@ -195,12 +195,12 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun markAsRead(chapterUrls: Array<String>, mangaId: Long) {
         val db: DatabaseHelper = Injekt.get()
         val preferences: PreferencesHelper = Injekt.get()
+        val manga = db.getManga(mangaId).executeAsBlocking() ?: return
         val chapters = chapterUrls.map {
             val chapter = db.getChapter(it, mangaId).executeAsBlocking() ?: return
             chapter.read = true
             db.updateChapterProgress(chapter).executeAsBlocking()
             if (preferences.removeAfterMarkedAsRead()) {
-                val manga = db.getManga(mangaId).executeAsBlocking() ?: return
                 val sourceManager: SourceManager = Injekt.get()
                 val source = sourceManager.get(manga.source) ?: return
                 downloadManager.deleteChapters(listOf(chapter), manga, source)
@@ -208,6 +208,7 @@ class NotificationReceiver : BroadcastReceiver() {
             return@map chapter
         }
         val newLastChapter = chapters.maxByOrNull { it.chapter_number.toInt() }
+        LibraryUpdateJob.updateChannel.trySend(manga)
         updateTrackChapterMarkedAsRead(db, preferences, newLastChapter, mangaId, 0)
     }
 

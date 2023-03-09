@@ -68,7 +68,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
                     .setInputData(workDataOf(IS_AUTO_BACKUP_KEY to true))
                     .build()
 
-                workManager.enqueueUniquePeriodicWork(TAG_AUTO, ExistingPeriodicWorkPolicy.REPLACE, request)
+                workManager.enqueueUniquePeriodicWork(TAG_AUTO, ExistingPeriodicWorkPolicy.UPDATE, request)
             } else {
                 workManager.cancelUniqueWork(TAG_AUTO)
             }

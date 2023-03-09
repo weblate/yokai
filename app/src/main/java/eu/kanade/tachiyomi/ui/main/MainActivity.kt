@@ -67,7 +67,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadService
 import eu.kanade.tachiyomi.data.download.DownloadServiceListener
-import eu.kanade.tachiyomi.data.library.LibraryUpdateService
+import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
@@ -251,12 +251,12 @@ open class MainActivity : BaseActivity<MainActivityBinding>(), DownloadServiceLi
         }
         var continueSwitchingTabs = false
         nav.getItemView(R.id.nav_library)?.setOnLongClickListener {
-            if (!LibraryUpdateService.isRunning()) {
-                LibraryUpdateService.start(this)
+            if (!LibraryUpdateJob.isRunning(this)) {
+                LibraryUpdateJob.startNow(this)
                 binding.mainContent.snack(R.string.updating_library) {
                     anchorView = binding.bottomNav
                     setAction(R.string.cancel) {
-                        LibraryUpdateService.stop(context)
+                        LibraryUpdateJob.stop(context)
                         lifecycleScope.launchUI {
                             NotificationReceiver.dismissNotification(
                                 context,

@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Handler
-import eu.kanade.tachiyomi.data.backup.BackupRestoreService
+import eu.kanade.tachiyomi.data.backup.BackupRestoreJob
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -216,8 +216,7 @@ class NotificationReceiver : BroadcastReceiver() {
      * @param context context of application
      */
     private fun cancelRestoreUpdate(context: Context) {
-        BackupRestoreService.stop(context)
-        Handler().post { dismissNotification(context, Notifications.ID_RESTORE_PROGRESS) }
+        BackupRestoreJob.stop(context)
     }
 
     private fun cancelDownloadUpdate(context: Context) {

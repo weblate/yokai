@@ -254,10 +254,6 @@
             android:exported="false" />
 
         <service
-            android:name=".data.backup.BackupRestoreService"
-            android:exported="false"/>
-
-        <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
             android:exported="false">

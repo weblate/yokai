@@ -29,7 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.backup.BackupRestoreService
+import eu.kanade.tachiyomi.data.backup.BackupRestoreJob
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
 import eu.kanade.tachiyomi.data.database.models.History
@@ -931,7 +931,7 @@ class RecentsController(bundle: Bundle? = null) :
     override fun onLoadMore(lastPosition: Int, currentPage: Int) {
         val view = view ?: return
         if (presenter.finished ||
-            BackupRestoreService.isRunning(view.context.applicationContext) ||
+            BackupRestoreJob.isRunning(view.context.applicationContext) ||
             (presenter.viewType == RecentsViewType.GroupedAll && !isSearching())
         ) {
             loadNoMore()

@@ -1,6 +1,8 @@
 package eu.kanade.tachiyomi.data.library
 
 import android.content.Context
+import android.content.pm.ServiceInfo
+import android.os.Build
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -498,8 +500,13 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        val notifier = LibraryUpdateNotifier(context)
-        return ForegroundInfo(Notifications.ID_LIBRARY_PROGRESS, notifier.progressNotificationBuilder.build())
+        val notification = LibraryUpdateNotifier(context).progressNotificationBuilder.build()
+        val id = Notifications.ID_LIBRARY_PROGRESS
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ForegroundInfo(id, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            ForegroundInfo(id, notification)
+        }
     }
 
     /**

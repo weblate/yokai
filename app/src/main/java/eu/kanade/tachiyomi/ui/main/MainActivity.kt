@@ -64,9 +64,8 @@ import com.google.common.primitives.Ints.max
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.Migrations
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
-import eu.kanade.tachiyomi.data.download.DownloadService
-import eu.kanade.tachiyomi.data.download.DownloadServiceListener
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -122,6 +121,9 @@ import eu.kanade.tachiyomi.util.view.withFadeInTransaction
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -133,7 +135,7 @@ import kotlin.math.min
 import kotlin.math.roundToLong
 
 @SuppressLint("ResourceType")
-open class MainActivity : BaseActivity<MainActivityBinding>(), DownloadServiceListener {
+open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     protected lateinit var router: Router
 
@@ -283,7 +285,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>(), DownloadServiceLi
         val container: ViewGroup = binding.controllerContainer
 
         val content: ViewGroup = binding.mainContent
-        DownloadService.addListener(this)
+        DownloadJob.downloadFlow.onEach(::downloadStatusChanged).launchIn(lifecycleScope)
+        lifecycleScope
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowCustomEnabled(true)
@@ -748,7 +751,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>(), DownloadServiceLi
         checkForAppUpdates()
         getExtensionUpdates(false)
         setExtensionsBadge()
-        DownloadService.callListeners()
+        DownloadJob.callListeners()
         showDLQueueTutorial()
         reEnableBackPressedCallBack()
     }
@@ -941,7 +944,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>(), DownloadServiceLi
         super.onDestroy()
         overflowDialog?.dismiss()
         overflowDialog = null
-        DownloadService.removeListener(this)
         if (isBindingInitialized) {
             binding.appBar.mainActivity = null
             binding.toolbar.setNavigationOnClickListener(null)
@@ -1301,7 +1303,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>(), DownloadServiceLi
         }
     }
 
-    override fun downloadStatusChanged(downloading: Boolean) {
+    fun downloadStatusChanged(downloading: Boolean) {
         val hasQueue = downloading || downloadManager.hasQueue()
         launchUI {
             if (hasQueue) {

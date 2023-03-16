@@ -61,7 +61,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.download.DownloadService
+import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -596,6 +596,7 @@ open class LibraryController(
         setupFilterSheet()
         setUpHopper()
         setPreferenceFlows()
+        LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(viewScope)
 
         elevateAppBar =
             scrollViewWith(
@@ -1029,8 +1030,7 @@ open class LibraryController(
             if (type == ControllerChangeType.POP_ENTER) {
                 presenter.getLibrary()
             }
-            DownloadService.callListeners()
-            LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(viewScope)
+            DownloadJob.callListeners()
             binding.recyclerCover.isClickable = false
             binding.recyclerCover.isFocusable = false
             singleCategory = presenter.categories.size <= 1

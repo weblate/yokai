@@ -24,8 +24,8 @@ import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
-import eu.kanade.tachiyomi.data.download.DownloadService
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.DEVICE_BATTERY_NOT_LOW
 import eu.kanade.tachiyomi.data.preference.DEVICE_CHARGING
@@ -321,10 +321,10 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     updateDetails(newUpdates.keys.toList())
                     notifier.cancelProgressNotification()
                     if (downloadNew && hasDownloads) {
-                        DownloadService.start(context)
+                        DownloadJob.start(context)
                     }
                 } else if (downloadNew && hasDownloads) {
-                    DownloadService.start(this@LibraryUpdateJob.applicationContext)
+                    DownloadJob.start(this@LibraryUpdateJob.applicationContext)
                 }
             }
         }
@@ -344,7 +344,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         mangaShortcutManager.updateShortcuts(context)
         failedUpdates.clear()
         notifier.cancelProgressNotification()
-        if (runExtensionUpdatesAfter && !DownloadService.isRunning(context)) {
+        if (runExtensionUpdatesAfter && !DownloadJob.isRunning(context)) {
             ExtensionUpdateJob.runJobAgain(context, NetworkType.CONNECTED)
             runExtensionUpdatesAfter = false
         }

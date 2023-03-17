@@ -35,11 +35,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
+import androidx.work.CoroutineWorker
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.ui.main.MainActivity
+import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.File
@@ -515,6 +519,17 @@ fun setLocaleByAppCompat() {
         AppCompatDelegate.getApplicationLocales().get(0)?.let { Locale.setDefault(it) }
     }
 }
+
+suspend fun CoroutineWorker.tryToSetForeground() {
+    try {
+        setForeground(getForegroundInfo())
+    } catch (e: IllegalStateException) {
+        Timber.e(e, "Not allowed to set foreground job")
+    }
+}
+
+fun WorkManager.jobIsRunning(tag: String): Boolean = getWorkInfosForUniqueWork(tag).get()
+    .let { list -> list.count { it.state == WorkInfo.State.RUNNING } == 1 }
 
 val Context.systemLangContext: Context
     get() {

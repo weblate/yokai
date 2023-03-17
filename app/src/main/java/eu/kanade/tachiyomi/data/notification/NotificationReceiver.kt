@@ -6,7 +6,7 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Handler
+import androidx.core.content.IntentCompat
 import eu.kanade.tachiyomi.data.backup.BackupRestoreJob
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -16,7 +16,9 @@ import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.updater.AppUpdateService
-import eu.kanade.tachiyomi.extension.ExtensionInstallService
+import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
+import eu.kanade.tachiyomi.extension.ExtensionManager
+import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
@@ -30,6 +32,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import java.io.File
+import java.util.ArrayList
 import eu.kanade.tachiyomi.BuildConfig.APPLICATION_ID as ID
 
 /**
@@ -64,6 +67,7 @@ class NotificationReceiver : BroadcastReceiver() {
             // Cancel library update and dismiss notification
             ACTION_CANCEL_LIBRARY_UPDATE -> cancelLibraryUpdate(context)
             ACTION_CANCEL_EXTENSION_UPDATE -> cancelExtensionUpdate(context)
+            ACTION_START_EXTENSION_INSTALL -> startExtensionUpdater(context, intent)
             ACTION_CANCEL_UPDATE_DOWNLOAD -> cancelDownloadUpdate(context)
             ACTION_CANCEL_RESTORE -> cancelRestoreUpdate(context)
             // Share backup file
@@ -171,7 +175,6 @@ class NotificationReceiver : BroadcastReceiver() {
      */
     private fun cancelLibraryUpdate(context: Context) {
         LibraryUpdateJob.stop(context)
-        Handler().post { dismissNotification(context, Notifications.ID_LIBRARY_PROGRESS) }
     }
 
     /**
@@ -181,8 +184,16 @@ class NotificationReceiver : BroadcastReceiver() {
      * @param notificationId id of notification
      */
     private fun cancelExtensionUpdate(context: Context) {
-        ExtensionInstallService.stop(context)
-        Handler().post { dismissNotification(context, Notifications.ID_EXTENSION_PROGRESS) }
+        ExtensionInstallerJob.stop(context)
+    }
+
+    private fun startExtensionUpdater(context: Context, intent: Intent) {
+        val extensions = IntentCompat.getParcelableArrayListExtra(
+            intent,
+            ExtensionInstallerJob.KEY_EXTENSION,
+            ExtensionManager.ExtensionInfo::class.java,
+        ) as? ArrayList<ExtensionManager.ExtensionInfo> ?: return
+        ExtensionInstallerJob.startJob(context, extensions, 1)
     }
 
     /**
@@ -239,6 +250,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
         // Called to cancel extension update.
         private const val ACTION_CANCEL_EXTENSION_UPDATE = "$ID.$NAME.CANCEL_EXTENSION_UPDATE"
+
+        private const val ACTION_START_EXTENSION_INSTALL = "$ID.$NAME.START_EXTENSION_INSTALL"
 
         private const val ACTION_CANCEL_UPDATE_DOWNLOAD = "$ID.$NAME.CANCEL_UPDATE_DOWNLOAD"
 
@@ -547,6 +560,20 @@ class NotificationReceiver : BroadcastReceiver() {
                 action = ACTION_CANCEL_EXTENSION_UPDATE
             }
             return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
+
+        internal fun startExtensionUpdatePendingJob(context: Context, extensions: List<Extension.Available>): PendingIntent {
+            val intent = Intent(context, NotificationReceiver::class.java).apply {
+                val info = extensions.map(ExtensionManager::ExtensionInfo)
+                action = ACTION_START_EXTENSION_INSTALL
+                putParcelableArrayListExtra(ExtensionInstallerJob.KEY_EXTENSION, ArrayList(info))
+            }
+            return PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
         }
 
         /**

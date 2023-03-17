@@ -9,13 +9,14 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.Notifications
+import eu.kanade.tachiyomi.util.system.jobIsRunning
 import eu.kanade.tachiyomi.util.system.localeContext
+import eu.kanade.tachiyomi.util.system.tryToSetForeground
 import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CancellationException
 import timber.log.Timber
@@ -36,11 +37,7 @@ class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : C
     }
 
     override suspend fun doWork(): Result {
-        try {
-            setForeground(getForegroundInfo())
-        } catch (e: IllegalStateException) {
-            Timber.e(e, "Not allowed to set foreground job")
-        }
+        tryToSetForeground()
 
         val uriPath = inputData.getString(BackupConst.EXTRA_URI) ?: return Result.failure()
 
@@ -80,11 +77,6 @@ class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : C
             WorkManager.getInstance(context).cancelUniqueWork(TAG)
         }
 
-        fun isRunning(context: Context): Boolean {
-            return WorkManager.getInstance(context)
-                .getWorkInfosForUniqueWork(TAG)
-                .get()
-                .let { list -> list.count { it.state == WorkInfo.State.RUNNING } == 1 }
-        }
+        fun isRunning(context: Context) = WorkManager.getInstance(context).jobIsRunning(TAG)
     }
 }

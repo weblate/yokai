@@ -16,6 +16,7 @@ import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.isConnectedToWifi
 import eu.kanade.tachiyomi.util.system.isOnline
+import eu.kanade.tachiyomi.util.system.tryToSetForeground
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -45,11 +46,7 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
     }
 
     override suspend fun doWork(): Result {
-        try {
-            setForeground(getForegroundInfo())
-        } catch (e: IllegalStateException) {
-            Timber.e(e, "Not allowed to set foreground job")
-        }
+        tryToSetForeground()
 
         var networkCheck = checkConnectivity()
         var active = networkCheck

@@ -1,9 +1,8 @@
 package eu.kanade.tachiyomi.ui.extension
 
 import android.content.pm.PackageInstaller
-import androidx.core.content.ContextCompat
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.extension.ExtensionInstallService
+import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.InstallStep
@@ -26,7 +25,7 @@ typealias ExtensionIntallInfo = Pair<InstallStep, PackageInstaller.SessionInfo?>
 /**
  * Presenter of [ExtensionBottomSheet].
  */
-class ExtensionBottomPresenter() : BaseMigrationPresenter<ExtensionBottomSheet>() {
+class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>() {
 
     private var extensions = emptyList<ExtensionItem>()
 
@@ -261,13 +260,12 @@ class ExtensionBottomPresenter() : BaseMigrationPresenter<ExtensionBottomSheet>(
             val item = updateInstallStep(it, InstallStep.Pending, null) ?: return@forEach
             view?.downloadUpdate(item)
         }
-        val intent = ExtensionInstallService.jobIntent(
+        ExtensionInstallerJob.start(
             context,
             extensions.mapNotNull { extension ->
                 extensionManager.availableExtensionsFlow.value.find { it.pkgName == extension.pkgName }
             },
         )
-        ContextCompat.startForegroundService(context, intent)
     }
 
     fun uninstallExtension(pkgName: String) {

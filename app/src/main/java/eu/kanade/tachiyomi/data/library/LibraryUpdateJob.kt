@@ -51,6 +51,7 @@ import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
 import eu.kanade.tachiyomi.util.storage.getUriCompat
 import eu.kanade.tachiyomi.util.system.createFileInCacheDir
 import eu.kanade.tachiyomi.util.system.isConnectedToWifi
+import eu.kanade.tachiyomi.util.system.tryToSetForeground
 import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -135,11 +136,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             }
         }
 
-        try {
-            setForeground(getForegroundInfo())
-        } catch (e: IllegalStateException) {
-            Timber.e(e, "Not allowed to set foreground job")
-        }
+        tryToSetForeground()
 
         instance = WeakReference(this)
 
@@ -632,9 +629,6 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     .build()
 
                 val request = PeriodicWorkRequestBuilder<LibraryUpdateJob>(
-//                    15,
-//                    TimeUnit.MINUTES,
-//                    5,
                     interval.toLong(),
                     TimeUnit.HOURS,
                     10,
@@ -660,9 +654,8 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         }
 
         fun isRunning(context: Context): Boolean {
-            val wm = WorkManager.getInstance(context)
-            val infos = wm.getWorkInfosByTag(TAG).get()
-            return infos.find { it.state == WorkInfo.State.RUNNING } != null
+            val list = WorkManager.getInstance(context).getWorkInfosByTag(TAG).get()
+            return list.any { it.state == WorkInfo.State.RUNNING }
         }
 
         fun categoryInQueue(id: Int?) = instance?.get()?.categoryIds?.contains(id) ?: false
@@ -673,9 +666,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             target: Target = Target.CHAPTERS,
             mangaToUse: List<LibraryManga>? = null,
         ): Boolean {
-            val wm = WorkManager.getInstance(context)
-            val infos = wm.getWorkInfosByTag(TAG).get()
-            if (infos.find { it.state == WorkInfo.State.RUNNING } != null) {
+            if (isRunning(context)) {
                 if (target == Target.CHAPTERS) {
                     category?.id?.let {
                         if (mangaToUse != null) {
@@ -706,7 +697,8 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 .addTag(WORK_NAME_MANUAL)
                 .setInputData(inputData)
                 .build()
-            wm.enqueueUniqueWork(WORK_NAME_MANUAL, ExistingWorkPolicy.KEEP, request)
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(WORK_NAME_MANUAL, ExistingWorkPolicy.KEEP, request)
 
             return true
         }

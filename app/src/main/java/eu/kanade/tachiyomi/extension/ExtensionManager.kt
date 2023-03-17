@@ -323,7 +323,7 @@ class ExtensionManager(
                 InstallStep.Installing
             }
             installer.activeDownloads[pkgName] != null -> InstallStep.Downloading
-            ExtensionInstallService.activeInstalls()
+            ExtensionInstallerJob.activeInstalls()
                 ?.contains(pkgName) == true -> InstallStep.Pending
             else -> return null
         }
@@ -462,6 +462,7 @@ class ExtensionManager(
         return (availableExt.versionCode > versionCode || availableExt.libVersion > libVersion)
     }
 
+    @kotlinx.serialization.Serializable
     @Parcelize
     data class ExtensionInfo(
         val apkName: String,

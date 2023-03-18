@@ -246,10 +246,6 @@
             tools:node="merge" />
 
         <service
-            android:name=".data.updater.AppUpdateService"
-            android:exported="false" />
-
-        <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
             android:exported="false">

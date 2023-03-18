@@ -15,7 +15,7 @@ import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.updater.AppUpdateService
+import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -69,6 +69,7 @@ class NotificationReceiver : BroadcastReceiver() {
             ACTION_CANCEL_EXTENSION_UPDATE -> cancelExtensionUpdate(context)
             ACTION_START_EXTENSION_INSTALL -> startExtensionUpdater(context, intent)
             ACTION_CANCEL_UPDATE_DOWNLOAD -> cancelDownloadUpdate(context)
+            ACTION_START_APP_UPDATE -> startAppUpdate(context, intent)
             ACTION_CANCEL_RESTORE -> cancelRestoreUpdate(context)
             // Share backup file
             ACTION_SHARE_BACKUP ->
@@ -231,7 +232,15 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun cancelDownloadUpdate(context: Context) {
-        AppUpdateService.stop(context)
+        AppDownloadInstallJob.stop(context)
+        dismissNotification(context, Notifications.ID_UPDATER)
+    }
+
+    private fun startAppUpdate(context: Context, intent: Intent) {
+        val url = intent.getStringExtra(AppDownloadInstallJob.EXTRA_DOWNLOAD_URL) ?: return
+        val notifyOnInstall =
+            intent.getBooleanExtra(AppDownloadInstallJob.EXTRA_NOTIFY_ON_INSTALL, false)
+        AppDownloadInstallJob.start(context, url, notifyOnInstall)
     }
 
     companion object {
@@ -254,6 +263,8 @@ class NotificationReceiver : BroadcastReceiver() {
         private const val ACTION_START_EXTENSION_INSTALL = "$ID.$NAME.START_EXTENSION_INSTALL"
 
         private const val ACTION_CANCEL_UPDATE_DOWNLOAD = "$ID.$NAME.CANCEL_UPDATE_DOWNLOAD"
+
+        private const val ACTION_START_APP_UPDATE = "$ID.$NAME.START_APP_UPDATE"
 
         // Called to mark as read
         private const val ACTION_MARK_AS_READ = "$ID.$NAME.MARK_AS_READ"
@@ -567,6 +578,20 @@ class NotificationReceiver : BroadcastReceiver() {
                 val info = extensions.map(ExtensionManager::ExtensionInfo)
                 action = ACTION_START_EXTENSION_INSTALL
                 putParcelableArrayListExtra(ExtensionInstallerJob.KEY_EXTENSION, ArrayList(info))
+            }
+            return PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
+        }
+
+        internal fun startAppUpdatePendingJob(context: Context, url: String, notifyOnInstall: Boolean = false): PendingIntent {
+            val intent = Intent(context, NotificationReceiver::class.java).apply {
+                action = ACTION_START_APP_UPDATE
+                putExtra(AppDownloadInstallJob.EXTRA_DOWNLOAD_URL, url)
+                putExtra(AppDownloadInstallJob.EXTRA_NOTIFY_ON_INSTALL, notifyOnInstall)
             }
             return PendingIntent.getBroadcast(
                 context,

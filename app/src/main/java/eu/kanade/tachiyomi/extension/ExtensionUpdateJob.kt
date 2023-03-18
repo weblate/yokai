@@ -20,7 +20,7 @@ import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.updater.AutoAppUpdaterJob
+import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.extension.api.ExtensionGithubApi
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.util.system.connectivityManager
@@ -71,7 +71,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
         }
         if (ExtensionManager.canAutoInstallUpdates(context, true) &&
             inputData.getBoolean(RUN_AUTO, true) &&
-            preferences.autoUpdateExtensions() != AutoAppUpdaterJob.NEVER &&
+            preferences.autoUpdateExtensions() != AppDownloadInstallJob.NEVER &&
             !ExtensionInstallerJob.isRunning(context) &&
             extensionsInstalledByApp.isNotEmpty()
         ) {
@@ -79,7 +79,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
             val libraryServiceRunning = LibraryUpdateJob.isRunning(context)
             if (
                 (
-                    preferences.autoUpdateExtensions() == AutoAppUpdaterJob.ALWAYS ||
+                    preferences.autoUpdateExtensions() == AppDownloadInstallJob.ALWAYS ||
                         !cm.isActiveNetworkMetered
                     ) && !libraryServiceRunning
             ) {

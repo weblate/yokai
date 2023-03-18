@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.main
 
+import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -8,6 +9,7 @@ import android.app.assist.AssistContent
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
@@ -25,6 +27,7 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.view.menu.ActionMenuItemView
@@ -32,6 +35,7 @@ import androidx.appcompat.view.menu.MenuItemImpl
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
+import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
@@ -106,6 +110,7 @@ import eu.kanade.tachiyomi.util.system.isBottomTappable
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
+import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.prepareSideNavContext
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.system.toast
@@ -121,7 +126,6 @@ import eu.kanade.tachiyomi.util.view.withFadeInTransaction
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -172,6 +176,17 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         ta.recycle()
         dimenW to dimenH
     }
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (!isGranted) {
+                materialAlertDialog()
+                    .setTitle(R.string.warning)
+                    .setMessage(R.string.allow_notifications_recommended)
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .show()
+            }
+        }
 
     fun setUndoSnackBar(snackBar: Snackbar?, extraViewToCheck: View? = null) {
         this.snackBar = snackBar
@@ -812,6 +827,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
                         // Create confirmation window
                         withContext(Dispatchers.Main) {
+                            showNotificationPermissionPrompt()
                             AppUpdateNotifier.releasePageUrl = result.release.releaseLink
                             AboutController.NewUpdateDialogController(body, url, isBeta).showDialog(router)
                         }
@@ -836,9 +852,21 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     )
                     preferences.extensionUpdatesCount().set(pendingUpdates.size)
                     preferences.lastExtCheck().set(Date().time)
-                } catch (e: java.lang.Exception) {
+                } catch (_: Exception) {
                 }
             }
+        }
+    }
+
+    fun showNotificationPermissionPrompt(showAnyway: Boolean = false) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        val notificationPermission = Manifest.permission.POST_NOTIFICATIONS
+        val hasPermission = ActivityCompat.checkSelfPermission(this, notificationPermission)
+        if (hasPermission != PackageManager.PERMISSION_GRANTED &&
+            (!preferences.hasShownNotifPermission().get() || showAnyway)
+        ) {
+            preferences.hasShownNotifPermission().set(true)
+            requestNotificationPermissionLauncher.launch((notificationPermission))
         }
     }
 

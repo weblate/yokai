@@ -187,6 +187,7 @@ class SettingsBackupController : SettingsController() {
                     BackupCreatorJob.startNow(activity, uri, backupFlags)
                 }
                 CODE_BACKUP_RESTORE -> {
+                    (activity as? MainActivity)?.showNotificationPermissionPrompt(true)
                     RestoreBackupDialog(uri).showDialog(router)
                 }
             }

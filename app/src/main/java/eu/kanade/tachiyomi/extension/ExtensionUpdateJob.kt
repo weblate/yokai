@@ -1,7 +1,9 @@
 package eu.kanade.tachiyomi.extension
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -98,6 +100,11 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
             }
         }
         NotificationManagerCompat.from(context).apply {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                return@apply
+            }
             notify(
                 Notifications.ID_UPDATES_TO_EXTS,
                 context.notification(Notifications.CHANNEL_UPDATES_TO_EXTS) {

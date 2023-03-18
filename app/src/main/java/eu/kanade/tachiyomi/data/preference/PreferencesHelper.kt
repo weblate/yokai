@@ -96,6 +96,8 @@ class PreferencesHelper(val context: Context) {
     fun startingTab() = flowPrefs.getInt(Keys.startingTab, 0)
     fun backReturnsToStart() = flowPrefs.getBoolean(Keys.backToStart, true)
 
+    fun hasShownNotifPermission() = flowPrefs.getBoolean("has_shown_notification_permission", false)
+
     fun hasDeniedA11FilePermission() = flowPrefs.getBoolean(Keys.deniedA11FilePermission, false)
 
     fun clear() = prefs.edit().clear().apply()

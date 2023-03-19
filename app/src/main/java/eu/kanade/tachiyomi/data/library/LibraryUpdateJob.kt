@@ -71,6 +71,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.File
 import java.lang.ref.WeakReference
+import java.util.Date
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -144,7 +145,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
         // If this is a chapter update, set the last update time to now
         if (target == Target.CHAPTERS) {
-//            libraryPreferences.libraryUpdateLastTimestamp().set(Date().time)
+            preferences.libraryUpdateLastTimestamp().set(Date().time)
         }
 
         val savedMangasList = inputData.getLongArray(KEY_MANGAS)?.asList()
@@ -211,7 +212,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 }
             }
             val results = list.awaitAll()
-            hasDownloads = hasDownloads || results.any { it }
+            if (!hasDownloads) {
+                hasDownloads = results.any { it }
+            }
             finishUpdates()
         }
     }
@@ -567,7 +570,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                             } catch (e: Exception) {
                                 false
                             }
-                            hasDownloads = hasDownloads || hasDLs
+                            if (!hasDownloads) {
+                                hasDownloads = hasDLs
+                            }
                         },
                     )
                 }

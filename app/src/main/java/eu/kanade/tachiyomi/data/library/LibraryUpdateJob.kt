@@ -51,6 +51,7 @@ import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
 import eu.kanade.tachiyomi.util.storage.getUriCompat
 import eu.kanade.tachiyomi.util.system.createFileInCacheDir
 import eu.kanade.tachiyomi.util.system.isConnectedToWifi
+import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.tryToSetForeground
 import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CoroutineScope
@@ -117,11 +118,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private val requestSemaphore = Semaphore(5)
 
     // For updates delete removed chapters if not preference is set as well
-    private val deleteRemoved by lazy {
-        preferences.deleteRemovedChapters().get() != 1
-    }
+    private val deleteRemoved by lazy { preferences.deleteRemovedChapters().get() != 1 }
 
-    private val notifier = LibraryUpdateNotifier(context)
+    private val notifier = LibraryUpdateNotifier(context.localeContext)
 
     override suspend fun doWork(): Result {
         if (tags.contains(WORK_NAME_AUTO)) {
@@ -500,7 +499,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        val notification = LibraryUpdateNotifier(context).progressNotificationBuilder.build()
+        val notification = notifier.progressNotificationBuilder.build()
         val id = Notifications.ID_LIBRARY_PROGRESS
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(id, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)

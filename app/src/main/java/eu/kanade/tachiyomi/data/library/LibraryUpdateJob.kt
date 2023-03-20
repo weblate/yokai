@@ -57,6 +57,7 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -67,6 +68,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -91,6 +93,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private var extraDeferredJobs = mutableListOf<Deferred<Any>>()
 
     private val extraScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val emitScope = MainScope()
 
     private val mangaToUpdate = mutableListOf<LibraryManga>()
 
@@ -177,7 +180,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 }
             } finally {
                 instance = null
-                updateChannel.trySend(null)
+                sendUpdate(null)
                 notifier.cancelProgressNotification()
             }
         }
@@ -185,12 +188,22 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
     private suspend fun launchTarget(target: Target, mangaToAdd: List<LibraryManga>) {
         if (target == Target.CHAPTERS) {
-            extraScope.launch { updateChannel.send(Manga.create(STARTING_UPDATE_SOURCE)) }
+            sendUpdate(Manga.create(STARTING_UPDATE_SOURCE))
         }
         when (target) {
             Target.CHAPTERS -> updateChaptersJob(filterMangaToUpdate(mangaToAdd))
             Target.DETAILS -> updateDetails(mangaToAdd)
             else -> updateTrackings(mangaToAdd)
+        }
+    }
+
+    private suspend fun sendUpdate(manga: Manga?) {
+        if (isStopped) {
+            updateChannel.trySend(manga)
+        } else if (tags.contains(WORK_NAME_MANUAL)) {
+            withTimeoutOrNull(500) { updateChannel.send(manga) } ?: updateChannel.trySend(manga)
+        } else {
+            emitScope.launch { updateChannel.send(manga) }
         }
     }
 
@@ -415,7 +428,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     }
                 }
                 if (newChapters.first.size + newChapters.second.size > 0) {
-                    extraScope.launch { updateChannel.trySend(manga) }
+                    sendUpdate(manga)
                 }
             }
             return@coroutineScope hasDownloads

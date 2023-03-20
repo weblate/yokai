@@ -694,8 +694,8 @@ class MangaDetailsPresenter(
         }
     }
 
-    fun onUpdateManga(manga: Manga?) {
-        if (manga?.id == this.manga.id) {
+    private fun onUpdateManga(mangaId: Long?) {
+        if (mangaId == manga.id) {
             fetchChapters()
         }
     }

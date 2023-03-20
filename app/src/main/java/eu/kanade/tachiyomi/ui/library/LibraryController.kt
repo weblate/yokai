@@ -1584,9 +1584,9 @@ open class LibraryController(
         }
     }
 
-    fun onUpdateManga(manga: Manga?) {
-        if (manga?.source == LibraryUpdateJob.STARTING_UPDATE_SOURCE) return
-        if (manga == null) {
+    private fun onUpdateManga(mangaId: Long?) {
+        if (mangaId == LibraryUpdateJob.STARTING_UPDATE_SOURCE) return
+        if (mangaId == null) {
             adapter.getHeaderPositions().forEach { adapter.notifyItemChanged(it) }
         } else {
             presenter.updateManga()

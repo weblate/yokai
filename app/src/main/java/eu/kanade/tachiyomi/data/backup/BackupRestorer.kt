@@ -94,7 +94,7 @@ class BackupRestorer(context: Context, notifier: BackupNotifier) : AbstractBacku
 
         restoreProgress += 1
         showRestoreProgress(restoreProgress, restoreAmount, manga.title)
-        LibraryUpdateJob.updateChannel.trySend(manga)
+        LibraryUpdateJob.updateChannel.trySend(manga.id)
     }
 
     /**

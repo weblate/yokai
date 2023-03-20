@@ -536,12 +536,12 @@ class RecentsPresenter(
         }
     }
 
-    private fun onUpdateManga(manga: Manga?) {
-        when {
-            manga == null -> {
+    private fun onUpdateManga(mangaId: Long?) {
+        when (mangaId) {
+            null -> {
                 presenterScope.launchUI { view?.setRefreshing(false) }
             }
-            manga.source == LibraryUpdateJob.STARTING_UPDATE_SOURCE -> {
+            LibraryUpdateJob.STARTING_UPDATE_SOURCE -> {
                 presenterScope.launchUI { view?.setRefreshing(true) }
             }
             else -> {

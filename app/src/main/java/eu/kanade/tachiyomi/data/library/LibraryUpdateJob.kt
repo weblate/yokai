@@ -188,7 +188,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
     private suspend fun launchTarget(target: Target, mangaToAdd: List<LibraryManga>) {
         if (target == Target.CHAPTERS) {
-            sendUpdate(Manga.create(STARTING_UPDATE_SOURCE))
+            sendUpdate(STARTING_UPDATE_SOURCE)
         }
         when (target) {
             Target.CHAPTERS -> updateChaptersJob(filterMangaToUpdate(mangaToAdd))
@@ -197,13 +197,13 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         }
     }
 
-    private suspend fun sendUpdate(manga: Manga?) {
+    private suspend fun sendUpdate(mangaId: Long?) {
         if (isStopped) {
-            updateChannel.trySend(manga)
+            updateChannel.trySend(mangaId)
         } else if (tags.contains(WORK_NAME_MANUAL)) {
-            withTimeoutOrNull(500) { updateChannel.send(manga) } ?: updateChannel.trySend(manga)
+            withTimeoutOrNull(500) { updateChannel.send(mangaId) } ?: updateChannel.trySend(mangaId)
         } else {
-            emitScope.launch { updateChannel.send(manga) }
+            emitScope.launch { updateChannel.send(mangaId) }
         }
     }
 
@@ -428,7 +428,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     }
                 }
                 if (newChapters.first.size + newChapters.second.size > 0) {
-                    sendUpdate(manga)
+                    sendUpdate(manga.id)
                 }
             }
             return@coroutineScope hasDownloads
@@ -628,7 +628,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
         private var instance: WeakReference<LibraryUpdateJob>? = null
 
-        val updateChannel = Channel<Manga?>()
+        val updateChannel = Channel<Long?>()
         val updateFlow = updateChannel.receiveAsFlow()
 
         var runExtensionUpdatesAfter = false

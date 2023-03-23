@@ -90,7 +90,7 @@ class ExtensionInstallerJob(val context: Context, workerParams: WorkerParameters
             null
         } ?: return Result.failure()
         val list = infos.filter {
-            val installedExt = extensionManager.installedExtensions.find { installed ->
+            val installedExt = extensionManager.installedExtensionsFlow.value.find { installed ->
                 installed.pkgName == it.pkgName
             } ?: return@filter false
             installedExt.versionCode < it.versionCode || installedExt.libVersion < it.libVersion

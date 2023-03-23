@@ -1331,7 +1331,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
-    fun downloadStatusChanged(downloading: Boolean) {
+    private fun downloadStatusChanged(downloading: Boolean) {
         val hasQueue = downloading || downloadManager.hasQueue()
         launchUI {
             if (hasQueue) {

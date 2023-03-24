@@ -335,10 +335,12 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     updateDetails(newUpdates.keys.toList())
                     notifier.cancelProgressNotification()
                     if (downloadNew && hasDownloads) {
-                        DownloadJob.start(context)
+                        DownloadJob.start(context, runExtensionUpdatesAfter)
+                        runExtensionUpdatesAfter = false
                     }
                 } else if (downloadNew && hasDownloads) {
-                    DownloadJob.start(this@LibraryUpdateJob.applicationContext)
+                    DownloadJob.start(this@LibraryUpdateJob.applicationContext, runExtensionUpdatesAfter)
+                    runExtensionUpdatesAfter = false
                 }
             }
         }
@@ -631,7 +633,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         val updateChannel = Channel<Long?>()
         val updateFlow = updateChannel.receiveAsFlow()
 
-        var runExtensionUpdatesAfter = false
+        private var runExtensionUpdatesAfter = false
+
+        fun runExtensionUpdatesAfterJob() { runExtensionUpdatesAfter = true }
 
         fun setupTask(context: Context, prefInterval: Int? = null) {
             val preferences = Injekt.get<PreferencesHelper>()

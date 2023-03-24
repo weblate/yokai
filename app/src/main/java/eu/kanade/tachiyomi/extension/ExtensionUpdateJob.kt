@@ -96,7 +96,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
             } else if (!libraryServiceRunning) {
                 runJobAgain(context, NetworkType.UNMETERED)
             } else {
-                LibraryUpdateJob.runExtensionUpdatesAfter = true
+                LibraryUpdateJob.runExtensionUpdatesAfterJob()
             }
         }
         NotificationManagerCompat.from(context).apply {

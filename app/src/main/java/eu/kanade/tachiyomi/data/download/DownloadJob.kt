@@ -12,8 +12,8 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
@@ -56,6 +56,7 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
         if (active) {
             downloadManager.startDownloads()
         }
+        val runExtJobAfter = inputData.getBoolean(START_EXT_JOB_AFTER, false)
 
         // Keep the worker running when needed
         try {
@@ -69,9 +70,8 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
             return Result.success()
         } finally {
             callListeners(false, downloadManager)
-            if (LibraryUpdateJob.runExtensionUpdatesAfter) {
-                ExtensionUpdateJob.runJobAgain(context, NetworkType.CONNECTED)
-                LibraryUpdateJob.runExtensionUpdatesAfter = false
+            if (runExtJobAfter) {
+                ExtensionUpdateJob.runJobAgain(applicationContext, NetworkType.CONNECTED)
             }
         }
     }
@@ -93,6 +93,7 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
 
     companion object {
         private const val TAG = "Downloader"
+        private const val START_EXT_JOB_AFTER = "StartExtJobAfter"
 
         private val downloadChannel = MutableSharedFlow<Boolean>(
             extraBufferCapacity = 1,
@@ -100,10 +101,14 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
         )
         val downloadFlow = downloadChannel.asSharedFlow()
 
-        fun start(context: Context) {
+        fun start(context: Context, alsoStartExtJob: Boolean = false) {
             val request = OneTimeWorkRequestBuilder<DownloadJob>()
                 .addTag(TAG)
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST).apply {
+                    if (alsoStartExtJob) {
+                        setInputData(workDataOf(START_EXT_JOB_AFTER to true))
+                    }
+                }
                 .build()
             WorkManager.getInstance(context)
                 .enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, request)

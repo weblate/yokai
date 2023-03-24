@@ -61,14 +61,13 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -199,11 +198,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
     private suspend fun sendUpdate(mangaId: Long?) {
         if (isStopped) {
-            updateChannel.trySend(mangaId)
-        } else if (tags.contains(WORK_NAME_MANUAL)) {
-            withTimeoutOrNull(500) { updateChannel.send(mangaId) } ?: updateChannel.trySend(mangaId)
+            updateMutableFlow.tryEmit(mangaId)
         } else {
-            emitScope.launch { updateChannel.send(mangaId) }
+            emitScope.launch { updateMutableFlow.emit(mangaId) }
         }
     }
 
@@ -630,8 +627,8 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
         private var instance: WeakReference<LibraryUpdateJob>? = null
 
-        val updateChannel = Channel<Long?>()
-        val updateFlow = updateChannel.receiveAsFlow()
+        val updateMutableFlow = MutableSharedFlow<Long?>()
+        val updateFlow = updateMutableFlow.asSharedFlow()
 
         private var runExtensionUpdatesAfter = false
 

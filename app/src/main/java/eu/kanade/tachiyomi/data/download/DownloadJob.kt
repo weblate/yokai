@@ -6,23 +6,27 @@ import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
 import eu.kanade.tachiyomi.util.system.isConnectedToWifi
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.tryToSetForeground
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import uy.kohesive.injekt.injectLazy
 
 /**
  * This worker is used to manage the downloader. The system can decide to stop the worker, in
@@ -54,12 +58,22 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
         }
 
         // Keep the worker running when needed
-        while (active) {
-            delay(100)
-            networkCheck = checkConnectivity()
-            active = !isStopped && networkCheck && downloadManager.isRunning
+        try {
+            while (active) {
+                delay(100)
+                networkCheck = checkConnectivity()
+                active = !isStopped && networkCheck && downloadManager.isRunning
+            }
+            return Result.success()
+        } catch (_: CancellationException) {
+            return Result.success()
+        } finally {
+            callListeners(false, downloadManager)
+            if (LibraryUpdateJob.runExtensionUpdatesAfter) {
+                ExtensionUpdateJob.runJobAgain(context, NetworkType.CONNECTED)
+                LibraryUpdateJob.runExtensionUpdatesAfter = false
+            }
         }
-        return Result.success()
     }
 
     private fun checkConnectivity(): Boolean {
@@ -80,8 +94,11 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
     companion object {
         private const val TAG = "Downloader"
 
-        private val downloadChannel = Channel<Boolean>()
-        val downloadFlow = downloadChannel.receiveAsFlow()
+        private val downloadChannel = MutableSharedFlow<Boolean>(
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
+        val downloadFlow = downloadChannel.asSharedFlow()
 
         fun start(context: Context) {
             val request = OneTimeWorkRequestBuilder<DownloadJob>()
@@ -96,9 +113,9 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
             WorkManager.getInstance(context).cancelUniqueWork(TAG)
         }
 
-        fun callListeners(downloading: Boolean? = null) {
-            val downloadManager: DownloadManager by injectLazy()
-            downloadChannel.trySend(downloading ?: !downloadManager.isPaused())
+        fun callListeners(downloading: Boolean? = null, downloadManager: DownloadManager? = null) {
+            val dManager by lazy { downloadManager ?: Injekt.get() }
+            downloadChannel.tryEmit(downloading ?: !dManager.isPaused())
         }
 
         fun isRunning(context: Context): Boolean {

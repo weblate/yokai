@@ -766,7 +766,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         checkForAppUpdates()
         getExtensionUpdates(false)
         setExtensionsBadge()
-        DownloadJob.callListeners()
+        DownloadJob.callListeners(downloadManager = downloadManager)
         showDLQueueTutorial()
         reEnableBackPressedCallBack()
     }
@@ -1332,8 +1332,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     private fun downloadStatusChanged(downloading: Boolean) {
-        val hasQueue = downloading || downloadManager.hasQueue()
-        launchUI {
+        lifecycleScope.launchUI {
+            val hasQueue = downloading || downloadManager.hasQueue()
             if (hasQueue) {
                 nav.getOrCreateBadge(R.id.nav_recents)
                 showDLQueueTutorial()

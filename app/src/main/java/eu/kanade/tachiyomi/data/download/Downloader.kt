@@ -166,6 +166,7 @@ class Downloader(
         } else {
             notifier.dismiss()
         }
+        DownloadJob.callListeners(false)
         isPaused = false
     }
 
@@ -705,7 +706,7 @@ class Downloader(
             queue.remove(download)
         }
         if (areAllDownloadsFinished()) {
-            DownloadJob.stop(context)
+            stop()
         }
     }
 

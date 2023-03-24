@@ -68,7 +68,7 @@ class DownloadManager(val context: Context) {
      */
     fun startDownloads(): Boolean {
         val hasStarted = downloader.start()
-        DownloadJob.callListeners()
+        DownloadJob.callListeners(downloadManager = this)
         return hasStarted
     }
 
@@ -95,7 +95,7 @@ class DownloadManager(val context: Context) {
     fun clearQueue(isNotification: Boolean = false) {
         deletePendingDownloads(*downloader.queue.toTypedArray())
         downloader.clearQueue(isNotification)
-        DownloadJob.callListeners(false)
+        DownloadJob.callListeners(false, this)
     }
 
     fun startDownloadNow(chapter: Chapter) {
@@ -107,7 +107,7 @@ class DownloadManager(val context: Context) {
         if (isPaused()) {
             if (DownloadJob.isRunning(context)) {
                 downloader.start()
-                DownloadJob.callListeners(true)
+                DownloadJob.callListeners(true, this)
             } else {
                 DownloadJob.start(context)
             }
@@ -131,7 +131,7 @@ class DownloadManager(val context: Context) {
         downloader.queue.addAll(downloads)
         if (!wasPaused) {
             downloader.start()
-            DownloadJob.callListeners(true)
+            DownloadJob.callListeners(true, this)
         }
     }
 
@@ -247,8 +247,6 @@ class DownloadManager(val context: Context) {
         GlobalScope.launch(Dispatchers.IO) {
             val wasPaused = isPaused()
             if (filteredChapters.isEmpty()) {
-                DownloadJob.stop(context)
-                downloader.queue.clear()
                 return@launch
             }
             downloader.pause()
@@ -257,6 +255,7 @@ class DownloadManager(val context: Context) {
                 downloader.start()
                 DownloadJob.callListeners(true)
             } else if (downloader.queue.isEmpty() && DownloadJob.isRunning(context)) {
+                DownloadJob.callListeners(false)
                 DownloadJob.stop(context)
             } else if (downloader.queue.isEmpty()) {
                 DownloadJob.callListeners(false)

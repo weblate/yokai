@@ -61,6 +61,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -171,7 +172,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             } catch (e: Exception) {
                 if (e is CancellationException) {
                     // Assume success although cancelled
-                    finishUpdates()
+                    finishUpdates(true)
                     Result.success()
                 } else {
                     Timber.e(e)
@@ -319,26 +320,22 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         notifier.cancelProgressNotification()
     }
 
-    private suspend fun finishUpdates() {
-        coroutineScope {
-            if (!isStopped) {
-                extraDeferredJobs.awaitAll()
-            }
+    private suspend fun finishUpdates(wasStopped: Boolean = false) {
+        if (!wasStopped && !isStopped) {
+            extraDeferredJobs.awaitAll()
         }
         if (newUpdates.isNotEmpty()) {
             notifier.showResultNotification(newUpdates)
-            coroutineScope {
-                if (preferences.refreshCoversToo().get() && !isStopped) {
-                    updateDetails(newUpdates.keys.toList())
-                    notifier.cancelProgressNotification()
-                    if (downloadNew && hasDownloads) {
-                        DownloadJob.start(context, runExtensionUpdatesAfter)
-                        runExtensionUpdatesAfter = false
-                    }
-                } else if (downloadNew && hasDownloads) {
-                    DownloadJob.start(this@LibraryUpdateJob.applicationContext, runExtensionUpdatesAfter)
+            if (!wasStopped && preferences.refreshCoversToo().get() && !isStopped) {
+                updateDetails(newUpdates.keys.toList())
+                notifier.cancelProgressNotification()
+                if (downloadNew && hasDownloads) {
+                    DownloadJob.start(context, runExtensionUpdatesAfter)
                     runExtensionUpdatesAfter = false
                 }
+            } else if (downloadNew && hasDownloads) {
+                DownloadJob.start(applicationContext, runExtensionUpdatesAfter)
+                runExtensionUpdatesAfter = false
             }
         }
         newUpdates.clear()
@@ -627,7 +624,10 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
         private var instance: WeakReference<LibraryUpdateJob>? = null
 
-        val updateMutableFlow = MutableSharedFlow<Long?>()
+        val updateMutableFlow = MutableSharedFlow<Long?>(
+            extraBufferCapacity = 10,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
         val updateFlow = updateMutableFlow.asSharedFlow()
 
         private var runExtensionUpdatesAfter = false

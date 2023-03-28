@@ -57,6 +57,7 @@ import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -114,10 +115,12 @@ class MangaDetailsPresenter(
             tabletChapterHeaderItem = MangaHeaderItem(manga, false)
             tabletChapterHeaderItem?.isChapterHeader = true
         }
-        isLockedFromSearch = controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
+        isLockedFromSearch =
+            controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
         headerItem.isLocked = isLockedFromSearch
         downloadManager.addListener(this)
-        LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(presenterScope)
+        LibraryUpdateJob.updateFlow.filter { it == manga.id }
+            .onEach(::onUpdateManga).launchIn(presenterScope)
         tracks = db.getTracks(manga).executeAsBlocking()
         if (manga.isLocal()) {
             refreshAll()
@@ -694,11 +697,7 @@ class MangaDetailsPresenter(
         }
     }
 
-    private fun onUpdateManga(mangaId: Long?) {
-        if (mangaId == manga.id) {
-            fetchChapters()
-        }
-    }
+    private fun onUpdateManga(mangaId: Long?) = fetchChapters()
 
     fun shareManga() {
         val context = Injekt.get<Application>()

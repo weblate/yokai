@@ -136,7 +136,7 @@ class ExtensionInstallerJob(val context: Context, workerParams: WorkerParameters
 
         activeInstalls.forEach { extensionManager.cleanUpInstallation(it) }
         activeInstalls.clear()
-        extensionManager.downloadRelay.tryEmit("Finished" to (InstallStep.Installed to null))
+        extensionManager.emitToInstaller("Finished", (InstallStep.Installed to null))
         if (instance?.get() == this) {
             instance = null
         }

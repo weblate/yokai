@@ -13,7 +13,6 @@ import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,7 +50,7 @@ class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>() 
             listOf(migrationJob, extensionJob).awaitAll()
         }
         presenterScope.launch {
-            extensionManager.downloadRelay.asSharedFlow()
+            extensionManager.downloadSharedFlow
                 .collect {
                     if (it.first.startsWith("Finished")) {
                         firstLoad = true

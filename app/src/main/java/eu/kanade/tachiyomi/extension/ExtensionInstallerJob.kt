@@ -140,7 +140,7 @@ class ExtensionInstallerJob(val context: Context, workerParams: WorkerParameters
         if (instance?.get() == this) {
             instance = null
         }
-
+        context.notificationManager.cancel(Notifications.ID_EXTENSION_PROGRESS)
         return Result.success()
     }
 

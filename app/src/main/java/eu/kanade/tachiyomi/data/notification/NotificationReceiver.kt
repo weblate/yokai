@@ -182,9 +182,9 @@ class NotificationReceiver : BroadcastReceiver() {
      * Method called when user wants to stop a library update
      *
      * @param context context of application
-     * @param notificationId id of notification
      */
     private fun cancelExtensionUpdate(context: Context) {
+        dismissNotification(context, Notifications.ID_EXTENSION_PROGRESS)
         ExtensionInstallerJob.stop(context)
     }
 

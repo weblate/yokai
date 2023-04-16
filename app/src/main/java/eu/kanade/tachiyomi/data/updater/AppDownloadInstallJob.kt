@@ -206,6 +206,7 @@ class AppDownloadInstallJob(private val context: Context, workerParams: WorkerPa
             val pendingIntent = PendingIntent.getBroadcast(context, -10053, newIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
             val statusReceiver = pendingIntent.intentSender
             session.commit(statusReceiver)
+            notifier.onInstalling()
             withContext(Dispatchers.IO) {
                 data.close()
                 GlobalScope.launchUI {
@@ -215,6 +216,7 @@ class AppDownloadInstallJob(private val context: Context, workerParams: WorkerPa
                     // If the package manager crashes for whatever reason (china phone)
                     // set a timeout and let the user manually install
                     if (packageInstaller.getSessionInfo(sessionId) == null && !hasNotification) {
+                        notifier.cancelInstallNotification()
                         notifier.onDownloadFinished(file.getUriCompat(context))
                         PreferenceManager.getDefaultSharedPreferences(context).edit {
                             remove(NOTIFY_ON_INSTALL_KEY)
@@ -226,6 +228,7 @@ class AppDownloadInstallJob(private val context: Context, workerParams: WorkerPa
             // Either install package can't be found (probably bots) or there's a security exception
             // with the download manager. Nothing we can workaround.
             context.toast(error.message)
+            notifier.cancelInstallNotification()
             notifier.onDownloadFinished(file.getUriCompat(context))
             PreferenceManager.getDefaultSharedPreferences(context).edit {
                 remove(NOTIFY_ON_INSTALL_KEY)

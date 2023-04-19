@@ -59,15 +59,15 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
         val runExtJobAfter = inputData.getBoolean(START_EXT_JOB_AFTER, false)
 
         // Keep the worker running when needed
-        try {
+        return try {
             while (active) {
                 delay(100)
                 networkCheck = checkConnectivity()
                 active = !isStopped && networkCheck && downloadManager.isRunning
             }
-            return Result.success()
+            Result.success()
         } catch (_: CancellationException) {
-            return Result.success()
+            Result.success()
         } finally {
             callListeners(false, downloadManager)
             if (runExtJobAfter) {

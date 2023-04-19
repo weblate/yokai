@@ -22,6 +22,7 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.UnmeteredSource
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.online.HttpSource
+import eu.kanade.tachiyomi.util.chapter.ChapterUtil.Companion.preferredChapterName
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.storage.DiskUtil.NOMEDIA_FILE
 import eu.kanade.tachiyomi.util.storage.saveTo
@@ -329,12 +330,10 @@ class Downloader(
         val mangaDir = provider.getMangaDir(download.manga, download.source)
 
         val availSpace = DiskUtil.getAvailableStorageSpace(mangaDir)
+        val chapName = download.chapter.preferredChapterName(context, download.manga, preferences)
         if (availSpace != -1L && availSpace < MIN_DISK_SPACE) {
             download.status = Download.State.ERROR
-            notifier.onError(
-                context.getString(R.string.couldnt_download_low_space),
-                download.chapter.name,
-            )
+            notifier.onError(context.getString(R.string.couldnt_download_low_space), chapName)
             return
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
@@ -347,7 +346,7 @@ class Downloader(
 
             notifier.onError(
                 context.getString(R.string.external_storage_download_notice),
-                download.chapter.name,
+                chapName,
                 download.manga.title,
                 intent,
             )
@@ -416,7 +415,7 @@ class Downloader(
             // If the page list threw, it will resume here
             Timber.e(error)
             download.status = Download.State.ERROR
-            notifier.onError(error.message, download.chapter.name, download.manga.title)
+            notifier.onError(error.message, chapName, download.manga.title)
         }
     }
 
@@ -448,6 +447,7 @@ class Downloader(
         // Try to find the image file
         val imageFile = tmpDir.listFiles()?.find { it.name!!.startsWith("$filename.") || it.name!!.startsWith("${filename}__001") }
 
+        val chapName = download.chapter.preferredChapterName(context, download.manga, preferences)
         try {
             // If the image is already downloaded, do nothing. Otherwise download from network
             val file = when {
@@ -467,7 +467,7 @@ class Downloader(
             if (!success) {
                 notifier.onError(
                     context.getString(R.string.download_notifier_split_failed),
-                    download.chapter.name,
+                    chapName,
                     download.manga.title,
                 )
             }
@@ -479,7 +479,7 @@ class Downloader(
             // Mark this page as error and allow to download the remaining
             page.progress = 0
             page.status = Page.State.ERROR
-            notifier.onError(e.message, download.chapter.name, download.manga.title)
+            notifier.onError(e.message, chapName, download.manga.title)
         }
     }
 

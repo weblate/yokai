@@ -6,5 +6,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "TachiyomiJ2K"
+rootProject.name = "Yokai"
 include(":app")

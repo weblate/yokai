@@ -1,14 +1,24 @@
-| Download | Contribute | Support Server |
-|-------|----------|---------|
-| [![release](https://img.shields.io/github/release/jays2kings/tachiyomi.svg?maxAge=3600&label=download)](https://github.com/jays2kings/tachiyomiJ2K/releases) | [![Translation status](https://hosted.weblate.org/widgets/tachiyomi/-/tachiyomi-j2k/svg-badge.svg)](https://hosted.weblate.org/engage/tachiyomi/?utm_source=widget) | [![Discord](https://img.shields.io/discord/349436576037732353.svg?label=discord&labelColor=7289da&color=2c2f33&style=flat)](https://discord.gg/tachiyomi) |
+<p align="center">
+    <a href="https://github.com/null2264/yokai"><img src="./.github/readme-images/app-icon.png" alt="app icon" width="200"/></a>
+</p>
+
+<h1 align="center">Yōkai</h1>
+
+<p align="center">A <b>free</b> and <b>open source</b> manga reader</p>
+
+<p id="badges" align="center">
+    <a href="https://github.com/null2264/yokai/actions/workflows/build_push.yml"><img alt="CI" src="https://github.com/null2264/yokai/actions/workflows/build_push.yml/badge.svg"></a>
+    <a href="https://github.com/null2264/yokai/releases"><img alt="GitHub Releases" src="https://img.shields.io/github/v/release/null2264/yokai?include_prereleases"></a>
+    <a href="/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
+</p>
 
 
-# ![app icon](./.github/readme-images/app-icon.png)Yōkai
+## About
 Yōkai is a free and open source manga reader for Android 6.0 and above. Based on the original [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) and [TachiJ2K](https://github.com/jays2kings/tachiyomiJ2K)
 
 ![screenshots of app](./.github/readme-images/screens.gif)
 
-## Features
+### Features
 
 Features of Tachiyomi include:
 * Online reading from a variety of sources
@@ -76,12 +86,12 @@ DON'T: https://github.com/tachiyomiorg/tachiyomi/issues/75
 Source requests should be created at https://github.com/tachiyomiorg/tachiyomi-extensions, they do not belong in this repository.
 </details>
 
-## FAQ
+### FAQ
 
 [See our website.](https://tachiyomi.org/)
 You can also reach out to us on [Discord](https://discord.gg/tachiyomi).
 
-## License
+### License
 
     Copyright 2015 Javier Tomás
 
@@ -97,6 +107,6 @@ You can also reach out to us on [Discord](https://discord.gg/tachiyomi).
     See the License for the specific language governing permissions and
     limitations under the License.
 
-## Disclaimer
+### Disclaimer
 
 The developer of this application does not have any affiliation with the content providers available.

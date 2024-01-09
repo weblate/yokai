@@ -93,7 +93,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION_TAG }}
-          name: Yokai ${{ env.VERSION_TAG }}
+          name: Yōkai ${{ env.VERSION_TAG }}
           body: |
             ---
 

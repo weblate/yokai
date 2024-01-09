@@ -50,7 +50,7 @@ Plus some new features in this fork such as:
 * A lot more Material Design You additions
 * Android 12 features such as automatic extension and app updates
 
-## Issues, Feature Requests and Contributing
+### Issues, Feature Requests and Contributing
 
 Please make sure to read the full guidelines. Your issue may be closed without warning if you do not.
 

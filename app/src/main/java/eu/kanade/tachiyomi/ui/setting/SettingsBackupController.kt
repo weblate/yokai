@@ -126,7 +126,7 @@ class SettingsBackupController : SettingsController() {
                     .onEach { path ->
                         val dir = UniFile.fromUri(context, path.toUri())
                         val filePath = dir.filePath
-                        summary = if (filePath != null) "$filePath/automatic" else "Invalid directory: $dir"
+                        summary = if (filePath != null) "$filePath/automatic" else "Invalid directory: ${dir.uri}"
                     }
                     .launchIn(viewScope)
             }

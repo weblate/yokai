@@ -1200,7 +1200,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         val newViewer = when (mangaViewer) {
             ReadingModeType.LEFT_TO_RIGHT.flagValue -> L2RPagerViewer(this)
             ReadingModeType.VERTICAL.flagValue -> VerticalPagerViewer(this)
-            ReadingModeType.WEBTOON.flagValue -> WebtoonViewer(this)
+            ReadingModeType.LONG_STRIP.flagValue -> WebtoonViewer(this)
             ReadingModeType.CONTINUOUS_VERTICAL.flagValue -> WebtoonViewer(this, hasMargins = true)
             else -> R2LPagerViewer(this)
         }
@@ -1215,7 +1215,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                         when (mangaViewer) {
                             ReadingModeType.RIGHT_TO_LEFT.flagValue -> R.string.right_to_left_viewer
                             ReadingModeType.VERTICAL.flagValue -> R.string.vertical_viewer
-                            ReadingModeType.WEBTOON.flagValue -> R.string.long_strip
+                            ReadingModeType.LONG_STRIP.flagValue -> R.string.long_strip
                             else -> R.string.left_to_right_viewer
                         },
                     ).lowercase(Locale.getDefault()),

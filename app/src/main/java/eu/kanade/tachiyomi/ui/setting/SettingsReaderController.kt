@@ -291,7 +291,7 @@ class SettingsReaderController : SettingsController() {
             }
         }
         preferenceCategory {
-            titleRes = R.string.webcomic
+            titleRes = R.string.long_strip
 
             intListPreference(activity) {
                 key = Keys.navigationModeWebtoon

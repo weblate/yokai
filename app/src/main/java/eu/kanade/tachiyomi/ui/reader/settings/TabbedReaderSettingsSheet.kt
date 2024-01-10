@@ -62,7 +62,7 @@ class TabbedReaderSettingsSheet(
 
     override fun getTabTitles(): List<Int> = listOf(
         R.string.general,
-        if (showWebtoonView) R.string.webcomic else R.string.paged,
+        if (showWebtoonView) R.string.long_strip else R.string.paged,
         R.string.filter,
     )
 

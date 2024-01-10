@@ -159,7 +159,7 @@ interface Manga : SManga {
                     currentTags.none { tag -> isComicTag(tag) }
                 )
         ) {
-            ReadingModeType.WEBTOON.flagValue
+            ReadingModeType.LONG_STRIP.flagValue
         } else if (currentTags.any
             { tag ->
                 tag == "chinese" || tag == "manhua" ||

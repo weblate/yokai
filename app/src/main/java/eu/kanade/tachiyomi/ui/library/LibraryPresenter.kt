@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.ui.library
 
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.getAndSet
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -13,8 +14,8 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.preference.DelayedLibrarySuggestionsJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.minusAssign
-import eu.kanade.tachiyomi.data.preference.plusAssign
+import eu.kanade.tachiyomi.core.preference.minusAssign
+import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.source.SourceManager
@@ -145,7 +146,7 @@ class LibraryPresenter(
             lastAllLibraryItems = null
         }
         getLibrary()
-        if (preferences.showLibrarySearchSuggestions().isNotSet()) {
+        if (!preferences.showLibrarySearchSuggestions().isSet()) {
             DelayedLibrarySuggestionsJob.setupTask(context, true)
         } else if (preferences.showLibrarySearchSuggestions().get() &&
             Date().time >= preferences.lastLibrarySuggestion().get() + TimeUnit.HOURS.toMillis(2)
@@ -1415,7 +1416,7 @@ class LibraryPresenter(
                 } ?: "",
             )
 
-            if (preferences.showLibrarySearchSuggestions().isNotSet()) {
+            if (!preferences.showLibrarySearchSuggestions().isSet()) {
                 preferences.showLibrarySearchSuggestions().set(true)
             }
             preferences.lastLibrarySuggestion().set(Date().time)

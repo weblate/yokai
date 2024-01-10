@@ -5,12 +5,12 @@ import androidx.preference.PreferenceManager
 import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
-import eu.kanade.tachiyomi.data.preference.Preference
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
-import eu.kanade.tachiyomi.data.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.plusAssign
+import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.data.updater.AppUpdateJob

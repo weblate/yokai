@@ -21,7 +21,7 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.base.controller.BaseController
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.main.MainActivity
@@ -136,7 +136,7 @@ abstract class SettingsController : PreferenceController(), BackHandlerControlle
         super.onChangeStarted(handler, type)
     }
 
-    inline fun <T> Preference.visibleIf(preference: com.fredporciuncula.flow.preferences.Preference<T>, crossinline block: (T) -> Boolean) {
-        preference.asImmediateFlowIn(viewScope) { isVisible = block(it) }
+    inline fun <T> Preference.visibleIf(preference: eu.kanade.tachiyomi.core.preference.Preference<T>, crossinline block: (T) -> Boolean) {
+        preference.changesIn(viewScope) { isVisible = block(it) }
     }
 }

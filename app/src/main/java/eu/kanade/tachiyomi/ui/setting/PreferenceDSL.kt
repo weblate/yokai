@@ -28,7 +28,6 @@ import eu.kanade.tachiyomi.widget.preference.IntListMatPreference
 import eu.kanade.tachiyomi.widget.preference.ListMatPreference
 import eu.kanade.tachiyomi.widget.preference.MultiListMatPreference
 import eu.kanade.tachiyomi.widget.preference.TriStateListPreference
-import com.fredporciuncula.flow.preferences.Preference as FlowPreference
 
 @DslMarker
 @Target(AnnotationTarget.TYPE)
@@ -156,24 +155,24 @@ inline fun Preference.onChange(crossinline block: (Any?) -> Boolean) {
     setOnPreferenceChangeListener { _, newValue -> block(newValue) }
 }
 
-fun <T> Preference.bindTo(preference: FlowPreference<T>) {
-    key = preference.key
-    defaultValue = preference.defaultValue
+fun <T> Preference.bindTo(preference: eu.kanade.tachiyomi.core.preference.Preference<T>) {
+    key = preference.key()
+    defaultValue = preference.defaultValue()
 }
 
-fun <T> ListPreference.bindTo(preference: FlowPreference<T>) {
-    key = preference.key
-    defaultValue = preference.defaultValue.toString()
+fun <T> ListPreference.bindTo(preference: eu.kanade.tachiyomi.core.preference.Preference<T>) {
+    key = preference.key()
+    defaultValue = preference.defaultValue().toString()
 }
 
-fun <T> EditTextPreference.bindTo(preference: FlowPreference<T>) {
-    key = preference.key
-    defaultValue = preference.defaultValue.toString()
+fun <T> EditTextPreference.bindTo(preference: eu.kanade.tachiyomi.core.preference.Preference<T>) {
+    key = preference.key()
+    defaultValue = preference.defaultValue().toString()
 }
 
-fun <T> ListMatPreference.bindTo(preference: FlowPreference<T>) {
-    key = preference.key
-    val defValue = preference.defaultValue
+fun <T> ListMatPreference.bindTo(preference: eu.kanade.tachiyomi.core.preference.Preference<T>) {
+    key = preference.key()
+    val defValue = preference.defaultValue()
     defaultValue = if (defValue is Set<*>) defValue else defValue.toString()
 }
 
@@ -182,20 +181,20 @@ fun <T> ListMatPreference.bindTo(preference: FlowPreference<T>) {
     ReplaceWith("bindTo(preference, excludePreference = )"),
     DeprecationLevel.ERROR,
 )
-fun <T> TriStateListPreference.bindTo(preference: FlowPreference<T>) { key = preference.key }
+fun <T> TriStateListPreference.bindTo(preference: eu.kanade.tachiyomi.core.preference.Preference<T>) { key = preference.key() }
 
 fun TriStateListPreference.bindTo(
-    includePreference: FlowPreference<Set<String>>,
-    excludePreference: FlowPreference<Set<String>>,
+    includePreference: eu.kanade.tachiyomi.core.preference.Preference<Set<String>>,
+    excludePreference: eu.kanade.tachiyomi.core.preference.Preference<Set<String>>,
 ) {
-    key = includePreference.key
-    excludeKey = excludePreference.key
-    defaultValue = includePreference.defaultValue to excludePreference.defaultValue
+    key = includePreference.key()
+    excludeKey = excludePreference.key()
+    defaultValue = includePreference.defaultValue() to excludePreference.defaultValue()
 }
 
-fun <T> IntListMatPreference.bindTo(preference: FlowPreference<T>) {
-    key = preference.key
-    defaultValue = preference.defaultValue
+fun <T> IntListMatPreference.bindTo(preference: eu.kanade.tachiyomi.core.preference.Preference<T>) {
+    key = preference.key()
+    defaultValue = preference.defaultValue()
 }
 
 fun SwitchPreferenceCompat.requireAuthentication(

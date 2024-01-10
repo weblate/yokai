@@ -101,7 +101,7 @@ class RecentsPresenter(
             preferences.showReadInAllRecents(),
             preferences.sortFetchedTime(),
         ).forEach {
-            it.asFlow()
+            it.changes()
                 .drop(1)
                 .onEach {
                     resetOffsets()

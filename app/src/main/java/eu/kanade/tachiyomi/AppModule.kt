@@ -7,8 +7,8 @@ import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
-import eu.kanade.tachiyomi.data.preference.AndroidPreferenceStore
-import eu.kanade.tachiyomi.data.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
@@ -33,8 +33,6 @@ class AppModule(val app: Application) : InjektModule {
         addSingletonFactory<PreferenceStore> {
             AndroidPreferenceStore(app)
         }
-
-        addSingletonFactory { PreferencesHelper(app) }
 
         addSingletonFactory { TrackPreferences(get()) }
 
@@ -71,8 +69,6 @@ class AppModule(val app: Application) : InjektModule {
         // Asynchronously init expensive components for a faster cold start
 
         ContextCompat.getMainExecutor(app).execute {
-            get<PreferencesHelper>()
-
             get<NetworkHelper>()
 
             get<SourceManager>()
@@ -82,6 +78,22 @@ class AppModule(val app: Application) : InjektModule {
             get<DownloadManager>()
 
             get<CustomMangaManager>()
+        }
+    }
+}
+
+
+class PreferenceModule(val application: Application) : InjektModule {
+    override fun InjektRegistrar.registerInjectables() {
+        addSingletonFactory<PreferenceStore> {
+            AndroidPreferenceStore(application)
+        }
+
+        addSingletonFactory {
+            PreferencesHelper(
+                context = application,
+                preferenceStore = get(),
+            )
         }
     }
 }

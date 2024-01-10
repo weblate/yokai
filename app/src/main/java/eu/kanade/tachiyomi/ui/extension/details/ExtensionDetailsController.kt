@@ -24,8 +24,8 @@ import com.google.android.material.snackbar.Snackbar
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.SharedPreferencesDataStore
-import eu.kanade.tachiyomi.data.preference.minusAssign
-import eu.kanade.tachiyomi.data.preference.plusAssign
+import eu.kanade.tachiyomi.core.preference.minusAssign
+import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.databinding.ExtensionDetailControllerBinding
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.network.NetworkHelper
@@ -267,7 +267,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
             }
 
             // React to enable/disable all changes
-            preferences.hiddenSources().asFlow()
+            preferences.hiddenSources().changes()
                 .onEach {
                     val enabled = source.isEnabled()
                     isChecked = enabled

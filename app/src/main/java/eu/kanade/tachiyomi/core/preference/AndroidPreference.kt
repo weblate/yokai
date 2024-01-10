@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.data.preference
+package eu.kanade.tachiyomi.core.preference
 
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor

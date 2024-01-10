@@ -8,8 +8,7 @@ import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.preference.asImmediateFlow
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.util.system.SideNavMode
 import eu.kanade.tachiyomi.util.system.appDelegateNightMode
 import eu.kanade.tachiyomi.util.system.dpToPx
@@ -18,6 +17,7 @@ import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.moveRecyclerViewUp
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlin.math.max
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
@@ -61,7 +61,7 @@ class SettingsAppearanceController : SettingsController() {
                     }
                     true
                 }
-                preferences.nightMode().asImmediateFlow { mode ->
+                preferences.nightMode().changes().onEach { mode ->
                     isChecked = mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 }.launchIn(viewScope)
             }
@@ -71,7 +71,7 @@ class SettingsAppearanceController : SettingsController() {
                 titleRes = R.string.pure_black_dark_mode
                 defaultValue = false
 
-                preferences.nightMode().asImmediateFlowIn(viewScope) { mode ->
+                preferences.nightMode().changesIn(viewScope) { mode ->
                     isVisible = mode != AppCompatDelegate.MODE_NIGHT_NO
                 }
 

@@ -9,8 +9,8 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.preference.minusAssign
-import eu.kanade.tachiyomi.data.preference.plusAssign
+import eu.kanade.tachiyomi.core.preference.minusAssign
+import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.icon
 import eu.kanade.tachiyomi.source.online.HttpSource

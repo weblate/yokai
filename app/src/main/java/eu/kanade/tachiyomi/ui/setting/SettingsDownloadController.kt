@@ -13,7 +13,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.util.system.withOriginalWidth
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -35,7 +35,7 @@ class SettingsDownloadController : SettingsController() {
                 DownloadDirectoriesDialog(this@SettingsDownloadController).show()
             }
 
-            preferences.downloadsDirectory().asImmediateFlowIn(viewScope) { path ->
+            preferences.downloadsDirectory().changesIn(viewScope) { path ->
                 val dir = UniFile.fromUri(context, path.toUri())
                 summary = dir.filePath ?: path
             }
@@ -86,7 +86,7 @@ class SettingsDownloadController : SettingsController() {
                 entries = categories.map { it.name }
                 entryValues = categories.map { it.id.toString() }
                 noSelectionRes = R.string.none
-                preferences.removeAfterReadSlots().asImmediateFlowIn(viewScope) { isVisible = it != -1 }
+                preferences.removeAfterReadSlots().changesIn(viewScope) { isVisible = it != -1 }
             }
             switchPreference {
                 bindTo(preferences.removeBookmarkedChapters())
@@ -110,7 +110,7 @@ class SettingsDownloadController : SettingsController() {
                 entryValues = categories.map { it.id.toString() }
                 allSelectionRes = R.string.all
 
-                preferences.downloadNewChapters().asImmediateFlowIn(viewScope) { isVisible = it }
+                preferences.downloadNewChapters().changesIn(viewScope) { isVisible = it }
             }
         }
 

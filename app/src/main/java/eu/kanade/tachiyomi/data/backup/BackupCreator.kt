@@ -39,8 +39,8 @@ import eu.kanade.tachiyomi.data.backup.models.StringSetPreferenceValue
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
-import eu.kanade.tachiyomi.data.preference.Preference
-import eu.kanade.tachiyomi.data.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.Preference
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.SourceManager

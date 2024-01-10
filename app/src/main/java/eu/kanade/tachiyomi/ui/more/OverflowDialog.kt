@@ -13,7 +13,7 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.toggle
+import eu.kanade.tachiyomi.core.preference.toggle
 import eu.kanade.tachiyomi.databinding.TachiOverflowLayoutBinding
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.lang.addBetaTag

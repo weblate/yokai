@@ -204,7 +204,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
 
         setExpandText(controller.canCollapseOrExpandCategory(), false)
 
-        preferences.filterOrder().asFlow()
+        preferences.filterOrder().changes()
             .drop(1)
             .onEach {
                 filterOrder = it

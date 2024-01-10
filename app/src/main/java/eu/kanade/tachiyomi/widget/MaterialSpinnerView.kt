@@ -16,8 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.forEach
 import androidx.core.view.get
-import com.fredporciuncula.flow.preferences.Preference
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.databinding.MaterialSpinnerViewBinding
 import eu.kanade.tachiyomi.util.lang.tintText
 import eu.kanade.tachiyomi.util.system.getResourceColor

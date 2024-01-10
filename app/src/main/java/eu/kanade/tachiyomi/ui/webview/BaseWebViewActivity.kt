@@ -27,7 +27,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.databinding.WebviewActivityBinding
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
@@ -151,7 +151,7 @@ open class BaseWebViewActivity : BaseActivity<WebviewActivityBinding>() {
         }
 
         preferences.incognitoMode()
-            .asImmediateFlowIn(lifecycleScope) {
+            .changesIn(lifecycleScope) {
                 SecureActivityDelegate.setSecure(this)
             }
     }

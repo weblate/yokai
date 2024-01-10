@@ -96,7 +96,7 @@ class SourcePresenter(
 
     private fun loadLastUsedSource() {
         lastUsedJob?.cancel()
-        lastUsedJob = preferences.lastUsedCatalogueSource().asFlow()
+        lastUsedJob = preferences.lastUsedCatalogueSource().changes()
             .drop(1)
             .onEach {
                 lastUsedItem = getLastUsedSource(it)

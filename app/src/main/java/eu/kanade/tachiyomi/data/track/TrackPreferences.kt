@@ -1,7 +1,7 @@
 package eu.kanade.tachiyomi.data.track
 
-import eu.kanade.tachiyomi.data.preference.Preference
-import eu.kanade.tachiyomi.data.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.Preference
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.track.anilist.Anilist
 
 class TrackPreferences(

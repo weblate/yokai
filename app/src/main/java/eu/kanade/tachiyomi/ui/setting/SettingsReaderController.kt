@@ -7,8 +7,7 @@ import androidx.core.content.getSystemService
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
-import eu.kanade.tachiyomi.data.preference.asImmediateFlow
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
 import eu.kanade.tachiyomi.ui.reader.settings.PageLayout
 import eu.kanade.tachiyomi.ui.reader.settings.ReaderBackgroundColor
@@ -277,19 +276,19 @@ class SettingsReaderController : SettingsController() {
                 defaultValue = PageLayout.AUTOMATIC.value
             }
             infoPreference(R.string.automatic_can_still_switch).apply {
-                preferences.pageLayout().asImmediateFlowIn(viewScope) { isVisible = it == PageLayout.AUTOMATIC.value }
+                preferences.pageLayout().changesIn(viewScope) { isVisible = it == PageLayout.AUTOMATIC.value }
             }
             switchPreference {
                 key = Keys.automaticSplitsPage
                 titleRes = R.string.split_double_pages_portrait
                 defaultValue = false
-                preferences.pageLayout().asImmediateFlowIn(viewScope) { isVisible = it == PageLayout.AUTOMATIC.value }
+                preferences.pageLayout().changesIn(viewScope) { isVisible = it == PageLayout.AUTOMATIC.value }
             }
             switchPreference {
                 key = Keys.invertDoublePages
                 titleRes = R.string.invert_double_pages
                 defaultValue = false
-                preferences.pageLayout().asImmediateFlowIn(viewScope) { isVisible = it != PageLayout.SINGLE_PAGE.value }
+                preferences.pageLayout().changesIn(viewScope) { isVisible = it != PageLayout.SINGLE_PAGE.value }
             }
         }
         preferenceCategory {
@@ -383,7 +382,7 @@ class SettingsReaderController : SettingsController() {
                 titleRes = R.string.invert_volume_keys
                 defaultValue = false
 
-                preferences.readWithVolumeKeys().asImmediateFlow { isVisible = it }.launchIn(viewScope)
+                preferences.readWithVolumeKeys().changesIn(viewScope) { isVisible = it }
             }
         }
 

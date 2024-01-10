@@ -8,11 +8,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.fredporciuncula.flow.preferences.Preference
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.databinding.MangaGridItemBinding
 import eu.kanade.tachiyomi.ui.library.LibraryItem

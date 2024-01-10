@@ -2,12 +2,12 @@ package eu.kanade.tachiyomi.ui.recents
 
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.fredporciuncula.flow.preferences.Preference
 import eu.davidea.flexibleadapter.items.IFlexible
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.manga.chapter.BaseChapterAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.drop
@@ -63,19 +63,19 @@ class RecentMangaAdapter(val delegate: RecentsInterface) :
         preferences.uniformGrid().register { uniformCovers = it }
         preferences.collapseGroupedUpdates().register { collapseGroupedUpdates = it }
         preferences.collapseGroupedHistory().register { collapseGroupedHistory = it }
-        preferences.sortFetchedTime().asImmediateFlowIn(delegate.scope()) { sortByFetched = it }
+        preferences.sortFetchedTime().changesIn(delegate.scope()) { sortByFetched = it }
         preferences.outlineOnCovers().register(false) {
             showOutline = it
             (0 until itemCount).forEach { i ->
                 (recyclerView.findViewHolderForAdapterPosition(i) as? RecentMangaHolder)?.updateCards()
             }
         }
-        preferences.libraryUpdateLastTimestamp().asFlow().onEach {
+        preferences.libraryUpdateLastTimestamp().changesIn(delegate.scope()) {
             lastUpdatedTime = it
             if (viewType.isUpdates) {
                 notifyItemChanged(0)
             }
-        }.launchIn(delegate.scope())
+        }
     }
 
     fun getItemByChapterId(id: Long): RecentMangaItem? {
@@ -86,7 +86,7 @@ class RecentMangaAdapter(val delegate: RecentsInterface) :
     }
 
     private fun <T> Preference<T>.register(notify: Boolean = true, onChanged: (T) -> Unit) {
-        asFlow()
+        changes()
             .drop(1)
             .onEach {
                 onChanged(it)

@@ -26,7 +26,6 @@ firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlyti
 flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
 flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter", version.ref = "flexible-adapter" }
-flow-preferences = { module = "com.fredporciuncula:flow-preferences", version = "1.6.0" }
 google-services = { module = "com.google.gms:google-services", version = "4.3.15" }
 gradle = { module = "com.android.tools.build:gradle", version = "8.1.4" }
 guava = { module = "com.google.guava:guava", version = "31.1-android" }

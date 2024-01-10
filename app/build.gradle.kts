@@ -82,6 +82,8 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        // If you're here because there's not BuildConfig, build the app first, it'll generate it for you
+        buildConfig = true
 
         // Disable some unused things
         aidl = false
@@ -108,7 +110,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = compose.versions.compose.get()
     }
 
     compileOptions {
@@ -178,9 +180,6 @@ dependencies {
     implementation(libs.rxandroid)
     implementation(libs.rxjava)
     implementation(libs.rxrelay)
-
-    // Coroutines
-    implementation(libs.flow.preferences)
 
     // Network client
     implementation(libs.okhttp)

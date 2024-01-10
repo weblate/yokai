@@ -1,5 +1,5 @@
 [versions]
-compose = "1.5.1"
+compose = "1.5.3"
 
 [libraries]
 animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }

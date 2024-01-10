@@ -78,7 +78,7 @@ import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.data.updater.AppUpdateChecker
 import eu.kanade.tachiyomi.data.updater.AppUpdateNotifier
 import eu.kanade.tachiyomi.data.updater.AppUpdateResult
@@ -641,17 +641,17 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         getExtensionUpdates(true)
 
         preferences.extensionUpdatesCount()
-            .asImmediateFlowIn(lifecycleScope) {
+            .changesIn(lifecycleScope) {
                 setExtensionsBadge()
             }
         preferences.incognitoMode()
-            .asImmediateFlowIn(lifecycleScope) {
+            .changesIn(lifecycleScope) {
                 binding.toolbar.setIncognitoMode(it)
                 binding.searchToolbar.setIncognitoMode(it)
                 SecureActivityDelegate.setSecure(this)
             }
         preferences.sideNavIconAlignment()
-            .asImmediateFlowIn(lifecycleScope) {
+            .changesIn(lifecycleScope) {
                 binding.sideNav?.menuGravity = when (it) {
                     1 -> Gravity.CENTER
                     2 -> Gravity.BOTTOM

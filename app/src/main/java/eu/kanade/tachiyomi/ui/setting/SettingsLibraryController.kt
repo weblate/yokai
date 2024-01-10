@@ -5,14 +5,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
-import eu.kanade.tachiyomi.data.preference.DEVICE_BATTERY_NOT_LOW
-import eu.kanade.tachiyomi.data.preference.DEVICE_CHARGING
-import eu.kanade.tachiyomi.data.preference.DEVICE_ONLY_ON_WIFI
-import eu.kanade.tachiyomi.data.preference.DelayedLibrarySuggestionsJob
-import eu.kanade.tachiyomi.data.preference.MANGA_HAS_UNREAD
-import eu.kanade.tachiyomi.data.preference.MANGA_NON_COMPLETED
-import eu.kanade.tachiyomi.data.preference.MANGA_NON_READ
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.*
 import eu.kanade.tachiyomi.ui.category.CategoryController
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.library.display.TabbedLibraryDisplaySheet
@@ -145,7 +138,7 @@ class SettingsLibraryController : SettingsController() {
                 preSummaryRes = R.string.restrictions_
                 noSelectionRes = R.string.none
 
-                preferences.libraryUpdateInterval().asImmediateFlowIn(viewScope) {
+                preferences.libraryUpdateInterval().changesIn(viewScope) {
                     isVisible = it > 0
                 }
 

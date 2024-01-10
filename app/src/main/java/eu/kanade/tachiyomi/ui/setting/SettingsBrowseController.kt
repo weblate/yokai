@@ -10,7 +10,7 @@ import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
@@ -95,7 +95,7 @@ class SettingsBrowseController : SettingsController() {
                 } else {
                     null
                 }
-                preferences.automaticExtUpdates().asImmediateFlowIn(viewScope) { value ->
+                preferences.automaticExtUpdates().changesIn(viewScope) { value ->
                     arrayOf(intPref, infoPref, switchPref).forEach { it?.isVisible = value }
                 }
             }

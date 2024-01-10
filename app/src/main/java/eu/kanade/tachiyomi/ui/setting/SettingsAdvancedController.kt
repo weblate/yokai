@@ -26,7 +26,7 @@ import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob.Target
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.extension.ShizukuInstaller
 import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.network.NetworkHelper
@@ -364,7 +364,7 @@ class SettingsAdvancedController : SettingsController() {
                 }
             }
             infoPreference(R.string.ext_installer_summary).apply {
-                preferences.extensionInstaller().asImmediateFlowIn(viewScope) {
+                preferences.extensionInstaller().changesIn(viewScope) {
                     isVisible =
                         it != ExtensionInstaller.PACKAGE_INSTALLER && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
                 }

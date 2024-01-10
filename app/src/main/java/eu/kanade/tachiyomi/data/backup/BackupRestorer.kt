@@ -23,8 +23,8 @@ import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
-import eu.kanade.tachiyomi.data.preference.AndroidPreferenceStore
-import eu.kanade.tachiyomi.data.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.sourcePreferences
@@ -34,7 +34,6 @@ import eu.kanade.tachiyomi.util.system.createFileInCacheDir
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.serialization.protobuf.ProtoBuf
-import okio.source
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy

@@ -37,7 +37,6 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -76,8 +75,8 @@ import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
-import eu.kanade.tachiyomi.data.preference.toggle
+import eu.kanade.tachiyomi.core.preference.toggle
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.databinding.ReaderActivityBinding
 import eu.kanade.tachiyomi.source.model.Page
@@ -371,7 +370,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         initializeMenu()
 
         preferences.incognitoMode()
-            .asImmediateFlowIn(lifecycleScope) {
+            .changesIn(lifecycleScope) {
                 SecureActivityDelegate.setSecure(this)
             }
         reEnableBackPressedCallBack()
@@ -524,7 +523,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
     }
 
     private fun canShowSplitAtBottom(): Boolean {
-        return if (preferences.readerBottomButtons().isNotSet()) {
+        return if (!preferences.readerBottomButtons().isSet()) {
             isTablet()
         } else {
             ReaderBottomButton.ShiftDoublePage.isIn(preferences.readerBottomButtons().get())
@@ -842,7 +841,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
 
         listOf(preferences.cropBorders(), preferences.cropBordersWebtoon())
             .forEach { pref ->
-                pref.asFlow()
+                pref.changes()
                     .onEach { updateCropBordersShortcut() }
                     .launchIn(scope)
             }
@@ -1899,7 +1898,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
          * Initializes the reader subscriptions.
          */
         init {
-            preferences.defaultOrientationType().asFlow()
+            preferences.defaultOrientationType().changes()
                 .drop(1)
                 .onEach {
                     delay(250)
@@ -1907,38 +1906,38 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                 }
                 .launchIn(scope)
 
-            preferences.showPageNumber().asImmediateFlowIn(scope) { setPageNumberVisibility(it) }
+            preferences.showPageNumber().changesIn(scope) { setPageNumberVisibility(it) }
 
-            preferences.landscapeCutoutBehavior().asFlow()
+            preferences.landscapeCutoutBehavior().changes()
                 .drop(1)
                 .onEach { setCutoutMode() }
                 .launchIn(scope)
 
-            preferences.trueColor().asImmediateFlowIn(scope) { setTrueColor(it) }
+            preferences.trueColor().changesIn(scope) { setTrueColor(it) }
 
-            preferences.fullscreen().asImmediateFlowIn(scope) { setFullscreen(it) }
+            preferences.fullscreen().changesIn(scope) { setFullscreen(it) }
 
-            preferences.keepScreenOn().asImmediateFlowIn(scope) { setKeepScreenOn(it) }
+            preferences.keepScreenOn().changesIn(scope) { setKeepScreenOn(it) }
 
-            preferences.customBrightness().asImmediateFlowIn(scope) { setCustomBrightness(it) }
+            preferences.customBrightness().changesIn(scope) { setCustomBrightness(it) }
 
-            preferences.colorFilter().asImmediateFlowIn(scope) { setColorFilter(it) }
+            preferences.colorFilter().changesIn(scope) { setColorFilter(it) }
 
-            preferences.colorFilterMode().asImmediateFlowIn(scope) {
+            preferences.colorFilterMode().changesIn(scope) {
                 setColorFilter(preferences.colorFilter().get())
             }
 
-            merge(preferences.grayscale().asFlow(), preferences.invertedColors().asFlow())
+            merge(preferences.grayscale().changes(), preferences.invertedColors().changes())
                 .onEach { setLayerPaint(preferences.grayscale().get(), preferences.invertedColors().get()) }
                 .launchIn(lifecycleScope)
 
-            preferences.alwaysShowChapterTransition().asImmediateFlowIn(scope) {
+            preferences.alwaysShowChapterTransition().changesIn(scope) {
                 showNewChapter = it
             }
 
-            preferences.pageLayout().asImmediateFlowIn(scope) { setBottomNavButtons(it) }
+            preferences.pageLayout().changesIn(scope) { setBottomNavButtons(it) }
 
-            preferences.automaticSplitsPage().asFlow()
+            preferences.automaticSplitsPage().changes()
                 .drop(1)
                 .onEach {
                     val isPaused = !this@ReaderActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
@@ -1950,7 +1949,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                 }
                 .launchIn(scope)
 
-            preferences.readerBottomButtons().asImmediateFlowIn(scope) { updateBottomShortcuts() }
+            preferences.readerBottomButtons().changesIn(scope) { updateBottomShortcuts() }
         }
 
         /**
@@ -1996,7 +1995,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
          */
         private fun setCustomBrightness(enabled: Boolean) {
             if (enabled) {
-                preferences.customBrightnessValue().asFlow()
+                preferences.customBrightnessValue().changes()
                     .sample(100)
                     .onEach { setCustomBrightnessValue(it) }
                     .launchIn(scope)
@@ -2010,7 +2009,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
          */
         private fun setColorFilter(enabled: Boolean) {
             if (enabled) {
-                preferences.colorFilterValue().asFlow()
+                preferences.colorFilterValue().changes()
                     .sample(100)
                     .onEach { setColorFilterValue(it) }
                     .launchIn(scope)

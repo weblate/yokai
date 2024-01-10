@@ -176,7 +176,7 @@ class BrowseController :
         requestFilePermissionsSafe(301, preferences)
         binding.bottomSheet.root.onCreate(this)
 
-        preferences.extensionInstaller().asFlow()
+        preferences.extensionInstaller().changes()
             .drop(1)
             .onEach {
                 binding.bottomSheet.root.setCanInstallPrivately(it == ExtensionInstaller.PRIVATE)

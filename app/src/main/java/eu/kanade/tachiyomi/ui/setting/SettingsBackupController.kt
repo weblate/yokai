@@ -122,10 +122,11 @@ class SettingsBackupController : SettingsController() {
 
                 visibleIf(preferences.backupInterval()) { it > 0 }
 
-                preferences.backupsDirectory().asFlow()
+                preferences.backupsDirectory().changes()
                     .onEach { path ->
                         val dir = UniFile.fromUri(context, path.toUri())
-                        summary = dir.filePath + "/automatic"
+                        val filePath = dir.filePath
+                        summary = if (filePath != null) "$filePath/automatic" else "Invalid directory: $dir"
                     }
                     .launchIn(viewScope)
             }

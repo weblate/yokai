@@ -5,7 +5,7 @@ import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 
@@ -43,7 +43,7 @@ class SettingsSecurityController : SettingsController() {
                 entryValues = values
                 defaultValue = 0
 
-                preferences.useBiometrics().asImmediateFlowIn(viewScope) { isVisible = it }
+                preferences.useBiometrics().changesIn(viewScope) { isVisible = it }
             }
         }
 

@@ -24,7 +24,6 @@ import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.data.image.coil.CoilSetup
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.asImmediateFlow
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
@@ -64,6 +63,7 @@ open class App : Application(), DefaultLifecycleObserver {
             if (packageName != process) WebView.setDataDirectorySuffix(process)
         }
 
+        Injekt.importModule(PreferenceModule(this))
         Injekt.importModule(AppModule(this))
 
         CoilSetup(this)
@@ -72,8 +72,8 @@ open class App : Application(), DefaultLifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         MangaCoverMetadata.load()
-        preferences.nightMode()
-            .asImmediateFlow { AppCompatDelegate.setDefaultNightMode(it) }
+        preferences.nightMode().changes()
+            .onEach { AppCompatDelegate.setDefaultNightMode(it) }
             .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
 
         ProcessLifecycleOwner.get().lifecycleScope.launchIO {
@@ -81,7 +81,7 @@ open class App : Application(), DefaultLifecycleObserver {
         }
 
         // Show notification to disable Incognito Mode when it's enabled
-        preferences.incognitoMode().asFlow()
+        preferences.incognitoMode().changes()
             .onEach { enabled ->
                 val notificationManager = NotificationManagerCompat.from(this)
                 if (enabled) {

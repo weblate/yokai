@@ -48,7 +48,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
-import com.fredporciuncula.flow.preferences.Preference
 import com.github.florent37.viewtooltip.ViewTooltip
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -58,6 +57,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.items.IHeader
 import eu.davidea.flexibleadapter.items.ISectionable
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -1003,7 +1003,7 @@ open class LibraryController(
             preferences.gridSize(),
             preferences.useStaggeredGrid(),
         ).forEach {
-            it.asFlow()
+            it.changes()
                 .drop(1)
                 .onEach {
                     reattachAdapter()
@@ -1017,7 +1017,7 @@ open class LibraryController(
 
     @SuppressLint("NotifyDataSetChanged")
     private fun <T> Preference<T>.register(onChanged: ((T) -> Unit)? = null) {
-        asFlow()
+        changes()
             .drop(1)
             .onEach {
                 onChanged?.invoke(it)

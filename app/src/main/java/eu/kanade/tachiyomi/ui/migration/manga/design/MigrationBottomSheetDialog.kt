@@ -18,8 +18,8 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.bluelinelabs.conductor.Controller
-import com.fredporciuncula.flow.preferences.Preference
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.MigrationBottomSheetBinding
 import eu.kanade.tachiyomi.ui.migration.MigrationFlags

@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.preference.asImmediateFlowIn
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
@@ -62,7 +62,7 @@ class SettingsTrackingController :
                 title = context.getString(R.string.update_tracking_scoring_type, context.getString(R.string.anilist))
 
                 preferences.getStringPref(trackManager.aniList.getUsername())
-                    .asImmediateFlowIn(viewScope) {
+                    .changesIn(viewScope) {
                         isVisible = it.isNotEmpty()
                     }
 

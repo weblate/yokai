@@ -6,9 +6,9 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import com.fredporciuncula.flow.preferences.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob

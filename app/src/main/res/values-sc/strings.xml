@@ -112,7 +112,6 @@
     <string name="left_to_right_viewer">Dae manca a destra</string>
     <string name="right_to_left_viewer">Dae destra a manca</string>
     <string name="vertical_viewer">Verticale</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">Casta de iscala</string>
     <string name="fit_screen">Adata a s\'ischermu</string>
     <string name="stretch">Prena s\'ischermu</string>
@@ -290,12 +289,12 @@
     <string name="continuous_vertical">Verticale sighidu</string>
     <string name="paged">Impaginadu</string>
     <string name="always_show_chapter_transition">Ammustra semper sa transitzione de capìtulu</string>
-    <string name="pref_webtoon_side_padding">Distantziamentu laterale</string>
-    <string name="webtoon_side_padding_0">Perunu</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Distantziamentu laterale</string>
+    <string name="long_strip_side_padding_0">Perunu</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Capìtulos %1$s</string>
     <string name="remove_from_library">Boga dae sa biblioteca</string>
     <string name="refresh_tracking">Annoa s\'arrastamentu</string>
@@ -492,7 +491,6 @@
     <string name="smart_by_theme">Abbistu (pro tema)</string>
     <string name="smart_by_page">Abbistu (pro pàgina)</string>
     <string name="enable_zoom_out">Abìlita s\'istesiamentu</string>
-    <string name="webtoon_style">istile de webtoon</string>
     <string name="reading_">Leghende %1$s</string>
     <string name="set_as_default_for_all">Imposta comente predefinidu pro totus</string>
     <string name="extension_updates">Agiornamentos de sas estensiones</string>
@@ -742,7 +740,6 @@
     <string name="turn_on_">Allughe %s</string>
     <string name="pad_cutout_areas">Prena sas àreas segadas</string>
     <string name="remove_crop">Boga su ritàlliu</string>
-    <string name="crop_borders_webtoon">Sega sos oros (Webtoon)</string>
     <string name="crop_borders_paged">Sega sos oros (Impaginadu)</string>
     <string name="changing_will_reset_reading_mode">Cambiende custu as a resetare sa modalidade de leghidura pro custa sèrie</string>
     <string name="reading_mode">Modalidade de leghidura</string>
@@ -995,7 +992,7 @@
     <string name="tap_zones">Zonas de tocu</string>
     <string name="lavender">Archemissa</string>
     <string name="violet">Tanadu</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Istringa de agente de utente predefinida</string>
     <string name="language_requires_app_restart">Unas cantas limbas diant pòdere bisongiare chi torres a allùghere s\'aplicatzione pro las ammustrare comente si tocat</string>
     <string name="loader_rar5_error">Su formadu RARv5 no est suportadu</string>

@@ -174,7 +174,7 @@
     <string name="no_wifi_connection">Nuk ofrohet lidhje Wi-Fi</string>
     <string name="display">Shfaqja</string>
     <string name="use_image_as_cover">Të përdoret ky imazh si kopertinë\?</string>
-    <string name="pref_webtoon_side_padding">Mbushje anësore</string>
+    <string name="pref_long_strip_side_padding">Mbushje anësore</string>
     <string name="on_hiatus">Në pauzë</string>
     <string name="username">Emri i përdoruesit</string>
     <string name="pure_black_dark_mode">E zezë e pastër modaliteti i errët</string>
@@ -363,7 +363,7 @@
     <string name="right_and_left_nav">E djathta dhe e majta</string>
     <string name="restore_from_backup_file">Rivendosni bibliotekën nga skedari rezervë</string>
     <string name="downloaded_chapters">Kapitujt e shkarkuar</string>
-    <string name="webtoon_side_padding_0">Asnje</string>
+    <string name="long_strip_side_padding_0">Asnje</string>
     <string name="select_backup_file">Zgjidhni skedarin rezervë</string>
     <string name="never">Kurrë</string>
     <string name="settings">Cilësimet</string>

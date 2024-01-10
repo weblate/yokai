@@ -84,7 +84,7 @@
     <string name="extensions">Paplašinājumi</string>
     <string name="extension_info">Paplašinājumu informācija</string>
     <string name="vertical_viewer">Vertikāls</string>
-    <string name="webtoon_side_padding_0">Nekāds</string>
+    <string name="long_strip_side_padding_0">Nekāds</string>
     <string name="migrate">Migrēt</string>
     <string name="help">Palīdzība</string>
     <string name="language">Valoda</string>
@@ -165,7 +165,6 @@
     <string name="author">Autors</string>
     <string name="title">Nosaukums</string>
     <string name="not_started">Nav sākts</string>
-    <string name="webtoon">Webtoon</string>
     <string name="comic">Komikss</string>
     <string name="manhua"/>
     <string name="manhwa"/>
@@ -272,13 +271,13 @@
     <string name="whats_new">Jaunumi</string>
     <string name="split_tall_images">Sadalīt augstus attēlus</string>
     <string name="pref_inverted_colors">Invertēts</string>
-    <string name="pref_webtoon_side_padding">Sānu platums</string>
+    <string name="pref_long_strip_side_padding">Sānu platums</string>
     <string name="l_nav">L formas</string>
     <string name="right_and_left_nav">Pa labi un pa kreisi</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="enhanced_tracking_info">Pakalpojumi, kas nodrošina uzlabotus līdzekļus konkrētiem avotiem. Pievienojot bibliotēkai, manga tiks automātiski izsekota.</string>
     <string name="enhanced_services">Uzlabotie pakalpojumi</string>
     <string name="empty_backup_error">Nav bibliotēkas ierakstu, ko dublēt</string>
@@ -548,7 +547,7 @@
     <string name="lavender">Lavanda</string>
     <string name="tap_zones">Skāriena zonas</string>
     <string name="reduces_banding_impacts_performance">Samazina grupēšanu, bet var ietekmēt veiktspēju</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="downloaded_chapters">Lejupielādētās nodaļas</string>
     <string name="allow_deleting_bookmarked_chapters">Atļaut dzēst ar grāmatzīmēm atzīmētās nodaļas</string>
     <string name="updates_last_update_info">Bibliotēka pēdējo reizi atjaunināta: %s</string>

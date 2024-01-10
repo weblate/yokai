@@ -17,7 +17,6 @@ import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.isTablet
 import eu.kanade.tachiyomi.util.view.activityBinding
-import kotlinx.coroutines.flow.launchIn
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsReaderController : SettingsController() {
@@ -292,7 +291,7 @@ class SettingsReaderController : SettingsController() {
             }
         }
         preferenceCategory {
-            titleRes = R.string.webtoon
+            titleRes = R.string.webcomic
 
             intListPreference(activity) {
                 key = Keys.navigationModeWebtoon
@@ -334,14 +333,14 @@ class SettingsReaderController : SettingsController() {
 
             intListPreference(activity) {
                 key = Keys.webtoonSidePadding
-                titleRes = R.string.pref_webtoon_side_padding
+                titleRes = R.string.pref_long_strip_side_padding
                 entriesRes = arrayOf(
-                    R.string.webtoon_side_padding_0,
-                    R.string.webtoon_side_padding_5,
-                    R.string.webtoon_side_padding_10,
-                    R.string.webtoon_side_padding_15,
-                    R.string.webtoon_side_padding_20,
-                    R.string.webtoon_side_padding_25,
+                    R.string.long_strip_side_padding_0,
+                    R.string.long_strip_side_padding_5,
+                    R.string.long_strip_side_padding_10,
+                    R.string.long_strip_side_padding_15,
+                    R.string.long_strip_side_padding_20,
+                    R.string.long_strip_side_padding_25,
                 )
                 entryValues = listOf(0, 5, 10, 15, 20, 25)
                 defaultValue = "0"

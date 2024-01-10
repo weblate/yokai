@@ -73,7 +73,6 @@
     <string name="manhwa">Manhwa</string>
     <string name="manhua">Manhua</string>
     <string name="comic">Komikia</string>
-    <string name="webtoon">Webtoon</string>
     <string name="not_started">Hasi gabea</string>
     <string name="in_progress">Lantzen</string>
     <string name="read">Irakurria</string>
@@ -228,14 +227,14 @@
     <string name="cutout_area_behavior">Eremu ebakiaren jokaera</string>
     <string name="kindlish_nav">Kindle erakoa</string>
     <string name="none">Ezer ez</string>
-    <string name="webtoon_side_padding_20">%20</string>
+    <string name="long_strip_side_padding_20">%20</string>
     <string name="horizontally">Horizontalki</string>
     <string name="vertically">Bertikalki</string>
     <string name="both_axes">Bi Ardatzak</string>
-    <string name="webtoon_side_padding_25">%25</string>
-    <string name="webtoon_side_padding_0">Ezer ez</string>
-    <string name="webtoon_side_padding_10">%10</string>
-    <string name="webtoon_side_padding_15">%15</string>
+    <string name="long_strip_side_padding_25">%25</string>
+    <string name="long_strip_side_padding_0">Ezer ez</string>
+    <string name="long_strip_side_padding_10">%10</string>
+    <string name="long_strip_side_padding_15">%15</string>
     <string name="filter_languages">Iragazi hizkuntzak</string>
     <string name="extension_updates_pending">Luzapenen eguneraketak geratzen dira</string>
     <string name="double_pages">Orrialde bikoitzak</string>
@@ -658,7 +657,7 @@
     <string name="next_chapter_not_found">Ez da hurrengo kapitulua aurkitu</string>
     <string name="use_custom_brightness">Erabili distira pertsonalizatua</string>
     <string name="use_custom_color_filter">Erabili kolore-iragazki pertsonalizatua</string>
-    <string name="pref_webtoon_side_padding">Alboko betegarria</string>
+    <string name="pref_long_strip_side_padding">Alboko betegarria</string>
     <string name="added_to_library">Liburutegira gehitua</string>
     <string name="search_chapters">Bilatu kapituluak</string>
     <string name="custom_range">Tarte pertsonalizatua</string>
@@ -726,11 +725,9 @@
     <string name="double_tap_anim_speed">Sakaketa bikoitzaren animazioaren abiadura</string>
     <string name="show_page_number">Erakutsi orrialdearen zenbakia</string>
     <string name="true_32bit_color">32 bit-eko kolorea</string>
-    <string name="webtoon_style">Webtoon estiloa</string>
     <string name="overlay">Gainjarri</string>
     <string name="remove_crop">Kendu mozketa</string>
     <string name="dodge_lighten">Sahiestu / Argitu</string>
-    <string name="crop_borders_webtoon">Moztu ertzak (Webtoon)</string>
     <string name="color_filter_blend_mode">Kolore-iragazkia modu nahastuan</string>
     <string name="skip_read_chapters">Saltatu irakurriak bezala markatutako kapituluak</string>
     <string name="skip_filtered_chapters">Saltatu iragazitako kapituluak</string>
@@ -936,7 +933,7 @@
     <string name="pref_high">Altua</string>
     <string name="pref_low">Baxua</string>
     <string name="pref_lowest">Baxuena</string>
-    <string name="webtoon_side_padding_5">%5</string>
+    <string name="long_strip_side_padding_5">%5</string>
     <string name="downloaded_chapters">Deskargatutako kapituluak</string>
     <string name="tap_zones">Nabigazio-diseinua</string>
     <string name="pref_update_only_non_completed">Argitalpen bukatua al da</string>

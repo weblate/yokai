@@ -1215,7 +1215,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                         when (mangaViewer) {
                             ReadingModeType.RIGHT_TO_LEFT.flagValue -> R.string.right_to_left_viewer
                             ReadingModeType.VERTICAL.flagValue -> R.string.vertical_viewer
-                            ReadingModeType.WEBTOON.flagValue -> R.string.webtoon_style
+                            ReadingModeType.WEBTOON.flagValue -> R.string.long_strip
                             else -> R.string.left_to_right_viewer
                         },
                     ).lowercase(Locale.getDefault()),

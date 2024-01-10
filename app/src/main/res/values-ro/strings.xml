@@ -112,7 +112,6 @@
     <string name="left_to_right_viewer">De la stânga la dreapta</string>
     <string name="right_to_left_viewer">De la dreapta la stânga</string>
     <string name="vertical_viewer">Vertical</string>
-    <string name="webtoon">Benzi desenate web</string>
     <string name="scale_type">Tip de mărime</string>
     <string name="fit_screen">Potrivire ecran</string>
     <string name="stretch">Întinde</string>
@@ -303,12 +302,12 @@
     <string name="unpin">Anulați fixarea</string>
     <string name="view_chapters">Vezi capitolele</string>
     <string name="always_show_chapter_transition">Arată întotdeauna tranziția capitolului</string>
-    <string name="pref_webtoon_side_padding">Căptușeală laterală</string>
-    <string name="webtoon_side_padding_0">Fără</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Căptușeală laterală</string>
+    <string name="long_strip_side_padding_0">Fără</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Capitolele %1$s</string>
     <string name="remove_from_library">Elimină din bibliotecă</string>
     <string name="refresh_tracking">Reîncărca urmărirea</string>
@@ -508,7 +507,6 @@
     <string name="smart_by_page">Inteligent (după pagină)</string>
     <string name="remove_crop">Eliminați tăierea</string>
     <string name="crop_borders_paged">Decupați marginile (paginate)</string>
-    <string name="crop_borders_webtoon">Decupați marginile (Webtoon)</string>
     <string name="invert_double_pages">Inversați paginile duble</string>
     <string name="amount_of_pages_to_preload">Numărul de pagini care trebuie preîncărcate la citire. Valorile mai mari vor duce la o experiență de citire mai ușoară, cu prețul unei utilizări mai mari a cache-ului și a rețelei.</string>
     <string name="enable_zoom_out">Activați zoom out</string>
@@ -520,7 +518,6 @@
     <string name="save_first_page">Salvați prima pagină</string>
     <string name="share_first_page">Distribuiți prima pagină</string>
     <string name="set_first_page_as_cover">Setați prima pagină ca și copertă</string>
-    <string name="webtoon_style">stil webtoon</string>
     <string name="changing_will_reset_reading_mode">Schimbarea acestui parametru va reseta modul de citire pentru această serie</string>
     <string name="reading_mode">Mod citire</string>
     <string name="pages_">Pagini %1$s</string>
@@ -1019,7 +1016,7 @@
     <string name="helpful_translation_links">Link-uri utile de traducere</string>
     <string name="download_notifier_split_failed">Nu s-a putut diviza imaginea descărcată</string>
     <string name="loader_rar5_error">Formatul RARv5 nu este acceptat</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="language_requires_app_restart">Unele limbi pot necesita o relansare a aplicației pentru a fi afișate corect</string>
     <string name="clear_db_exclude_read">Păstrează manga cu capitole citite</string>
     <string name="user_agent_string">Șir de agent utilizator implicit</string>

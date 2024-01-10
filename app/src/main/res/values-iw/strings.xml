@@ -15,7 +15,6 @@
     <string name="open_log">פתח את יומן האירועים</string>
     <string name="pin">נעץ</string>
     <string name="manga">מנגה</string>
-    <string name="webtoon">ווב-טון</string>
     <string name="title">כותרת</string>
     <string name="author">מחבר</string>
     <string name="description">תיאור</string>
@@ -175,11 +174,11 @@
     <string name="blue_initial">כחול</string>
     <string name="alpha_initial">אלפא</string>
     <string name="always_show_chapter_transition">הצג תמיד מעברי פרקים</string>
-    <string name="webtoon_side_padding_0">ללא</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_0">ללא</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="l_nav">עשוי בצורת L</string>
     <string name="edge_nav">גבול</string>
     <string name="right_and_left_nav">ימין ושמאל</string>
@@ -465,7 +464,7 @@
     <string name="tap_zones">איזורי נגיעה</string>
     <string name="color_filter_blend_mode">פילטר צבע משתלב</string>
     <string name="multiply">להכפיל</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="downloaded_chapters">פרקים שירדו</string>
     <string name="local_source">מאנגה מקומית</string>
     <string name="overlay">כיסוי</string>
@@ -561,7 +560,7 @@
     <string name="file_picker_error">לא נמצאה אפליקציה לאסוף קבצים</string>
     <string name="download_ahead">הורד הלאה</string>
     <string name="skipped_reason_not_always_update">דולג בגלל שהספריה לא דורשת עדכונים</string>
-    <string name="pref_webtoon_side_padding">רפד בצדדים</string>
+    <string name="pref_long_strip_side_padding">רפד בצדדים</string>
     <string name="error_user_agent_string_invalid">מחרוזת משתמש לא תקינה</string>
     <string name="about_dont_kill_my_app">לחלק מהיצרנים יש הגבלות אפליקציה שהורגות תהליכים ברקע. באתר הזה יש עוד מידע לגבי איך לתקן את זה.</string>
     <string name="on_hold_list">רשימת פריטים בעצירה זמנית</string>

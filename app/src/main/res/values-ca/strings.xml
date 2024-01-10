@@ -111,7 +111,6 @@
     <string name="left_to_right_viewer">D’esquerra a dreta</string>
     <string name="right_to_left_viewer">De dreta a esquerra</string>
     <string name="vertical_viewer">Vertical</string>
-    <string name="webtoon">Webtoons</string>
     <string name="scale_type">Tipus d’escalat</string>
     <string name="fit_screen">Ajusta a la pantalla</string>
     <string name="stretch">Estira</string>
@@ -303,12 +302,12 @@
     <string name="unpin">Desfixa</string>
     <string name="view_chapters">Mostra els capítols</string>
     <string name="always_show_chapter_transition">Mostra sempre la transició de capítol</string>
-    <string name="pref_webtoon_side_padding">Espaiat lateral</string>
-    <string name="webtoon_side_padding_0">Cap</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Espaiat lateral</string>
+    <string name="long_strip_side_padding_0">Cap</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Capítols %1$s</string>
     <string name="remove_from_library">Elimina de la biblioteca</string>
     <string name="add_tracking">Segueix</string>
@@ -612,7 +611,7 @@
     <string name="tap_zones">Zones de toc</string>
     <string name="lavender">Lavanda</string>
     <string name="no_description">Sense descripció</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Cadena d’agent d’usuari per defecte</string>
     <string name="loader_rar5_error">El format RARv5 no està suportat</string>
     <string name="downloaded_chapters">Capítols baixats</string>
@@ -695,7 +694,6 @@
     <string name="zoom_double_page_spreads">Amplia les pàgines dobles</string>
     <string name="split_double_pages_portrait">Divideix les pàgines dobles en vertical</string>
     <string name="crop_borders_paged">Retalla les vores (paginat)</string>
-    <string name="crop_borders_webtoon">Retalla les vores (webtoon)</string>
     <string name="remove_crop">Elimina el retallat</string>
     <string name="smart_by_theme">Intel·ligent (per tema)</string>
     <string name="about_this_">Quant a aquest %1$s</string>
@@ -784,7 +782,6 @@
     <string name="update_tracking_after_reading">Actualitza el seguiment després de llegir</string>
     <string name="global_updates">Actualitzacions globals</string>
     <string name="certain_buttons_can_be_found">Alguns botons es poden trobar en altres llocs si els desactiveu aquí</string>
-    <string name="webtoon_style">estil webtoon</string>
     <string name="notification_size_warning">Les actualitzacions grosses poden fer un ús més elevat de la bateria i fer que les fonts es tornin lentes. Premeu aquí per a més informació.</string>
     <string name="pref_update_only_completely_read_summary">Actualitza els mangues només si no hi ha capítols no llegits (llegits completament)</string>
     <string name="restrictions_">Restriccions: %1$s</string>

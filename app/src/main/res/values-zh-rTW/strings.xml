@@ -163,7 +163,6 @@
     <string name="left_to_right_viewer">單頁式 (由左至右)</string>
     <string name="right_to_left_viewer">單頁式 (由右至左)</string>
     <string name="vertical_viewer">單頁式 (由上至下)</string>
-    <string name="webtoon">條漫</string>
     <string name="scale_type">縮放模式</string>
     <string name="fit_screen">符合螢幕</string>
     <string name="stretch">延展</string>
@@ -293,12 +292,12 @@
     <string name="continuous_vertical">垂直連貫</string>
     <string name="paged">單頁式</string>
     <string name="always_show_chapter_transition">永遠顯示章節間的隔頁</string>
-    <string name="pref_webtoon_side_padding">頁緣留白</string>
-    <string name="webtoon_side_padding_0">無</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">頁緣留白</string>
+    <string name="long_strip_side_padding_0">無</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">第 %1$s 章</string>
     <string name="remove_from_library">移出書櫃</string>
     <string name="dropped">已拋棄</string>
@@ -691,7 +690,7 @@
     <string name="no_matches_for_filters">找不到與您當前的過濾器匹配的結果</string>
     <string name="move_dynamic_to_bottom">將折疊動態分類移至底部</string>
     <string name="reorder_filters">重排篩選</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">預設使用者代理字串</string>
     <string name="no_recent_read_updated_manga">無近期閱讀或更新的漫畫系列</string>
     <string name="show_read_chapters_all">在分組和全部中顯示閱讀章節</string>
@@ -748,7 +747,6 @@
     <string name="appwidget_unavailable_locked">當需要解鎖才能存取應用程式時，無法使用小工具</string>
     <string name="set_as_default_for_all">將所有設定重回默認值</string>
     <string name="changing_will_reset_reading_mode">更改此項目將會重置本系列的閱讀模式</string>
-    <string name="webtoon_style">webtoon風格</string>
     <string name="save_combined_pages">儲存合併頁面</string>
     <string name="page_preload_amount">預先載入的頁數</string>
     <string name="set_second_page_as_cover">將第二頁設置為封面</string>
@@ -987,7 +985,6 @@
     <string name="mark_all_as_read">全部標記為已讀</string>
     <string name="show_more_chapters">顯示更多章節</string>
     <string name="collapse_grouped_chapters">折疊分組章節</string>
-    <string name="crop_borders_webtoon">裁剪邊框 (網頁漫畫)</string>
     <string name="show_on_long_press">長按顯示</string>
     <string name="over_wifi_only">僅限 Wi-Fi 環境下更新</string>
     <string name="dont_auto_update">不自動更新</string>

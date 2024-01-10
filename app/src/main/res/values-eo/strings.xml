@@ -77,7 +77,7 @@
     <string name="fit_screen">Adapti al ekrano</string>
     <string name="stretch">Streĉi</string>
     <string name="original_size">Originala grando</string>
-    <string name="webtoon_side_padding_0">Neniu</string>
+    <string name="long_strip_side_padding_0">Neniu</string>
     <string name="daily">Ĉiutage</string>
     <string name="weekly">Ĉiusemajne</string>
     <string name="add">Aldoni</string>
@@ -126,10 +126,10 @@
     <string name="undo">Malfari</string>
     <string name="unpin">Depingli</string>
     <string name="browse">Foliumi</string>
-    <string name="webtoon_side_padding_25">25%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_10">10%</string>
     <string name="vertical_viewer">Vertikale</string>
     <string name="right_and_left_nav">Dekstra kaj Maldekstra</string>
     <string name="l_nav">«L» forme</string>
@@ -220,7 +220,6 @@
     <string name="common">Ofta</string>
     <string name="fit_height">Adapti laŭ alteco</string>
     <string name="no_pages_found">Neniu paĝo trovita</string>
-    <string name="webtoon">Ret-bildrakonto</string>
     <string name="last_read">Laste legitaj</string>
     <string name="download_error">Elŝutada eraro</string>
     <string name="show_number_of_items">Montri nombro de elementoj</string>

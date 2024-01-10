@@ -85,7 +85,6 @@
     <string name="right_to_left_viewer">Tuo ngadto sa wala</string>
     <string name="vertical_viewer">Bertikal</string>
     <string name="left_to_right_viewer">Wala ngadto sa tuo</string>
-    <string name="webtoon">Webtoon</string>
     <string name="by_chapter_number">Pinaagi sa numero sa kapitulo</string>
     <string name="by_update_date">Pinaagi sa petsa sa pag-upload</string>
     <string name="edit_categories">Usba ang mga kategorya</string>
@@ -104,7 +103,7 @@
     <string name="nsfw_short">18+</string>
     <string name="unofficial">Dili opisyal</string>
     <string name="next_chapter">Sunod nga kapitulo</string>
-    <string name="webtoon_side_padding_0">Wala</string>
+    <string name="long_strip_side_padding_0">Wala</string>
     <string name="actions">Mga aksyon</string>
     <string name="about">Mahitungod sa</string>
     <string name="app_theme">Tema sa app</string>
@@ -219,11 +218,11 @@
     <string name="unpin">Unpin</string>
     <string name="enhanced_tracking_info">Mga serbisyo nga naghatag dugang nga mga bahin alang sa piho nga mga gigikanan. Awtomatikong gisubay ang Manga kon idugang sa imong librarya.</string>
     <string name="split_tall_images_summary">Nagpauswag sa pasundayag sa magbabasa pinaagi sa pagbahin sa taas nga na-download nga mga imahe.</string>
-    <string name="pref_webtoon_side_padding">Padding sa kilid</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Padding sa kilid</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="services">Mga serbisyo</string>
     <string name="tracking_info">Usa ka paagi nga pag-sync aron ma-update ang pag-uswag sa kapitulo sa mga serbisyo sa pagsubay. I-set up ang tracking para sa indibidwal nga manga entries gikan sa ilang tracking button.</string>
     <string name="enhanced_services">Gipalambo nga mga serbisyo</string>
@@ -331,7 +330,7 @@
     <string name="username">Username</string>
     <string name="email">Email Address</string>
     <string name="password">Password</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="log_out_from_">Log out gikan sa %1$s\?</string>
     <string name="successfully_logged_out">Naka-log out ka na karon</string>
     <string name="log_in_to_">Login sa %1$s</string>

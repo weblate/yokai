@@ -113,7 +113,6 @@
     <string name="left_to_right_viewer">จากซ้ายไปขวา</string>
     <string name="right_to_left_viewer">จากขวาไปซ้าย</string>
     <string name="vertical_viewer">แนวตั้ง</string>
-    <string name="webtoon">เว็บตูน</string>
     <string name="scale_type">ชนิดมาตราส่วน</string>
     <string name="fit_screen">พอดีกับหน้าจอ</string>
     <string name="stretch">ยืด</string>
@@ -300,12 +299,12 @@
 \nควรลงท้ายด้วย .proto.gz หรือ .json</string>
     <string name="invalid_backup_file">ข้อมูลสำรองไม่ถูกต้อง</string>
     <string name="disabled">ปิดการใช้งาน</string>
-    <string name="webtoon_side_padding_25">25%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_0">ไม่มี</string>
-    <string name="pref_webtoon_side_padding">ช่องว่างด้านข้าง</string>
+    <string name="long_strip_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_0">ไม่มี</string>
+    <string name="pref_long_strip_side_padding">ช่องว่างด้านข้าง</string>
     <string name="right_and_left_nav">ขวาและซ้าย</string>
     <string name="edge_nav">ขอบ</string>
     <string name="kindlish_nav">เหมือน Kindle</string>
@@ -698,7 +697,6 @@
     </plurals>
     <string name="set_as_default_for_all">ตั้งเป็นค่าเริ่มต้นสำหรับทั้งหมด</string>
     <string name="pages_">หน้า %1$s</string>
-    <string name="webtoon_style">สไตล์เว็บตูน</string>
     <string name="set_first_page_as_cover">ตั้งหน้าแรกเป็นหน้าปก</string>
     <string name="share_first_page">แบ่งปันหน้าแรก</string>
     <string name="save_first_page">บันทึกหน้าแรก</string>
@@ -853,7 +851,6 @@
     <string name="uniform_grid_covers">แสดงปกในตารางให้สม่ำเสมอ</string>
     <string name="tag">แท็ก</string>
     <string name="amount_of_pages_to_preload">จำนวนหน้าที่จะโหลดล่วงหน้าเมื่ออ่าน ค่าที่สูงขึ้นจะส่งผลให้ประสบการณ์การอ่านราบรื่นขึ้น แต่จะต้องใช้พื้นที่แคชและเครือข่ายที่มากขึ้น</string>
-    <string name="crop_borders_webtoon">ตัดขอบ (เว็บตูน)</string>
     <string name="smart_by_theme">อัตโนมัติ (ตามธีม)</string>
     <string name="ignore_cutout_areas">ไม่สนใจพื้นที่ที่ตัดออก</string>
     <string name="cutout_behavior_only_applies">ลักษณะการทำงานของพื้นที่ที่ตัดออกจะใช้ได้เฉพาะในโหมดแนวตั้งตามขนาดที่กำหนด</string>
@@ -973,7 +970,7 @@
     <string name="tap_zones">โซนการแตะ</string>
     <string name="lavender">ลาเวนเดอร์</string>
     <string name="violet">ไวโอเล็ต</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">ตัวแทนผู้ใช้เริ่มต้น</string>
     <string name="language_requires_app_restart">บางภาษาอาจจำเป็นต้องปิดเปิดแอปใหม่ เพื่อให้แสดงได้อย่างถูกต้อง</string>
     <string name="loader_rar5_error">ไม่รับรองรูปแบบ RARv5</string>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="manga">Manga</string>
-    <string name="webtoon">Webtoon</string>
     <string name="title">Pamagat</string>
     <string name="author">May-akda</string>
     <string name="description">Paglalarawan</string>
@@ -224,12 +223,12 @@
     <string name="blue_initial">B</string>
     <string name="alpha_initial">A</string>
     <string name="always_show_chapter_transition">Ipakita palagi ang paglipat-kabanata</string>
-    <string name="pref_webtoon_side_padding">Kapal ng gilid</string>
-    <string name="webtoon_side_padding_0">Wala</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Kapal ng gilid</string>
+    <string name="long_strip_side_padding_0">Wala</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Mga Kabanata %1$s</string>
     <string name="added_to_library">Dinagdag sa Aklatan</string>
     <string name="removed_from_library">Tinanggal sa Aklatan</string>
@@ -545,7 +544,6 @@
     <string name="use_custom_color_filter">Pinili kong filter ng kulay</string>
     <string name="use_custom_brightness">Pinili kong liwanag</string>
     <string name="remove_crop">Tanggalin ang pagkakagupit</string>
-    <string name="crop_borders_webtoon">Gupitin ang gilid (Webtoon)</string>
     <string name="crop_borders_paged">Gupitin ang gilid (Nakapahina)</string>
     <string name="invert_double_pages">Baligtarin ang dobleng pahina</string>
     <string name="amount_of_pages_to_preload">Ang dami ng pahina na ilo-load kapag nagbabasa. Tuloy-tuloy ang pagbabasa mo kung mataas ito, pero tataas din ang cache at paggamit sa network.</string>
@@ -559,7 +557,6 @@
     <string name="save_first_page">I-save ang unang pahina</string>
     <string name="share_first_page">Ibahagi ang unang pahina</string>
     <string name="set_first_page_as_cover">Itakda ang unang pahina bilang pabalat</string>
-    <string name="webtoon_style">pa-webtoon</string>
     <string name="reading_">Binabasa: %1$s</string>
     <string name="changing_will_reset_reading_mode">Mari-reset ang paraan ng pagbasa para sa seryeng ito kung babaguhin ito</string>
     <string name="reading_mode">Paraan ng pagbasa</string>
@@ -995,7 +992,7 @@
     <string name="tap_zones">Mga tap zone</string>
     <string name="lavender">Lila</string>
     <string name="violet">Lila</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Default na string ng user agent</string>
     <string name="loader_rar5_error">Di suportado ang format na RARv5</string>
     <string name="language_requires_app_restart">Maaaring kailanganin ng ilang wika na muling magdispley ng app para magdispley nang tama</string>

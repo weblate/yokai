@@ -6,7 +6,6 @@
     <string name="manhwa">Manhwa</string>
     <string name="manhua">Manhua</string>
     <string name="comic">HQ</string>
-    <string name="webtoon">Webtoon</string>
     <!-- Manga -->
     <string name="not_started">Não iniciado</string>
     <string name="in_progress">Em progresso</string>
@@ -223,7 +222,6 @@
     <string name="loading_pages">Carregando páginas…</string>
     <string name="failed_to_load_pages_">Falha ao carregar páginas: %1$s</string>
     <string name="reading_">Lendo %1$s</string>
-    <string name="webtoon_style">estilo webtoon</string>
     <!-- Reader settings -->
     <string name="fullscreen">Tela cheia</string>
     <string name="double_tap_anim_speed">Velocidade da animação de toque duplo</string>
@@ -271,12 +269,12 @@
     <string name="smart_based_on_page_and_theme">Inteligente (baseado na página e no tema)</string>
     <string name="always_show_chapter_transition">Sempre mostrar transição do capítulo</string>
     <string name="if_disabled_transition_will_skip">Se desativada, a página de transição será pulada se o próximo capítulo estiver carregado</string>
-    <string name="pref_webtoon_side_padding">Margem lateral</string>
-    <string name="webtoon_side_padding_0">Nenhum</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Margem lateral</string>
+    <string name="long_strip_side_padding_0">Nenhum</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <!-- Manga details -->
     <string name="about_this_">Sobre este %1$s</string>
     <string name="start_reading">Comece a ler</string>
@@ -794,7 +792,6 @@
     <string name="single_page">Página única</string>
     <string name="double_pages">Páginas duplas</string>
     <string name="remove_crop">Remover corte</string>
-    <string name="crop_borders_webtoon">Aparar bordas (Webtoon)</string>
     <string name="crop_borders_paged">Aparar páginas (Paginado)</string>
     <string name="invert_double_pages">Inverter páginas duplas</string>
     <string name="amount_of_pages_to_preload">A quantidade de páginas para pré-carregar enquanto se lê. Valores maiores resultarão em uma experiência de leitura melhor, ao custo de maior uso do cache e da rede.</string>
@@ -1063,7 +1060,7 @@
     <string name="tap_zones">Zonas de toque</string>
     <string name="lavender">Lavanda</string>
     <string name="violet">Violeta</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">User Agent padrão</string>
     <string name="loader_rar5_error">O formato RARv5 não é suportado</string>
     <string name="auto_download_while_reading">Download automático durante a leitura</string>

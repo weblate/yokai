@@ -112,7 +112,6 @@
     <string name="left_to_right_viewer">Soldan sağa</string>
     <string name="right_to_left_viewer">Sağdan sola</string>
     <string name="vertical_viewer">Dikey</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">Boyutlandırma türü</string>
     <string name="fit_screen">Ekrana sığdır</string>
     <string name="stretch">Uzat</string>
@@ -290,12 +289,12 @@
     <string name="unpin">Çöz</string>
     <string name="view_chapters">Bölümleri görüntüle</string>
     <string name="always_show_chapter_transition">Bölüm geçişini her zaman göster</string>
-    <string name="pref_webtoon_side_padding">Yan dolgu</string>
-    <string name="webtoon_side_padding_0">Yok</string>
-    <string name="webtoon_side_padding_10">%10</string>
-    <string name="webtoon_side_padding_15">%15</string>
-    <string name="webtoon_side_padding_20">%20</string>
-    <string name="webtoon_side_padding_25">%25</string>
+    <string name="pref_long_strip_side_padding">Yan dolgu</string>
+    <string name="long_strip_side_padding_0">Yok</string>
+    <string name="long_strip_side_padding_10">%10</string>
+    <string name="long_strip_side_padding_15">%15</string>
+    <string name="long_strip_side_padding_20">%20</string>
+    <string name="long_strip_side_padding_25">%25</string>
     <string name="chapters_">Bölüm %1$s</string>
     <string name="remove_from_library">Kitaplıktan kaldır</string>
     <string name="refresh_tracking">İzlemeyi yenile</string>
@@ -567,7 +566,6 @@
     <string name="save_first_page">İlk sayfayı kaydet</string>
     <string name="share_first_page">İlk sayfayı paylaş</string>
     <string name="set_first_page_as_cover">İlk sayfayı kapak olarak ayarla</string>
-    <string name="webtoon_style">webtoon stili</string>
     <string name="reading_">Okunan %1$s</string>
     <string name="pages_">Sayfalar %1$s</string>
     <string name="set_as_default_for_all">Tümü için varsayılan ayarla</string>
@@ -739,7 +737,6 @@
     <string name="turn_off_">%s kapat</string>
     <string name="turn_on_">%s aç</string>
     <string name="remove_crop">Kırpmayı kaldır</string>
-    <string name="crop_borders_webtoon">Kenarları kırp (Webtoon)</string>
     <string name="crop_borders_paged">Kenarları kırp (Sayfalı)</string>
     <string name="changing_will_reset_reading_mode">Bunu değiştirmek, okuma kipini bu seri için sıfırlayacaktır</string>
     <string name="series">Seri</string>
@@ -995,7 +992,7 @@
     <string name="violet">Menekşe</string>
     <string name="tap_zones">Dokunma bölgeleri</string>
     <string name="lavender">Lavanta</string>
-    <string name="webtoon_side_padding_5">%5</string>
+    <string name="long_strip_side_padding_5">%5</string>
     <string name="language_requires_app_restart">Bazı dillerin doğru görüntülenmesi için uygulamanın yeniden başlatılması gerekebilir</string>
     <string name="user_agent_string">Öntanımlı kullanıcı aracısı dizgesi</string>
     <string name="loader_rar5_error">RARv5 biçimi desteklenmiyor</string>

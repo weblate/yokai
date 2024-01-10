@@ -93,7 +93,6 @@
     <string name="left_to_right_viewer">يسارًا فيمينًا</string>
     <string name="right_to_left_viewer">يمينًا فيسارًا</string>
     <string name="vertical_viewer">عموديٌّ</string>
-    <string name="webtoon">وِبتون</string>
     <string name="scale_type">نوع التحجيم</string>
     <string name="fit_screen">لائم الشاشة</string>
     <string name="stretch">مدِّد</string>
@@ -297,12 +296,12 @@
     <string name="pinned">المثبتة</string>
     <string name="reorder">إعادة ترتيب</string>
     <string name="always_show_chapter_transition">أظهر صفحة الانتقال بين الفصول دائمًا</string>
-    <string name="pref_webtoon_side_padding">الإزاحة الجانبية</string>
-    <string name="webtoon_side_padding_0">بلا</string>
-    <string name="webtoon_side_padding_10">١٠٪</string>
-    <string name="webtoon_side_padding_15">١٥٪</string>
-    <string name="webtoon_side_padding_20">٢٠٪</string>
-    <string name="webtoon_side_padding_25">٢٥٪</string>
+    <string name="pref_long_strip_side_padding">الإزاحة الجانبية</string>
+    <string name="long_strip_side_padding_0">بلا</string>
+    <string name="long_strip_side_padding_10">١٠٪</string>
+    <string name="long_strip_side_padding_15">١٥٪</string>
+    <string name="long_strip_side_padding_20">٢٠٪</string>
+    <string name="long_strip_side_padding_25">٢٥٪</string>
     <string name="chapters_">الفصول %1$s</string>
     <string name="remove_from_library">أزل من المكتبة</string>
     <string name="refresh_tracking">حدِّث بيانات التتبُّع</string>
@@ -548,7 +547,6 @@
     <string name="smart_by_theme">ذكيٌّ (حسب السمة)</string>
     <string name="smart_by_page">ذكيٌّ (حسب الصفحة)</string>
     <string name="enable_zoom_out">مكِّن التصغير</string>
-    <string name="webtoon_style">نمط الوِبتون</string>
     <string name="reading_">تُقرأ %1$s</string>
     <string name="set_as_default_for_all">عيِّنه مبدئيًا للكلِّ</string>
     <string name="extension_updates">تحديثات اﻹضافات</string>
@@ -748,7 +746,6 @@
     <string name="changing_will_reset_reading_mode">تغيير هذا يعيد يصفِّر وضع القراءة لهذه السلسلة</string>
     <string name="change">تغيير</string>
     <string name="reading_mode">وضع القراءة</string>
-    <string name="crop_borders_webtoon">اقتصَّ الحدود (وِبتون)</string>
     <string name="crop_borders_paged">اقتصَّ الحدود (مُصَفَّح)</string>
     <string name="couldnt_download_low_space">لا توجد مساحة كافية لتحميل الفصول</string>
     <string name="amount_of_pages_to_preload">عدد الصفحات التي تُحمَّل بينما تقرأ. تحسِّن القيم الكبرى القراءة، ولكنها تستخدم ذاكرةً مؤقَّتةً أكثر وتزيد من استخدام الشبكة.</string>
@@ -1082,7 +1079,7 @@
     <string name="tap_zones">مواضع اللمس</string>
     <string name="lavender">أرجواني</string>
     <string name="violet">بنفسجي</string>
-    <string name="webtoon_side_padding_5">٥٪</string>
+    <string name="long_strip_side_padding_5">٥٪</string>
     <string name="user_agent_string">سلسلة وكيل المستخدم المبدئية</string>
     <string name="loader_rar5_error">تنسيق RARv5 ليس مدعومًا</string>
     <string name="language_requires_app_restart">تتطلَّب بعض اللغات إعادة التشغيل لتظهر صحيحةً</string>

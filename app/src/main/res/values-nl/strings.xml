@@ -78,7 +78,6 @@
     <string name="left_to_right_viewer">Links naar rechts</string>
     <string name="right_to_left_viewer">Rechts naar links</string>
     <string name="vertical_viewer">Verticaal</string>
-    <string name="webtoon">Webtoon</string>
     <string name="stretch">Uitrekken</string>
     <string name="fit_width">Aanpassen aan de breedte</string>
     <string name="fit_height">Aanpassen aan de hoogte</string>
@@ -293,12 +292,12 @@
     <string name="continuous_vertical">Doorlopend verticaal</string>
     <string name="paged">Gepagineerd</string>
     <string name="always_show_chapter_transition">Hoofdstukovergangen altijd weergeven</string>
-    <string name="pref_webtoon_side_padding">Opvulling zijkant</string>
-    <string name="webtoon_side_padding_0">Geen</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Opvulling zijkant</string>
+    <string name="long_strip_side_padding_0">Geen</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Hoofdstukken %1$s</string>
     <string name="remove_from_library">Verwijderen uit bibliotheek</string>
     <string name="refresh_tracking">Tracking bijwerken</string>
@@ -576,7 +575,6 @@
     <string name="smart_by_theme">Slim (per thema)</string>
     <string name="smart_by_page">Slim (per pagina)</string>
     <string name="enable_zoom_out">Uitzoomen inschakelen</string>
-    <string name="webtoon_style">Webtoonstijl</string>
     <string name="reading_">Lezen %1$s</string>
     <string name="set_as_default_for_all">Instellen als standaard voor alles</string>
     <string name="extension_updates">Extensie-updates</string>
@@ -745,7 +743,6 @@
     <string name="landscape">Liggend</string>
     <string name="portrait">Staand</string>
     <string name="remove_crop">Afsnijding verwijderen</string>
-    <string name="crop_borders_webtoon">Randen afsnijden (Webtoon)</string>
     <string name="crop_borders_paged">Randen afsnijden (Gepagineerd)</string>
     <string name="invert_double_pages">Dubbele pagina\'s omkeren</string>
     <string name="save_combined_pages">Gecombineerde pagina\'s opslaan</string>
@@ -972,7 +969,7 @@
     <string name="warning_unenroll_from_beta">Het teruggaan naar de stabiele versie kan tot problemen leiden en mogelijk moet de app-opslag worden gewist.</string>
     <string name="show_">Laat %1$s zien</string>
     <string name="must_view_details_before_migration">Voor dit item gemigreerd kan worden moet er eerst naar de details zijn gekeken</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="lavender">Lavender</string>
     <string name="language_requires_app_restart">Voor sommige talen moet de app opnieuw worden gestart om correct weer te geven</string>
     <string name="download_ahead">Download vooruit</string>

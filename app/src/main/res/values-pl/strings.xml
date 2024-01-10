@@ -6,7 +6,6 @@
     <string name="manhwa">Manhwa •</string>
     <string name="manhua">Manhua</string>
     <string name="comic">Komiks</string>
-    <string name="webtoon">Webtoon</string>
     <!-- Manga -->
     <string name="not_started">Nierozpoczęte</string>
     <string name="in_progress">Rozpoczęte</string>
@@ -234,7 +233,6 @@
     <string name="loading_pages">Ładowanie stron…</string>
     <string name="failed_to_load_pages_">Nie udało się załadować stron: %1$s</string>
     <string name="reading_">Czytanie %1$s</string>
-    <string name="webtoon_style">w stylu webtoon</string>
     <!-- Reader settings -->
     <string name="fullscreen">Pełny ekran</string>
     <string name="enable_zoom_out">Włącz możliwość oddalania</string>
@@ -283,12 +281,12 @@
     <string name="smart_based_on_page_and_theme">Inteligentny (oparty o stronę i motyw)</string>
     <string name="always_show_chapter_transition">Zawsze pokazuj przejście między rozdziałami</string>
     <string name="if_disabled_transition_will_skip">Jeśli opcja jest wyłączona, przejście między rozdziałami będzie pominięte, jeżeli następny rozdział jest załadowany</string>
-    <string name="pref_webtoon_side_padding">Marginesy boczne</string>
-    <string name="webtoon_side_padding_0">Brak</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Marginesy boczne</string>
+    <string name="long_strip_side_padding_0">Brak</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <!-- Manga details -->
     <string name="about_this_">Opis (%1$s)</string>
     <string name="start_reading">Zacznij czytać</string>
@@ -889,7 +887,6 @@
     <string name="double_pages">Podwójne strony</string>
     <string name="split_double_pages">Podziel podwójne strony</string>
     <string name="remove_crop">Usuń przycięcie</string>
-    <string name="crop_borders_webtoon">Przycinaj krawędzie (Webtoon)</string>
     <string name="split_double_pages_portrait">Podziel podwójne strony w orientacji pionowej</string>
     <string name="invert_double_pages">Odwróć podwójne strony</string>
     <string name="amount_of_pages_to_preload">Ilość stron do wstępnego załadowania podczas czytania. Większe wartości będą skutkować płynniejszym doświadczeniem z czytania, kosztem większego zużycia pamięci podręcznej i sieci.</string>
@@ -1066,7 +1063,7 @@
     <string name="lavender">Lawenda</string>
     <string name="view_all">Pokaż wszystko</string>
     <string name="open_in_app">Otwórz w aplikacji</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Domyślny user agent string</string>
     <string name="loader_rar5_error">Format RARv5 jest nieobsługiwany</string>
     <string name="battery_not_low">Poziom baterii nie jest niski</string>

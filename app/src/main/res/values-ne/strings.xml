@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="webtoon">वेबटून</string>
     <string name="read">पढेको</string>
     <string name="no_pages_found">कुनै पृष्ठहरू फेला परेन</string>
     <string name="edit_categories">वर्गहरू सम्पादन गर्नुहोस्</string>
@@ -26,7 +25,7 @@
     <string name="reading_mode">पढ्ने मोड</string>
     <string name="grayscale">ग्रे-स्केल</string>
     <string name="pref_inverted_colors">उल्टो</string>
-    <string name="pref_webtoon_side_padding">साइड प्याडिङ</string>
+    <string name="pref_long_strip_side_padding">साइड प्याडिङ</string>
     <string name="actions">कार्यहरू</string>
     <string name="pref_highest">सबैभन्दा उच्च</string>
     <string name="failed_to_update_cover">आवरण अपडेट गर्न असफल भयो</string>
@@ -212,12 +211,12 @@
     <string name="blue_initial">B</string>
     <string name="alpha_initial">A</string>
     <string name="always_show_chapter_transition">अध्याय ट्रान्जिसन सधैँ देखाउनुहोस्</string>
-    <string name="webtoon_side_padding_0">कुनै पनि हैन</string>
-    <string name="webtoon_side_padding_5">५%</string>
-    <string name="webtoon_side_padding_10">१०%</string>
-    <string name="webtoon_side_padding_15">१५%</string>
-    <string name="webtoon_side_padding_20">२०%</string>
-    <string name="webtoon_side_padding_25">२५%</string>
+    <string name="long_strip_side_padding_0">कुनै पनि हैन</string>
+    <string name="long_strip_side_padding_5">५%</string>
+    <string name="long_strip_side_padding_10">१०%</string>
+    <string name="long_strip_side_padding_15">१५%</string>
+    <string name="long_strip_side_padding_20">२०%</string>
+    <string name="long_strip_side_padding_25">२५%</string>
     <string name="l_nav">L आकारको</string>
     <string name="kindlish_nav">किन्डल जस्तै</string>
     <string name="edge_nav">कुना</string>
@@ -698,7 +697,6 @@
         <item quantity="other">%d एक्सटेन्शनहरू अपडेट गरियो</item>
     </plurals>
     <string name="changing_will_reset_reading_mode">यसलाई परिवर्तन गर्नाले यो श्रृङ्खलाको लागि पढ्ने मोड रिसेट हुनेछ</string>
-    <string name="webtoon_style">वेबटुन जस्तै</string>
     <string name="set_first_page_as_cover">पहिलो पृष्ठ आवरणको रूपमा सेट गर्नुहोस्</string>
     <string name="share_first_page">पहिलो पृष्ठ साझा गर्नुहोस्</string>
     <string name="set_second_page_as_cover">दोस्रो पृष्ठ आवरणको रूपमा सेट गर्नुहोस्</string>
@@ -708,7 +706,6 @@
     <string name="zoom_double_page_spreads">डबल पृष्ठ स्प्रेडमा जूम गर्नुहोस्</string>
     <string name="remove_crop">क्रप हटाउनुहोस्</string>
     <string name="crop_borders_paged">सीमाना क्रप गर्नुहोस् (पृष्ठबद्ध)</string>
-    <string name="crop_borders_webtoon">सीमाना क्रप गर्नुहोस् (वेबटून)</string>
     <string name="split_double_pages_portrait">पोर्ट्रेटमा डबल पृष्ठ विभाजित गर्नुहोस्</string>
     <string name="horizontally">तेर्सो रूपमा</string>
     <string name="vertically">ठाडो रूपमा</string>

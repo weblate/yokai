@@ -112,7 +112,6 @@
     <string name="left_to_right_viewer">Αριστερά προς τα δεξιά</string>
     <string name="right_to_left_viewer">Δεξιά προς τα αριστερά</string>
     <string name="vertical_viewer">Κάθετα</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">Διάσταση κλίμακας</string>
     <string name="fit_screen">Προσαρμογή στην οθόνη</string>
     <string name="stretch">Τέντωμα</string>
@@ -291,12 +290,12 @@
     <string name="always">Πάντα</string>
     <string name="back">Πίσω</string>
     <string name="always_show_chapter_transition">Να εμφανίζεται πάντα η μετάβαση κεφαλαίου</string>
-    <string name="pref_webtoon_side_padding">Πλευρικό γέμισμα</string>
-    <string name="webtoon_side_padding_0">Κανένα</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Πλευρικό γέμισμα</string>
+    <string name="long_strip_side_padding_0">Κανένα</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Κεφάλαια %1$s</string>
     <string name="remove_from_library">Κατάργηση από τη βιβλιοθήκη</string>
     <string name="refresh_tracking">Ανανέωση παρακολούθησης</string>
@@ -694,7 +693,6 @@
     <string name="smart_by_theme">Έξυπνο (ανά θέμα)</string>
     <string name="smart_by_page">Έξυπνο (ανά σελίδα)</string>
     <string name="remove_crop">Κατάργηση περικοπής</string>
-    <string name="crop_borders_webtoon">Περικοπή περιγράμματος (Webtoon)</string>
     <string name="crop_borders_paged">Περικοπή περιγράμματος (Paged)</string>
     <string name="invert_double_pages">Αναστροφή διπλών σελίδων</string>
     <string name="amount_of_pages_to_preload">Το πλήθος των σελίδων που θα προφορτωθούν κατά την ανάγνωση. Υψηλότερες τιμές θα έχουν ως αποτέλεσμα μια ομαλότερη εμπειρία ανάγνωσης, με κόστος την υψηλότερη χρήση της προσωρινής μνήμης και του δικτύου.</string>
@@ -708,7 +706,6 @@
     <string name="save_first_page">Αποθήκευση πρώτης σελίδας</string>
     <string name="share_first_page">Κοινή χρήση πρώτης σελίδας</string>
     <string name="set_first_page_as_cover">Ορισμός πρώτης σελίδας ως εξωφύλλου</string>
-    <string name="webtoon_style">στυλ webtoon</string>
     <string name="reading_">Ανάγνωση %1$s</string>
     <string name="changing_will_reset_reading_mode">Η αλλαγή αυτού θα επαναφέρει τη λειτουργία ανάγνωσης για αυτήν τη σειρά</string>
     <string name="filter_languages">Φιλτράρισμα γλωσσών</string>
@@ -996,7 +993,7 @@
     <string name="tap_zones">Ζώνες πατήματος</string>
     <string name="lavender">Λεβάντα</string>
     <string name="violet">Βιολετί</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Προεπιλεγμένη συμβολοσειρά πράκτορα χρήστη</string>
     <string name="loader_rar5_error">Η μορφή RARv5 δεν υποστηρίζεται</string>
     <string name="language_requires_app_restart">Ορισμένες γλώσσες ενδέχεται να απαιτούν επανεκκίνηση της εφαρμογής για να εμφανιστούν σωστά</string>

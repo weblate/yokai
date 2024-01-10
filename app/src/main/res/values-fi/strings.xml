@@ -152,7 +152,6 @@
     <string name="left_to_right_viewer">Vasemmalta oikealle</string>
     <string name="right_to_left_viewer">Oikealta vasemmalle</string>
     <string name="vertical_viewer">Pystysuora</string>
-    <string name="webtoon">Webtoon-tyylinen</string>
     <string name="scale_type">Skaalauksen tyyppi</string>
     <string name="fit_screen">Sovita näyttöön</string>
     <string name="stretch">Venytä</string>
@@ -272,12 +271,12 @@
     <string name="lock_with_biometrics">Vaadi lukituksen avaaminen</string>
     <string name="lock_when_idle">Lukitse käyttämättömänä</string>
     <string name="always_show_chapter_transition">Näytä aina luvun vaihdos</string>
-    <string name="pref_webtoon_side_padding">Sivuntäyttö</string>
-    <string name="webtoon_side_padding_0">Ei yhtään</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Sivuntäyttö</string>
+    <string name="long_strip_side_padding_0">Ei yhtään</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Luvut %1$s</string>
     <string name="remove_from_library">Poista kirjastosta</string>
     <string name="refresh_tracking">Päivitä seuranta</string>
@@ -562,7 +561,6 @@
     <string name="smart_by_theme">Älykäs (teeman mukaan)</string>
     <string name="smart_by_page">Älykäs (sivun mukaan)</string>
     <string name="enable_zoom_out">Ota zoomaus käyttöön</string>
-    <string name="webtoon_style">Webtoon tyylinen</string>
     <string name="reading_">Luettavana %1$s</string>
     <string name="set_as_default_for_all">Aseta kaikkien oletusasetukseksi</string>
     <string name="reader_settings">Lukijan asetukset</string>
@@ -747,7 +745,6 @@
     <string name="landscape">Vaakataso</string>
     <string name="portrait">Pystysuunta</string>
     <string name="remove_crop">Poista rajaus</string>
-    <string name="crop_borders_webtoon">Rajaa reunat (Webtoon)</string>
     <string name="crop_borders_paged">Rajaa reunat (sivutettu)</string>
     <string name="invert_double_pages">Käännä kaksoissivut</string>
     <string name="save_combined_pages">Tallenna yhdistetyt sivut</string>
@@ -840,7 +837,7 @@
     <string name="pref_manage_notifications">Hallitse ilmoituksia</string>
     <string name="faq_and_guides">Usein kysytyt kysymykset ja oppaat</string>
     <string name="secure_screen_summary">Turvallinen ruutu piilottaa sovelluksen sisällön sovelluksia vaihdettaessa ja estää kuvakaappauksen ottamisen</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="backup_restore_invalid_uri">Virhe: tyhjä URI</string>
     <string name="downloaded_chapters">Ladatut luvut</string>
     <string name="pref_update_only_started">Ei lukemattomia lukuja</string>

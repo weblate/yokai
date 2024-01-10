@@ -81,7 +81,6 @@
     <string name="left_to_right_viewer">Sinistra a destra</string>
     <string name="right_to_left_viewer">Da destra a sinistra</string>
     <string name="vertical_viewer">Verticale</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">Scala</string>
     <string name="fit_screen">Adatta a schermo</string>
     <string name="stretch">Riempi schermo</string>
@@ -333,12 +332,12 @@
     <string name="continuous_vertical">Verticale continuo</string>
     <string name="paged">Pagina</string>
     <string name="always_show_chapter_transition">Mostra sempre la transizione tra capitoli</string>
-    <string name="pref_webtoon_side_padding">Riempimento laterale</string>
-    <string name="webtoon_side_padding_0">Nessuno</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Riempimento laterale</string>
+    <string name="long_strip_side_padding_0">Nessuno</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Capitoli %1$s</string>
     <string name="remove_from_library">Rimuovi dalla libreria</string>
     <string name="refresh_tracking">Aggiorna monitoraggio</string>
@@ -606,7 +605,6 @@
     <string name="smart_based_on_page">Intelligente (in base alla pagina)</string>
     <string name="smart_by_page">Intelligente (per pagina)</string>
     <string name="enable_zoom_out">Abilita rimpicciolimento</string>
-    <string name="webtoon_style">stile webtoon</string>
     <string name="reading_">Stai leggendo %1$s</string>
     <string name="set_as_default_for_all">Imposta come predefinito per tutti</string>
     <string name="extension_updates">Aggiornamento estensioni</string>
@@ -777,7 +775,6 @@
     <string name="switch_to_double">Passa a doppia pagina</string>
     <string name="single_page">Pagina singola</string>
     <string name="double_pages">Doppie pagine</string>
-    <string name="crop_borders_webtoon">Ritaglia bordi (Webtoon)</string>
     <string name="invert_double_pages">Inverti pagine doppie</string>
     <string name="page_preload_amount">Quantità pagine precaricate</string>
     <string name="save_second_page">Salva seconda pagina</string>
@@ -1051,7 +1048,7 @@
     <string name="tap_zones">Zone di tocco</string>
     <string name="lavender">Lavanda</string>
     <string name="violet">Viola</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Stringa user agent predefinita del browser</string>
     <string name="language_requires_app_restart">Alcune lingue potrebbero richiedere un riavvio dell\'app per esserve visualizzate in maniera corretta</string>
     <string name="loader_rar5_error">Il formato RARv5 non è supportato</string>

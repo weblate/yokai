@@ -19,10 +19,10 @@
     <string name="left_to_right_viewer">Venstre til høgre</string>
     <string name="right_to_left_viewer">Høgre til venstre</string>
     <string name="vertical_viewer">Loddrett</string>
-    <string name="webtoon_side_padding_0">Ingen</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_0">Ingen</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
     <string name="invalid_backup_file">Ugyldig reservekopifil</string>
     <string name="restore_completed">Gjenoppretting fullført</string>
     <string name="restore_duration">%02d min, %02d sek</string>
@@ -46,7 +46,7 @@
     <string name="pref_inverted_colors">Invertert</string>
     <string name="kindlish_nav">Kindle-ish</string>
     <string name="right_and_left_nav">Høgre og Venstre</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="services">Tenester</string>
     <string name="enhanced_services">Forbetra tenester</string>
     <string name="enhanced_tracking_info">Tenester som tilbyr forbetra tenester for spesifikke kjelder. Manga blir spora automatisk når dei blir lagt til i biblioteket ditt.</string>
@@ -109,7 +109,6 @@
     <string name="appearance">Utsjånad</string>
     <string name="advanced">Avansert</string>
     <string name="about">Om</string>
-    <string name="webtoon">Webtoon</string>
     <string name="title">Tittel</string>
     <string name="unread">Ulesen</string>
     <string name="chapter_">Kapittel %1$s</string>
@@ -224,7 +223,7 @@
     <string name="pref_high">Høg</string>
     <string name="pref_low">Låg</string>
     <string name="pref_lowest">Lågaste</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="gray_background">Grå</string>
     <string name="pref_remove_exclude_categories">Utelatne kategoriar</string>
     <string name="ext_installer_pref">Installatør</string>

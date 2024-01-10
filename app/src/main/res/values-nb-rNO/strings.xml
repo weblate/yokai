@@ -108,7 +108,6 @@
     <string name="left_to_right_viewer">Venstre til høyre</string>
     <string name="right_to_left_viewer">Høyre til venstre</string>
     <string name="vertical_viewer">Loddrett</string>
-    <string name="webtoon">Nett-tegneserie</string>
     <string name="scale_type">Skalatype</string>
     <string name="fit_screen">Tilpass skjerm</string>
     <string name="stretch">Strekk</string>
@@ -289,11 +288,11 @@
     <string name="skip_filtered_chapters">Hopp over filtrerte kapittel</string>
     <string name="continuous_vertical">Kontinuerlig loddrett</string>
     <string name="always_show_chapter_transition">Alltid vis kapittelovergang</string>
-    <string name="webtoon_side_padding_0">Ingen</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_0">Ingen</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="remove_from_library">Fjern fra bibliotek</string>
     <string name="add_tracking">Legg til sporing</string>
     <string name="copy_value">Kopier</string>
@@ -365,7 +364,7 @@
     <string name="kindlish_nav">Kindle-basert</string>
     <string name="l_nav">L-formet</string>
     <string name="requires_app_restart">Krever omstart for å tre i kraft</string>
-    <string name="pref_webtoon_side_padding">Sidepolstring</string>
+    <string name="pref_long_strip_side_padding">Sidepolstring</string>
     <string name="right_and_left_nav">Høyre og Venstre</string>
     <string name="chapters_">Kapitler %1$s</string>
     <string name="cancel_all">Avbryt alle</string>
@@ -830,11 +829,9 @@
     <string name="start_past_cutout">Start etter utklipp</string>
     <string name="cutout_area_behavior">Oppførsel for utklippsområde</string>
     <string name="if_disabled_transition_will_skip">Hvis avskrudd vil overgangssiden hoppes over hvis neste kapittel er innlastet</string>
-    <string name="crop_borders_webtoon">Beskjær kantlinjer (nett-tegneserie)</string>
     <string name="crop_borders_paged">Beskjær kantlinjer (sideinndelt)</string>
     <string name="split_double_pages_portrait">Del opp dobbeltsider i stående sideretning</string>
     <string name="page_preload_amount">Antall forhåndsinnlastede sider</string>
-    <string name="webtoon_style">nett-tegneseriestil</string>
     <string name="changing_will_reset_reading_mode">Endring av dette vil tilbakestille lesemodus for denne serien</string>
     <string name="updating_extensions">Oppdatering av utvidelser</string>
     <string name="some_extensions_may_prompt">Noen utvidelser kan fremdeles forespørre installasjon først.</string>
@@ -953,7 +950,7 @@
     <string name="pref_high">Høy</string>
     <string name="pref_low">Lav</string>
     <string name="pref_lowest">Laveste</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="downloaded_chapters">Last ned kapitler</string>
     <string name="tap_zones">Navigasjonsoppsett</string>
     <string name="navigate_pan">Naviger til panorering</string>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="webtoon">وب تون(Webtoon)</string>
     <string name="author">نویسنده</string>
     <string name="unread">خوانده نشده</string>
     <string name="chapter_">فصل %1$s</string>
@@ -266,12 +265,12 @@
     <string name="remove_from_library">حذف از کتابخانه</string>
     <string name="add_to_library">افزودن به کتابخانه</string>
     <string name="added_to_library">مانگا به کتابخانه اضافه شد</string>
-    <string name="webtoon_side_padding_25">۲۵٪</string>
-    <string name="webtoon_side_padding_20">۲۰٪</string>
-    <string name="webtoon_side_padding_15">۱۵٪</string>
-    <string name="webtoon_side_padding_10">۱۰٪</string>
-    <string name="webtoon_side_padding_0">هیچ</string>
-    <string name="pref_webtoon_side_padding">فاصله از کنار صفحه</string>
+    <string name="long_strip_side_padding_25">۲۵٪</string>
+    <string name="long_strip_side_padding_20">۲۰٪</string>
+    <string name="long_strip_side_padding_15">۱۵٪</string>
+    <string name="long_strip_side_padding_10">۱۰٪</string>
+    <string name="long_strip_side_padding_0">هیچ</string>
+    <string name="pref_long_strip_side_padding">فاصله از کنار صفحه</string>
     <string name="vertical_viewer">عمودی</string>
     <string name="right_to_left_viewer">راست به چپ</string>
     <string name="left_to_right_viewer">چپ به راست</string>
@@ -376,7 +375,6 @@
     <string name="use_custom_color_filter">استفاده از فیلتر رنگ سفارشی</string>
     <string name="use_custom_brightness">استفاده از روشنایی سفارشی</string>
     <string name="enable_zoom_out">فعالسازی بزرگنمایی</string>
-    <string name="webtoon_style">سبک وبتون</string>
     <string name="set_as_default_for_all">به عنوان حالت پیشرفض برای همه قرار بده</string>
     <string name="app_info">اطلاعات اپلیکیشن</string>
     <string name="may_contain_nsfw">ممکن است دارای صحنه های نامناسب برای کار(+18) باشد</string>
@@ -546,7 +544,7 @@
     <string name="remove_all_downloads">همه دانلودها حذف شوند؟</string>
     <string name="no_chapters_to_delete">هیچ فصلی برای حذف وجود ندارد</string>
     <string name="no_recent_read_updated_manga">مانگای اخیرا خوانده یا به‌روزرسانی نشده است</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="downloaded_chapters">قسمت‌های دانلود شده</string>
     <string name="navigate_pan">هدایت به پن</string>
     <plurals name="for_n_titles">

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="manga">Manga</string>
-    <string name="webtoon">Digitalni strip</string>
     <string name="title">Naslov</string>
     <string name="author">Autor</string>
     <string name="description">Opis</string>
@@ -147,12 +146,12 @@
     <string name="blue_initial">B</string>
     <string name="alpha_initial">A</string>
     <string name="always_show_chapter_transition">Uvijek prikaži prijelaze između poglavlja</string>
-    <string name="pref_webtoon_side_padding">Odmak od ruba</string>
-    <string name="webtoon_side_padding_0">Bez</string>
-    <string name="webtoon_side_padding_10">10 %</string>
-    <string name="webtoon_side_padding_15">15 %</string>
-    <string name="webtoon_side_padding_20">20 %</string>
-    <string name="webtoon_side_padding_25">25 %</string>
+    <string name="pref_long_strip_side_padding">Odmak od ruba</string>
+    <string name="long_strip_side_padding_0">Bez</string>
+    <string name="long_strip_side_padding_10">10 %</string>
+    <string name="long_strip_side_padding_15">15 %</string>
+    <string name="long_strip_side_padding_20">20 %</string>
+    <string name="long_strip_side_padding_25">25 %</string>
     <string name="chapters_">Poglavlja %1$s</string>
     <string name="added_to_library">Dodano u biblioteku</string>
     <string name="removed_from_library">Uklonjeno iz biblioteke</string>
@@ -425,7 +424,6 @@
     <string name="use_custom_color_filter">Koristi prilagođeni filtar boja</string>
     <string name="use_custom_brightness">Koristi prilagođenu svjetlinu</string>
     <string name="enable_zoom_out">Aktiviraj zumiranje</string>
-    <string name="webtoon_style">Stil digitalnog stripa</string>
     <string name="reading_">Čita se %1$s</string>
     <string name="decode_image_error">Nije bilo moguće učitati sliku</string>
     <string name="page_">Stranica %1$d</string>
@@ -753,7 +751,6 @@
     <string name="turn_off_">Isključi %s</string>
     <string name="turn_on_">Uključi %s</string>
     <string name="remove_crop">Ukloni odrezivanje</string>
-    <string name="crop_borders_webtoon">Odreži rubove (digitalni strip)</string>
     <string name="crop_borders_paged">Odreži rubove (stranice)</string>
     <string name="invert_double_pages">Invertiraj duplerice</string>
     <string name="save_combined_pages">Spremi spojene stranice</string>
@@ -1016,7 +1013,7 @@
     <string name="most_entries">Najveći broj unosa</string>
     <string name="select_uninstalled_sources">Odaberi deinstalirane izvore</string>
     <string name="open_in_app">Otvori u programu</string>
-    <string name="webtoon_side_padding_5">5 %</string>
+    <string name="long_strip_side_padding_5">5 %</string>
     <string name="language_requires_app_restart">Neki jezici mogu zahtijevati ponovno pokretanje aplikacije za ispravan prikaz</string>
     <string name="loader_rar5_error">RARv5 format nije podržan</string>
     <string name="all_read_manga">Sve pročitane serije</string>

@@ -85,7 +85,6 @@
     <string name="left_to_right_viewer">От ляво надясно</string>
     <string name="right_to_left_viewer">От дясно наляво</string>
     <string name="vertical_viewer">Вертикално</string>
-    <string name="webtoon">Уебкомикс</string>
     <string name="scale_type">Увеличение</string>
     <string name="fit_screen">Запълване</string>
     <string name="stretch">Разтегляне</string>
@@ -325,12 +324,12 @@
     <string name="unpin">Откачи</string>
     <string name="view_chapters">Преглед на глави</string>
     <string name="always_show_chapter_transition">Винаги показвай прехода между главите</string>
-    <string name="pref_webtoon_side_padding">Странично разстояние</string>
-    <string name="webtoon_side_padding_0">Никакво</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Странично разстояние</string>
+    <string name="long_strip_side_padding_0">Никакво</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Глави %1$s</string>
     <string name="remove_from_library">Премахни от библиотеката</string>
     <string name="refresh_tracking">Обнови проследяването</string>
@@ -560,7 +559,6 @@
     <string name="sort_by">Сортиране по</string>
     <string name="auto_refresh_covers_summary">Обновяване на кориците в библиотеката и при актуализиране на библиотеката</string>
     <string name="last_read_">Последно прочетено %1$s</string>
-    <string name="crop_borders_webtoon">Изрязване на граници (Webtoon)</string>
     <string name="remove_tracking">Премахнете проследяването от приложението</string>
     <string name="about_this_">Относно това %1$s</string>
     <string name="start_reading">Започнете да четете</string>
@@ -601,7 +599,6 @@
     <string name="extensions_miui_warning">Оптимизацията на MIUI трябва да е деактивирана, за да се инсталират разширения.</string>
     <string name="reader_settings">Настройки на четеца</string>
     <string name="reading_">Четене на %1$s</string>
-    <string name="webtoon_style">като уебтуун</string>
     <string name="save_combined_pages">Запазване на комбинирани страници</string>
     <string name="page_preload_amount">Количество на предварително зареждане на страницата</string>
     <string name="set_second_page_as_cover">Задайте втората страница като корица</string>
@@ -966,7 +963,7 @@
     <string name="pref_library_update_manga_restriction">Ограничения за актуализиране на библиотеката</string>
     <string name="pref_update_only_completely_read">С непрочетени глави</string>
     <string name="tap_to_see_details">Вижте пълните подробности за грешката</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="auto_download_while_reading">Автоматично изтегляне при четене</string>
     <string name="on_hiatus">В хиатус</string>
     <string name="cancelled">Отменена</string>

@@ -96,7 +96,6 @@
     <string name="left_to_right_viewer">左から右</string>
     <string name="right_to_left_viewer">右から左</string>
     <string name="vertical_viewer">縦反転</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">スケールの種類</string>
     <string name="fit_screen">フィット画面</string>
     <string name="stretch">ストレッチ</string>
@@ -239,12 +238,12 @@
     <string name="unpin">ピン留めを外す</string>
     <string name="view_chapters">章を見る</string>
     <string name="always_show_chapter_transition">章の間の遷移エフェクトを常に表示</string>
-    <string name="pref_webtoon_side_padding">余白</string>
-    <string name="webtoon_side_padding_0">なし</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">余白</string>
+    <string name="long_strip_side_padding_0">なし</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">第%1$s章</string>
     <string name="added_to_library">ライブラリに追加しました</string>
     <string name="removed_from_library">ライブラリから削除されました</string>
@@ -628,8 +627,6 @@
     </plurals>
     <string name="auto_refresh_covers_summary">ライブラリを更新する時に、ライブラリのカバーも更新する</string>
     <string name="group_chapters_together">章をグループ化する</string>
-    <string name="webtoon_style">webtoonスタイル</string>
-    <string name="crop_borders_webtoon">余白をトリミング（Webtoon）</string>
     <string name="crop_borders_paged">余白をトリミング（ページ）</string>
     <string name="enable_zoom_out">ズームアウトを有効にする</string>
     <string name="save_combined_pages">結合されたページを保存</string>
@@ -972,7 +969,7 @@
     <string name="tap_zones">タップ可能なゾーン</string>
     <string name="lavender">ラベンダー色</string>
     <string name="violet">バイオレット</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">デフォルトのユーザーエージェント文字列</string>
     <string name="language_requires_app_restart">一部の言語はアプリが再起動される前、正しく表示されないことがあります</string>
     <string name="loader_rar5_error">フォーマットRARv5は未対応です</string>

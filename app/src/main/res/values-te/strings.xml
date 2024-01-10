@@ -141,10 +141,10 @@
     <string name="grouped">సమూహం చేయబడింది</string>
     <string name="white">తెలుపు</string>
     <string name="black">నలుపు</string>
-    <string name="webtoon_side_padding_15">౧౫%</string>
+    <string name="long_strip_side_padding_15">౧౫%</string>
     <string name="blue_initial">బి</string>
-    <string name="webtoon_side_padding_20">౨౦%</string>
-    <string name="webtoon_side_padding_25">౨౫%</string>
+    <string name="long_strip_side_padding_20">౨౦%</string>
+    <string name="long_strip_side_padding_25">౨౫%</string>
     <string name="alpha_initial">ఎ</string>
     <string name="rereading">పునఃపఠనం</string>
     <string name="network">జాలవ్యవస్థ</string>
@@ -191,7 +191,7 @@
     <string name="nsfw_short">౧౮+</string>
     <string name="unofficial">అనధికారిక</string>
     <string name="portrait">చిత్తరువు</string>
-    <string name="webtoon_side_padding_10">౧౦%</string>
+    <string name="long_strip_side_padding_10">౧౦%</string>
     <string name="kindlish_nav">కిండల్ మాదిరి</string>
     <string name="none">ఏమిలేదు</string>
     <string name="horizontally">అడ్డంగా</string>
@@ -210,7 +210,7 @@
     <string name="series">సిరీస్</string>
     <string name="current_chapter">ప్రస్తుతం:</string>
     <string name="next_title">తరువాత:</string>
-    <string name="webtoon_side_padding_0">ఏదీ లేదు</string>
+    <string name="long_strip_side_padding_0">ఏదీ లేదు</string>
     <string name="weekly">వారమునకొకసారి</string>
     <string name="all">అన్ని</string>
     <string name="automatic">స్వయంచాలకంగా</string>
@@ -229,7 +229,6 @@
     <string name="normal">సాధారణం</string>
     <string name="options">ఎంపికలు</string>
     <string name="read">చదవండి</string>
-    <string name="webtoon">వెబ్‌టూన్</string>
     <string name="artist">కళాకారుడు</string>
     <string name="scanlators">స్కాన్లేటర్లు</string>
     <string name="category">వర్గం</string>

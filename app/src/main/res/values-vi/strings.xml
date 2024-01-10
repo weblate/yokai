@@ -84,7 +84,6 @@
     <string name="left_to_right_viewer">Trái sang phải</string>
     <string name="right_to_left_viewer">Phải sang trái</string>
     <string name="vertical_viewer">Theo chiều dọc</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">Kiểu tỉ lệ</string>
     <string name="fit_screen">Vừa màn hình</string>
     <string name="stretch">Kéo dãn</string>
@@ -347,10 +346,9 @@
     <string name="continuous_vertical">Dọc</string>
     <string name="paged">Trang</string>
     <string name="always_show_chapter_transition">Luôn hiển thị chuyển tiếp chương</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
     <string name="remove_from_library">Gỡ bỏ khỏi thư viện</string>
     <plurals name="category_plural">
         <item quantity="other">%d danh mục</item>
@@ -413,8 +411,8 @@
         <item quantity="other">Hoàn tất trong %1$s với %2$s lỗi</item>
     </plurals>
     <string name="restore_duration">%02d phút, %02d giây</string>
-    <string name="pref_webtoon_side_padding">Kích cỡ hai bên</string>
-    <string name="webtoon_side_padding_0">Không</string>
+    <string name="pref_long_strip_side_padding">Kích cỡ hai bên</string>
+    <string name="long_strip_side_padding_0">Không</string>
     <string name="right_and_left_nav">Phải và trái</string>
     <string name="none">Không có</string>
     <string name="landscape">Ngang</string>
@@ -768,7 +766,6 @@
     <string name="burn_darken">Làm tối</string>
     <string name="dodge_lighten">Làm sáng</string>
     <string name="remove_crop">Xoá bỏ phần cắt</string>
-    <string name="crop_borders_webtoon">Cắt đường viền (Webtoon)</string>
     <string name="crop_borders_paged">Cắt đường viền ( Trang)</string>
     <string name="reduces_banding_impacts_performance">Giảm lỗi hiển thị sai dải màu, nhưng có thể ảnh hưởng đến hiệu suất</string>
     <string name="page_preload_amount">Số lượng trang tải trước</string>
@@ -786,7 +783,6 @@
     <string name="set_first_page_as_cover">Đặt trang đầu tiên làm ảnh bìa</string>
     <string name="previous_page">Trang trước</string>
     <string name="next_page">Trang kế</string>
-    <string name="webtoon_style">Dạng webtoon</string>
     <string name="changing_will_reset_reading_mode">Thay đổi ở đây sẽ làm mới lại chế độ đọc cho phần truyện này</string>
     <string name="reading_mode">Chế độ đọc</string>
     <string name="pages_">Chương %1$s</string>
@@ -1006,7 +1002,7 @@
     <string name="complete_list">Danh sách hoàn thành</string>
     <string name="unfinished_list">Danh sách chưa hoàn thành</string>
     <string name="sort_fetched_time">Sắp xếp bằng thời gian được nhập về</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Chuỗi đại diện người dùng mặc định</string>
     <string name="loader_rar5_error">Định dạng RARv5 không được hỗ trợ</string>
     <string name="language_requires_app_restart">Một số ngôn ngữ sẽ cần khởi động lại ứng dụng để hiển thị chính xác</string>

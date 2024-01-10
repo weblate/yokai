@@ -94,7 +94,6 @@
     <string name="left_to_right_viewer">बाएं से दाएं</string>
     <string name="right_to_left_viewer">दाएं से बाएं</string>
     <string name="vertical_viewer">शीर्ष से असंतत</string>
-    <string name="webtoon">वेबटून</string>
     <string name="scale_type">मापन प्ररूप</string>
     <string name="fit_screen">उपयुक्त स्क्रीन</string>
     <string name="stretch">खींचें</string>
@@ -296,12 +295,12 @@
     <string name="continuous_vertical">लगातार लंबवत</string>
     <string name="paged">पृष्ठांकित</string>
     <string name="always_show_chapter_transition">हमेशा अध्याय संक्रमण दिखाएं</string>
-    <string name="pref_webtoon_side_padding">साइड पैडिंग</string>
-    <string name="webtoon_side_padding_0">कुछ नहीं</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">साइड पैडिंग</string>
+    <string name="long_strip_side_padding_0">कुछ नहीं</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">अध्याय %1$s</string>
     <string name="remove_from_library">लाइब्रेरी से निकालें</string>
     <string name="network">नेटवर्क</string>
@@ -584,7 +583,7 @@
     <string name="release_page">रिलीज़ पेज</string>
     <string name="library_search_hint">शीर्षक, टैग, स्रोत खोजें</string>
     <string name="no_description">कोई विवरण नहीं</string>
-    <string name="webtoon_side_padding_5">५%</string>
+    <string name="long_strip_side_padding_5">५%</string>
     <string name="downloaded_chapters">डाउनलोड किए गए अध्याय</string>
     <string name="no_matches_for_filters_short">आपके फ़िल्टर के लिए कोई मिलान नहीं</string>
     <string name="loader_rar5_error">RARv5 प्रारूप समर्थित नहीं है</string>

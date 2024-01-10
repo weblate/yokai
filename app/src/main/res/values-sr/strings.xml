@@ -112,7 +112,6 @@
     <string name="left_to_right_viewer">Слева надесно</string>
     <string name="right_to_left_viewer">Здесна налево</string>
     <string name="vertical_viewer">Вертикално</string>
-    <string name="webtoon">Digitalna manga</string>
     <string name="scale_type">Tip skaliranja</string>
     <string name="fit_screen">Popuni ekran</string>
     <string name="stretch">Razvuci</string>
@@ -252,12 +251,12 @@
     <string name="unpin">Ukolni oznaku</string>
     <string name="view_chapters">Pogledaj poglavlja</string>
     <string name="always_show_chapter_transition">Uvek pokaži tranziciju poglavlja</string>
-    <string name="pref_webtoon_side_padding">Растојање од ивице</string>
-    <string name="webtoon_side_padding_0">Ништа</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Растојање од ивице</string>
+    <string name="long_strip_side_padding_0">Ништа</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">%1$s Poglavlja</string>
     <string name="remove_from_library">Обриши из колекције</string>
     <string name="failed_to_update_cover">Ažuriranje omota nije uspelo</string>
@@ -613,7 +612,6 @@
     <string name="invert_double_pages">Invert duple stranice</string>
     <string name="split_double_pages_portrait">Presek duple stranice u portret</string>
     <string name="crop_borders_paged">Granice stranica (Strana)</string>
-    <string name="crop_borders_webtoon">Granice stranic (Webtoon)</string>
     <string name="remove_crop">Ukloni granice</string>
     <string name="smart_by_page">Pamento (prema stranici)</string>
     <string name="single_page">Jedna stranica</string>
@@ -764,7 +762,6 @@
     <string name="reader_settings">Opcije za čitaoca</string>
     <string name="share_second_page">Podeli drugu stranicu</string>
     <string name="smart_by_theme">Pametno (prema temi)</string>
-    <string name="webtoon_style">Stil stripa</string>
     <string name="enable_zoom_out">Omogući umanjivanje</string>
     <string name="amount_of_pages_to_preload">Količina stranica za prethodno učitavanje prilikom čitanja.Veće vrendosti će rezultirati lakšim iskustvom čitanja po cenu upotrebe keša i mreže.</string>
     <string name="double_pages">Duple stranice</string>
@@ -996,7 +993,7 @@
     <string name="pref_high">Висока</string>
     <string name="pref_low">Ниска</string>
     <string name="pref_lowest">Најнижа</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="downloaded_chapters">Preuzeta poglavlja</string>
     <string name="tap_zones">Начин навигације</string>
     <plurals name="next_unread_chapters">

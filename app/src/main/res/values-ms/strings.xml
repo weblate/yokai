@@ -93,7 +93,6 @@
     <string name="left_to_right_viewer">Kiri ke kanan</string>
     <string name="right_to_left_viewer">Kanan ke kiri</string>
     <string name="vertical_viewer">Menegak</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">Skala</string>
     <string name="fit_screen">Muat skrin</string>
     <string name="stretch">Regang</string>
@@ -273,12 +272,12 @@
     <string name="lock_when_idle">Kunci apabila terbiar</string>
     <string name="paged">Muka surat</string>
     <string name="always_show_chapter_transition">Sentiasa tunjuk peralihan bab</string>
-    <string name="pref_webtoon_side_padding">Tambahan sisi</string>
-    <string name="webtoon_side_padding_0">Tiada</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Tambahan sisi</string>
+    <string name="long_strip_side_padding_0">Tiada</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Bab %1$s</string>
     <string name="remove_from_library">Keluarkan daripada pustaka</string>
     <string name="refresh_tracking">Segar semula penjejakan</string>
@@ -557,7 +556,6 @@
     <string name="smart_by_theme">smart(engikut tema)</string>
     <string name="smart_by_page">Susum(mengikut muka surat)</string>
     <string name="enable_zoom_out">Benarkan zoom</string>
-    <string name="webtoon_style">Gaya</string>
     <string name="reading_">Membaca %1$s</string>
     <string name="set_as_default_for_all">set semua sebagai</string>
     <string name="extension_updates">Kemas kini sambungan</string>
@@ -693,7 +691,6 @@
     <string name="single_page">Satu halaman</string>
     <string name="double_pages">Halaman berkembar</string>
     <string name="remove_crop">Buang pemotong</string>
-    <string name="crop_borders_webtoon">Potong batas(Webtoon)</string>
     <string name="crop_borders_paged">Potong batas(halaman)</string>
     <string name="invert_double_pages">Tukar halaman berkembar</string>
     <string name="amount_of_pages_to_preload">Jumlah halaman untuk pra tunjuk apabila membaca. Semakin tinggi nilai akan membuat pembacaan lebih lancar, kos cache dan penggunaan data lebih tinggi.</string>
@@ -875,7 +872,7 @@
     <string name="show_categories_while_filtering">Tunjuk kategori kosong semasa menapis</string>
     <string name="could_not_install_update">Tidak dapat memasang kemas kini</string>
     <string name="update_completed">kemas kini siap</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Untaian ejen pengguna lalai</string>
     <string name="loader_rar5_error">Format RARv5 tidak disokong</string>
     <string name="not_bookmarked">Tidak ditanda buku</string>

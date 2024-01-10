@@ -90,7 +90,7 @@ interface Manga : SManga {
     fun seriesType(context: Context, sourceManager: SourceManager? = null): String {
         return context.getString(
             when (seriesType(sourceManager = sourceManager)) {
-                TYPE_WEBTOON -> R.string.webtoon
+                TYPE_WEBTOON -> R.string.webcomic
                 TYPE_MANHWA -> R.string.manhwa
                 TYPE_MANHUA -> R.string.manhua
                 TYPE_COMIC -> R.string.comic

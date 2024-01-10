@@ -135,7 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:title="@string/pref_webtoon_side_padding"
+            app:title="@string/pref_long_strip_side_padding"
             android:entries="@array/webtoon_side_padding" />
 
         <com.google.android.material.materialswitch.MaterialSwitch

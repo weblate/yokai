@@ -94,7 +94,6 @@
     <string name="left_to_right_viewer">বাম থেকে ডানে</string>
     <string name="right_to_left_viewer">ডান থেকে বামে</string>
     <string name="vertical_viewer">উল্লম্ব</string>
-    <string name="webtoon">ওয়েবটুন</string>
     <string name="scale_type">স্কেল ধরণ</string>
     <string name="fit_screen">সম্পূর্ণ স্ক্রিন</string>
     <string name="stretch">ছড়ানো</string>
@@ -296,12 +295,12 @@
     <string name="continuous_vertical">একটানা উল্লম্ব</string>
     <string name="paged">পেজড</string>
     <string name="always_show_chapter_transition">সবসময় অধ্যায় পরিবর্তন দেখান</string>
-    <string name="pref_webtoon_side_padding">পার্শ্ব প্যাডিং</string>
-    <string name="webtoon_side_padding_0">কিছুই না</string>
-    <string name="webtoon_side_padding_10">১০%</string>
-    <string name="webtoon_side_padding_15">১৫%</string>
-    <string name="webtoon_side_padding_20">২০%</string>
-    <string name="webtoon_side_padding_25">২৫%</string>
+    <string name="pref_long_strip_side_padding">পার্শ্ব প্যাডিং</string>
+    <string name="long_strip_side_padding_0">কিছুই না</string>
+    <string name="long_strip_side_padding_10">১০%</string>
+    <string name="long_strip_side_padding_15">১৫%</string>
+    <string name="long_strip_side_padding_20">২০%</string>
+    <string name="long_strip_side_padding_25">২৫%</string>
     <string name="chapters_">অধ্যায়গুলি %1$s</string>
     <string name="remove_from_library">সংগ্রহশালা থেকে অপসারণ করুন</string>
     <string name="refresh_tracking">ট্র্যাকিং হালনাগাদ করুন</string>
@@ -461,7 +460,6 @@
     <string name="smart_by_theme">স্মার্ট (থিম অনুসারে)</string>
     <string name="smart_by_page">স্মার্ট (পৃষ্ঠা অনুসারে)</string>
     <string name="enable_zoom_out">জুম আউট সক্ষম করুন</string>
-    <string name="webtoon_style">ওয়েবটুন স্টাইল</string>
     <string name="reading_">পড়া হচ্ছে %1$s</string>
     <string name="set_as_default_for_all">সবার জন্য ডিফল্ট হিসাবে সেট করা হলো</string>
     <string name="extension_updates">এক্সটেনশন আপডেট</string>
@@ -791,7 +789,6 @@
     <string name="amount_of_pages_to_preload">পড়ার সময় প্রিলোড করা পৃষ্ঠার পরিমাণ। উচ্চতর মান উচ্চ ক্যাশে এবং নেটওয়ার্ক ব্যবহারের খরচে একটি মসৃণ পড়ার অভিজ্ঞতার ফলে।</string>
     <string name="split_double_pages_portrait">প্রতিকৃতিতে দ্বিগুণ পৃষ্ঠা বিভক্ত করুন</string>
     <string name="crop_borders_paged">সীমানা ক্রপ কর (পৃষ্ঠাযুক্ত)</string>
-    <string name="crop_borders_webtoon">সীমানা ক্রপ কর (ওয়েবটুন)</string>
     <string name="remove_crop">ক্রপ সরাও</string>
     <string name="split_double_pages">দ্বিগুণ পৃষ্ঠা বিভক্ত করুন</string>
     <string name="switch_to_double">দ্বিগুণ পৃষ্ঠাতে স্যুইচ কর</string>

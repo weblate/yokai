@@ -81,7 +81,6 @@
     <string name="left_to_right_viewer">De gauche à droite</string>
     <string name="right_to_left_viewer">De droite à gauche</string>
     <string name="vertical_viewer">Vertical</string>
-    <string name="webtoon">Webtoon</string>
     <string name="scale_type">Type de mise à l\'échelle</string>
     <string name="fit_screen">Adapter à l\'écran</string>
     <string name="stretch">Étirer</string>
@@ -332,12 +331,12 @@
     <string name="unpin">Désépingler</string>
     <string name="view_chapters">Voir les chapitres</string>
     <string name="always_show_chapter_transition">Toujours afficher la transition de chapitre</string>
-    <string name="pref_webtoon_side_padding">Décalage latéral</string>
-    <string name="webtoon_side_padding_0">Aucun</string>
-    <string name="webtoon_side_padding_10">10 %</string>
-    <string name="webtoon_side_padding_15">15 %</string>
-    <string name="webtoon_side_padding_20">20 %</string>
-    <string name="webtoon_side_padding_25">25 %</string>
+    <string name="pref_long_strip_side_padding">Décalage latéral</string>
+    <string name="long_strip_side_padding_0">Aucun</string>
+    <string name="long_strip_side_padding_10">10 %</string>
+    <string name="long_strip_side_padding_15">15 %</string>
+    <string name="long_strip_side_padding_20">20 %</string>
+    <string name="long_strip_side_padding_25">25 %</string>
     <string name="chapters_">Chapitres %1$s</string>
     <string name="remove_from_library">Retirer de la bibliothèque</string>
     <string name="backup_failed">Échec de la sauvegarde</string>
@@ -483,7 +482,6 @@
     <string name="username_must_not_be_blank">Le nom d\'utilisateur ou le mot de passe ne peuvent pas être vides</string>
     <string name="smart_by_page">Intelligent (par page)</string>
     <string name="enable_zoom_out">Activer le zoom arrière</string>
-    <string name="webtoon_style">style webtoon</string>
     <string name="reading_">Lecture de %1$s</string>
     <string name="set_as_default_for_all">Définir par défaut pour tous</string>
     <string name="search_chapters">Chercher dans les chapitres</string>
@@ -790,7 +788,6 @@
     <string name="turn_on_">Activer %s</string>
     <string name="automatic_can_still_switch">Lors de l\'utilisation de la mise en page automatique, vous pouvez toujours basculer entre les mises en page pendant la lecture sans remplacer ce paramètre</string>
     <string name="remove_crop">Supprimer le recadrage</string>
-    <string name="crop_borders_webtoon">Recaler les bordures (Webtoon)</string>
     <string name="crop_borders_paged">Recaler les bordures (Paginé)</string>
     <string name="changing_will_reset_reading_mode">Changer ceci réinitialisera le mode lecture pour cette série</string>
     <string name="reading_mode">Mode lecture</string>
@@ -1052,7 +1049,7 @@
     <string name="tap_zones">Zones tactiles</string>
     <string name="lavender">Lavande</string>
     <string name="violet">Violet</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Agents utilisateurs par défaut</string>
     <string name="language_requires_app_restart">Certains langages peuvent nécessiter un redémarrage de l\'application pour s\'afficher correctement</string>
     <string name="loader_rar5_error">Le format RARv5 n\'est pas supporté</string>

@@ -28,7 +28,7 @@
         <item quantity="other">ხელმისაწვდომია %d გაფართოების განახლება</item>
     </plurals>
     <string name="vertical_viewer">ვერტიკალური</string>
-    <string name="webtoon_side_padding_0">არცერთი</string>
+    <string name="long_strip_side_padding_0">არცერთი</string>
     <string name="none">არცერთი</string>
     <string name="search_settings">პარამეტრების ძიება</string>
     <string name="updated_to_">განახლებულია v%1$s-მდე</string>
@@ -64,7 +64,7 @@
     <string name="set_as_cover">ყდად დაყენება</string>
     <string name="default_reading_mode">ნაგულისხმევი კითხვის რეჟიმი</string>
     <string name="left_to_right_viewer">მარცხნიდან მარჯვნივ</string>
-    <string name="webtoon_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_20">20%</string>
     <string name="remove_from_library">ბიბლიოთეკიდან წაშლა</string>
     <string name="failed_to_update_cover">ვერ მოხერხდა ყდის განახლება</string>
     <string name="dropped">გადაგდებული</string>
@@ -101,14 +101,13 @@
     <string name="last_read">ბოლოს წაკითხული</string>
     <string name="badges">ნიშნაკები</string>
     <string name="reduces_banding_impacts_performance">აუმჯობესებს ხარისხს, თუმცა ამცირებს წარმადობას</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="tracking_info">ცალმხრივი სინქრონიზაცია თვალყურის სადევნებელ სერვისებში თავების პროგრესის განსაახლებლად. მიადევნე თვალყური ინდივიდუალურ მანგებს მათი ჩანართებიდან.</string>
     <string name="restore_backup">რეზერვის აღდგენა</string>
     <string name="restore_missing_sources">დაკარგული წყაროები:</string>
     <string name="username">მომხმარებლის სახელი</string>
     <string name="blue_initial">B</string>
     <string name="manga">მანგა</string>
-    <string name="webtoon">ვებ კომიქსი</string>
     <string name="title">სათაური</string>
     <string name="author">ავტორი</string>
     <string name="description">აღწერა</string>
@@ -177,8 +176,8 @@
     <string name="previous_chapter">წინა თავი</string>
     <string name="show_page_number">გვერდის ნომრის ჩვენება</string>
     <string name="double_tap_anim_speed">ორჯერ დაჭერისას ანიმაციის სისწრაფე</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
     <string name="added_to_library">დამატებულია ბიბლიოთეკაში</string>
     <string name="add_tracking">თვალი ადევნე</string>
     <string name="downloads">გადმოწერები</string>
@@ -334,7 +333,7 @@
     <string name="search">ძებნა</string>
     <string name="alpha_initial">A</string>
     <string name="always_show_chapter_transition">ყოველთვის აჩვენე თავებს შორის გადასვლა</string>
-    <string name="pref_webtoon_side_padding">ცარიელი არეა გვერდებზე</string>
+    <string name="pref_long_strip_side_padding">ცარიელი არეა გვერდებზე</string>
     <string name="settings">პარამეტრები</string>
     <string name="general">ზოგადი</string>
     <string name="advanced">დამატებით</string>

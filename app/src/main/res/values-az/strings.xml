@@ -13,7 +13,6 @@
     <string name="external_storage_download_notice">TachiyomiJ2K bölümləri yükləmək üçün bütün fayllara giriş tələb edir. Bura klikləyin, sonra \"Bütün faylları idarə etmək üçün girişə icazə verin\" funksiyasını aktivləşdirin.</string>
     <string name="manga">Manga</string>
     <string name="comic">Komiks</string>
-    <string name="webtoon">Webtoon</string>
     <string name="in_progress">Davam edir</string>
     <string name="not_started">Başlamadı</string>
     <string name="read">Oxunub</string>

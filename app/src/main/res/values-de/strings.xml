@@ -6,7 +6,6 @@
     <string name="manhwa">Manhwa</string>
     <string name="manhua">Manhua</string>
     <string name="comic">Comic</string>
-    <string name="webtoon">Webtoon</string>
     <!-- Manga -->
     <string name="not_started">Nicht angefangen</string>
     <string name="in_progress">Am Lesen</string>
@@ -219,7 +218,6 @@
     <string name="loading_pages">Lade Seiten …</string>
     <string name="failed_to_load_pages_">Seiten konnten nicht geladen werden: %1$s</string>
     <string name="reading_">Lese %1$s</string>
-    <string name="webtoon_style">Webtoonstil</string>
     <!-- Reader settings -->
     <string name="fullscreen">Vollbild</string>
     <string name="double_tap_anim_speed">Doppeltipp-Animationsgeschwindigkeit</string>
@@ -267,12 +265,12 @@
     <string name="smart_based_on_page_and_theme">Schlau (basierend auf Seite und Thema)</string>
     <string name="always_show_chapter_transition">Kapitelübergang immer anzeigen</string>
     <string name="if_disabled_transition_will_skip">Wenn deaktiviert wird die Kapitelübergangsseite, sollte das nächste Kapitel geladen sein, übersprungen</string>
-    <string name="pref_webtoon_side_padding">Seitenränder</string>
-    <string name="webtoon_side_padding_0">Keine</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Seitenränder</string>
+    <string name="long_strip_side_padding_0">Keine</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <!-- Manga details -->
     <string name="about_this_">Über diesen %1$s</string>
     <string name="start_reading">Anfangen zu lesen</string>
@@ -762,7 +760,6 @@
     <string name="single_page">Einzelne Seite</string>
     <string name="double_pages">Doppelseiten</string>
     <string name="remove_crop">Entferne zuschneiden</string>
-    <string name="crop_borders_webtoon">Ränder abschneiden (Webtoon)</string>
     <string name="crop_borders_paged">Ränder abschneiden (Seite)</string>
     <string name="invert_double_pages">Doppelseiten invertieren</string>
     <string name="amount_of_pages_to_preload">Die Anzahl der Seiten, die beim Lesen im Voraus geladen werden. Höhere Werte führen zu einem flüssigeren Leseerlebnis, allerdings auf Kosten einer höheren Cache- und Netzwerknutzung.</string>
@@ -1030,7 +1027,7 @@
     <string name="tap_zones">Tippzonen</string>
     <string name="lavender">Lavendel</string>
     <string name="violet">Violett</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Standard-User-Agent-Text</string>
     <string name="language_requires_app_restart">Manche Sprachen benötigen möglicherweise einen Neustart der App zur korrekten Anzeige</string>
     <string name="loader_rar5_error">Das RARv5-Format wird nicht unterstützt</string>

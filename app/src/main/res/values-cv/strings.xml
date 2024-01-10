@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="manga">Манкӑ</string>
-    <string name="webtoon">Тетел кумӑкс</string>
     <string name="author">Авттӑр</string>
     <string name="unread">Вуламан</string>
     <string name="chapter_">%1$s-мӗш сыпӑк</string>
@@ -263,12 +262,12 @@
     <string name="remove_from_library">Вулавӑшран катерт</string>
     <string name="add_to_library">Вулавӑша хуш</string>
     <string name="added_to_library">Вулавӑша хуш</string>
-    <string name="webtoon_side_padding_25">25%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_0">Чакусӑр</string>
-    <string name="pref_webtoon_side_padding">Аяккинчи чаку</string>
+    <string name="long_strip_side_padding_25">25%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_0">Чакусӑр</string>
+    <string name="pref_long_strip_side_padding">Аяккинчи чаку</string>
     <string name="vertical_viewer">Урлӑ</string>
     <string name="right_to_left_viewer">Сылтӑмран сулахаялла</string>
     <string name="left_to_right_viewer">Сулахайран сылтӑмалла</string>

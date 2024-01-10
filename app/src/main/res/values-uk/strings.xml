@@ -112,7 +112,6 @@
     <string name="left_to_right_viewer">Зліва направо</string>
     <string name="right_to_left_viewer">Справа наліво</string>
     <string name="vertical_viewer">Вертикальний</string>
-    <string name="webtoon">Вебкомікс</string>
     <string name="scale_type">Масштабування</string>
     <string name="fit_screen">По екрану</string>
     <string name="stretch">Розтягнута</string>
@@ -302,12 +301,12 @@
     <string name="continuous_vertical">Безперервний вертикальний</string>
     <string name="paged">Посторінково</string>
     <string name="always_show_chapter_transition">Завжди показувати перехід між розділами</string>
-    <string name="pref_webtoon_side_padding">Бічний відступ</string>
-    <string name="webtoon_side_padding_0">Без меж</string>
-    <string name="webtoon_side_padding_10">10%</string>
-    <string name="webtoon_side_padding_15">15%</string>
-    <string name="webtoon_side_padding_20">20%</string>
-    <string name="webtoon_side_padding_25">25%</string>
+    <string name="pref_long_strip_side_padding">Бічний відступ</string>
+    <string name="long_strip_side_padding_0">Без меж</string>
+    <string name="long_strip_side_padding_10">10%</string>
+    <string name="long_strip_side_padding_15">15%</string>
+    <string name="long_strip_side_padding_20">20%</string>
+    <string name="long_strip_side_padding_25">25%</string>
     <string name="chapters_">Розділи %1$s</string>
     <string name="remove_from_library">Видалити з бібліотеки</string>
     <string name="refresh_tracking">Оновити відстеження</string>
@@ -376,7 +375,6 @@
     <string name="smart_by_theme">Розумне (за темою)</string>
     <string name="smart_by_page">Розумне (за сторінкою)</string>
     <string name="enable_zoom_out">Увімкнути збільшення</string>
-    <string name="webtoon_style">Стиль вебкоміксів</string>
     <string name="reading_">Читання %1$s</string>
     <string name="set_as_default_for_all">Встановити основним для всіх</string>
     <string name="extension_updates">Оновлення розширення</string>
@@ -779,7 +777,6 @@
         <item quantity="other">%d оновлень в очікуванні</item>
     </plurals>
     <string name="share_first_page">Поділитися першою сторінкою</string>
-    <string name="crop_borders_webtoon">Обрізати межі (Webtoon)</string>
     <string name="remove_x_from_service_and_add_y">Вилучити %1$s з %2$s і додати %3$s</string>
     <string name="move_x_to">Перемістити %1$s до…</string>
     <string name="add_x_to">Додати %1$s до…</string>
@@ -1041,7 +1038,7 @@
     <string name="tap_zones">Зони тицяння</string>
     <string name="lavender">Лаванда</string>
     <string name="violet">Фіолетовий</string>
-    <string name="webtoon_side_padding_5">5%</string>
+    <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Типовий user agent</string>
     <string name="loader_rar5_error">Формат RARv5 не підтримується</string>
     <string name="downloaded_chapters">Завантажені розділи</string>

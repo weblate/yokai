@@ -12,7 +12,6 @@
     <a href="/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
 </p>
 
-
 ## About
 Yōkai is a free and open source manga reader for Android 6.0 and above. Based on the original [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) and [TachiJ2K](https://github.com/jays2kings/tachiyomiJ2K)
 

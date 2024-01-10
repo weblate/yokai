@@ -11,18 +11,6 @@ fun Project.getCommitCount(): String {
     // return "1"
 }
 
-fun Project.getBetaCount(): String {
-    val betaTags = runCommand("git tag -l --sort=refname v${AndroidVersions.versionName}-b*")
-    return String.format("%02d", if (betaTags.isNotEmpty()) {
-        val betaTag = betaTags.split("\n").last().substringAfter("-b").toIntOrNull()
-        ((betaTag ?: 0) + 1)
-    } else {
-        1
-    })
-    // return "1"
-}
-
-
 fun Project.getGitSha(): String {
     return runCommand("git rev-parse --short HEAD")
     // return "1"

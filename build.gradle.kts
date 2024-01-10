@@ -1,36 +1,19 @@
+import java.util.*
+
 plugins {
-    id(Plugins.kotlinter.name) version Plugins.kotlinter.version
-    id(Plugins.gradleVersions.name) version Plugins.gradleVersions.version
-    id(Plugins.jetbrainsKotlin) version AndroidVersions.kotlin apply false
-}
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { setUrl("https://jitpack.io") }
-        maven { setUrl("https://plugins.gradle.org/m2/") }
-    }
-}
-
-subprojects {
-    apply(plugin = Plugins.kotlinter.name)
-
-    kotlinter {
-        experimentalRules = true
-
-        // Doesn't play well with Android Studio
-        disabledRules = arrayOf("experimental:argument-list-wrapping")
-    }
+    alias(libs.plugins.kotlinter)
+    alias(libs.plugins.gradle.versions)
+    alias(kotlinx.plugins.android) apply false
 }
 
 buildscript {
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.2")
-        classpath("com.google.gms:google-services:4.3.15")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${AndroidVersions.kotlin}")
-        classpath("com.google.android.gms:oss-licenses-plugin:0.10.6")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:${AndroidVersions.kotlin}")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.4")
+        classpath(libs.gradle)
+        classpath(libs.google.services)
+        classpath(kotlinx.gradle)
+        classpath(libs.oss.licenses.plugin)
+        classpath(kotlinx.serialization.gradle)
+        classpath(libs.firebase.crashlytics.gradle)
     }
     repositories {
         gradlePluginPortal()
@@ -41,7 +24,10 @@ buildscript {
 
 tasks.named("dependencyUpdates", com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask::class.java).configure {
     rejectVersionIf {
-        isNonStable(candidate.version)
+        val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { candidate.version.uppercase(Locale.ROOT).contains(it) }
+        val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+        val isStable = stableKeyword || regex.matches(candidate.version)
+        isStable.not()
     }
     // optional parameters
     checkForGradleUpdate = true
@@ -51,5 +37,5 @@ tasks.named("dependencyUpdates", com.github.benmanes.gradle.versions.updates.Dep
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }

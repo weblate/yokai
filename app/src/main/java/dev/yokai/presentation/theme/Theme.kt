@@ -23,5 +23,4 @@ fun YokaiTheme(content: @Composable () -> Unit) {
         colorScheme = colourScheme!!,
         content = content
     )
-
 }

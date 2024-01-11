@@ -198,21 +198,25 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun trackingsToAddOnline() = preferenceStore.getStringSet(Keys.trackingsToAddOnline, emptySet())
 
+    // TODO: SourcePref
     fun lastUsedCatalogueSource() = preferenceStore.getLong(Keys.lastUsedCatalogueSource, -1)
 
     fun lastUsedCategory() = preferenceStore.getInt(Keys.lastUsedCategory, 0)
 
+    // TODO: SourcePref
     fun lastUsedSources() = preferenceStore.getStringSet("last_used_sources", emptySet())
 
     fun lastVersionCode() = preferenceStore.getInt("last_version_code", 0)
 
     fun browseAsList() = preferenceStore.getBoolean(Keys.catalogueAsList, false)
 
+    // TODO: SourcePref
     fun enabledLanguages() = preferenceStore.getStringSet(
         Keys.enabledLanguages,
         setOfNotNull("all", "en", Locale.getDefault().language.takeIf { !it.startsWith("en") }),
     )
 
+    // TODO: SourcePref
     fun sourceSorting() = preferenceStore.getInt(Keys.sourcesSort, 0)
 
     fun anilistScoreType() = preferenceStore.getString("anilist_score_type", "POINT_10")
@@ -290,6 +294,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun installedExtensionsOrder() = preferenceStore.getInt(Keys.installedExtensionsOrder, InstalledExtensionsOrder.Name.value)
 
+    // TODO: SourcePref
     fun migrationSourceOrder() = preferenceStore.getInt("migration_source_order", Values.MigrationSourceOrder.Alphabetically.value)
 
     fun collapsedCategories() = preferenceStore.getStringSet("collapsed_categories", mutableSetOf())
@@ -298,8 +303,10 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun collapsedDynamicAtBottom() = preferenceStore.getBoolean("collapsed_dynamic_at_bottom", false)
 
+    // TODO: SourcePref
     fun hiddenSources() = preferenceStore.getStringSet("hidden_catalogues", mutableSetOf())
 
+    // TODO: SourcePref
     fun pinnedCatalogues() = preferenceStore.getStringSet("pinned_catalogues", mutableSetOf())
 
     fun saveChaptersAsCBZ() = preferenceStore.getBoolean("save_chapter_as_cbz", true)
@@ -338,8 +345,10 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     fun trustedSignatures() = preferenceStore.getStringSet("trusted_signatures", emptySet())
 
     // using string instead of set so it is ordered
+    // TODO: SourcePref
     fun migrationSources() = preferenceStore.getString("migrate_sources", "")
 
+    // TODO: SourcePref
     fun useSourceWithMost() = preferenceStore.getBoolean("use_source_with_most", false)
 
     fun skipPreMigration() = preferenceStore.getBoolean(Keys.skipPreMigration, false)
@@ -429,6 +438,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun sideNavIconAlignment() = preferenceStore.getInt(Keys.sideNavIconAlignment, 1)
 
+    // TODO: SourcePref
     fun showNsfwSources() = preferenceStore.getBoolean(Keys.showNsfwSource, true)
 
     fun themeMangaDetails() = prefs.getBoolean(Keys.themeMangaDetails, true)

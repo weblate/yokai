@@ -150,11 +150,9 @@ jobs:
           tag_name: ${{ env.VERSION_TAG }}
           name: Yōkai Nightly (${{ env.VERSION_TAG }})
           body: |
-            ### Disclaimer:
-            ***This alpha version is for testing only.***
-            It is not ready for daily use and we do not guarantee its usability.
-            
-            Please backup your data before using it!
+            > [!CAUTION]
+            > _**This alpha version is for testing only!**_
+            > It is not ready for daily use and we do not guarantee its usability.
             
             ---
 

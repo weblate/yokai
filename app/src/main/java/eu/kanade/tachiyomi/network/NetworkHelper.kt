@@ -6,6 +6,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.interceptor.CloudflareInterceptor
+import eu.kanade.tachiyomi.network.interceptor.IgnoreGzipInterceptor
 import eu.kanade.tachiyomi.network.interceptor.UncaughtExceptionInterceptor
 import eu.kanade.tachiyomi.network.interceptor.UserAgentInterceptor
 import okhttp3.Cache
@@ -37,9 +38,10 @@ class NetworkHelper(val context: Context) {
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .callTimeout(2, TimeUnit.MINUTES)
-                .addInterceptor(BrotliInterceptor)
                 .addInterceptor(UncaughtExceptionInterceptor())
                 .addInterceptor(userAgentInterceptor)
+                .addNetworkInterceptor(IgnoreGzipInterceptor())
+                .addNetworkInterceptor(BrotliInterceptor)
                 .apply {
                     if (BuildConfig.DEBUG) {
                         addInterceptor(

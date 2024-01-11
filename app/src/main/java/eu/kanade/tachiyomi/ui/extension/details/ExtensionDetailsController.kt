@@ -41,7 +41,6 @@ import eu.kanade.tachiyomi.ui.setting.defaultValue
 import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.util.system.LocaleHelper
-import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.snack
@@ -110,9 +109,9 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
 
         val multiSource = extension.sources.size > 1
         val isMultiLangSingleSource = multiSource && extension.sources.map { it.name }.distinct().size == 1
-        val langauges = preferences.enabledLanguages().get()
+        val languages = preferences.enabledLanguages().get()
 
-        for (source in extension.sources.sortedByDescending { it.isLangEnabled(langauges) }) {
+        for (source in extension.sources.sortedByDescending { it.isLangEnabled(languages) }) {
             addPreferencesForSource(screen, source, multiSource, isMultiLangSingleSource)
         }
 

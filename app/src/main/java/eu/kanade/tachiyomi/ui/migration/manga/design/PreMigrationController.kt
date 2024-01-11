@@ -23,7 +23,7 @@ import eu.kanade.tachiyomi.databinding.PreMigrationControllerBinding
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.migration.manga.process.MigrationListController
 import eu.kanade.tachiyomi.ui.migration.manga.process.MigrationProcedureConfig
 import eu.kanade.tachiyomi.util.view.doOnApplyWindowInsetsCompat
@@ -33,7 +33,7 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.injectLazy
 
 class PreMigrationController(bundle: Bundle? = null) :
-    BaseController<PreMigrationControllerBinding>(bundle),
+    BaseLegacyController<PreMigrationControllerBinding>(bundle),
     FlexibleAdapter.OnItemClickListener,
     SmallToolbarInterface,
     StartMigrationListener {

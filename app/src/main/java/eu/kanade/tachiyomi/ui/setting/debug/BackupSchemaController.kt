@@ -11,12 +11,12 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.databinding.SubDebugControllerBinding
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.util.view.copyToClipboard
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import kotlinx.serialization.protobuf.schema.ProtoBufSchemaGenerator
 
-class BackupSchemaController : BaseController<SubDebugControllerBinding>() {
+class BackupSchemaController : BaseLegacyController<SubDebugControllerBinding>() {
 
     companion object {
         const val title = "Backup file schema"

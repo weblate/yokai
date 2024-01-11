@@ -90,7 +90,7 @@ import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.base.MaterialMenuSheet
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
 import eu.kanade.tachiyomi.ui.base.activity.BaseActivity
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
 import eu.kanade.tachiyomi.ui.library.LibraryController
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
@@ -512,7 +512,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     }
                     binding.searchToolbar.menu.forEach { it.isVisible = false }
                     lifecycleScope.launchUI {
-                        (controller as? BaseController<*>)?.onActionViewExpand(item)
+                        (controller as? BaseLegacyController<*>)?.onActionViewExpand(item)
                         (controller as? SettingsController)?.onActionViewExpand(item)
                         reEnableBackPressedCallBack()
                     }
@@ -525,7 +525,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     controller?.mainRecyclerView?.requestApplyInsets()
                     setupSearchTBMenu(binding.toolbar.menu, true)
                     lifecycleScope.launchUI {
-                        (controller as? BaseController<*>)?.onActionViewCollapse(item)
+                        (controller as? BaseLegacyController<*>)?.onActionViewCollapse(item)
                         (controller as? SettingsController)?.onActionViewCollapse(item)
                         reEnableBackPressedCallBack()
                     }
@@ -622,7 +622,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
         val navIcon = if (router.backstackSize > 1) backDrawable else null
         binding.toolbar.navigationIcon = navIcon
-        (router.backstack.lastOrNull()?.controller as? BaseController<*>)?.setTitle()
+        (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.setTitle()
         (router.backstack.lastOrNull()?.controller as? SettingsController)?.setTitle()
 
         if (savedInstanceState == null && this !is SearchActivity) {
@@ -697,7 +697,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     var searchTitle: String?
         get() {
             return try {
-                (router.backstack.lastOrNull()?.controller as? BaseController<*>)?.getSearchTitle()
+                (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.getSearchTitle()
                     ?: (router.backstack.lastOrNull()?.controller as? SettingsController)?.getSearchTitle()
             } catch (_: Exception) {
                 binding.searchToolbar.title?.toString()
@@ -772,7 +772,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     private fun setSearchTBLongClick() {
         binding.searchToolbar.setOnLongClickListener {
             binding.searchToolbar.menu.findItem(R.id.action_search)?.expandActionView()
-            val visibleController = router.backstack.lastOrNull()?.controller as? BaseController<*>
+            val visibleController = router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>
             val longClickQuery = visibleController?.onSearchActionViewLongClickQuery()
             if (longClickQuery != null) {
                 binding.searchToolbar.searchView?.setQuery(longClickQuery, true)

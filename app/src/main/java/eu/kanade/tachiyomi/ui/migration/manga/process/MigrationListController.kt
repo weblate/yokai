@@ -27,7 +27,7 @@ import eu.kanade.tachiyomi.source.CatalogueSource
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.SChapter
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.base.controller.FadeChangeHandler
 import eu.kanade.tachiyomi.ui.main.BottomNavBarInterface
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
@@ -62,7 +62,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
 class MigrationListController(bundle: Bundle? = null) :
-    BaseController<MigrationListControllerBinding>(bundle),
+    BaseLegacyController<MigrationListControllerBinding>(bundle),
     MigrationProcessAdapter.MigrationProcessInterface,
     BottomNavBarInterface,
     CoroutineScope {

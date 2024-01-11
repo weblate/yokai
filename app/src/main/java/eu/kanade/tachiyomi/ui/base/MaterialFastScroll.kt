@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import eu.davidea.fastscroller.FastScroller
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.dpToPxEnd
 import eu.kanade.tachiyomi.util.system.isLTR
@@ -22,7 +22,7 @@ open class MaterialFastScroll @JvmOverloads constructor(context: Context, attrs:
     var canScroll = false
     var startY = -1f
     var scrollOffset = 0
-    var controller: BaseController<*>? = null
+    var controller: BaseLegacyController<*>? = null
     init {
         setViewsToUse(
             R.layout.material_fastscroll,

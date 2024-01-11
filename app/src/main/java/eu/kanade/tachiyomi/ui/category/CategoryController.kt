@@ -11,7 +11,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.CategoriesControllerBinding
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.category.CategoryPresenter.Companion.CREATE_CATEGORY_ORDER
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
@@ -23,7 +23,7 @@ import eu.kanade.tachiyomi.util.view.snack
  * Controller to manage the categories for the users' library.
  */
 class CategoryController(bundle: Bundle? = null) :
-    BaseController<CategoriesControllerBinding>(bundle),
+    BaseLegacyController<CategoriesControllerBinding>(bundle),
     FlexibleAdapter.OnItemClickListener,
     FlexibleAdapter.OnItemMoveListener,
     SmallToolbarInterface,

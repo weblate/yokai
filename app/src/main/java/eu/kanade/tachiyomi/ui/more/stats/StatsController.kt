@@ -18,7 +18,7 @@ import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.databinding.StatsControllerBinding
 import eu.kanade.tachiyomi.source.model.SManga
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.more.stats.details.StatsDetailsController
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.mapStatus
@@ -30,7 +30,7 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import timber.log.Timber
 import kotlin.math.roundToInt
 
-class StatsController : BaseController<StatsControllerBinding>() {
+class StatsController : BaseLegacyController<StatsControllerBinding>() {
 
     val presenter = StatsPresenter()
 

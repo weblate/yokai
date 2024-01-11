@@ -57,7 +57,7 @@ import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.MainActivityBinding
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.base.controller.CrossFadeChangeHandler
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
 import eu.kanade.tachiyomi.ui.base.controller.FadeChangeHandler
@@ -493,7 +493,7 @@ fun Controller.scrollViewWith(
 
     fun onScrolled(dy: Int) {
         if (isControllerVisible && statusBarHeight > -1 &&
-            (this@scrollViewWith as? BaseController<*>)?.isDragging != true &&
+            (this@scrollViewWith as? BaseLegacyController<*>)?.isDragging != true &&
             activity != null && (activityBinding?.appBar?.height ?: 0) > 0 &&
             recycler.translationY == 0f
         ) {
@@ -609,7 +609,7 @@ fun Controller.scrollViewWith(
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-                    (this@scrollViewWith as? BaseController<*>)?.isDragging != true
+                    (this@scrollViewWith as? BaseLegacyController<*>)?.isDragging != true
                 ) {
                     onScrollIdle()
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -628,7 +628,7 @@ fun Controller.scrollViewWith(
     }
 
     (recycler as? StatefulNestedScrollView)?.setScrollStoppedListener {
-        if ((this@scrollViewWith as? BaseController<*>)?.isDragging != true) {
+        if ((this@scrollViewWith as? BaseLegacyController<*>)?.isDragging != true) {
             onScrollIdle()
         }
     }
@@ -698,7 +698,7 @@ fun Controller.setItemAnimatorForAppBar(recycler: RecyclerView) {
 }
 
 val Controller.mainRecyclerView: RecyclerView?
-    get() = (this as? SettingsController)?.listView ?: (this as? BaseController<*>)?.mainRecycler
+    get() = (this as? SettingsController)?.listView ?: (this as? BaseLegacyController<*>)?.mainRecycler
 
 fun Controller.moveRecyclerViewUp(allTheWayUp: Boolean = false, scrollUpAnyway: Boolean = false) {
     if (activityBinding?.bigToolbar?.isVisible == false) return
@@ -903,7 +903,7 @@ val Controller.previousController: Controller?
 @MainThread
 fun Router.canStillGoBack(): Boolean {
     if (backstack.size > 1) return true
-    (backstack.lastOrNull()?.controller as? BaseController<*>)?.let { controller ->
+    (backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.let { controller ->
         return controller.canStillGoBack()
     }
     return false

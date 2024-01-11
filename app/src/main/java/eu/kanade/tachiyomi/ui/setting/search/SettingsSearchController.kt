@@ -10,20 +10,19 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.SettingsSearchControllerBinding
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.main.SearchControllerInterface
 import eu.kanade.tachiyomi.ui.setting.SettingsController
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.liftAppbarWith
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
-import uy.kohesive.injekt.api.get
 
 /**
  * This controller shows and manages the different search result in settings search.
  * [SettingsSearchAdapter.OnTitleClickListener] called when preference is clicked in settings search
  */
 class SettingsSearchController :
-    BaseController<SettingsSearchControllerBinding>(),
+    BaseLegacyController<SettingsSearchControllerBinding>(),
     SearchControllerInterface,
     SettingsSearchAdapter.OnTitleClickListener {
 

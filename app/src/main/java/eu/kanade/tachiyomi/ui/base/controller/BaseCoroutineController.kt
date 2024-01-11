@@ -6,7 +6,7 @@ import androidx.viewbinding.ViewBinding
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 
 abstract class BaseCoroutineController<VB : ViewBinding, PS : BaseCoroutinePresenter<*>>(bundle: Bundle? = null) :
-    BaseController<VB>(bundle) {
+    BaseLegacyController<VB>(bundle) {
 
     abstract val presenter: PS
     override fun onViewCreated(view: View) {

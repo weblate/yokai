@@ -22,7 +22,7 @@ import com.bluelinelabs.conductor.ControllerChangeType
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.changesIn
-import eu.kanade.tachiyomi.ui.base.controller.BaseController
+import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -115,7 +115,7 @@ abstract class SettingsController : PreferenceController(), BackHandlerControlle
     fun setTitle() {
         var parentController = parentController
         while (parentController != null) {
-            if (parentController is BaseController<*> && parentController.getTitle() != null) {
+            if (parentController is BaseLegacyController<*> && parentController.getTitle() != null) {
                 return
             }
             parentController = parentController.parentController

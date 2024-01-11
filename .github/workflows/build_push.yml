@@ -72,11 +72,11 @@ jobs:
 
       - name: Sign APK
         if: env.VERSION_TAG != ''
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v1
         with:
-          releaseDirectory: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
+          releaseDir: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
+          signingKey: ${{ secrets.SIGNING_KEY }}
+          keyAlias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 

@@ -847,7 +847,12 @@ fun Controller.withFadeInTransaction(): RouterTransaction {
         .popChangeHandler(OneWayFadeChangeHandler())
 }
 
-fun Controller.openInBrowser(url: String) {
+fun Controller.openInBrowser(url: String?) {
+    if (url == null) {
+        activity?.toast(R.string.open_in_browser_fail)
+        return
+    }
+
     try {
         val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         startActivity(intent)

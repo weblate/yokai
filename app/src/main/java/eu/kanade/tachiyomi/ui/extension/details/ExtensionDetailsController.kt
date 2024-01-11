@@ -27,6 +27,7 @@ import eu.kanade.tachiyomi.data.preference.SharedPreferencesDataStore
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.databinding.ExtensionDetailControllerBinding
+import eu.kanade.tachiyomi.extension.api.REPO_URL_PREFIX
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.ConfigurableSource
@@ -153,64 +154,29 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.extension_details, menu)
-
-        presenter.extension?.let { extension ->
-            menu.findItem(R.id.action_history).isVisible = !extension.isUnofficial
-            menu.findItem(R.id.action_readme).isVisible = !extension.isUnofficial
-            if (extension.hasReadme) {
-                menu.findItem(R.id.action_readme).icon = view?.context?.contextCompatDrawable(R.drawable.ic_help_24dp)
-            }
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_history -> openChangelog()
-            R.id.action_readme -> openReadme()
+            R.id.action_open_repo -> openRepo()
             R.id.action_clear_cookies -> clearCookies()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun openChangelog() {
-        val extension = presenter.extension!!
-        val pkgName = extension.pkgName.substringAfter("eu.kanade.tachiyomi.extension.")
-        val pkgFactory = extension.pkgFactory
-        if (extension.hasChangelog) {
-            val url = createUrl(URL_EXTENSION_BLOB, pkgName, pkgFactory, "/CHANGELOG.md")
-            openInBrowser(url)
-            return
-        }
-
-        // Falling back on GitHub commit history because there is no explicit changelog in extension
-        val url = createUrl(URL_EXTENSION_COMMITS, pkgName, pkgFactory)
+    private fun openRepo() {
+        // TODO
+        // val url = getUrl(extension.repoUrl)
+        val url = getUrl()
         openInBrowser(url)
     }
 
-    private fun createUrl(url: String, pkgName: String, pkgFactory: String?, path: String = ""): String {
-        return if (!pkgFactory.isNullOrEmpty()) {
-            when (path.isEmpty()) {
-                true -> "$url/multisrc/src/main/java/eu/kanade/tachiyomi/multisrc/$pkgFactory"
-                else -> "$url/multisrc/overrides/$pkgFactory/" + (pkgName.split(".").lastOrNull() ?: "") + path
-            }
-        } else {
-            url + "/src/" + pkgName.replace(".", "/") + path
-        }
-    }
-
-    private fun openReadme() {
-        val extension = presenter.extension!!
-
-        if (!extension.hasReadme) {
-            openInBrowser("https://tachiyomi.org/docs/faq/browse/extensions")
-            return
-        }
-
-        val pkgName = extension.pkgName.substringAfter("eu.kanade.tachiyomi.extension.")
-        val pkgFactory = extension.pkgFactory
-        val url = createUrl(URL_EXTENSION_BLOB, pkgName, pkgFactory, "/README.md")
-        openInBrowser(url)
-        return
+    private fun getUrl(repoUrl: String? = REPO_URL_PREFIX): String? {
+        val regex = """https://raw.githubusercontent.com/(.+?)/(.+?)/.+""".toRegex()
+        return regex.find(repoUrl.orEmpty())?.let {
+            val (user, repo) = it.destructured
+            "https://github.com/$user/$repo"
+        } ?: repoUrl
     }
 
     private fun clearCookies() {
@@ -396,9 +362,5 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
     private companion object {
         const val PKGNAME_KEY = "pkg_name"
         const val LASTOPENPREFERENCE_KEY = "last_open_preference"
-        private const val URL_EXTENSION_BLOB =
-            "https://github.com/tachiyomiorg/tachiyomi-extensions/blob/master"
-        private const val URL_EXTENSION_COMMITS =
-            "https://github.com/tachiyomiorg/tachiyomi-extensions/commits/master"
     }
 }

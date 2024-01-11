@@ -918,6 +918,8 @@
     <string name="helpful_translation_links">Helpful translation links</string>
     <string name="website">Website</string>
     <string name="open_source_licenses">Open source licenses</string>
+    <string name="action_open_repo">Open source repo</string>
+    <string name="open_in_browser_fail">Unable to open url</string>
 
     <!-- Login/Logout dialog -->
     <string name="log_in_to_">Log in to %1$s</string>

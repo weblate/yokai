@@ -79,7 +79,7 @@ internal class ExtensionGithubApi {
                 val availableExt = extensions.find { it.pkgName == pkgName } ?: continue
                 val hasUpdatedVer = availableExt.versionCode > installedExt.versionCode
                 val hasUpdatedLib = availableExt.libVersion > installedExt.libVersion
-                val hasUpdate = installedExt.isUnofficial.not() && (hasUpdatedVer || hasUpdatedLib)
+                val hasUpdate = hasUpdatedVer || hasUpdatedLib
                 if (hasUpdate) {
                     extensionsWithUpdate.add(availableExt)
                 }
@@ -130,8 +130,8 @@ internal class ExtensionGithubApi {
     }
 }
 
-private const val REPO_URL_PREFIX = "https://raw.githubusercontent.com/keiyoushi/extensions/repo/"
-private const val FALLBACK_REPO_URL_PREFIX = "https://gcore.jsdelivr.net/gh/keiyoushi/extensions@repo/"
+const val REPO_URL_PREFIX = "https://raw.githubusercontent.com/keiyoushi/extensions/repo/"
+const val FALLBACK_REPO_URL_PREFIX = "https://gcore.jsdelivr.net/gh/keiyoushi/extensions@repo/"
 
 @Serializable
 private data class ExtensionJsonObject(

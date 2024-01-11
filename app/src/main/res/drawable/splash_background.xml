@@ -7,7 +7,7 @@
     <item
         android:width="64dp"
         android:height="64dp"
-        android:drawable="@drawable/ic_tachij2k"
+        android:drawable="@drawable/ic_yokai"
         android:gravity="center" />
 
 </layer-list>

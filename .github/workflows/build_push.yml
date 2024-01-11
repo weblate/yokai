@@ -73,6 +73,7 @@ jobs:
       - name: Sign APK
         if: env.VERSION_TAG != ''
         uses: ilharp/sign-android-release@v1
+        id: sign_app
         with:
           releaseDir: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
           signingKey: ${{ secrets.SIGNING_KEY }}
@@ -83,6 +84,8 @@ jobs:
       - name: Clean up build artifacts
         if: env.VERSION_TAG != ''
         run: |
+          echo "${{ steps.sign_app.outputs.signedFiles }}"
+          
           set -e
           
           dir=app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}

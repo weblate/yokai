@@ -85,7 +85,7 @@ jobs:
         run: |
           set -e
           
-          dir=`app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}`👻
+          dir=app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
 
           mv $dir/app-standard-universal-release-unsigned-signed.apk yokai-${{ env.VERSION_TAG }}.apk
           sha=`sha256sum yokai-${{ env.VERSION_TAG }}.apk | awk '{ print $1 }'`

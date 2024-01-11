@@ -14,65 +14,6 @@
         android:gravity="center">
 
         <ImageButton
-            android:id="@+id/btn_website"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/website"
-            android:padding="16dp"
-            android:src="@drawable/ic_open_in_webview_24dp"
-            app:tint="?attr/colorAccent" />
-
-        <ImageButton
-            android:id="@+id/btn_discord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Discord"
-            android:padding="16dp"
-            android:src="@drawable/ic_discord_24dp"
-            app:tint="?attr/colorAccent"
-            tools:ignore="HardcodedText" />
-
-        <ImageButton
-            android:id="@+id/btn_x"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="X"
-            android:padding="16dp"
-            android:src="@drawable/ic_x_24dp"
-            app:tint="?attr/colorAccent"
-            tools:ignore="HardcodedText" />
-
-        <ImageButton
-            android:id="@+id/btn_facebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Facebook"
-            android:padding="16dp"
-            android:src="@drawable/ic_facebook_24dp"
-            app:tint="?attr/colorAccent"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center">
-        <ImageButton
-            android:id="@+id/btn_reddit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Reddit"
-            android:padding="16dp"
-            android:src="@drawable/ic_reddit_24dp"
-            app:tint="?attr/colorAccent"
-            tools:ignore="HardcodedText" />
-
-        <ImageButton
             android:id="@+id/btn_github"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,18 +21,6 @@
             android:contentDescription="GitHub"
             android:padding="16dp"
             android:src="@drawable/ic_github_24dp"
-            app:tint="?attr/colorAccent"
-            tools:ignore="HardcodedText" />
-
-        <ImageButton
-            android:id="@+id/btn_tachiyomi"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Tachiyomi"
-            android:padding="16dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_tachi"
             app:tint="?attr/colorAccent"
             tools:ignore="HardcodedText" />
 

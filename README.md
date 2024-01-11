@@ -8,7 +8,7 @@
 
 <p id="badges" align="center">
     <a href="https://github.com/null2264/yokai/actions/workflows/build_push.yml"><img alt="CI" src="https://github.com/null2264/yokai/actions/workflows/build_push.yml/badge.svg"></a>
-    <a href="https://github.com/null2264/yokai/releases"><img alt="GitHub Releases" src="https://img.shields.io/github/v/release/null2264/yokai?include_prereleases"></a>
+    <a href="https://github.com/null2264/yokai/releases"><img alt="GitHub Releases" src="https://img.shields.io/github/v/release/null2264/yokai"></a>
     <a href="/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
 </p>
 

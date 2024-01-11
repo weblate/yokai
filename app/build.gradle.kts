@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.scope.ProjectInfo.Companion.getBaseName
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -200,6 +199,7 @@ dependencies {
     // Chucker
     debugImplementation(libs.chucker.library)
     releaseImplementation(libs.chucker.library.no.op)
+    "nightlyImplementation"(libs.chucker.library.no.op)
 
     implementation(kotlin("reflect", version = kotlinx.versions.kotlin.get()))
 

@@ -77,6 +77,15 @@ android {
             isMinifyEnabled = true
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
         }
+        create("nightly") {
+            initWith(getByName("release"))
+            buildConfigField("boolean", "BETA", "true")
+
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks.add("release")
+            versionNameSuffix = "-b${getCommitCount()}"
+            applicationIdSuffix = ".nightlyYokai"
+        }
     }
 
     buildFeatures {

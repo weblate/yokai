@@ -93,7 +93,7 @@ class AboutController : SettingsController() {
         preference {
             key = "pref_version"
             titleRes = R.string.version
-            summary = if (BuildConfig.DEBUG) {
+            summary = if (BuildConfig.DEBUG || BuildConfig.BETA) {
                 "r" + BuildConfig.COMMIT_COUNT
             } else {
                 BuildConfig.VERSION_NAME

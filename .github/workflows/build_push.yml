@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version'     
+        description: 'Version (without "v" prefix)'
         required: true
         type: string
         
@@ -41,17 +41,34 @@ jobs:
           mkdir -p ~/.gradle
           cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - name: Build app
+      # PROD
+      - name: Prepare release build
+        if: github.event.inputs.version != ''
+        run: |
+          set -x
+          echo "VERSION_TAG=v${{github.event.inputs.version}}" >> $GITHUB_ENV
+
+      # NIGHTLY
+      - name: Prepare nightly build
+        if: github.event.inputs.version == ''
+        run: |
+          set -x
+          echo "VERSION_TAG=r$(git rev-list --count HEAD)" >> $GITHUB_ENV
+          echo "PREV_TAG=$(git tag -l | grep 'r' | tail -1)" >> $GITHUB_ENV
+
+      # PROD
+      - name: Build release build
+        if: startsWith(env.VERSION_TAG, 'v')
         uses: gradle/gradle-command-action@v2
         with:
           arguments: assembleStandardRelease
 
-      # Sign APK and create release for tags
-      - name: Get tag name
-        if: github.event.inputs.version != ''
-        run: |
-          set -x
-          echo "VERSION_TAG=${{github.event.inputs.version}}" >> $GITHUB_ENV
+      # NIGHTLY
+      - name: Build nightly build
+        if: startsWith(env.VERSION_TAG, 'r')
+        uses: gradle/gradle-command-action@v2
+        with:
+          arguments: assembleStandardNightly
 
       - name: Sign APK
         if: env.VERSION_TAG != ''
@@ -89,7 +106,7 @@ jobs:
           echo "APK_X86_64_SHA=$sha" >> $GITHUB_ENV
 
       - name: Create Release
-        if: env.VERSION_TAG != ''
+        if: startsWith(env.VERSION_TAG, 'v')
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION_TAG }}
@@ -114,5 +131,40 @@ jobs:
             yokai-x86_64-${{ env.VERSION_TAG }}.apk
           draft: true
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Old Nightly
+        if: startsWith(env.VERSION_TAG, 'r') && env.PREV_TAG != ''
+        run: gh release delete ${{ env.PREV_TAG }} --cleanup-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Nightly
+        if: startsWith(env.VERSION_TAG, 'r')
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.VERSION_TAG }}
+          name: Yōkai ${{ env.VERSION_TAG }}
+          body: |
+            ### Disclaimer:
+            ***This alpha version is for testing only.***
+            It is not ready for daily use and we do not guarantee its usability.
+            
+            Please backup your data before using it!
+            
+            ---
+
+            ### Checksums
+
+            | Variant | SHA-256 |
+            | ------- | ------- |
+            | Universal | ${{ env.APK_UNIVERSAL_SHA }}
+            | arm64-v8a | ${{ env.APK_ARM64_V8A_SHA }}
+            | armeabi-v7a | ${{ env.APK_ARMEABI_V7A_SHA }}
+            | x86 | ${{ env.APK_X86_SHA }} |
+            | x86_64 | ${{ env.APK_X86_64_SHA }} |
+          draft: false
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,15 +1,14 @@
-package eu.kanade.tachiyomi
+package eu.kanade.tachiyomi.di
 
 import android.app.Application
 import androidx.core.content.ContextCompat
+import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
-import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
-import eu.kanade.tachiyomi.core.preference.PreferenceStore
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import eu.kanade.tachiyomi.extension.ExtensionManager
@@ -19,11 +18,7 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.chapter.ChapterFilter
 import eu.kanade.tachiyomi.util.manga.MangaShortcutManager
 import kotlinx.serialization.json.Json
-import uy.kohesive.injekt.api.InjektModule
-import uy.kohesive.injekt.api.InjektRegistrar
-import uy.kohesive.injekt.api.addSingleton
-import uy.kohesive.injekt.api.addSingletonFactory
-import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.api.*
 
 class AppModule(val app: Application) : InjektModule {
 
@@ -78,22 +73,6 @@ class AppModule(val app: Application) : InjektModule {
             get<DownloadManager>()
 
             get<CustomMangaManager>()
-        }
-    }
-}
-
-
-class PreferenceModule(val application: Application) : InjektModule {
-    override fun InjektRegistrar.registerInjectables() {
-        addSingletonFactory<PreferenceStore> {
-            AndroidPreferenceStore(application)
-        }
-
-        addSingletonFactory {
-            PreferencesHelper(
-                context = application,
-                preferenceStore = get(),
-            )
         }
     }
 }

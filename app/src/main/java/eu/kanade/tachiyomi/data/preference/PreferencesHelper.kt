@@ -292,6 +292,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun automaticExtUpdates() = preferenceStore.getBoolean(Keys.automaticExtUpdates, true)
 
+    // TODO: SourcePref
     fun installedExtensionsOrder() = preferenceStore.getInt(Keys.installedExtensionsOrder, InstalledExtensionsOrder.Name.value)
 
     // TODO: SourcePref
@@ -342,6 +343,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun migrateFlags() = preferenceStore.getInt("migrate_flags", Int.MAX_VALUE)
 
+    // TODO: SourcePref
     fun trustedSignatures() = preferenceStore.getStringSet("trusted_signatures", emptySet())
 
     // using string instead of set so it is ordered
@@ -357,6 +359,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun refreshCoversToo() = preferenceStore.getBoolean(Keys.refreshCoversToo, true)
 
+    // TODO: SourcePref
     fun extensionUpdatesCount() = preferenceStore.getInt("ext_updates_count", 0)
 
     fun recentsViewType() = preferenceStore.getInt("recents_view_type", 0)
@@ -461,6 +464,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun appShouldAutoUpdate() = prefs.getInt(Keys.shouldAutoUpdate, AppDownloadInstallJob.ONLY_ON_UNMETERED)
 
+    // TODO: SourcePref
     fun autoUpdateExtensions() = prefs.getInt(Keys.autoUpdateExtensions, AppDownloadInstallJob.ONLY_ON_UNMETERED)
 
     fun extensionInstaller() = preferenceStore.getInt("extension_installer", ExtensionInstaller.PACKAGE_INSTALLER)

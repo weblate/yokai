@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
+import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.view.BackHandlerControllerInterface
 import eu.kanade.tachiyomi.util.view.activityBinding
@@ -175,5 +176,13 @@ abstract class BaseController(bundle: Bundle? = null) :
         } else {
             true
         }
+    }
+
+    fun hideLegacyAppBar() {
+        (activity as? AppCompatActivity)?.findViewById<View>(R.id.app_bar)?.isVisible = false
+    }
+
+    fun showLegacyAppBar() {
+        (activity as? AppCompatActivity)?.findViewById<View>(R.id.app_bar)?.isVisible = true
     }
 }

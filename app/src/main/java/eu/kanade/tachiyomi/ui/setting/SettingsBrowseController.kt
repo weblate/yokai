@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
+import dev.yokai.presentation.source.SourceRepoController
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -39,6 +40,13 @@ class SettingsBrowseController : SettingsController() {
 
         preferenceCategory {
             titleRes = R.string.extensions
+            preference {
+                titleRes = R.string.source_repos
+                onClick { router.pushController(SourceRepoController().withFadeTransaction()) }
+                // TODO: Enable once it's finished
+                summary = "Temporarily disabled, will be enabled once it's fully implemented"
+                isEnabled = BuildConfig.DEBUG
+            }
             switchPreference {
                 key = PreferenceKeys.automaticExtUpdates
                 titleRes = R.string.check_for_extension_updates

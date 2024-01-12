@@ -1,11 +1,13 @@
 [versions]
 compose = "1.5.3"
+lifecycle = "2.6.2"
 
 [libraries]
 animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
 foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 material = { module = "androidx.compose.material:material", version.ref = "compose" }
 material3 = { module = "androidx.compose.material3:material3", version = "1.1.2" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }

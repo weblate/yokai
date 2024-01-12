@@ -1,4 +1,4 @@
-package dev.yokai.presentation.source
+package dev.yokai.presentation.extension.repo
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,7 +14,7 @@ import dev.yokai.presentation.YokaiScaffold
 import eu.kanade.tachiyomi.util.system.toast
 
 @Composable
-fun SourceRepoScreen(
+fun ExtensionRepoScreen(
     title: String,
     onBackPress: () -> Unit,
 ) {

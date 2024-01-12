@@ -4,8 +4,11 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
+import dev.yokai.domain.source.SourcePreferences
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.extension.api.ExtensionGithubApi
+import eu.kanade.tachiyomi.data.preference.minusAssign
+import eu.kanade.tachiyomi.data.preference.plusAssign
+import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.InstallStep
 import eu.kanade.tachiyomi.extension.model.LoadResult
@@ -20,6 +23,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
@@ -44,7 +48,7 @@ class ExtensionManager(
     /**
      * API where all the available extensions can be found.
      */
-    private val api = ExtensionGithubApi()
+    private val api = ExtensionApi()
 
     /**
      * The installer which installs, updates and uninstalls the extensions.
@@ -435,6 +439,7 @@ class ExtensionManager(
         val name: String,
         val versionCode: Long,
         val libVersion: Double,
+        val repoUrl: String? = null,
     ) : Parcelable {
         constructor(extension: Extension.Available) : this(
             apkName = extension.apkName,
@@ -442,6 +447,7 @@ class ExtensionManager(
             name = extension.name,
             versionCode = extension.versionCode,
             libVersion = extension.libVersion,
+            repoUrl = extension.repoUrl,
         )
     }
 

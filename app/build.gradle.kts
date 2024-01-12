@@ -35,8 +35,8 @@ android {
         minSdk = AndroidConfig.minSdk
         targetSdk = AndroidConfig.targetSdk
         applicationId = "eu.kanade.tachiyomi"
-        versionCode = 111
-        versionName = "1.7.4"
+        versionCode = 112
+        versionName = "1.7.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 
@@ -179,6 +179,7 @@ dependencies {
     implementation(libs.firebase.crashlytics)
 
     implementation(androidx.lifecycle.viewmodel)
+    implementation(compose.lifecycle.viewmodel)
     implementation(androidx.lifecycle.livedata)
     implementation(androidx.lifecycle.common)
     implementation(androidx.lifecycle.process)

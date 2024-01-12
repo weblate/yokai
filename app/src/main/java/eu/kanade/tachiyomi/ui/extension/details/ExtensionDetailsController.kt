@@ -164,9 +164,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
     }
 
     private fun openRepo() {
-        // TODO
-        // val url = getUrl(extension.repoUrl)
-        val url = getUrl()
+        val url = getUrl(presenter.extension?.repoUrl)
         openInBrowser(url)
     }
 

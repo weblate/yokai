@@ -1,10 +1,10 @@
-package dev.yokai.presentation.source
+package dev.yokai.presentation.extension.repo
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 
-class SourceRepoController :
+class ExtensionRepoController :
     BaseComposeController() {
 
     override fun getTitle(): String {
@@ -14,7 +14,7 @@ class SourceRepoController :
     @Preview
     @Composable
     override fun ScreenContent() {
-        SourceRepoScreen(
+        ExtensionRepoScreen(
             title = getTitle(),
             onBackPress = router::handleBack,
         )

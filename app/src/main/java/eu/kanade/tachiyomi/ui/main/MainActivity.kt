@@ -85,7 +85,7 @@ import eu.kanade.tachiyomi.data.updater.AppUpdateResult
 import eu.kanade.tachiyomi.data.updater.RELEASE_URL
 import eu.kanade.tachiyomi.databinding.MainActivityBinding
 import eu.kanade.tachiyomi.extension.ExtensionManager
-import eu.kanade.tachiyomi.extension.api.ExtensionGithubApi
+import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.base.MaterialMenuSheet
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
@@ -955,7 +955,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     extensionManager.findAvailableExtensions()
-                    val pendingUpdates = ExtensionGithubApi().checkForUpdates(
+                    val pendingUpdates = ExtensionApi().checkForUpdates(
                         this@MainActivity,
                         extensionManager.availableExtensionsFlow.value.takeIf { it.isNotEmpty() },
                     )

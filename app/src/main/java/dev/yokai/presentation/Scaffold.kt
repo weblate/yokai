@@ -11,6 +11,7 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -34,11 +35,12 @@ fun YokaiScaffold(
     onNavigationIconClicked: () -> Unit,
     modifier: Modifier = Modifier,
     title: String = "",
-    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),
+    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(state = rememberTopAppBarState()),
     fab: @Composable () -> Unit = {},
     navigationIcon: ImageVector = Icons.Filled.ArrowBack,
     navigationIconLabel: String = stringResource(id = R.string.back),
     actions: @Composable RowScope.() -> Unit = {},
+    appBarType: AppBarType = AppBarType.LARGE,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val view = LocalView.current
@@ -57,25 +59,46 @@ fun YokaiScaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = fab,
         topBar = {
-                 LargeTopAppBar(
-                     title = {
-                         Text(text = title)
-                     },
-                     modifier = Modifier.statusBarsPadding(),
-                     colors = topAppBarColors(
-                         containerColor = color,
-                         scrolledContainerColor = color,
-                     ),
-                     navigationIcon = {
-                         ToolTipButton(
-                             toolTipLabel = navigationIconLabel,
-                             icon = navigationIcon,
-                             buttonClicked = onNavigationIconClicked,
-                         )
-                     },
-                     scrollBehavior = scrollBehavior,
-                     actions = actions,
-                 )
+            when (appBarType) {
+                AppBarType.SMALL -> TopAppBar(
+                    title = {
+                        Text(text = title)
+                    },
+                    modifier = Modifier.statusBarsPadding(),
+                    colors = topAppBarColors(
+                        containerColor = color,
+                        scrolledContainerColor = color,
+                    ),
+                    navigationIcon = {
+                        ToolTipButton(
+                            toolTipLabel = navigationIconLabel,
+                            icon = navigationIcon,
+                            buttonClicked = onNavigationIconClicked,
+                        )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    actions = actions,
+                )
+                AppBarType.LARGE -> LargeTopAppBar(
+                    title = {
+                        Text(text = title)
+                    },
+                    modifier = Modifier.statusBarsPadding(),
+                    colors = topAppBarColors(
+                        containerColor = color,
+                        scrolledContainerColor = color,
+                    ),
+                    navigationIcon = {
+                        ToolTipButton(
+                            toolTipLabel = navigationIconLabel,
+                            icon = navigationIcon,
+                            buttonClicked = onNavigationIconClicked,
+                        )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    actions = actions,
+                )
+            }
         },
         content = content,
     )
@@ -87,4 +110,9 @@ fun getTopAppBarColor(title: String): Color {
         true -> Color.Transparent
         false -> MaterialTheme.colorScheme.surface.copy(alpha = .7f)
     }
+}
+
+enum class AppBarType {
+    SMALL,
+    LARGE,
 }

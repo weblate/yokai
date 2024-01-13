@@ -3,14 +3,16 @@ package dev.yokai.presentation.extension.repo
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExtensionOff
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import dev.yokai.presentation.AppBarType
 import dev.yokai.presentation.YokaiScaffold
+import dev.yokai.presentation.component.EmptyScreen
 import eu.kanade.tachiyomi.util.system.toast
 
 @Composable
@@ -30,11 +32,13 @@ fun ExtensionRepoScreen(
             ) {
                 Icon(Icons.Filled.Add, "Add repo")
             }
-        }
+        },
+        appBarType = AppBarType.SMALL,
     ) { innerPadding ->
-        Text(
+        EmptyScreen(
             modifier = Modifier.padding(innerPadding),
-            text = "Hello World!"
+            image = Icons.Filled.ExtensionOff,
+            message = "No extension repo found",
         )
     }
 }

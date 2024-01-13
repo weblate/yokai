@@ -905,7 +905,11 @@
     <string name="nsfw_sources">NSFW (18+) sources</string>
     <string name="show_in_sources_and_extensions">Show in sources and extensions lists</string>
     <string name="does_not_prevent_unofficial_nsfw">This does not prevent unofficial or potentially incorrectly flagged extensions from surfacing NSFW (18+) content within the app.</string>
+
+    <!-- Extension repos -->
     <string name="source_repos">Extension Repos</string>
+    <string name="action_add_repo">Add repo</string>
+    <string name="invalid_repo_url">Invalid repo url</string>
 
     <!-- About section -->
     <string name="version">Version</string>
@@ -1189,4 +1193,5 @@
     <string name="warning">Warning</string>
     <string name="wifi">Wi-Fi</string>
     <string name="webcomic">Webcomic</string>
+    <string name="internal_error">Internal error: %s</string>
 </resources>

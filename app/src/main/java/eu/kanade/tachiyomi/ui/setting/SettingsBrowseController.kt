@@ -44,9 +44,6 @@ class SettingsBrowseController : SettingsController() {
             preference {
                 title = context.getString(R.string.source_repos).addBetaTag(context)
                 onClick { router.pushController(ExtensionRepoController().withFadeTransaction()) }
-                // TODO: Enable once it's finished
-                summary = "Temporarily disabled, will be enabled once it's fully implemented"
-                isEnabled = BuildConfig.DEBUG
             }
             switchPreference {
                 key = PreferenceKeys.automaticExtUpdates

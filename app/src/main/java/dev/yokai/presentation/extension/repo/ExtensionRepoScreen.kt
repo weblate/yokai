@@ -4,11 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExtensionOff
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,6 +27,7 @@ fun ExtensionRepoScreen(
     title: String,
     onBackPress: () -> Unit,
     viewModel: ExtensionRepoViewModel = viewModel(),
+    repoUrl: String? = null,
 ) {
     val context = LocalContext.current
     val repoState = viewModel.repoState.collectAsState()
@@ -39,14 +36,6 @@ fun ExtensionRepoScreen(
     YokaiScaffold(
         onNavigationIconClicked = onBackPress,
         title = title,
-        fab = {
-            FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                onClick = { context.toast("Test") },
-            ) {
-                Icon(Icons.Filled.Add, "Add repo")
-            }
-        },
         appBarType = AppBarType.SMALL,
     ) { innerPadding ->
         if (repoState.value is ExtensionRepoState.Loading) return@YokaiScaffold
@@ -61,6 +50,7 @@ fun ExtensionRepoScreen(
             item {
                 ExtensionRepoItem(
                     inputText = inputText,
+                    // TODO: i18n
                     inputHint = "Add new repo",
                     onInputChange = { inputText = it },
                     onAddClick = { viewModel.addRepo(it) },
@@ -72,6 +62,7 @@ fun ExtensionRepoScreen(
                     EmptyScreen(
                         modifier = Modifier.fillParentMaxSize(),
                         image = Icons.Filled.ExtensionOff,
+                        // TODO: i18n
                         message = "No extension repo found",
                     )
                 }
@@ -82,11 +73,16 @@ fun ExtensionRepoScreen(
                 item {
                     ExtensionRepoItem(
                         repoUrl = repo,
+                        // TODO: Confirmation dialog
                         onDeleteClick = { viewModel.deleteRepo(it) },
                     )
                 }
             }
         }
+    }
+
+    LaunchedEffect(repoUrl) {
+        repoUrl?.let { viewModel.addRepo(repoUrl) }
     }
     
     LaunchedEffect(Unit) {

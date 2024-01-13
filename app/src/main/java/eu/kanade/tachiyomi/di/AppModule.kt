@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.di
 
 import android.app.Application
 import androidx.core.content.ContextCompat
+import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.cache.ChapterCache
@@ -60,6 +61,8 @@ class AppModule(val app: Application) : InjektModule {
         addSingletonFactory { ChapterFilter() }
 
         addSingletonFactory { MangaShortcutManager() }
+
+        addSingletonFactory { TrustExtension() }
 
         // Asynchronously init expensive components for a faster cold start
 

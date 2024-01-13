@@ -70,6 +70,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Ints.max
+import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.Migrations
 import eu.kanade.tachiyomi.R
@@ -1051,6 +1052,14 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     val controller =
                         router.backstack.firstOrNull()?.controller as? RecentsController
                     controller?.showSheet()
+                }
+            }
+            Intent.ACTION_VIEW -> {
+                if (intent.scheme == "tachiyomi" && intent.data?.host == "add-repo") {
+                    intent.data?.getQueryParameter("url")?.let { repoUrl ->
+                        router.popToRoot()
+                        router.pushController(ExtensionRepoController(repoUrl).withFadeTransaction())
+                    }
                 }
             }
             else -> return false

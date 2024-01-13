@@ -255,6 +255,11 @@ object Migrations {
                 } catch (_: Exception) {
                 }
             }
+            if (oldVersion < 112) {
+                prefs.edit {
+                    remove("trusted_signatures")
+                }
+            }
 
             return true
         }

@@ -343,9 +343,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun migrateFlags() = preferenceStore.getInt("migrate_flags", Int.MAX_VALUE)
 
-    // TODO: SourcePref
-    fun trustedSignatures() = preferenceStore.getStringSet("trusted_signatures", emptySet())
-
     // using string instead of set so it is ordered
     // TODO: SourcePref
     fun migrationSources() = preferenceStore.getString("migrate_sources", "")

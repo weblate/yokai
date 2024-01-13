@@ -7,15 +7,11 @@ import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 class ExtensionRepoController :
     BaseComposeController() {
 
-    override fun getTitle(): String {
-        return "Extension Repos"
-    }
-
     @Preview
     @Composable
     override fun ScreenContent() {
         ExtensionRepoScreen(
-            title = getTitle(),
+            title = "Extension Repos",
             onBackPress = router::handleBack,
         )
     }

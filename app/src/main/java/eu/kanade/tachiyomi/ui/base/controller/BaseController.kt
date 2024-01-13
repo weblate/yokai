@@ -61,27 +61,13 @@ abstract class BaseController(bundle: Bundle? = null) :
     open fun onViewCreated(view: View) { }
 
     override fun onChangeStarted(handler: ControllerChangeHandler, type: ControllerChangeType) {
-        if (type.isEnter && isControllerVisible) {
-            setTitle()
-        } else if (type.isEnter) {
+        if (type.isEnter) {
             view?.alpha = 0f
         } else {
             removeQueryListener()
         }
         setHasOptionsMenu(type.isEnter && isControllerVisible)
         super.onChangeStarted(handler, type)
-    }
-
-    open fun getTitle(): String? {
-        return null
-    }
-
-    open fun getSearchTitle(): String? {
-        return null
-    }
-
-    open fun getBigIcon(): Drawable? {
-        return null
     }
 
     open fun canStillGoBack(): Boolean { return false }
@@ -92,28 +78,6 @@ abstract class BaseController(bundle: Bundle? = null) :
     override fun onActivityPaused(activity: Activity) {
         super.onActivityPaused(activity)
         removeQueryListener(false)
-    }
-
-    fun setTitle() {
-        var parentController = parentController
-        while (parentController != null) {
-            if (parentController is BaseController && parentController.getTitle() != null) {
-                return
-            }
-            parentController = parentController.parentController
-        }
-
-        if (isControllerVisible) {
-            (activity as? AppCompatActivity)?.title = getTitle()
-            (activity as? MainActivity)?.searchTitle = getSearchTitle()
-            val icon = getBigIcon()
-            activityBinding?.bigIconLayout?.isVisible = icon != null
-            if (icon != null) {
-                activityBinding?.bigIcon?.setImageDrawable(getBigIcon())
-            } else {
-                activityBinding?.bigIcon?.setImageDrawable(getBigIcon())
-            }
-        }
     }
 
     private fun Controller.instance(): String {

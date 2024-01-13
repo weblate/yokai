@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - dev/**
   workflow_dispatch:
     inputs:
       version:
@@ -41,6 +42,11 @@ jobs:
           mkdir -p ~/.gradle
           cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
 
+      - name: Extract branch name
+        id: branch_name
+        shell: bash
+        run: echo "name=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
       # PROD
       - name: Prepare release build
         if: github.event.inputs.version != ''
@@ -50,7 +56,7 @@ jobs:
 
       # NIGHTLY
       - name: Prepare nightly build
-        if: github.event.inputs.version == ''
+        if: steps.branch_name.outputs.name == 'master'
         run: |
           set -x
           echo "VERSION_TAG=r$(git rev-list --count HEAD)" >> $GITHUB_ENV
@@ -137,12 +143,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Delete Old Nightly
-        if: startsWith(env.VERSION_TAG, 'r') && env.PREV_TAG != ''
-        run: gh release delete ${{ env.PREV_TAG }} --cleanup-tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Nightly
         if: startsWith(env.VERSION_TAG, 'r')
         uses: softprops/action-gh-release@v1
@@ -173,5 +173,11 @@ jobs:
             yokai-x86_64-${{ env.VERSION_TAG }}.apk
           draft: false
           prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Old Nightly
+        if: startsWith(env.VERSION_TAG, 'r') && env.PREV_TAG != ''
+        run: gh release delete ${{ env.PREV_TAG }} --cleanup-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

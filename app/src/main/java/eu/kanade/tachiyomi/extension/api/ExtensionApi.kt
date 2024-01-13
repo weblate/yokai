@@ -107,7 +107,7 @@ internal class ExtensionApi {
     }
 
     fun getApkUrl(extension: ExtensionManager.ExtensionInfo): String {
-        return "${extension.repoUrl}apk/${extension.apkName}"
+        return "${extension.repoUrl}/apk/${extension.apkName}"
     }
 
     private fun ExtensionJsonObject.extractLibVersion(): Double {

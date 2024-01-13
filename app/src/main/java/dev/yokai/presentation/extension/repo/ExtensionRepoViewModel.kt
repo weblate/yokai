@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.yokai.domain.Result
 import dev.yokai.domain.extension.repo.ExtensionRepoRepository
+import dev.yokai.domain.source.SourcePreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,13 +15,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import okhttp3.internal.toImmutableList
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 
 class ExtensionRepoViewModel :
     ViewModel() {
 
-    private val repository = ExtensionRepoRepository(Injekt.get())
+    private val sourcePreferences: SourcePreferences by injectLazy()
+    private val repository = ExtensionRepoRepository(sourcePreferences)
     private val mutableRepoState: MutableStateFlow<ExtensionRepoState> = MutableStateFlow(ExtensionRepoState.Loading)
     val repoState: StateFlow<ExtensionRepoState> = mutableRepoState.asStateFlow()
 

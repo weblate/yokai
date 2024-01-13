@@ -4,9 +4,8 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
-import dev.yokai.domain.extension.TrustExtension
+import dev.yokai.domain.source.SourcePreferences
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.plusAssign
 import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.InstallStep
@@ -41,7 +40,7 @@ import java.util.Locale
 class ExtensionManager(
     private val context: Context,
     private val preferences: PreferencesHelper = Injekt.get(),
-    private val trustExtension: TrustExtension = Injekt.get(),
+    private val sourcePreferences: SourcePreferences = Injekt.get(),
 ) {
 
     /**
@@ -317,7 +316,12 @@ class ExtensionManager(
         val untrustedPkgName = untrustedExtensionsFlow.value.map { it.pkgName }.toSet()
         if (pkgName !in untrustedPkgName) return
 
-        trustExtension.trust(pkgName, versionCode, signatureHash)
+        sourcePreferences.trustedExtensions().let { exts ->
+            val removed = exts.get().filterNot { it.startsWith("$pkgName:") }.toMutableSet()
+
+            removed += "$pkgName:$versionCode:$signatureHash"
+            exts.set(removed)
+        }
 
         val nowTrustedExtensions = untrustedExtensionsFlow.value
             .filter { it.pkgName == pkgName && it.versionCode == versionCode }

@@ -8,7 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 import dalvik.system.PathClassLoader
-import dev.yokai.domain.extension.TrustExtension
+import dev.yokai.domain.source.SourcePreferences
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -34,7 +34,7 @@ import java.nio.file.attribute.BasicFileAttributes
 internal object ExtensionLoader {
 
     private val preferences: PreferencesHelper by injectLazy()
-    private val trustExtension: TrustExtension by injectLazy()
+    private val sourcePreferences: SourcePreferences by injectLazy()
     private val loadNsfwSource by lazy {
         preferences.showNsfwSources().get()
     }
@@ -429,7 +429,8 @@ internal object ExtensionLoader {
     }
 
     private fun isTrusted(pkgInfo: PackageInfo, signatures: List<String>): Boolean {
-        return trustExtension.isTrusted(pkgInfo, signatures.last())
+        val key = "${pkgInfo.packageName}:${PackageInfoCompat.getLongVersionCode(pkgInfo)}:${signatures.last()}"
+        return key in sourcePreferences.trustedExtensions().get()
     }
 
     /**

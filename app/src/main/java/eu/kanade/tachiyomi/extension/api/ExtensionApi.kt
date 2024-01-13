@@ -102,7 +102,7 @@ internal class ExtensionApi {
                     hasChangelog = it.hasChangelog == 1,
                     sources = it.sources ?: emptyList(),
                     apkName = it.apk,
-                    iconUrl = "${repoUrl}icon/${it.pkg}.png",
+                    iconUrl = "$repoUrl/icon/${it.pkg}.png",
                     repoUrl = repoUrl,
                 )
             }

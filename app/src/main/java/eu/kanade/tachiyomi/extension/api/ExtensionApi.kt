@@ -28,9 +28,8 @@ internal class ExtensionApi {
         return withIOContext {
             val extensions = sourcePreferences.extensionRepos().get().flatMap { getExtensions(it) }
 
-            // Sanity check - a small number of extensions probably means something broke
-            // with the repo generator
-            if (extensions.size < 50) {
+            // Sanity check - empty probably means something broke
+            if (extensions.isEmpty()) {
                 throw Exception()
             }
 
@@ -117,11 +116,6 @@ internal class ExtensionApi {
         return version.substringBeforeLast('.').toDouble()
     }
 }
-
-private const val BASE_URL = "https://raw.githubusercontent.com/"
-private const val REPO_URL_PREFIX = "${BASE_URL}keiyoushi/extensions/repo/"
-private const val FALLBACK_BASE_URL = "https://gcore.jsdelivr.net/gh/"
-private const val FALLBACK_REPO_URL_PREFIX = "${FALLBACK_BASE_URL}keiyoushi/extensions@repo/"
 
 @Serializable
 private data class ExtensionJsonObject(

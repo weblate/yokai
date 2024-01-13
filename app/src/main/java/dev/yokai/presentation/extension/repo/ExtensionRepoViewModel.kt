@@ -28,29 +28,27 @@ class ExtensionRepoViewModel :
     val event: StateFlow<ExtensionRepoEvent> = internalEvent.asStateFlow()
 
     init {
-        refresh()
+        viewModelScope.launchIO {
+            repository.getRepo().collectLatest { repos ->
+                mutableRepoState.update { ExtensionRepoState.Success(repos = repos.toImmutableList()) }
+            }
+        }
     }
 
     fun addRepo(url: String) {
         viewModelScope.launchIO {
             val result = repository.addRepo(url)
-            if (result is Result.Error) return@launchIO
-            refresh()
+            if (result is Result.Error) {
+                internalEvent.value = ExtensionRepoEvent.InvalidUrl
+                return@launchIO
+            }
+            internalEvent.value = ExtensionRepoEvent.Success
         }
     }
 
     fun deleteRepo(repo: String) {
         viewModelScope.launchIO {
             repository.deleteRepo(repo)
-            refresh()
-        }
-    }
-
-    fun refresh() {
-        viewModelScope.launchIO {
-            repository.getRepo().collectLatest { repos ->
-                mutableRepoState.update { ExtensionRepoState.Success(repos = repos.toImmutableList()) }
-            }
         }
     }
 }
@@ -59,6 +57,7 @@ sealed class ExtensionRepoEvent {
     sealed class LocalizedMessage(@StringRes val stringRes: Int) : ExtensionRepoEvent()
     data object InvalidUrl : LocalizedMessage(R.string.invalid_repo_url)
     data object NoOp : ExtensionRepoEvent()
+    data object Success : ExtensionRepoEvent()
 }
 
 sealed class ExtensionRepoState {

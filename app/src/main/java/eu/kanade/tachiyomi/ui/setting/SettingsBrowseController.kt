@@ -19,6 +19,7 @@ import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.migration.MigrationController
+import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.injectLazy
@@ -41,7 +42,7 @@ class SettingsBrowseController : SettingsController() {
         preferenceCategory {
             titleRes = R.string.extensions
             preference {
-                titleRes = R.string.source_repos
+                title = context.getString(R.string.source_repos).addBetaTag(context)
                 onClick { router.pushController(ExtensionRepoController().withFadeTransaction()) }
                 // TODO: Enable once it's finished
                 summary = "Temporarily disabled, will be enabled once it's fully implemented"

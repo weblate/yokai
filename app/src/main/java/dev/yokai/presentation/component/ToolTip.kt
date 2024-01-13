@@ -96,7 +96,7 @@ fun CombinedClickableIconButton(
             if (enabled) {
                 enabledTint
             } else {
-                MaterialTheme.colorScheme.onSurface
+                MaterialTheme.colorScheme.onBackground
                     .copy(alpha = .38f)
             }
         CompositionLocalProvider(LocalContentColor provides contentColor, content = content)

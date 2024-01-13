@@ -15,12 +15,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import okhttp3.internal.toImmutableList
-import uy.kohesive.injekt.injectLazy
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 class ExtensionRepoViewModel :
     ViewModel() {
 
-    private val sourcePreferences: SourcePreferences by injectLazy()
+    private val sourcePreferences = Injekt.get<SourcePreferences>()
     private val repository = ExtensionRepoRepository(sourcePreferences)
     private val mutableRepoState: MutableStateFlow<ExtensionRepoState> = MutableStateFlow(ExtensionRepoState.Loading)
     val repoState: StateFlow<ExtensionRepoState> = mutableRepoState.asStateFlow()

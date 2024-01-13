@@ -27,7 +27,6 @@ import eu.kanade.tachiyomi.data.preference.SharedPreferencesDataStore
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.databinding.ExtensionDetailControllerBinding
-import eu.kanade.tachiyomi.extension.api.REPO_URL_PREFIX
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.ConfigurableSource
@@ -168,7 +167,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
         openInBrowser(url)
     }
 
-    private fun getUrl(repoUrl: String? = REPO_URL_PREFIX): String? {
+    private fun getUrl(repoUrl: String?): String? {
         val regex = """https://raw.githubusercontent.com/(.+?)/(.+?)/.+""".toRegex()
         return regex.find(repoUrl.orEmpty())?.let {
             val (user, repo) = it.destructured

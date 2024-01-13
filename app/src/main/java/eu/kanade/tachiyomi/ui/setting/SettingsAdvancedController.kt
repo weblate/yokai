@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.ChapterCache
@@ -77,6 +78,8 @@ class SettingsAdvancedController : SettingsController() {
     private val coverCache: CoverCache by injectLazy()
 
     private val downloadManager: DownloadManager by injectLazy()
+
+    private val trustExtension: TrustExtension by injectLazy()
 
     private val isUpdaterEnabled = BuildConfig.INCLUDE_UPDATER
 
@@ -367,6 +370,15 @@ class SettingsAdvancedController : SettingsController() {
                 preferences.extensionInstaller().changesIn(viewScope) {
                     isVisible =
                         it != ExtensionInstaller.PACKAGE_INSTALLER && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+                }
+            }
+            preference {
+                // TODO: i18n
+                title = "Revoke all"
+
+                onClick {
+                    trustExtension.revokeAll()
+                    activity?.toast(R.string.requires_app_restart)
                 }
             }
         }

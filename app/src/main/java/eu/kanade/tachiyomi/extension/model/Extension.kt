@@ -31,7 +31,6 @@ sealed class Extension {
         val icon: Drawable?,
         val hasUpdate: Boolean = false,
         val isObsolete: Boolean = false,
-        val isUnofficial: Boolean = false,
         val isShared: Boolean,
         val repoUrl: String? = null,
     ) : Extension()

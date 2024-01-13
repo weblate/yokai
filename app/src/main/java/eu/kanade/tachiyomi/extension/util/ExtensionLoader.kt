@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 import dalvik.system.PathClassLoader
+import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -33,6 +34,7 @@ import java.nio.file.attribute.BasicFileAttributes
 internal object ExtensionLoader {
 
     private val preferences: PreferencesHelper by injectLazy()
+    private val trustExtension: TrustExtension by injectLazy()
     private val loadNsfwSource by lazy {
         preferences.showNsfwSources().get()
     }
@@ -51,14 +53,6 @@ internal object ExtensionLoader {
         PackageManager.GET_META_DATA or
         PackageManager.GET_SIGNATURES or
         (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) PackageManager.GET_SIGNING_CERTIFICATES else 0)
-
-    // inorichi's key
-    private const val officialSignature = "7ce04da7773d41b489f4693a366c36bcd0a11fc39b547168553c285bd7348e23"
-
-    /**
-     * List of the trusted signatures.
-     */
-    var trustedSignatures = mutableSetOf(officialSignature) + preferences.trustedSignatures().get()
 
     private const val PRIVATE_EXTENSION_EXTENSION = "ext"
 
@@ -307,7 +301,7 @@ internal object ExtensionLoader {
         if (signatures.isNullOrEmpty()) {
             Timber.w("Package $pkgName isn't signed")
             return LoadResult.Error
-        } else if (!hasTrustedSignature(signatures)) {
+        } else if (!isTrusted(pkgInfo, signatures)) {
             val extension = Extension.Untrusted(
                 extName,
                 pkgName,
@@ -375,7 +369,6 @@ internal object ExtensionLoader {
             hasChangelog = hasChangelog,
             sources = sources,
             pkgFactory = appInfo.metaData.getString(METADATA_SOURCE_FACTORY),
-            isUnofficial = !isOfficiallySigned(signatures),
             icon = appInfo.loadIcon(pkgManager),
             isShared = extensionInfo.isShared,
         )
@@ -437,12 +430,8 @@ internal object ExtensionLoader {
             ?.toList()
     }
 
-    private fun hasTrustedSignature(signatures: List<String>): Boolean {
-        return trustedSignatures.any { signatures.contains(it) }
-    }
-
-    private fun isOfficiallySigned(signatures: List<String>): Boolean {
-        return signatures.all { it == officialSignature }
+    private fun isTrusted(pkgInfo: PackageInfo, signatures: List<String>): Boolean {
+        return trustExtension.isTrusted(pkgInfo, signatures.last())
     }
 
     /**

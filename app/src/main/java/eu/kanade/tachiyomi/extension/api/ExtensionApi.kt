@@ -98,8 +98,6 @@ internal class ExtensionApi {
                     libVersion = it.extractLibVersion(),
                     lang = it.lang,
                     isNsfw = it.nsfw == 1,
-                    hasReadme = it.hasReadme == 1,
-                    hasChangelog = it.hasChangelog == 1,
                     sources = it.sources ?: emptyList(),
                     apkName = it.apk,
                     iconUrl = "$repoUrl/icon/${it.pkg}.png",

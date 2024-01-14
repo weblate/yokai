@@ -15,7 +15,7 @@ coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 compose-theme-adapter3 = { module = "com.google.accompanist:accompanist-themeadapter-material3", version = "0.33.2-alpha" }
-conductor = { module = "com.bluelinelabs:conductor", version = "4.0.0-preview-3" }
+conductor = { module = "com.bluelinelabs:conductor", version = "4.0.0-preview-4" }
 conductor-support-preference = { module = "com.github.tachiyomiorg:conductor-support-preference", version = "3.0.0" }
 conscrypt = { module = "org.conscrypt:conscrypt-android", version = "2.5.2" }
 directionalviewpager = { module = "com.github.tachiyomiorg:DirectionalViewPager", version = "1.0.0" }

@@ -9,6 +9,9 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
+import eu.kanade.tachiyomi.util.view.previousController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 
 /**
  * A controller that displays a dialog window, floating on top of its activity's window.
@@ -36,14 +39,19 @@ abstract class DialogController : Controller {
      */
     protected constructor(args: Bundle?) : super(args)
 
+    protected var onCreateViewScope: CoroutineScope? = null
+        private set
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-        dialog = onCreateDialog(savedViewState)
-        dialog!!.setOwnerActivity(activity!!)
-        dialog!!.setOnDismissListener { dismissDialog() }
-        if (savedViewState != null) {
-            val dialogState = savedViewState.getBundle(SAVED_DIALOG_STATE_TAG)
-            if (dialogState != null) {
-                dialog!!.onRestoreInstanceState(dialogState)
+        onCreateViewScope = MainScope()
+        dialog = onCreateDialog(savedViewState).apply {
+            setOwnerActivity(activity!!)
+            setOnDismissListener { dismissDialog() }
+            if (savedViewState != null) {
+                val dialogState = savedViewState.getBundle(SAVED_DIALOG_STATE_TAG)
+                if (dialogState != null) {
+                    onRestoreInstanceState(dialogState)
+                }
             }
         }
         return View(activity) // stub view
@@ -77,21 +85,10 @@ abstract class DialogController : Controller {
      * @param router The router on which the transaction will be applied
      */
     open fun showDialog(router: Router) {
-        showDialog(router, null)
-    }
-
-    /**
-     * Display the dialog, create a transaction and pushing the controller.
-     * @param router The router on which the transaction will be applied
-     * @param tag The tag for this controller
-     */
-    fun showDialog(router: Router, tag: String?) {
         dismissed = false
         router.pushController(
             RouterTransaction.with(this)
-                .pushChangeHandler(SimpleSwapChangeHandler(false))
-                .popChangeHandler(SimpleSwapChangeHandler(false))
-                .tag(tag),
+                .pushChangeHandler(SimpleSwapChangeHandler(false)),
         )
     }
 
@@ -102,7 +99,13 @@ abstract class DialogController : Controller {
         if (dismissed) {
             return
         }
+        val prev = this.previousController
         router.popController(this)
+        // FIXME: This is a hack so that previous controller stays visible
+        prev?.let {
+            if (it !is BaseController) return@let
+            it.view?.alpha = 1.0f
+        }
         dismissed = true
     }
 

@@ -56,7 +56,7 @@ jobs:
 
       # NIGHTLY
       - name: Prepare nightly build
-        if: steps.branch_name.outputs.name == 'master'
+        if: steps.branch_name.outputs.name == 'master' && github.event.inputs.version == ''
         run: |
           set -x
           echo "VERSION_TAG=r$(git rev-list --count HEAD)" >> $GITHUB_ENV

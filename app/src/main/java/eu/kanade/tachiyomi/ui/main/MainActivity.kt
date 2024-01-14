@@ -1055,6 +1055,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                 }
             }
             Intent.ACTION_VIEW -> {
+                if (router.backstack.isEmpty()) nav.selectedItemId = R.id.nav_library
                 if (intent.scheme == "tachiyomi" && intent.data?.host == "add-repo") {
                     intent.data?.getQueryParameter("url")?.let { repoUrl ->
                         router.popToRoot()

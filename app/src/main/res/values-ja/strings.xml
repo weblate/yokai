@@ -199,11 +199,6 @@
     <string name="local_source_help_guide">ローカルソースガイド</string>
     <string name="check_site_in_web">WebViewでサイトを開く</string>
     <string name="obsolete">廃止済み</string>
-    <string name="untrusted_extension_message">この拡張機能は信頼できない証明書でサインされているため、有効にされていません。
-\n
-\n悪意のある拡張機能はTachiyomiに保存されているすべてのログイン情報を読み取ることや、任意コード実行をすることができます。
-\n
-\nこれらのリスクを受け入れ、この証明書を信頼しますか？</string>
     <string name="obsolete_extension_message">この拡張機能は利用不可になりました。</string>
     <plurals name="extension_updates_available">
         <item quantity="other">%d件の拡張機能の更新が利用可能</item>

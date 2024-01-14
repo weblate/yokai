@@ -271,11 +271,6 @@
     <string name="manhua">Manhua</string>
     <string name="manhwa">Manhwa</string>
     <string name="label_global_search">Globális keresés</string>
-    <string name="untrusted_extension_message">Ezt a kiterjesztést nem megbízható tanúsítvánnyal írták alá, és nem lett aktiválva.
-\n
-\nEgy rosszindulatú kiterjesztés elolvashatja a Tachiyomiban tárolt bejelentkezési adatokat, vagy tetszőleges kódot futtathat.
-\n
-\nAz ebben a tanúsítványban való megbízással, elfogadja ezeket a kockázatokat.</string>
     <string name="none">Semmi</string>
     <string name="secure_screen">Biztonságos képernyő</string>
     <string name="lock_when_idle">Zárás tétlen állapotban</string>

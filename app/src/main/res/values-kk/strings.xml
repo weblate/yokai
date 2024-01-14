@@ -62,11 +62,6 @@
     <string name="ext_installer_shizuku_stopped">Shizuku қосылмаған</string>
     <string name="ext_installer_shizuku_unavailable_dialog">Shizuku-ны кеңейту орнатушысы ретінде пайдалану үшін Shizuku-ны орнатып іске қосыңыз.</string>
     <string name="untrusted_extension">Сенімсіз кеңейту</string>
-    <string name="untrusted_extension_message">Бұл кеңейту сенімсіз сертификатпен қол қойылған және іске қосылмаған.
-\n
-\nЗиянды кеңейту Tachiyomi-де сақталған кез келген кіру тіркелгі деректерін оқуы немесе еркін кодты орындауы мүмкін.
-\n
-\nОсы сертификатқа сену арқылы сіз осы қауіп-қатерді қабылдайсыз.</string>
     <string name="obsolete_extension_message">Бұл кеңейту енді қолжетімсіз.</string>
     <string name="unofficial_extension_message">Бұл кеңейту Tachiyomi кеңейтулерінің ресми тізімінен емес.</string>
     <string name="nsfw_short">18+</string>

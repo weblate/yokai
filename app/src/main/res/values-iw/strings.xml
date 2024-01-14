@@ -98,11 +98,6 @@
     <string name="ext_installer_shizuku_stopped">Shizuku לא פועל</string>
     <string name="ext_installer_shizuku_unavailable_dialog">התקן והפעל את Shizuku כדי להשתמש בShizuku כמתקין ההרחבות.</string>
     <string name="untrusted_extension">תוסף לא מאומת</string>
-    <string name="untrusted_extension_message">תוסף זה נחתם עם אישור לא מהימן ולא הופעל.
-\n
-\nתוסף זדוני יכול לקרוא את אישורי ההתחברות המאוחסנים ב-Tachiyomi או להריץ קוד שרירותי.
-\n
-\nעל ידי אמון באישור זה אתה מקבל סיכונים אלה.</string>
     <string name="obsolete_extension_message">תוסף זה אינו זמין עוד.</string>
     <string name="unofficial_extension_message">ההרחבה הזאת לא נמצאת ברשימת ההרחבות הרשמיות של Tachiyomi.</string>
     <string name="nsfw_short">18+</string>

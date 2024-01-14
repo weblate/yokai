@@ -69,11 +69,6 @@
     <string name="l_nav">L nga porma</string>
     <string name="kindlish_nav">Kindle-ish</string>
     <string name="right_and_left_nav">Tuo ug Wala</string>
-    <string name="untrusted_extension_message">Kini nga extension gipirmahan gamit ang dili kasaligan nga sertipiko ug wala gi-aktibo.
-\n
-\nAng usa ka malisyoso nga extension mahimong makabasa sa bisan unsang mga kredensyal sa pag-login nga gitipigan sa Tachiyomi o ipatuman ang arbitraryong code.
-\n
-\nPinaagi sa pagsalig niini nga sertipiko gidawat nimo kini nga mga risgo.</string>
     <string name="pref_inverted_colors">Baliktad</string>
     <string name="edge_nav">Edge</string>
     <string name="all_files_permission_required">Gikinahanglan ang mga permiso sa file</string>

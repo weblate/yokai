@@ -89,11 +89,6 @@
     <string name="untrusted">Opålitlig</string>
     <string name="uninstall">Avinstallera</string>
     <string name="untrusted_extension">Opålitlig extension</string>
-    <string name="untrusted_extension_message">Detta tillägg tecknades med ett otillförlitligt certifikat och var inte aktiverat.
-\n
-\nEtt skadligt tillägg kan läsa inloggningsuppgifter som är lagrade i Tachiyomi eller utföra godtycklig kod.
-\n
-\nGenom att lita på detta certifikat accepterar du dessa risker.</string>
     <string name="version_">Version: %1$s</string>
     <string name="language_">Språk: %1$s</string>
     <string name="fullscreen">Fullskärm</string>

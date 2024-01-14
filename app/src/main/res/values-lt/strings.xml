@@ -406,11 +406,6 @@
     <string name="green_initial">G</string>
     <string name="blue_initial">B</string>
     <string name="alpha_initial">A</string>
-    <string name="untrusted_extension_message">Šis plėtinys buvo pasirašytas nepatikimu sertifikatu ir nebuvo aktyvuotas.
-\n
-\nPlėtinys, su negeranoriškais ketinimais, gali perskaityti prisijungimo duomenys patalpintus Tachiyomi arba gali paleisti kenkėjišką kodą.
-\n
-\nJūs priimate šias rizikas pasitikėdami sertifikatu.</string>
     <string name="obsolete_extension_message">Šis plėtinys nebėra prieinamas.</string>
     <string name="unofficial_extension_message">Šis plėtinys nėra iš oficialaus Tachiyomi sąrašo.</string>
     <string name="nsfw_short">18+</string>

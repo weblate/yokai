@@ -262,11 +262,6 @@
     <string name="untrusted">Непотвърдени</string>
     <string name="uninstall">Деинсталирай</string>
     <string name="untrusted_extension">Непотвърдено разширение</string>
-    <string name="untrusted_extension_message">Следното разширение имаше непотвърден сертификат и не беше активирано.
-\n
-\nЗлонамереното разширение може да види всичката информация за вход в системата на Tachiyomi или да компилира неблагонадежден код.
-\n
-\nПотвърждавайки този сертификат, вие приемате тези рискове.</string>
     <string name="version_">Версия: %1$s</string>
     <string name="language_">Език: %1$s</string>
     <string name="double_tap_anim_speed">Скорост на анимацията</string>

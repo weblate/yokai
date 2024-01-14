@@ -242,11 +242,6 @@
     <string name="trust">信任</string>
     <string name="untrusted">不信任</string>
     <string name="untrusted_extension">不信任的擴充套件</string>
-    <string name="untrusted_extension_message">這個擴充套件的憑證並不可靠，且尚未被啟用。
-\n
-\n惡意的擴充套件可能存取任何儲存於 Tachiyomi 中的登錄憑證，或執行任意的程式碼。
-\n
-\n信任這個憑證，即表示你願意承擔上述風險。</string>
     <string name="last_read_chapter">最後閱畢的章節</string>
     <string name="max_auto_backups">最大備份保留數</string>
     <string name="clear_database_confirmation">您確定要這樣做嗎？未收藏的漫畫的閱讀進度和章節會被刪除</string>

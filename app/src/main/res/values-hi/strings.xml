@@ -228,11 +228,6 @@
     <string name="untrusted">अविश्वस्त</string>
     <string name="uninstall">स्थापना रद्द करें</string>
     <string name="untrusted_extension">अविश्वस्त एक्सटेंशन</string>
-    <string name="untrusted_extension_message">यह एक्सटेंशन एक अविश्वस्त प्रमाणपत्र के साथ हस्ताक्षरित हुआ था और सक्रिय नहीं हुआ था।
-\n
-\nदुर्भावनापूर्ण विस्तार, किसी भी लॉगिन क्रेडेंशियल्स को ताचियोमी में संग्रहीत या मनमाना कोड निष्पादित कर सकता है
-\n
-\nइस प्रमाणपत्र पर विश्वास करके आप इन जोखिमों को स्वीकार करते हैं।</string>
     <string name="version_">संस्करण: %1$s</string>
     <string name="language_">भाषा: %1$s</string>
     <string name="double_tap_anim_speed">डबल टैप एनीमेशन गति</string>

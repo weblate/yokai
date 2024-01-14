@@ -89,11 +89,6 @@
     <string name="untrusted">Nun mi fido</string>
     <string name="uninstall">Disinstalla</string>
     <string name="untrusted_extension">Estensione non afidàbile</string>
-    <string name="untrusted_extension_message">Custa estensione est istada firmada cun unu tzertificadu chi no est afidàbile e no est istada ativada.
-\n
-\nUn\'estensione mala diat pòdere lèghere totu sas informatziones de atzessu sarvadas in Tachiyomi o fàghere eseguire còdighe arbitràriu.
-\n
-\nPonende fidùtzia in custu tzertificadu atzetas custos arriscos.</string>
     <string name="version_">Versione: %1$s</string>
     <string name="language_">Limba: %1$s</string>
     <string name="fullscreen">Ischermu intreu</string>

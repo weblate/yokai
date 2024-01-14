@@ -202,11 +202,6 @@
     <string name="untrusted">Niezaufane</string>
     <string name="uninstall">Odinstaluj</string>
     <string name="untrusted_extension">Niezaufane rozszerzenie</string>
-    <string name="untrusted_extension_message">To rozszerzenie było podpisane niezaufanym certyfikatem i nie zostało aktywowane.
-\n
-\nZłośliwe rozszerzenie może odczytać dane logowania przechowywane w Tachiyomi albo uruchomić złośliwy kod.
-\n
-\nUfając temu rozszerzeniu akceptujesz to zagrożenie.</string>
     <string name="obsolete_extension_message">To rozszerzenie nie jest już dostępne.</string>
     <string name="version_">Wersja: %1$s</string>
     <string name="language_">Język: %1$s</string>

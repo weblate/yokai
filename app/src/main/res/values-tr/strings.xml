@@ -89,11 +89,6 @@
     <string name="untrusted">Güvenilmeyen</string>
     <string name="uninstall">Kaldır</string>
     <string name="untrusted_extension">Güvenilmeyen uzantı</string>
-    <string name="untrusted_extension_message">Bu uzantı güvenilmeyen bir sertifika ile imzalanmış ve etkinleştirilmedi. 
-\n 
-\nKötü niyetli bir uzantı, Tachiyomi\'de saklanan her giriş kimlik bilgisini okuyabilir veya rastgele kod yürütebilir. 
-\n 
-\nBu sertifikaya güvenerek bu riskleri kabul etmiş oluyorsunuz.</string>
     <string name="version_">Sürüm: %1$s</string>
     <string name="language_">Dil: %1$s</string>
     <string name="fullscreen">Tam Ekran</string>

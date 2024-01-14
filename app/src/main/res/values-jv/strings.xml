@@ -76,11 +76,6 @@
     <string name="uninstall">Ucul</string>
     <string name="ext_installer_shizuku_stopped">Shizuku ora lumaku</string>
     <string name="ext_installer_shizuku_unavailable_dialog">Pasang lan wiwit Shizuku kanggo migunakake Shizuku dadi pemasang ekstensi.</string>
-    <string name="untrusted_extension_message">Ekstensi iki ditandatangani nganggo sertifikat sing ora dipercaya lan ora diaktifake.
-\n
-\n Ekstensi angkoro bisa maca kredensial login sing disimpen ing Tachiyomi utawa nglakokake kode sewenang-wenang.
-\n
-\n Kanthi percaya karo sertifikat iki, sampeyan nampa risiko kasebut.</string>
     <string name="nsfw_short">18+</string>
     <string name="app_info">Infone aplikasi</string>
     <string name="unofficial">Ora resmi</string>

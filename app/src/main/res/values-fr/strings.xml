@@ -258,11 +258,6 @@
     <string name="installed">Installée</string>
     <string name="uninstall">Désinstaller</string>
     <string name="untrusted_extension">Extension non reconnue</string>
-    <string name="untrusted_extension_message">Cette extension a été signée avec un certificat non fiable et n\'a pas été activée.
-\n
-\nUne extension malveillante pourrait lire n\'importe quel identifiant de connexion stocké dans Tachiyomi ou exécuter un code arbitraire.
-\n
-\nEn faisant confiance à ce certificat, vous acceptez ces risques.</string>
     <string name="version_">Version : %1$s</string>
     <string name="language_">Langue : %1$s</string>
     <string name="double_tap_anim_speed">Vitesse d\'animation du double-clic</string>

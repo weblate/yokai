@@ -88,11 +88,6 @@
     <string name="untrusted">Nesigură</string>
     <string name="uninstall">Dezinstalează</string>
     <string name="untrusted_extension">Extensie nesigură</string>
-    <string name="untrusted_extension_message">Extensia a fost semnată cu un certificat nesigur și nu a fost activată.
-\n
-\nO extensie periculoasă ar putea citi orice date de logare stocate în Tachiyomi sau executa cod periculos.
-\n
-\nPrin acordarea încrederii acestui certificat acceptați riscurile menționate.</string>
     <string name="version_">Versiune: %1$s</string>
     <string name="language_">Limbă: %1$s</string>
     <string name="fullscreen">Ecran complet</string>

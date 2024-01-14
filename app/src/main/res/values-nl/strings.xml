@@ -228,11 +228,6 @@
     <string name="untrusted">Niet vertrouwd</string>
     <string name="uninstall">Verwijderen</string>
     <string name="untrusted_extension">Niet vertrouwde extensie</string>
-    <string name="untrusted_extension_message">Deze extensie is door een niet vertrouwd certificaat ondertekend en is niet geactiveerd.
-\n
-\nEen kwaadaardige extensie zou alle log-in gegevens kunnen uitlezen in Tachiyomi of arbitraire code uit kunnen voeren.
-\n
-\nDoor dit certificaat te vertrouwen accepteer je deze risico\'s.</string>
     <string name="version_">Versie: %1$s</string>
     <string name="language_">Taal: %1$s</string>
     <string name="double_tap_anim_speed">Dubbel tik animatiesnelheid</string>

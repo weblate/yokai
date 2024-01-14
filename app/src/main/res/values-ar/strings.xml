@@ -227,11 +227,6 @@
     <string name="untrusted">ذات ريبة</string>
     <string name="uninstall">أزل</string>
     <string name="untrusted_extension">إضافة ذات ريبة</string>
-    <string name="untrusted_extension_message">هذه اﻹضافة موقَّعة بشهادة ذات ريبة ولم تفعَّل.
-\n
-\nيمكن لأي إضافة خبيثة قراءة بيانات اعتماد تسجيل الدخول المخزَّنة في Tachiyomi أو تنفيذ تعليمات برمجية عشوائية.
-\n
-\nأنت تقبل هذه المخاطر إن وثقت بالشهادة.</string>
     <string name="version_">الإصدار: %1$s</string>
     <string name="language_">اللغة: %1$s</string>
     <string name="double_tap_anim_speed">سرعة تحريك الضغط المزدوج</string>

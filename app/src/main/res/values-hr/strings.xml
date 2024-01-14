@@ -84,11 +84,6 @@
     <string name="untrusted">Nepovjerljivo</string>
     <string name="uninstall">Deinstaliraj</string>
     <string name="untrusted_extension">Nepovjerljivo proširenje</string>
-    <string name="untrusted_extension_message">Ovo proširenje potpisano je nepovjerljivim certifikatom i nije aktivirano.
-\n
-\nZlonamjerno proširenje može pročitati sve podatke za prijavu koji su spremljeni u programu Tachiyomi ili izvršiti proizvoljni kod.
-\n
-\nVjerujući ovom certifikatu, prihvaćaš te rizike.</string>
     <string name="obsolete_extension_message">Ovo proširenje više nije dostupno.</string>
     <string name="version_">Verzija: %1$s</string>
     <string name="language_">Jezik: %1$s</string>

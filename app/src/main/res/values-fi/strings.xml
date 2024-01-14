@@ -127,11 +127,6 @@
     <string name="untrusted">Luottamaton</string>
     <string name="uninstall">Poista asennus</string>
     <string name="untrusted_extension">Luottamattomat laajennokset</string>
-    <string name="untrusted_extension_message">Tämä laajennus on allekirjoitettu luottamattomalla sertifikaatilla ja sitä ei ole aktivoitu.
-\n
-\nHaitallinen laajennus voisi lukea mahdolliset kirjautumistiedot Tachiyomista tai suorittaa luvatonta koodia.
-\n
-\nLuottamalla tähän sertifikaattiin hyväksyt nämä riskit.</string>
     <string name="version_">Versio: %1$s</string>
     <string name="language_">Kieli: %1$s</string>
     <string name="fullscreen">Koko näyttö</string>

@@ -228,11 +228,6 @@
     <string name="untrusted">Tidak terpercaya</string>
     <string name="uninstall">Copot</string>
     <string name="untrusted_extension">Ekstensi tidak terpercaya</string>
-    <string name="untrusted_extension_message">Ekstensi ini ditanda tangani dengan sertifikat yang tidak terpercaya dan belum diaktifkan.
-\n
-\nSebuah ekstensi berbahaya dapat membaca kredensial login Anda yang tersimpan pada Tachiyomi atau mengeksekusi kode berbahaya.
-\n
-\nDengan mempercayai sertifikat ini Anda menyetujui resiko tersebut.</string>
     <string name="version_">Versi: %1$s</string>
     <string name="language_">Bahasa: %1$s</string>
     <string name="double_tap_anim_speed">Kecepatan animasi dua ketukan</string>

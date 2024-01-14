@@ -268,11 +268,6 @@
     <string name="theres_no_next_chapter">No hay capítulo siguiente</string>
     <string name="theres_no_previous_chapter">No hay capítulo anterior</string>
     <string name="migrate">Migrar</string>
-    <string name="untrusted_extension_message">Esta extensión está firmada por una fuente sin certificar y por lo tanto no se ha activado.
-\n
-\nUna extensión maliciosa puede leer credenciales de inicio guardadas en Tachiyomi o ejecutar cualquier tipo de código en tu dispositivo.
-\n
-\nAl confiar en este certificado aceptas estos riesgos.</string>
     <string name="no_animation">Sin animación</string>
     <string name="search_filters">Filtros de búsqueda</string>
     <string name="added_to_library">Añadido a la biblioteca</string>

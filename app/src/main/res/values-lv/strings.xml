@@ -235,11 +235,6 @@
     <string name="select_inverse">Atlasiet apgrieztu</string>
     <string name="pref_manage_notifications">Pārvaldiet paziņojumus</string>
     <string name="all">Visi</string>
-    <string name="untrusted_extension_message">Šis paplašinājums tika parakstīts ar neuzticamu sertifikātu, un tas netika aktivizēts.
-\n
-\nĻaunprātīgs paplašinājums var nolasīt visus pieteikšanās akreditācijas datus, kas saglabāti Tachiyomi, vai izpildīt patvaļīgu kodu.
-\n
-\nUzticoties šim sertifikātam, jūs piekrītat šiem riskiem.</string>
     <string name="obsolete_extension_message">Šis paplašinājums vairs nav pieejams.</string>
     <string name="pref_library_update_manga_restriction">Izlaist sēriju atjaunināšanu</string>
     <string name="pref_update_only_started">Kas nav sāktas</string>

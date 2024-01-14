@@ -189,11 +189,6 @@
     <string name="untrusted">Nicht vertrauenswürdig</string>
     <string name="uninstall">Deinstallieren</string>
     <string name="untrusted_extension">Nicht vertrauenswürdige Erweiterung</string>
-    <string name="untrusted_extension_message">Diese Erweiterung ist mit einem nicht vertrauenswürdigen Zertifikat unterschrieben und wurde nicht aktiviert.
-\n
-\nEine bösartige Erweiterung könnte in Tachiyomi gespeicherte Anmeldedaten auslesen oder einen schädlichen Code ausführen.
-\n
-\nDurch das Vertrauen dieses Zertifikats akzeptierst du diese Risiken.</string>
     <string name="obsolete_extension_message">Diese Erweiterung ist nicht länger verfügbar.</string>
     <string name="version_">Version: %1$s</string>
     <string name="language_">Sprache: %1$s</string>

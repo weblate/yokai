@@ -91,11 +91,6 @@
     <string name="untrusted">Nedôveryhodný</string>
     <string name="uninstall">Odinštalovať</string>
     <string name="untrusted_extension">Nedôveryhodné rozšírenie</string>
-    <string name="untrusted_extension_message">Toto rozšírenie bolo podpísané nedôveryhodným certifikátom a nebolo aktivované.
-\n
-\nŠkodlivé rozšírenie môže čítať všetky prihlasovacie údaje uložené v Tachiyomi alebo spúšťať ľubovoľný kód.
-\n
-\nDôverovaním tohto certifikátu akceptujete tieto riziká.</string>
     <string name="version_">Verzia: %1$s</string>
     <string name="language_">Jazyk: %1$s</string>
     <string name="fullscreen">Na celú obrazovku</string>

@@ -89,11 +89,6 @@
     <string name="untrusted">Μη αξιόπιστο</string>
     <string name="uninstall">Απεγκατάσταση</string>
     <string name="untrusted_extension">Μη αξιόπιστη επέκταση</string>
-    <string name="untrusted_extension_message">Αυτή η επέκταση υπογράφηκε με μη αξιόπιστο πιστοποιητικό και δεν ενεργοποιήθηκε.
-\n
-\nΜια κακόβουλη επέκταση θα μπορούσε να διαβάσει τα διαπιστευτήρια σύνδεσης που είναι αποθηκευμένα στο Tachiyomi ή να εκτελέσει αυθαίρετο κώδικα.
-\n
-\nΕμπιστεύοντας αυτό το πιστοποιητικό αποδέχεστε αυτούς τους κινδύνους.</string>
     <string name="version_">Έκδοση: %1$s</string>
     <string name="language_">Γλώσσα: %1$s</string>
     <string name="fullscreen">Πλήρης οθόνη</string>

@@ -229,11 +229,6 @@
     <string name="untrusted">Tidak dipercayai</string>
     <string name="uninstall">Nyahpasang</string>
     <string name="untrusted_extension">Sambungan tak dipercayai</string>
-    <string name="untrusted_extension_message">Sambungan ini telah ditandatangani dengan sijil tidak dipercayai dan ia tidak diaktifkan.
-\n
-\nSambungan yang berniat jahat kemungkinan membaca sebarang kelayakan log masuk yang di simpan dalam Tachiyomi atau melaksanakan kod sesuka hati.
-\n
-\nDengan mempercayai sijil ini, anda menerima risiko tersebut.</string>
     <string name="version_">Versi: %1$s</string>
     <string name="language_">Bahasa: %1$s</string>
     <string name="double_tap_anim_speed">Kelajuan animasi ketik dua kali</string>

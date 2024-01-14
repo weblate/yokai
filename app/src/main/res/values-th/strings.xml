@@ -95,11 +95,6 @@
     <string name="untrusted">ไม่น่าเชื่อถือ</string>
     <string name="uninstall">ถอนการติดตั้ง</string>
     <string name="untrusted_extension">ส่วนขยายที่ไม่น่าเชื่อถือ</string>
-    <string name="untrusted_extension_message">ส่วนขยายนี้ลงนามด้วยใบรับรองที่ไม่น่าเชื่อถือและจะไม่ถูกเปิดใช้งาน
-\n
-\nส่วนขยายที่เป็นอันตรายสามารถอ่านข้อมูลการเข้าสู่ระบบที่จัดเก็บไว้ใน Tachiyomi หรือเรียกใช้โค้ดโดยอำเภอใจ
-\n
-\nการเชื่อถือใบรับรองนี้แสดงว่าคุณยอมรับความเสี่ยงเหล่านี้</string>
     <string name="version_">เวอร์ชัน: %1$s</string>
     <string name="fullscreen">เต็มหน้าจอ</string>
     <string name="double_tap_anim_speed">ความเร็วแอนิเมชั่นเมื่อแตะ 2 ครั้ง</string>

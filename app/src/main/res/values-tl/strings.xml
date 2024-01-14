@@ -90,11 +90,6 @@
     <string name="untrusted">Hindi tiwala</string>
     <string name="uninstall">I-uninstall</string>
     <string name="untrusted_extension">Untrusted na extension</string>
-    <string name="untrusted_extension_message">Ang extension na ito ay na-sign gamit ang isang untrusted certificate at hindi pinagana.
-\n
-\nAng isang malisyosong extension ay kayang mabasa ang kahit anong mga login credentials na nakatago sa Tachiyomi o di kaya\'y mag-execute ng arbitrary code.
-\n
-\nSa pamamagitan ng pagtitiwala sa certificate na ito, tinatanggap mo ang mga panganib na ito.</string>
     <string name="version_">Bersyon: %1$s</string>
     <string name="language_">Wika: %1$s</string>
     <string name="fullscreen">I-fullscreen</string>

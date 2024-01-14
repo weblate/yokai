@@ -192,11 +192,6 @@
     <string name="untrusted">Não confiável</string>
     <string name="uninstall">Desinstalar</string>
     <string name="untrusted_extension">Extensão não confiável</string>
-    <string name="untrusted_extension_message">Esta extensão foi assinada com um certificado não confiável e não foi ativada.
-\n
-\nUma extensão maliciosa poderia ler quaisquer credenciais de login armazenadas no Tachiyomi ou executar códigos arbitrários.
-\n
-\nAo confiar neste certificado, você estará aceitando estes riscos.</string>
     <string name="obsolete_extension_message">Esta extensão não está mais disponível.</string>
     <string name="version_">Versão: %1$s</string>
     <string name="language_">Idioma: %1$s</string>

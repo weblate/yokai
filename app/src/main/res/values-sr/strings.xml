@@ -89,11 +89,6 @@
     <string name="untrusted">Ne veruj</string>
     <string name="uninstall">Izbriši</string>
     <string name="untrusted_extension">Ненадійне розширення</string>
-    <string name="untrusted_extension_message">Це розширення було підписано ненадійним сертифікатом і не було активовано.
-\n
-\nШкідливе розширення може зчитувати будь-які облікові дані для входу, що зберігаються в Tachiyomi, або виконувати довільний код.
-\n
-\nДовіряючи цьому сертифікату, ви приймаєте ці ризики.</string>
     <string name="version_">Verzija: %1$s</string>
     <string name="language_">Jezik: %1$s</string>
     <string name="fullscreen">Ceo ekran</string>

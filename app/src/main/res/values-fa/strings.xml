@@ -278,11 +278,6 @@
     <string name="cover_updated">عکس روی جلد بروزرسانی شد</string>
     <string name="set_as_cover">تنظیم به عنوان عکس روی جلد</string>
     <string name="obsolete_extension_message">این افزونه دیگر موجود نیست.</string>
-    <string name="untrusted_extension_message">این افزونه با یک گواهی نامطمئن امضا شده است و فعال نشده است.
-\n
-\nیک افزونه مخرب می تواند هر گونه طلاعات ورود به سیستم ذخیره شده تاچیومی را بخواند یا کدهای دلخواه(احتمالا خطرناک) را اجرا کند.
-\n
-\nبا اعتماد به این گواهی شما این خطرات را می‌پذیرید.</string>
     <string name="untrusted_extension">افزونه نامطمئن</string>
     <string name="local_source_help_guide">راهنمای منبع محلی</string>
     <string name="in_library">در کتابخانه</string>

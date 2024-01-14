@@ -380,11 +380,6 @@
     <string name="only_enable_pinned_for_migration">Gaitu ainguratutako iturriak migratzeko bakarrik</string>
     <string name="only_enable_enabled_for_migration">Baimendu une honetan gaituak dauden iturriak bakarrik migraziorako</string>
     <string name="does_not_prevent_unofficial_nsfw">Honek ez du eragozten ofizialak ez diren edo oker markatutako luzapenek NSFW (18+) edukia aplikazioan erakustea.</string>
-    <string name="untrusted_extension_message">Luzapen hau fidagarria ez den ziurtagiri batekin sinatu zen eta ez zen aktibatu.
-\n
-\nLuzapen maltzur batek Tachiyomi-n gordetako saio-hasierako kredentzialak irakur ditzake edo kode arbitrarioa exekutatu.
-\n
-\nZiurtagiri honetaz fidatzean, arrisku hauek onartzen dituzu.</string>
     <plurals name="pages_plural">
         <item quantity="one">%1$d orrialdea</item>
         <item quantity="other">%1$d orrialdeak</item>

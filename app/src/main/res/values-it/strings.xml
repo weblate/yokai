@@ -255,11 +255,6 @@
     <string name="untrusted">Non affidabile</string>
     <string name="uninstall">Disinstalla</string>
     <string name="untrusted_extension">Estensione non attendibile</string>
-    <string name="untrusted_extension_message">Questa estensione è stata firmata con un certificato non attendibile e non è stata attivata.
-\n
-\nUn\'estensione maliziosa potrebbe leggere credenziali di accesso all\'interno di Tachiyomi, o eseguire codice dannoso.
-\n
-\nFidandoti di questo certificato accetti questi rischi.</string>
     <string name="version_">Versione: %1$s</string>
     <string name="language_">Lingua: %1$s</string>
     <string name="double_tap_anim_speed">Velocità animazioni doppio tocco</string>

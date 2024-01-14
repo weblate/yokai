@@ -332,11 +332,6 @@
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="unlock_library">Разблокируйте, чтобы открыть библиотеку</string>
     <string name="untrusted_extension">Ненадёжное расширение</string>
-    <string name="untrusted_extension_message">Это расширение было подписано ненадёжным сертификатом и не было активировано.
-\n
-\nВредоносное расширение может считывать любые учетные данные для входа, хранящиеся в Tachiyomi, или выполнять произвольный код.
-\n
-\nДоверяя этому сертификату, вы принимаете эти риски.</string>
     <string name="every_12_hours">Каждые 12 часов</string>
     <string name="daily">Ежедневно</string>
     <string name="every_2_days">Каждые 2 дня</string>

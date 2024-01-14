@@ -89,11 +89,6 @@
     <string name="untrusted">不可信</string>
     <string name="uninstall">卸载</string>
     <string name="untrusted_extension">不可信的插件</string>
-    <string name="untrusted_extension_message">此插件的证书并不可信，且尚未被开启。
-\n
-\n恶意的插件可能会读取储存在 Tachiyomi 中的任何登录凭据或执行任意代码。
-\n
-\n信任这个证书，即代表你愿意承担上述风险。</string>
     <string name="version_">版本: %1$s</string>
     <string name="language_">语言: %1$s</string>
     <string name="fullscreen">全屏</string>

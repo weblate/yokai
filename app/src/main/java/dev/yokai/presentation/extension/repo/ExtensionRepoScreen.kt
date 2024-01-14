@@ -4,10 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExtensionOff
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.yokai.presentation.AppBarType
 import dev.yokai.presentation.YokaiScaffold
@@ -38,6 +45,7 @@ fun ExtensionRepoScreen(
     val repoState = viewModel.repoState.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
+    var repoToDelete by remember { mutableStateOf<String?>(null) }
 
     YokaiScaffold(
         onNavigationIconClicked = onBackPress,
@@ -51,6 +59,53 @@ fun ExtensionRepoScreen(
         if (repoState.value is ExtensionRepoState.Loading) return@YokaiScaffold
 
         val repos = (repoState.value as ExtensionRepoState.Success).repos
+
+        if (repoToDelete != null)
+            AlertDialog(
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                title = {
+                        Text(
+                            text = stringResource(R.string.notice_delete_repo_title),
+                            fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 24.sp,
+                        )
+                },
+                text = {
+                       Text(
+                           text = stringResource(R.string.notice_delete_repo, repoToDelete.orEmpty()),
+                           fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                           color = MaterialTheme.colorScheme.onSurfaceVariant,
+                           fontSize = 14.sp,
+                       )
+                },
+                onDismissRequest = { repoToDelete = null },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            repoToDelete?.let {
+                                viewModel.deleteRepo(it)
+                                repoToDelete = null
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.delete),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 14.sp,
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { repoToDelete = null }) {
+                        Text(
+                            text = stringResource(R.string.cancel),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 14.sp,
+                        )
+                    }
+                },
+            )
 
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
@@ -82,8 +137,7 @@ fun ExtensionRepoScreen(
                 item {
                     ExtensionRepoItem(
                         repoUrl = repo,
-                        // TODO: Confirmation dialog
-                        onDeleteClick = { viewModel.deleteRepo(it) },
+                        onDeleteClick = { repoToDelete = it },
                     )
                 }
             }

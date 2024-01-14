@@ -118,6 +118,9 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
             extension is Extension.Installed && extension.isObsolete -> itemView.context.getString(R.string.obsolete)
             else -> ""
         }
+
+        if (repoText.isEmpty()) return this
+
         return if (isEmpty()) {
             this
         } else {

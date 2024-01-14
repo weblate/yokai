@@ -61,7 +61,7 @@ abstract class BaseController(bundle: Bundle? = null) :
     open fun onViewCreated(view: View) { }
 
     override fun onChangeStarted(handler: ControllerChangeHandler, type: ControllerChangeType) {
-        if (type.isEnter) {
+        if (type.isEnter && !isControllerVisible) {
             view?.alpha = 0f
         } else {
             removeQueryListener()

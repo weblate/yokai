@@ -99,13 +99,7 @@ abstract class DialogController : Controller {
         if (dismissed) {
             return
         }
-        val prev = this.previousController
         router.popController(this)
-        // FIXME: This is a hack so that previous controller stays visible
-        prev?.let {
-            if (it !is BaseController) return@let
-            it.view?.alpha = 1.0f
-        }
         dismissed = true
     }
 

@@ -57,6 +57,7 @@ import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.MainActivityBinding
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
+import eu.kanade.tachiyomi.ui.base.controller.BaseController
 import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.base.controller.CrossFadeChangeHandler
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
@@ -903,7 +904,7 @@ val Controller.previousController: Controller?
 @MainThread
 fun Router.canStillGoBack(): Boolean {
     if (backstack.size > 1) return true
-    (backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.let { controller ->
+    (backstack.lastOrNull()?.controller as? BaseController)?.let { controller ->
         return controller.canStillGoBack()
     }
     return false

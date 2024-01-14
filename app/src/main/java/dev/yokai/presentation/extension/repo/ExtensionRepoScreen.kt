@@ -3,8 +3,11 @@ package dev.yokai.presentation.extension.repo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExtensionOff
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,11 +35,16 @@ fun ExtensionRepoScreen(
     val context = LocalContext.current
     val repoState = viewModel.repoState.collectAsState()
     var inputText by remember { mutableStateOf("") }
+    val listState = rememberLazyListState()
 
     YokaiScaffold(
         onNavigationIconClicked = onBackPress,
         title = title,
         appBarType = AppBarType.SMALL,
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
+            state = rememberTopAppBarState(),
+            canScroll = { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 },
+        ),
     ) { innerPadding ->
         if (repoState.value is ExtensionRepoState.Loading) return@YokaiScaffold
 
@@ -46,6 +54,7 @@ fun ExtensionRepoScreen(
             modifier = Modifier.padding(innerPadding),
             userScrollEnabled = true,
             verticalArrangement = Arrangement.Top,
+            state = listState,
         ) {
             item {
                 ExtensionRepoItem(

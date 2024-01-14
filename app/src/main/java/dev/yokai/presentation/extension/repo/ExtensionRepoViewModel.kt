@@ -38,11 +38,11 @@ class ExtensionRepoViewModel :
     fun addRepo(url: String) {
         viewModelScope.launchIO {
             val result = repository.addRepo(url)
-            if (result is Result.Error) {
-                internalEvent.value = ExtensionRepoEvent.InvalidUrl
-                return@launchIO
+            when (result) {
+                is Result.Error -> internalEvent.value = ExtensionRepoEvent.InvalidUrl
+                is Result.Success -> internalEvent.value = ExtensionRepoEvent.Success
+                else -> internalEvent.value = ExtensionRepoEvent.NoOp
             }
-            internalEvent.value = ExtensionRepoEvent.Success
         }
     }
 

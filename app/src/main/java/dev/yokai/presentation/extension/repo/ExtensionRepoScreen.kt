@@ -17,11 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.yokai.presentation.AppBarType
 import dev.yokai.presentation.YokaiScaffold
 import dev.yokai.presentation.component.EmptyScreen
 import dev.yokai.presentation.extension.repo.component.ExtensionRepoItem
+import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
 
@@ -59,8 +61,7 @@ fun ExtensionRepoScreen(
             item {
                 ExtensionRepoItem(
                     inputText = inputText,
-                    // TODO: i18n
-                    inputHint = "Add new repo",
+                    inputHint = stringResource(R.string.label_add_repo),
                     onInputChange = { inputText = it },
                     onAddClick = { viewModel.addRepo(it) },
                 )
@@ -71,8 +72,7 @@ fun ExtensionRepoScreen(
                     EmptyScreen(
                         modifier = Modifier.fillParentMaxSize(),
                         image = Icons.Filled.ExtensionOff,
-                        // TODO: i18n
-                        message = "No extension repo found",
+                        message = stringResource(R.string.information_empty_repos),
                     )
                 }
                 return@LazyColumn

@@ -908,8 +908,10 @@
 
     <!-- Extension repos -->
     <string name="source_repos">Extension Repos</string>
+    <string name="label_add_repo">Add new repo</string>
     <string name="action_add_repo">Add repo</string>
     <string name="invalid_repo_url">Invalid repo url</string>
+    <string name="information_empty_repos">You haven\'t added any repos yet.</string>
 
     <!-- About section -->
     <string name="version">Version</string>

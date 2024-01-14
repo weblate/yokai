@@ -16,7 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
-import dev.yokai.domain.source.SourcePreferences
+import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.ChapterCache
@@ -79,7 +79,7 @@ class SettingsAdvancedController : SettingsController() {
 
     private val downloadManager: DownloadManager by injectLazy()
 
-    private val sourcePreferences: SourcePreferences by injectLazy()
+    private val trustExtension: TrustExtension by injectLazy()
 
     private val isUpdaterEnabled = BuildConfig.INCLUDE_UPDATER
 
@@ -377,7 +377,7 @@ class SettingsAdvancedController : SettingsController() {
                 title = "Revoke all"
 
                 onClick {
-                    sourcePreferences.trustedExtensions().delete()
+                    trustExtension.revokeAll()
                     activity?.toast(R.string.requires_app_restart)
                 }
             }

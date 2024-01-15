@@ -23,6 +23,7 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
@@ -360,6 +361,9 @@ class BrowseController :
                 }
                 R.id.action_sources_settings -> {
                     router.pushController(SettingsBrowseController().withFadeTransaction())
+                }
+                R.id.action_extension_repos_settings -> {
+                    router.pushController(ExtensionRepoController().withFadeTransaction())
                 }
             }
             return@setOnMenuItemClickListener true

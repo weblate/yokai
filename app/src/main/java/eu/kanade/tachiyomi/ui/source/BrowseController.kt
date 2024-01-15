@@ -55,6 +55,7 @@ import eu.kanade.tachiyomi.util.view.checkHeightThen
 import eu.kanade.tachiyomi.util.view.collapse
 import eu.kanade.tachiyomi.util.view.expand
 import eu.kanade.tachiyomi.util.view.isCollapsed
+import eu.kanade.tachiyomi.util.view.isCompose
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.requestFilePermissionsSafe
 import eu.kanade.tachiyomi.util.view.scrollViewWith
@@ -543,7 +544,7 @@ class BrowseController :
         if (!type.isEnter) {
             binding.bottomSheet.root.canExpand = false
             activityBinding?.appBar?.alpha = 1f
-            activityBinding?.appBar?.isInvisible = false
+            activityBinding?.appBar?.isInvisible = router.isCompose
             binding.bottomSheet.sheetToolbar.menu.findItem(R.id.action_search)?.let { searchItem ->
                 val searchView = searchItem.actionView as SearchView
                 searchView.clearFocus()

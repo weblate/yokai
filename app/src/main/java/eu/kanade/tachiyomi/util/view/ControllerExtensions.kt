@@ -57,6 +57,7 @@ import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.MainActivityBinding
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
+import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import eu.kanade.tachiyomi.ui.base.controller.BaseController
 import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.base.controller.CrossFadeChangeHandler
@@ -909,6 +910,9 @@ fun Router.canStillGoBack(): Boolean {
     }
     return false
 }
+
+val Router.isCompose: Boolean
+    get() = backstack.lastOrNull()?.controller is BaseComposeController
 
 interface BackHandlerControllerInterface {
     fun handleOnBackStarted(backEvent: BackEventCompat) {

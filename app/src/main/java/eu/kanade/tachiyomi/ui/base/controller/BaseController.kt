@@ -141,12 +141,4 @@ abstract class BaseController(bundle: Bundle? = null) :
             true
         }
     }
-
-    fun hideLegacyAppBar() {
-        (activity as? AppCompatActivity)?.findViewById<View>(R.id.app_bar)?.isVisible = false
-    }
-
-    fun showLegacyAppBar() {
-        (activity as? AppCompatActivity)?.findViewById<View>(R.id.app_bar)?.isVisible = true
-    }
 }

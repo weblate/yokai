@@ -373,7 +373,7 @@ class SettingsAdvancedController : SettingsController() {
                 }
             }
             preference {
-                titleRes = R.string.action_revoke_all_extension
+                titleRes = R.string.action_revoke_all_extensions
 
                 onClick {
                     trustExtension.revokeAll()

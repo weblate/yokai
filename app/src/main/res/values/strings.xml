@@ -361,7 +361,7 @@
         <item quantity="one">Extension update available</item>
         <item quantity="other">%d extension updates available</item>
     </plurals>
-    <string name="action_revoke_all_extension">Revoke all trusted extension</string>
+    <string name="action_revoke_all_extensions">Revoke all trusted extensions</string>
 
     <!-- Reader -->
     <string name="set_as_cover">Set as cover</string>

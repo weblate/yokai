@@ -24,7 +24,6 @@ abstract class BaseLegacyController<VB : ViewBinding>(bundle: Bundle? = null) :
     val isBindingInitialized get() = this::binding.isInitialized
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-        showLegacyAppBar()
         binding = createBinding(inflater)
         binding.root.backgroundColor = binding.root.context.getResourceColor(R.attr.background)
         return binding.root

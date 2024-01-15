@@ -127,6 +127,7 @@ import eu.kanade.tachiyomi.util.view.canStillGoBack
 import eu.kanade.tachiyomi.util.view.doOnApplyWindowInsetsCompat
 import eu.kanade.tachiyomi.util.view.findChild
 import eu.kanade.tachiyomi.util.view.getItemView
+import eu.kanade.tachiyomi.util.view.isCompose
 import eu.kanade.tachiyomi.util.view.mainRecyclerView
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeInTransaction
@@ -166,6 +167,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     private val extensionManager: ExtensionManager by injectLazy()
     private val hideBottomNav
         get() = router.backstackSize > 1 && router.backstack[1].controller !is DialogController
+    private val hideAppBar
+        get() = router.isCompose
 
     private val updateChecker by lazy { AppUpdateChecker() }
     private val isUpdaterEnabled = BuildConfig.INCLUDE_UPDATER
@@ -564,7 +567,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                 ) {
                     to?.view?.alpha = 1f
                     syncActivityViewWithController(to, from, isPush)
-                    binding.appBar.isVisible = true
+                    binding.appBar.isVisible = !hideAppBar
                     binding.appBar.alpha = 1f
                     if (binding.backShadow.isVisible && !isPush) {
                         val bA = ObjectAnimator.ofFloat(binding.backShadow, View.ALPHA, 0f)

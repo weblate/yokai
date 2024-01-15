@@ -373,8 +373,7 @@ class SettingsAdvancedController : SettingsController() {
                 }
             }
             preference {
-                // TODO: i18n
-                title = "Revoke all"
+                titleRes = R.string.action_revoke_all_extension
 
                 onClick {
                     trustExtension.revokeAll()

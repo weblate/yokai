@@ -55,8 +55,7 @@ Please make sure to read the full guidelines. Your issue may be closed without w
 
 <details><summary>Issues</summary>
 
-1. **Before reporting a new issue, take a look at the [FAQ](https://github.com/tachiyomiorg/tachiyomi/wiki/FAQ), the [changelog](https://github.com/jays2kings/tachiyomi/releases) and the already opened [issues](https://github.com/tachiyomiorg/tachiyomi/issues).**
-2. If you are unsure, ask here: [![Discord](https://img.shields.io/discord/349436576037732353.svg)](https://discord.gg/tachiyomi)
+**Before reporting a new issue, take a look at the [FAQ](https://github.com/tachiyomiorg/tachiyomi/wiki/FAQ), the [changelog](https://github.com/null2264/yokai/releases) and the already opened [issues](https://github.com/null2264/yokai/issues).**
 
 </details>
 
@@ -82,13 +81,7 @@ DON'T: https://github.com/tachiyomiorg/tachiyomi/issues/75
 * Write a detailed issue, explaning what it should do or how. Avoid writing just "like X app does"
 * Include screenshot (if needed)
 
-Source requests should be created at https://github.com/tachiyomiorg/tachiyomi-extensions, they do not belong in this repository.
 </details>
-
-### FAQ
-
-[See our website.](https://tachiyomi.org/)
-You can also reach out to us on [Discord](https://discord.gg/tachiyomi).
 
 ### License
 

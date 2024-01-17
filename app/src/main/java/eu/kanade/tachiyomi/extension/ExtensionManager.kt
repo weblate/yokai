@@ -208,7 +208,10 @@ class ExtensionManager(
             if (availableExt != null) {
                 val hasUpdate = installedExt.updateExists(availableExt)
                 if (installedExt.hasUpdate != hasUpdate) {
-                    mutInstalledExtensions[index] = installedExt.copy(hasUpdate = hasUpdate)
+                    mutInstalledExtensions[index] = installedExt.copy(
+                        hasUpdate = hasUpdate,
+                        repoUrl = availableExt.repoUrl,
+                    )
                     hasUpdateCount++
                     changed = true
                 }

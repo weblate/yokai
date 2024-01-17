@@ -165,7 +165,7 @@
 
                 <data
                     android:host="anilist-auth"
-                    android:scheme="tachiyomi" />
+                    android:scheme="yokai" />
             </intent-filter>
         </activity>
         <activity

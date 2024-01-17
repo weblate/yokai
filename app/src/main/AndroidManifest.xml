@@ -150,7 +150,7 @@
 
                 <data
                     android:host="myanimelist-auth"
-                    android:scheme="tachiyomij2k" />
+                    android:scheme="yokai" />
             </intent-filter>
         </activity>
         <activity

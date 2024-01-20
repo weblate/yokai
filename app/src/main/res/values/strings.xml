@@ -916,7 +916,7 @@
     <string name="invalid_repo_url">Invalid repo url</string>
     <string name="information_empty_repos">You haven\'t added any repos yet.</string>
     <string name="notice_delete_repo_title">Delete repo?</string>
-    <string name="notice_delete_repo">Are you sure you wish to delete the repo \'%s\'?</string>
+    <string name="notice_delete_repo">Are you sure you wish to delete the repo \"%s\"?</string>
 
     <!-- About section -->
     <string name="version">Version</string>

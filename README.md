@@ -1,37 +1,51 @@
-<p align="center">
-    <a href="https://github.com/null2264/yokai"><img src="./.github/readme-images/app-icon.png" alt="app icon" width="200"/></a>
-</p>
-
-<h1 align="center">Yōkai</h1>
-
-<p align="center">A <b>free</b> and <b>open source</b> manga reader</p>
+<h1 align="center">
+    <a href="https://github.com/null2264/yokai"><img src="./.github/readme-images/app-icon.png" alt="app icon" width="200" /></a>
+    <br/>
+    Yōkai
+</h1>
+<p align="center">A free and open source manga reader</p>
 
 <p id="badges" align="center">
-    <a href="https://github.com/null2264/yokai/actions/workflows/build_push.yml"><img alt="CI" src="https://github.com/null2264/yokai/actions/workflows/build_push.yml/badge.svg"></a>
-    <a href="https://github.com/null2264/yokai/releases"><img alt="GitHub Releases" src="https://img.shields.io/github/v/release/null2264/yokai"></a>
-    <a href="/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
+    <a href="https://github.com/null2264/yokai/actions/workflows/build_push.yml"><img alt="CI" src="https://github.com/null2264/yokai/actions/workflows/build_push.yml/badge.svg" /></a>
+    <a href="/LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
 </p>
 
-## About
-Yōkai is a free and open source manga reader for Android 6.0 and above. Based on the original [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) and [TachiJ2K](https://github.com/jays2kings/tachiyomiJ2K).
+<p align="center">
+    <img alt="Screenshot" src="./.github/readme-images/screens.gif" />
+</p>
 
-![screenshots of app](./.github/readme-images/screens.gif)
+<h2 align="center">Download</h2>
 
-This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR.
+<p id="badges" align="center">
+    <a href="https://github.com/null2264/yokai/releases"><img alt="GitHub Releases" src="https://img.shields.io/github/v/release/null2264/yokai?maxAge=3600&label=Stable&labelColor=06599d&color=043b69&filter=v*"></a>
+    <a href="https://github.com/null2264/yokai/releases"><img alt="GitHub Releases" src="https://img.shields.io/github/v/release/null2264/yokai?maxAge=3600&label=Nightly&labelColor=2c2c47&color=1c1c39&filter=r*"></a>
+    <br/>
+    <em>Requires Android 6.0 or higher.</em>
+</p>
 
-### Features
+<h2 align="center">About Fork</h2>
 
-Features of Tachiyomi include:
-* Online reading from a variety of sources
+<p align="center">This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR.</p>
+
+<h2 align="center">Features</h2>
+
+### Features of Tachiyomi include
 * Local reading of downloaded content
 * A configurable reader with multiple viewers, reading directions and other settings.
-* [MyAnimeList](https://myanimelist.net/), [AniList](https://anilist.co/), [Kitsu](https://kitsu.io/explore/anime), [Shikimori](https://shikimori.one), and [Manga Updates](https://www.mangaupdates.com/) support
+* Tracker support:
+  [MyAnimeList](https://myanimelist.net/),
+  [AniList](https://anilist.co/),
+  [Kitsu](https://kitsu.io/explore/anime),
+  [Manga Updates](https://www.mangaupdates.com/),
+  [Shikimori](https://shikimori.one),
+  and [Bangumi](https://bgm.tv/) support
 * Categories to organize your library
-* Automatic light and dark themes
+* Light and dark themes
 * Schedule updating your library for new chapters
 * Create backups locally to read offline or to your desired cloud service 
 
-Plus some new features in this fork such as:
+### Plus some new features in this fork and J2K such as
+* UI redesign
 * New Manga details screens, themed by their manga covers
 * Combine 2 pages while reading into a single one for a better tablet experience
 * An expanded toolbar for easier one handed use (with the option to reduce the size back down)
@@ -51,9 +65,9 @@ Plus some new features in this fork such as:
 * A lot more Material Design You additions
 * Android 12 features such as automatic extension and app updates
 
-### Issues, Feature Requests and Contributing
+<h2 align="center">Contributing</h2>
 
-Please make sure to read the full guidelines. Your issue may be closed without warning if you do not.
+<p align="center">Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.</p>
 
 <details><summary>Issues</summary>
 
@@ -85,7 +99,21 @@ DON'T: https://github.com/tachiyomiorg/tachiyomi/issues/75
 
 </details>
 
-### License
+
+<h2 align="center">Credits</h2>
+
+<p align="center">Thank you to all the people who have already contributed!</p>
+<p align="center">
+    <a href="https://github.com/mihonapp/mihon/graphs/contributors">
+        <img src="https://contrib.rocks/image?repo=mihonapp/mihon" width="600"/>
+    </a>
+</p>
+
+<h2 align="center">Disclaimer</h2>
+
+<p align="center">The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.</p>
+
+<h2 align="center">License</h2>
 
     Copyright 2015 Javier Tomás
 
@@ -101,6 +129,3 @@ DON'T: https://github.com/tachiyomiorg/tachiyomi/issues/75
     See the License for the specific language governing permissions and
     limitations under the License.
 
-### Disclaimer
-
-The developer of this application does not have any affiliation with the content providers available.

@@ -13,9 +13,11 @@
 </p>
 
 ## About
-Yōkai is a free and open source manga reader for Android 6.0 and above. Based on the original [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) and [TachiJ2K](https://github.com/jays2kings/tachiyomiJ2K)
+Yōkai is a free and open source manga reader for Android 6.0 and above. Based on the original [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) and [TachiJ2K](https://github.com/jays2kings/tachiyomiJ2K).
 
 ![screenshots of app](./.github/readme-images/screens.gif)
+
+This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR.
 
 ### Features
 

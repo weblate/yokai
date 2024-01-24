@@ -84,7 +84,7 @@ class StatsDetailsPresenter(
             context.getString(R.string.manhwa),
             context.getString(R.string.manhua),
             context.getString(R.string.comic),
-            context.getString(R.string.webcomic),
+            context.getString(R.string.webtoon),
         )
     }
     val statusStats by lazy {

@@ -440,7 +440,7 @@ fun Context.mapSeriesType(seriesType: Int): String {
             Manga.TYPE_MANHWA -> R.string.manhwa
             Manga.TYPE_MANHUA -> R.string.manhua
             Manga.TYPE_COMIC -> R.string.comic
-            Manga.TYPE_WEBTOON -> R.string.webcomic
+            Manga.TYPE_WEBTOON -> R.string.webtoon
             else -> R.string.unknown
         },
     )

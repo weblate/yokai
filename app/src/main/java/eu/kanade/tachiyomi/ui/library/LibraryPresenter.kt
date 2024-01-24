@@ -1,7 +1,7 @@
 package eu.kanade.tachiyomi.ui.library
 
+import dev.yokai.util.isLewd
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.core.preference.getAndSet
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -121,7 +121,16 @@ class LibraryPresenter(
 
         val filterMangaType = preferences.filterMangaType().get()
 
-        !(filterDownloaded == 0 && filterUnread == 0 && filterCompleted == 0 && filterTracked == 0 && filterMangaType == 0)
+        val filterContentType = preferences.filterContentType().get()
+
+        !(
+            filterDownloaded == 0 &&
+            filterUnread == 0 &&
+            filterCompleted == 0 &&
+            filterTracked == 0 &&
+            filterMangaType == 0 &&
+            filterContentType == 0
+        )
     }
 
     /** Save the current list to speed up loading later */
@@ -282,6 +291,8 @@ class LibraryPresenter(
 
         val filterMangaType = preferences.filterMangaType().get()
 
+        val filterContentType = preferences.filterContentType().get()
+
         val filterBookmarked = preferences.filterBookmarked().get()
 
         val showEmptyCategoriesWhileFiltering = preferences.showEmptyCategoriesWhileFiltering().get()
@@ -289,7 +300,14 @@ class LibraryPresenter(
         val filterTrackers = FilterBottomSheet.FILTER_TRACKER
 
         val filtersOff = view?.isSubClass != true &&
-            (filterDownloaded == 0 && filterUnread == 0 && filterCompleted == 0 && filterTracked == 0 && filterMangaType == 0)
+            (
+                filterDownloaded == 0 &&
+                filterUnread == 0 &&
+                filterCompleted == 0 &&
+                filterTracked == 0 &&
+                filterMangaType == 0 &&
+                filterContentType == 0
+            )
         hasActiveFilters = !filtersOff
         val missingCategorySet = categories.mapNotNull { it.id }.toMutableSet()
         val filteredItems = items.filter f@{ item ->
@@ -309,6 +327,7 @@ class LibraryPresenter(
                             filterMangaType,
                             filterBookmarked,
                             filterTrackers,
+                            filterContentType,
                         )
                     }
                 }
@@ -329,6 +348,7 @@ class LibraryPresenter(
                 filterMangaType,
                 filterBookmarked,
                 filterTrackers,
+                filterContentType,
             )
             if (matches) {
                 missingCategorySet.remove(item.manga.category)
@@ -352,6 +372,7 @@ class LibraryPresenter(
         filterMangaType: Int,
         filterBookmarked: Int,
         filterTrackers: String,
+        filterContentType: Int,
     ): Boolean {
         (view as? FilteredLibraryController)?.let {
             return matchesCustomFilters(item, it, filterTrackers)
@@ -393,6 +414,10 @@ class LibraryPresenter(
             }
             return if (filterDownloaded == STATE_INCLUDE) isDownloaded else !isDownloaded
         }
+
+        // Filter for NSFW/SFW contents
+        if (filterContentType == STATE_INCLUDE) return !item.manga.isLewd()
+        if (filterContentType == STATE_EXCLUDE) return item.manga.isLewd()
         return true
     }
 

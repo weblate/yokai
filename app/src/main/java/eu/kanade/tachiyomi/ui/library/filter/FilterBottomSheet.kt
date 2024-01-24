@@ -73,6 +73,8 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
 
     private lateinit var bookmarked: FilterTagGroup
 
+    private lateinit var contentType: FilterTagGroup
+
     private var tracked: FilterTagGroup? = null
 
     private var trackers: FilterTagGroup? = null
@@ -98,6 +100,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
         if (hasTracking) {
             tracked?.let { list.add(it) }
         }
+        list.add(contentType)
         list
     }
 
@@ -347,6 +350,9 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
             tracked?.setup(this, R.string.tracked, R.string.not_tracked)
         }
 
+        contentType = inflate(R.layout.filter_tag_group) as FilterTagGroup
+        contentType.setup(this, R.string.sfw, R.string.nsfw)
+
         reSortViews()
 
         controller?.viewScope?.launch {
@@ -436,6 +442,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
                 unreadProgress.state = unreadP - 3
             }
             tracked?.setState(preferences.filterTracked())
+            contentType.setState(preferences.filterContentType())
             reorderFilters()
             reSortViews()
         }
@@ -449,7 +456,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
                 filterItems.add(it)
             }
         }
-        listOfNotNull(unreadProgress, unread, downloaded, completed, mangaType, bookmarked, tracked)
+        listOfNotNull(unreadProgress, unread, downloaded, completed, mangaType, bookmarked, tracked, contentType)
             .forEach {
                 if (!filterItems.contains(it)) {
                     filterItems.add(it)
@@ -470,6 +477,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
             Filters.SeriesType -> mangaType
             Filters.Bookmarked -> bookmarked
             Filters.Tracked -> if (hasTracking) tracked else null
+            Filters.ContentType -> contentType
             else -> null
         }
     }
@@ -531,6 +539,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
                 preferences.filterMangaType().set(newIndex)
                 null
             }
+            contentType -> preferences.filterContentType()
             else -> null
         }?.set(index + 1)
     }
@@ -624,6 +633,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
         SeriesType('m', R.string.series_type),
         Bookmarked('b', R.string.bookmarked),
         Tracked('t', R.string.tracking),
+        ContentType('s', R.string.content_type);
         ;
 
         companion object {
@@ -635,6 +645,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
                 SeriesType,
                 Bookmarked,
                 Tracked,
+                ContentType,
             ).joinToString("") { it.value.toString() }
 
             fun filterOf(char: Char) = entries.find { it.value == char }

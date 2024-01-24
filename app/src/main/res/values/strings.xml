@@ -1201,4 +1201,7 @@
     <string name="wifi">Wi-Fi</string>
     <string name="webcomic">Webcomic</string>
     <string name="internal_error">Internal error: %s</string>
+    <string name="sfw">SFW</string>
+    <string name="nsfw">NSFW</string>
+    <string name="content_type">Content Type</string>
 </resources>

@@ -284,6 +284,8 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun filterMangaType() = preferenceStore.getInt(Keys.filterMangaType, 0)
 
+    fun filterContentType() = preferenceStore.getInt("pref_filter_content_type_key", 0)
+
     fun showEmptyCategoriesWhileFiltering() = preferenceStore.getBoolean(Keys.showEmptyCategoriesFiltering, false)
 
     fun librarySortingMode() = preferenceStore.getInt("library_sorting_mode", 0)

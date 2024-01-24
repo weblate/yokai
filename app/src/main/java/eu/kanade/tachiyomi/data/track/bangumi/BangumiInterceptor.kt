@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.track.bangumi
 
+import eu.kanade.tachiyomi.BuildConfig
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.FormBody
@@ -32,7 +33,7 @@ class BangumiInterceptor(val bangumi: Bangumi) : Interceptor {
 
         val authRequest = if (originalRequest.method == "GET") {
             originalRequest.newBuilder()
-                .header("User-Agent", "Tachiyomi")
+                .header("User-Agent", "null2264/yokai/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
                 .url(
                     originalRequest.url.newBuilder()
                         .addQueryParameter("access_token", currAuth.access_token).build(),
@@ -41,7 +42,7 @@ class BangumiInterceptor(val bangumi: Bangumi) : Interceptor {
         } else {
             originalRequest.newBuilder()
                 .post(addToken(currAuth.access_token, originalRequest.body as FormBody))
-                .header("User-Agent", "Tachiyomi")
+                .header("User-Agent", "null2264/yokai/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
                 .build()
         }
 

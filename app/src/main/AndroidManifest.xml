@@ -180,7 +180,7 @@
 
                 <data
                     android:host="shikimori-auth"
-                    android:scheme="tachiyomi" />
+                    android:scheme="yokai" />
             </intent-filter>
         </activity>
         <activity
@@ -195,7 +195,7 @@
 
                 <data
                     android:host="bangumi-auth"
-                    android:scheme="tachiyomi" />
+                    android:scheme="yokai" />
             </intent-filter>
         </activity>
 

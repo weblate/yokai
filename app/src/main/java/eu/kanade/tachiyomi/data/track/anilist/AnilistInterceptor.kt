@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.track.anilist
 
+import eu.kanade.tachiyomi.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -39,6 +40,7 @@ class AnilistInterceptor(private val anilist: Anilist, private var token: String
         // Add the authorization header to the original request.
         val authRequest = originalRequest.newBuilder()
             .addHeader("Authorization", "Bearer ${oauth!!.access_token}")
+            .header("User-Agent", "null2264/yokai/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
             .build()
 
         return chain.proceed(authRequest)

@@ -376,8 +376,13 @@ class SettingsAdvancedController : SettingsController() {
                 titleRes = R.string.action_revoke_all_extensions
 
                 onClick {
-                    trustExtension.revokeAll()
-                    activity?.toast(R.string.requires_app_restart)
+                    activity?.materialAlertDialog()
+                        ?.setTitle(R.string.confirm_revoke_all_extensions)
+                        ?.setPositiveButton(android.R.string.ok) { _, _ ->
+                            trustExtension.revokeAll()
+                            activity?.toast(R.string.requires_app_restart)
+                        }
+                        ?.setNegativeButton(android.R.string.cancel, null)?.show()
                 }
             }
         }

@@ -63,7 +63,7 @@ fun ExtensionRepoScreen(
                 containerColor = MaterialTheme.colorScheme.surface,
                 title = {
                         Text(
-                            text = stringResource(R.string.notice_delete_repo_title),
+                            text = stringResource(R.string.confirm_delete_repo_title),
                             fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 24.sp,
@@ -71,7 +71,7 @@ fun ExtensionRepoScreen(
                 },
                 text = {
                        Text(
-                           text = stringResource(R.string.notice_delete_repo, repoToDelete.orEmpty()),
+                           text = stringResource(R.string.confirm_delete_repo, repoToDelete.orEmpty()),
                            fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                            fontSize = 14.sp,

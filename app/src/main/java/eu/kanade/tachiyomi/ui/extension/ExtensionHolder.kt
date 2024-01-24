@@ -20,6 +20,7 @@ import eu.kanade.tachiyomi.extension.model.InstalledExtensionsOrder
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.util.system.LocaleHelper
+import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
@@ -28,6 +29,7 @@ import java.util.Locale
 class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
     BaseFlexibleViewHolder(view, adapter) {
 
+    private val context = view.context
     private val binding = ExtensionCardItemBinding.bind(view)
     init {
         binding.extButton.setOnClickListener {
@@ -102,12 +104,20 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
 
         binding.sourceImage.dispose()
 
-        if (extension is Extension.Available) {
-            binding.sourceImage.load(extension.iconUrl) {
-                target(CoverViewTarget(binding.sourceImage))
+        when (extension) {
+            is Extension.Available -> {
+                binding.sourceImage.load(extension.iconUrl) {
+                    target(CoverViewTarget(binding.sourceImage))
+                }
             }
-        } else if (extension is Extension.Installed) {
-            binding.sourceImage.load(extension.icon)
+            is Extension.Installed -> {
+                binding.sourceImage.load(extension.icon)
+            }
+            is Extension.Untrusted -> {
+                binding.sourceImage.setImageDrawable(
+                    context.contextCompatDrawable(R.drawable.ic_report_24dp)
+                )
+            }
         }
         bindButton(item)
     }

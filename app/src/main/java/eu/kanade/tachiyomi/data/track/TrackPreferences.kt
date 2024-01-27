@@ -12,9 +12,15 @@ class TrackPreferences(
 
     fun trackPassword(sync: TrackService) = preferenceStore.getString(trackPassword(sync.id), "")
 
+    fun trackAuthExpired(sync: TrackService) = preferenceStore.getBoolean(
+        Preference.privateKey("pref_tracker_auth_expired_${sync.id}"),
+        false,
+    )
+
     fun setCredentials(sync: TrackService, username: String, password: String) {
         trackUsername(sync).set(username)
         trackPassword(sync).set(password)
+        trackAuthExpired(sync).set(false)
     }
 
     fun trackToken(sync: TrackService) = preferenceStore.getString(trackToken(sync.id), "")

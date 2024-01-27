@@ -8,7 +8,6 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
@@ -17,7 +16,7 @@ import uy.kohesive.injekt.injectLazy
 class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
 
     private val json: Json by injectLazy()
-    private val interceptor by lazy { MyAnimeListInterceptor(this, getPassword()) }
+    private val interceptor by lazy { MyAnimeListInterceptor(this) }
     private val api by lazy { MyAnimeListApi(client, interceptor) }
 
     @StringRes
@@ -142,6 +141,14 @@ class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
         interceptor.setAuth(null)
     }
 
+    fun getIfAuthExpired(): Boolean {
+        return trackPreferences.trackAuthExpired(this).get()
+    }
+
+    fun setAuthExpired() {
+        trackPreferences.trackAuthExpired(this).set(true)
+    }
+
     fun saveOAuth(oAuth: OAuth?) {
         trackPreferences.trackToken(this).set(json.encodeToString(oAuth))
     }
@@ -153,6 +160,7 @@ class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
             null
         }
     }
+
     companion object {
         const val READING = 1
         const val COMPLETED = 2

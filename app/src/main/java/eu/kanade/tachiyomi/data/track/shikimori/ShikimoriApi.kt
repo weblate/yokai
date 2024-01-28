@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.track.shikimori
 
+import android.net.Uri
 import androidx.core.net.toUri
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackManager
@@ -49,7 +50,7 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
             }
             authClient.newCall(
                 POST(
-                    "$apiUrl/v2/user_rates",
+                    "$API_URL/v2/user_rates",
                     body = payload.toString().toRequestBody(jsonMime),
                 ),
             ).awaitSuccess()
@@ -61,7 +62,7 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
 
     suspend fun search(search: String): List<TrackSearch> {
         return withIOContext {
-            val url = "$apiUrl/mangas".toUri().buildUpon()
+            val url = "$API_URL/mangas".toUri().buildUpon()
                 .appendQueryParameter("order", "popularity")
                 .appendQueryParameter("search", search)
                 .appendQueryParameter("limit", "20")
@@ -84,7 +85,7 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
             try {
                 val rates = getUserRates(track, user_id)
                 val id = rates.last().jsonObject["id"]!!.jsonPrimitive.content
-                val url = "$apiUrl/v2/user_rates/$id"
+                val url = "$API_URL/v2/user_rates/$id"
                 authClient.newCall(DELETE(url)).awaitSuccess()
                 true
             } catch (e: Exception) {
@@ -99,9 +100,9 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
             media_id = obj["id"]!!.jsonPrimitive.long
             title = obj["name"]!!.jsonPrimitive.content
             total_chapters = obj["chapters"]!!.jsonPrimitive.int
-            cover_url = baseUrl + obj["image"]!!.jsonObject["preview"]!!.jsonPrimitive.content
+            cover_url = BASE_URL + obj["image"]!!.jsonObject["preview"]!!.jsonPrimitive.content
             summary = ""
-            tracking_url = baseUrl + obj["url"]!!.jsonPrimitive.content
+            tracking_url = BASE_URL + obj["url"]!!.jsonPrimitive.content
             publishing_status = obj["status"]!!.jsonPrimitive.content
             publishing_type = obj["kind"]!!.jsonPrimitive.content
             start_date = obj["aired_on"]?.jsonPrimitive?.contentOrNull ?: ""
@@ -116,12 +117,12 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
             last_chapter_read = obj["chapters"]!!.jsonPrimitive.float
             score = (obj["score"]!!.jsonPrimitive.int).toFloat()
             status = toTrackStatus(obj["status"]!!.jsonPrimitive.content)
-            tracking_url = baseUrl + mangas["url"]!!.jsonPrimitive.content
+            tracking_url = BASE_URL + mangas["url"]!!.jsonPrimitive.content
         }
     }
 
     private fun getUserRates(track: Track, user_id: String): JsonArray {
-        val url = "$apiUrl/v2/user_rates".toUri().buildUpon()
+        val url = "$API_URL/v2/user_rates".toUri().buildUpon()
             .appendQueryParameter("user_id", user_id)
             .appendQueryParameter("target_id", track.media_id.toString())
             .appendQueryParameter("target_type", "Manga")
@@ -135,7 +136,7 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
 
     suspend fun findLibManga(track: Track, user_id: String): Track? {
         return withIOContext {
-            val urlMangas = "$apiUrl/mangas".toUri().buildUpon()
+            val urlMangas = "$API_URL/mangas".toUri().buildUpon()
                 .appendPath(track.media_id.toString())
                 .build()
             val mangas = with(json) {
@@ -157,7 +158,7 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
     suspend fun getCurrentUser(): Int {
         return withIOContext {
             with(json) {
-                authClient.newCall(GET("$apiUrl/users/whoami"))
+                authClient.newCall(GET("$API_URL/users/whoami"))
                     .awaitSuccess()
                     .parseAs<JsonObject>()
                     .let {
@@ -178,46 +179,45 @@ class ShikimoriApi(private val client: OkHttpClient, interceptor: ShikimoriInter
     }
 
     private fun accessTokenRequest(code: String) = POST(
-        oauthUrl,
+        OAUTH_URL,
         body = FormBody.Builder()
             .add("grant_type", "authorization_code")
-            .add("client_id", clientId)
-            .add("client_secret", clientSecret)
+            .add("client_id", CLIENT_ID)
+            .add("client_secret", CLIENT_SECRET)
             .add("code", code)
-            .add("redirect_uri", redirectUrl)
+            .add("redirect_uri", REDIRECT_URL)
             .build(),
     )
 
     companion object {
-        // TODO: Need to wait 24 hour to register new app
-        private const val clientId = "1aaf4cf232372708e98b5abc813d795b539c5a916dbbfe9ac61bf02a360832cc"
-        private const val clientSecret = "229942c742dd4cde803125d17d64501d91c0b12e14cb1e5120184d77d67024c0"
+        private const val CLIENT_ID = "zU0wHfXbpx2GwVBK7jILx6druyPdmp0J8bLUSH9NBFc"
+        private const val CLIENT_SECRET = "t-I_sBzlWAbJPjkO9EYnqBpXYdPhAxjxRuoTSZgiJPg"
 
-        private const val baseUrl = "https://shikimori.one"
-        private const val apiUrl = "$baseUrl/api"
-        private const val oauthUrl = "$baseUrl/oauth/token"
-        private const val loginUrl = "$baseUrl/oauth/authorize"
+        private const val BASE_URL = "https://shikimori.one"
+        private const val API_URL = "$BASE_URL/api"
+        private const val OAUTH_URL = "$BASE_URL/oauth/token"
+        private const val LOGIN_URL = "$BASE_URL/oauth/authorize"
 
-        private const val redirectUrl = "yokai://shikimori-auth"
-        private const val baseMangaUrl = "$apiUrl/mangas"
+        private const val REDIRECT_URL = "yokai://shikimori-auth"
+        private const val BASE_MANGA_URL = "$API_URL/mangas"
 
         fun mangaUrl(remoteId: Int): String {
-            return "$baseMangaUrl/$remoteId"
+            return "$BASE_MANGA_URL/$remoteId"
         }
 
-        fun authUrl() =
-            loginUrl.toUri().buildUpon()
-                .appendQueryParameter("client_id", clientId)
-                .appendQueryParameter("redirect_uri", redirectUrl)
+        fun authUrl(): Uri =
+            LOGIN_URL.toUri().buildUpon()
+                .appendQueryParameter("client_id", CLIENT_ID)
+                .appendQueryParameter("redirect_uri", REDIRECT_URL)
                 .appendQueryParameter("response_type", "code")
                 .build()
 
         fun refreshTokenRequest(token: String) = POST(
-            oauthUrl,
+            OAUTH_URL,
             body = FormBody.Builder()
                 .add("grant_type", "refresh_token")
-                .add("client_id", clientId)
-                .add("client_secret", clientSecret)
+                .add("client_id", CLIENT_ID)
+                .add("client_secret", CLIENT_SECRET)
                 .add("refresh_token", token)
                 .build(),
         )

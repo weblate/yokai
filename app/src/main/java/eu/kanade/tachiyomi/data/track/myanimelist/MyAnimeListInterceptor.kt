@@ -44,7 +44,7 @@ class MyAnimeListInterceptor(private val myanimelist: MyAnimeList) : Interceptor
      * Called when the user authenticates with MyAnimeList for the first time. Sets the refresh token
      * and the oauth object.
      */
-    fun setAuth(oauth: OAuth?) {
+    fun setAuth(oauth: OAuth) {
         this.oauth = oauth
         myanimelist.saveOAuth(oauth)
     }

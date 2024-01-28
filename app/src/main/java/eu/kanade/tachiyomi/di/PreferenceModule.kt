@@ -5,6 +5,7 @@ import dev.yokai.domain.source.SourcePreferences
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.data.track.TrackPreferences
 import uy.kohesive.injekt.api.InjektModule
 import uy.kohesive.injekt.api.InjektRegistrar
 import uy.kohesive.injekt.api.addSingletonFactory
@@ -12,13 +13,11 @@ import uy.kohesive.injekt.api.get
 
 class PreferenceModule(val application: Application) : InjektModule {
     override fun InjektRegistrar.registerInjectables() {
-        addSingletonFactory<PreferenceStore> {
-            AndroidPreferenceStore(application)
-        }
+        addSingletonFactory<PreferenceStore> { AndroidPreferenceStore(application) }
 
-        addSingletonFactory {
-            SourcePreferences(get())
-        }
+        addSingletonFactory { SourcePreferences(get()) }
+
+        addSingletonFactory { TrackPreferences(get()) }
 
         addSingletonFactory {
             PreferencesHelper(

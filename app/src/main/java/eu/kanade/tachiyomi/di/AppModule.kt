@@ -26,12 +26,6 @@ class AppModule(val app: Application) : InjektModule {
     override fun InjektRegistrar.registerInjectables() {
         addSingleton(app)
 
-        addSingletonFactory<PreferenceStore> {
-            AndroidPreferenceStore(app)
-        }
-
-        addSingletonFactory { TrackPreferences(get()) }
-
         addSingletonFactory { DatabaseHelper(app) }
 
         addSingletonFactory { ChapterCache(app) }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
+import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.plusAssign
@@ -460,7 +461,7 @@ class ExtensionManager(
 
     companion object {
         fun canAutoInstallUpdates(checkIfShizukuIsRunning: Boolean = false): Boolean {
-            val prefs = Injekt.get<PreferencesHelper>().extensionInstaller().get()
+            val prefs = Injekt.get<BasePreferences>().extensionInstaller().get()
             return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ||
                 (
                     prefs == ExtensionInstaller.SHIZUKU &&

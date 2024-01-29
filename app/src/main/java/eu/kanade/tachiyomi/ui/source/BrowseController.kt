@@ -23,6 +23,7 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import dev.yokai.domain.base.BasePreferences
 import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -69,8 +70,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.parcelize.Parcelize
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import java.util.Date
 import java.util.Locale
 import kotlin.math.max
@@ -88,10 +88,12 @@ class BrowseController :
     FloatingSearchInterface,
     BottomSheetController {
 
+    private val basePreferences: BasePreferences by injectLazy()
+
     /**
      * Application preferences.
      */
-    private val preferences: PreferencesHelper = Injekt.get()
+    private val preferences: PreferencesHelper by injectLazy()
 
     /**
      * Adapter containing sources.
@@ -178,7 +180,7 @@ class BrowseController :
         requestFilePermissionsSafe(301, preferences)
         binding.bottomSheet.root.onCreate(this)
 
-        preferences.extensionInstaller().changes()
+        basePreferences.extensionInstaller().changes()
             .drop(1)
             .onEach {
                 binding.bottomSheet.root.setCanInstallPrivately(it == ExtensionInstaller.PRIVATE)

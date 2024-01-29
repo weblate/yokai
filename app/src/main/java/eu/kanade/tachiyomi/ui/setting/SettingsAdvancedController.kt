@@ -333,7 +333,7 @@ class SettingsAdvancedController : SettingsController() {
             titleRes = R.string.extensions
 
             intListPreference(activity) {
-                bindTo(preferences.extensionInstaller())
+                bindTo(basePreferences.extensionInstaller())
                 titleRes = R.string.ext_installer_pref
                 entriesRes = arrayOf(
                     R.string.default_value,
@@ -367,7 +367,7 @@ class SettingsAdvancedController : SettingsController() {
                 }
             }
             infoPreference(R.string.ext_installer_summary).apply {
-                preferences.extensionInstaller().changesIn(viewScope) {
+                basePreferences.extensionInstaller().changesIn(viewScope) {
                     isVisible =
                         it != ExtensionInstaller.PACKAGE_INSTALLER && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
                 }

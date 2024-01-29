@@ -68,7 +68,7 @@ class SettingsBrowseController : SettingsController() {
                     )
                     defaultValue = AppDownloadInstallJob.ONLY_ON_UNMETERED
                 }
-                val infoPref = if (preferences.extensionInstaller().get() != ExtensionInstaller.SHIZUKU) {
+                val infoPref = if (basePreferences.extensionInstaller().get() != ExtensionInstaller.SHIZUKU) {
                     infoPreference(R.string.some_extensions_may_not_update)
                 } else {
                     null

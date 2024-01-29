@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.ui.extension
 
 import android.widget.TextView
+import dev.yokai.domain.base.BasePreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -16,10 +17,11 @@ import uy.kohesive.injekt.injectLazy
 class ExtensionAdapter(val listener: OnButtonClickListener) :
     FlexibleAdapter<IFlexible<*>>(null, listener, true) {
 
+    val basePreferences: BasePreferences by injectLazy()
     val preferences: PreferencesHelper by injectLazy()
 
     var installedSortOrder = preferences.installedExtensionsOrder().get()
-    var installPrivately = preferences.extensionInstaller().get() == ExtensionInstaller.PRIVATE
+    var installPrivately = basePreferences.extensionInstaller().get() == ExtensionInstaller.PRIVATE
 
     init {
         setDisplayHeadersAtStartUp(true)

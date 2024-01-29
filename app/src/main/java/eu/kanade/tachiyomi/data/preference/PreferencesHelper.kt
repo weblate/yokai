@@ -452,8 +452,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     // TODO: SourcePref
     fun autoUpdateExtensions() = prefs.getInt(Keys.autoUpdateExtensions, AppDownloadInstallJob.ONLY_ON_UNMETERED)
 
-    fun extensionInstaller() = preferenceStore.getInt("extension_installer", ExtensionInstaller.PACKAGE_INSTALLER)
-
     fun filterChapterByRead() = preferenceStore.getInt(Keys.defaultChapterFilterByRead, Manga.SHOW_ALL)
 
     fun filterChapterByDownloaded() = preferenceStore.getInt(Keys.defaultChapterFilterByDownloaded, Manga.SHOW_ALL)

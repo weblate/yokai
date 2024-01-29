@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.di
 
 import android.app.Application
+import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.recents.RecentsPreferences
 import dev.yokai.domain.source.SourcePreferences
 import dev.yokai.domain.ui.UiPreferences
@@ -16,6 +17,8 @@ import uy.kohesive.injekt.api.get
 class PreferenceModule(val application: Application) : InjektModule {
     override fun InjektRegistrar.registerInjectables() {
         addSingletonFactory<PreferenceStore> { AndroidPreferenceStore(application) }
+
+        addSingletonFactory { BasePreferences(get()) }
 
         addSingletonFactory { SourcePreferences(get()) }
 

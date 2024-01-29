@@ -12,6 +12,7 @@ import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
+import dev.yokai.domain.base.BasePreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
@@ -44,6 +45,7 @@ import eu.kanade.tachiyomi.util.view.smoothScrollToTop
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 
 class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     LinearLayout(context, attrs),
@@ -52,6 +54,8 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
     FlexibleAdapter.OnItemLongClickListener,
     SourceAdapter.OnAllClickListener,
     BaseMigrationInterface {
+
+    private val basePreferences: BasePreferences by injectLazy()
 
     var sheetBehavior: BottomSheetBehavior<*>? = null
 
@@ -221,7 +225,7 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
 
     override fun onUpdateAllClicked(position: Int) {
         (controller.activity as? MainActivity)?.showNotificationPermissionPrompt()
-        if (presenter.preferences.extensionInstaller().get() != ExtensionInstaller.SHIZUKU &&
+        if (basePreferences.extensionInstaller().get() != ExtensionInstaller.SHIZUKU &&
             !presenter.preferences.hasPromptedBeforeUpdateAll().get()
         ) {
             controller.activity!!.materialAlertDialog()

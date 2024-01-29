@@ -18,6 +18,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -61,10 +62,11 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
 
     private fun createUpdateNotification(extensionsList: List<Extension.Available>) {
         val extensions = extensionsList.toMutableList()
+        val basePreferences: BasePreferences by injectLazy()
         val preferences: PreferencesHelper by injectLazy()
         preferences.extensionUpdatesCount().set(extensions.size)
         val extensionsInstalledByApp by lazy {
-            if (preferences.extensionInstaller().get() == ExtensionInstaller.SHIZUKU) {
+            if (basePreferences.extensionInstaller().get() == ExtensionInstaller.SHIZUKU) {
                 if (Shizuku.pingBinder() && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
                     extensions
                 } else {

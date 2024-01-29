@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
@@ -12,6 +11,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import java.io.File
 
 /**
@@ -264,8 +265,8 @@ internal class ExtensionInstaller(private val context: Context) {
         val useActivity =
             (pkgName?.let { !ExtensionLoader.isExtensionInstalledByApp(context, pkgName) } ?: true) ||
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.S
-        val prefs: PreferencesHelper = Injekt.get()
-        when (prefs.extensionInstaller().get()) {
+        val basePreferences: BasePreferences by injectLazy()
+        when (basePreferences.extensionInstaller().get()) {
             SHIZUKU -> {
                 pkgName ?: return
                 setInstalling(pkgName, uri.hashCode())

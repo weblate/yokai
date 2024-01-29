@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.ui.library
 import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.View
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
@@ -29,11 +30,12 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
 
     val sourceManager by injectLazy<SourceManager>()
 
+    private val uiPreferences: UiPreferences by injectLazy()
     private val preferences: PreferencesHelper by injectLazy()
 
     var showNumber = preferences.categoryNumberOfItems().get()
 
-    var showOutline = preferences.outlineOnCovers().get()
+    var showOutline = uiPreferences.outlineOnCovers().get()
 
     private var lastCategory = ""
 

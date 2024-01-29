@@ -264,10 +264,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun gridSize() = preferenceStore.getFloat(Keys.gridSize, 1f)
 
-    fun uniformGrid() = preferenceStore.getBoolean(Keys.uniformGrid, true)
-
-    fun outlineOnCovers() = preferenceStore.getBoolean(Keys.outlineOnCovers, true)
-
     fun downloadBadge() = preferenceStore.getBoolean(Keys.downloadBadge, false)
 
     fun languageBadge() = preferenceStore.getBoolean(Keys.languageBadge, false)
@@ -361,14 +357,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     // TODO: SourcePref
     fun extensionUpdatesCount() = preferenceStore.getInt("ext_updates_count", 0)
 
-    fun recentsViewType() = preferenceStore.getInt("recents_view_type", 0)
-
-    fun showRecentsDownloads() = preferenceStore.getEnum(Keys.showDLsInRecents, RecentMangaAdapter.ShowRecentsDLs.All)
-
-    fun showRecentsRemHistory() = preferenceStore.getBoolean(Keys.showRemHistoryInRecents, true)
-
-    fun showReadInAllRecents() = preferenceStore.getBoolean(Keys.showReadInAllRecents, false)
-
     fun showUpdatedTime() = preferenceStore.getBoolean(Keys.showUpdatedTime, false)
 
     fun sortFetchedTime() = preferenceStore.getBoolean("sort_fetched_time", false)
@@ -378,8 +366,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     fun groupChaptersHistory() = preferenceStore.getEnum("group_chapters_history_type", RecentsPresenter.GroupType.ByWeek)
 
     fun collapseGroupedHistory() = preferenceStore.getBoolean("collapse_group_history", true)
-
-    fun showTitleFirstInRecents() = preferenceStore.getBoolean(Keys.showTitleFirstInRecents, false)
 
     fun lastExtCheck() = preferenceStore.getLong("last_ext_check", 0)
 

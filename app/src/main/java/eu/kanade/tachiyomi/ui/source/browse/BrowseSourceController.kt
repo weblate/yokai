@@ -206,7 +206,7 @@ open class BrowseSourceController(bundle: Bundle) :
             binding.catalogueView.removeView(oldRecycler)
         }
 
-        val recycler = if (presenter.prefs.browseAsList().get()) {
+        val recycler = if (presenter.preferences.browseAsList().get()) {
             RecyclerView(view.context).apply {
                 id = R.id.recycler
                 layoutManager = LinearLayoutManagerAccurateOffset(context)
@@ -320,7 +320,7 @@ open class BrowseSourceController(bundle: Bundle) :
 
     private fun updateDisplayMenuItem(menu: Menu?, isListMode: Boolean? = null) {
         menu?.findItem(R.id.action_display_mode)?.apply {
-            val icon = if (isListMode ?: presenter.prefs.browseAsList().get()) {
+            val icon = if (isListMode ?: presenter.preferences.browseAsList().get()) {
                 R.drawable.ic_view_module_24dp
             } else {
                 R.drawable.ic_view_list_24dp
@@ -663,8 +663,8 @@ open class BrowseSourceController(bundle: Bundle) :
         val view = view ?: return
         val adapter = adapter ?: return
 
-        val isListMode = !presenter.prefs.browseAsList().get()
-        presenter.prefs.browseAsList().set(isListMode)
+        val isListMode = !presenter.preferences.browseAsList().get()
+        presenter.preferences.browseAsList().set(isListMode)
         listOf(activityBinding?.toolbar?.menu, activityBinding?.searchToolbar?.menu).forEach {
             updateDisplayMenuItem(it, isListMode)
         }

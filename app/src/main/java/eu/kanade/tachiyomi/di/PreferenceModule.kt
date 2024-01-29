@@ -1,7 +1,9 @@
 package eu.kanade.tachiyomi.di
 
 import android.app.Application
+import dev.yokai.domain.recents.RecentsPreferences
 import dev.yokai.domain.source.SourcePreferences
+import dev.yokai.domain.ui.UiPreferences
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -18,6 +20,10 @@ class PreferenceModule(val application: Application) : InjektModule {
         addSingletonFactory { SourcePreferences(get()) }
 
         addSingletonFactory { TrackPreferences(get()) }
+
+        addSingletonFactory { UiPreferences(get()) }
+
+        addSingletonFactory { RecentsPreferences(get()) }
 
         addSingletonFactory {
             PreferencesHelper(

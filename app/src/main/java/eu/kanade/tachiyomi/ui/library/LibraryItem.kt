@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractSectionableItem
 import eu.davidea.flexibleadapter.items.IFilterable
@@ -31,6 +32,7 @@ class LibraryItem(
     val manga: LibraryManga,
     header: LibraryHeaderItem,
     private val context: Context?,
+    private val uiPreferences: UiPreferences = Injekt.get(),
     private val preferences: PreferencesHelper = Injekt.get(),
 ) : AbstractSectionableItem<LibraryHolder, LibraryHeaderItem>(header), IFilterable<String> {
 
@@ -41,7 +43,7 @@ class LibraryItem(
 
     private val sourceManager: SourceManager by injectLazy()
     private val uniformSize: Boolean
-        get() = preferences.uniformGrid().get()
+        get() = uiPreferences.uniformGrid().get()
 
     private val libraryLayout: Int
         get() = preferences.libraryLayout().get()

@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.core.widget.NestedScrollView
 import androidx.viewbinding.ViewBinding
+import dev.yokai.domain.recents.RecentsPreferences
+import dev.yokai.domain.ui.UiPreferences
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.library.LibraryController
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
@@ -19,7 +21,8 @@ abstract class BaseTabbedScrollView<VB : ViewBinding> @JvmOverloads constructor(
     init {
         clipToPadding = false
     }
-    internal val preferences by injectLazy<PreferencesHelper>()
+    internal val preferences: PreferencesHelper by injectLazy()
+    internal val uiPreferences: UiPreferences by injectLazy()
 
     abstract fun initGeneralPreferences()
     abstract fun inflateBinding(): VB
@@ -35,6 +38,8 @@ abstract class BaseTabbedScrollView<VB : ViewBinding> @JvmOverloads constructor(
 abstract class BaseRecentsDisplayView<VB : ViewBinding> @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     BaseTabbedScrollView<VB>(context, attrs) {
     var controller: RecentsController? = null
+
+    internal val recentsPreferences: RecentsPreferences by injectLazy()
 }
 
 abstract class BaseLibraryDisplayView<VB : ViewBinding> @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :

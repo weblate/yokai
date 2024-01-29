@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.ui.migration.manga.process
 
 import android.view.MenuItem
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -31,11 +32,12 @@ class MigrationProcessAdapter(
     private val db: DatabaseHelper by injectLazy()
     var items: List<MigrationProcessItem> = emptyList()
     val preferences: PreferencesHelper by injectLazy()
+    val uiPreferences: UiPreferences by injectLazy()
     val sourceManager: SourceManager by injectLazy()
     val coverCache: CoverCache by injectLazy()
     val customMangaManager: CustomMangaManager by injectLazy()
 
-    var showOutline = preferences.outlineOnCovers().get()
+    var showOutline = uiPreferences.outlineOnCovers().get()
     val menuItemListener: MigrationProcessInterface = controller
 
     private val enhancedServices by lazy { Injekt.get<TrackManager>().services.filterIsInstance<EnhancedTrackService>() }

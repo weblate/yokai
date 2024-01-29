@@ -1,5 +1,7 @@
 package eu.kanade.tachiyomi.ui.recents
 
+import dev.yokai.domain.recents.RecentsPreferences
+import dev.yokai.domain.ui.UiPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -43,6 +45,8 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class RecentsPresenter(
+    val uiPreferences: UiPreferences = Injekt.get(),
+    val recentsPreferences: RecentsPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
     val downloadManager: DownloadManager = Injekt.get(),
     val db: DatabaseHelper = Injekt.get(),
@@ -63,7 +67,7 @@ class RecentsPresenter(
         RecentMangaHeaderItem(RecentMangaHeaderItem.CONTINUE_READING)
     var finished = false
     private var shouldMoveToTop = false
-    var viewType: RecentsViewType = RecentsViewType.valueOf(preferences.recentsViewType().get())
+    var viewType: RecentsViewType = RecentsViewType.valueOf(uiPreferences.recentsViewType().get())
         private set
     var groupHistory: GroupType = preferences.groupChaptersHistory().get()
         private set
@@ -98,7 +102,7 @@ class RecentsPresenter(
         getRecents()
         listOf(
             preferences.groupChaptersHistory(),
-            preferences.showReadInAllRecents(),
+            recentsPreferences.showReadInAllRecents(),
             preferences.sortFetchedTime(),
         ).forEach {
             it.changes()
@@ -152,7 +156,7 @@ class RecentsPresenter(
         }
         val viewType = customViewType ?: viewType
 
-        val showRead = ((preferences.showReadInAllRecents().get() || query.isNotEmpty()) && limit != 0) || includeReadAnyway
+        val showRead = ((recentsPreferences.showReadInAllRecents().get() || query.isNotEmpty()) && limit != 0) || includeReadAnyway
         val isUngrouped = viewType != RecentsViewType.GroupedAll || query.isNotEmpty()
         val groupChaptersHistory = preferences.groupChaptersHistory().get()
         groupHistory = groupChaptersHistory
@@ -469,7 +473,7 @@ class RecentsPresenter(
 
     fun toggleGroupRecents(pref: RecentsViewType, updatePref: Boolean = true) {
         if (updatePref) {
-            preferences.recentsViewType().set(pref.mainValue)
+            uiPreferences.recentsViewType().set(pref.mainValue)
         }
         viewType = pref
         resetOffsets()

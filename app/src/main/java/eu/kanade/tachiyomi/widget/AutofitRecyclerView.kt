@@ -9,6 +9,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import dev.yokai.domain.ui.UiPreferences
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.library.LibraryItem
 import eu.kanade.tachiyomi.util.system.dpToPx
@@ -85,10 +86,10 @@ class AutofitRecyclerView @JvmOverloads constructor(context: Context, attrs: Att
         lastMeasuredWidth = width
     }
 
-    fun useStaggered(preferences: PreferencesHelper) {
+    fun useStaggered(preferences: PreferencesHelper, uiPreferences: UiPreferences) {
         useStaggered(
             preferences.useStaggeredGrid().get() &&
-                !preferences.uniformGrid().get() &&
+                !uiPreferences.uniformGrid().get() &&
                 preferences.libraryLayout().get() != LibraryItem.LAYOUT_LIST,
         )
     }

@@ -2,6 +2,8 @@ package eu.kanade.tachiyomi.ui.recents
 
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
+import dev.yokai.domain.recents.RecentsPreferences
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -23,13 +25,15 @@ class RecentMangaAdapter(val delegate: RecentsInterface) :
     BaseChapterAdapter<IFlexible<*>>(delegate) {
 
     val preferences: PreferencesHelper by injectLazy()
+    val uiPreferences: UiPreferences by injectLazy()
+    val recentsPreferences: RecentsPreferences by injectLazy()
 
-    var showDownloads = preferences.showRecentsDownloads().get()
-    var showRemoveHistory = preferences.showRecentsRemHistory().get()
-    var showTitleFirst = preferences.showTitleFirstInRecents().get()
+    var showDownloads = recentsPreferences.showRecentsDownloads().get()
+    var showRemoveHistory = recentsPreferences.showRecentsRemHistory().get()
+    var showTitleFirst = recentsPreferences.showTitleFirstInRecents().get()
     var showUpdatedTime = preferences.showUpdatedTime().get()
-    var uniformCovers = preferences.uniformGrid().get()
-    var showOutline = preferences.outlineOnCovers().get()
+    var uniformCovers = uiPreferences.uniformGrid().get()
+    var showOutline = uiPreferences.outlineOnCovers().get()
     var sortByFetched = preferences.sortFetchedTime().get()
     var lastUpdatedTime = preferences.libraryUpdateLastTimestamp().get()
     private var collapseGroupedUpdates = preferences.collapseGroupedUpdates().get()
@@ -56,15 +60,15 @@ class RecentMangaAdapter(val delegate: RecentsInterface) :
     }
 
     fun setPreferenceFlows() {
-        preferences.showRecentsDownloads().register { showDownloads = it }
-        preferences.showRecentsRemHistory().register { showRemoveHistory = it }
-        preferences.showTitleFirstInRecents().register { showTitleFirst = it }
+        recentsPreferences.showRecentsDownloads().register { showDownloads = it }
+        recentsPreferences.showRecentsRemHistory().register { showRemoveHistory = it }
+        recentsPreferences.showTitleFirstInRecents().register { showTitleFirst = it }
         preferences.showUpdatedTime().register { showUpdatedTime = it }
-        preferences.uniformGrid().register { uniformCovers = it }
+        uiPreferences.uniformGrid().register { uniformCovers = it }
         preferences.collapseGroupedUpdates().register { collapseGroupedUpdates = it }
         preferences.collapseGroupedHistory().register { collapseGroupedHistory = it }
         preferences.sortFetchedTime().changesIn(delegate.scope()) { sortByFetched = it }
-        preferences.outlineOnCovers().register(false) {
+        uiPreferences.outlineOnCovers().register(false) {
             showOutline = it
             (0 until itemCount).forEach { i ->
                 (recyclerView.findViewHolderForAdapterPosition(i) as? RecentMangaHolder)?.updateCards()

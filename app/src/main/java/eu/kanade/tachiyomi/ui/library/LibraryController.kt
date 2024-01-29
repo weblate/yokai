@@ -51,6 +51,7 @@ import com.bluelinelabs.conductor.ControllerChangeType
 import com.github.florent37.viewtooltip.ViewTooltip
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -138,6 +139,7 @@ import kotlin.random.nextInt
 
 open class LibraryController(
     bundle: Bundle? = null,
+    val uiPreferences: UiPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
 ) : BaseCoroutineController<LibraryControllerBinding, LibraryPresenter>(bundle),
     ActionMode.Callback,
@@ -968,7 +970,7 @@ open class LibraryController(
                     bottom = 50.dpToPx + (bottomNav?.height ?: 0),
                 )
             }
-            useStaggered(preferences)
+            useStaggered(preferences, uiPreferences)
             if (libraryLayout == LibraryItem.LAYOUT_LIST) {
                 spanCount = 1
                 updatePaddingRelative(
@@ -999,7 +1001,7 @@ open class LibraryController(
     private fun setPreferenceFlows() {
         listOf(
             preferences.libraryLayout(),
-            preferences.uniformGrid(),
+            uiPreferences.uniformGrid(),
             preferences.gridSize(),
             preferences.useStaggeredGrid(),
         ).forEach {
@@ -1011,7 +1013,7 @@ open class LibraryController(
                 .launchIn(viewScope)
         }
         preferences.hideStartReadingButton().register()
-        preferences.outlineOnCovers().register { adapter.showOutline = it }
+        uiPreferences.outlineOnCovers().register { adapter.showOutline = it }
         preferences.categoryNumberOfItems().register { adapter.showNumber = it }
     }
 

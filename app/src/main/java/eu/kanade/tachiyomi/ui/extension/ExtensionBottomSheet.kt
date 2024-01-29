@@ -358,7 +358,7 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
         currentSourceTitle = title
         val changingAdapters = migAdapter !is MangaAdapter
         if (migAdapter !is MangaAdapter) {
-            migAdapter = MangaAdapter(this, presenter.preferences.outlineOnCovers().get())
+            migAdapter = MangaAdapter(this, presenter.uiPreferences.outlineOnCovers().get())
             migrationFrameLayout?.onBind(migAdapter!!)
             migAdapter?.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }

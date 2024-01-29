@@ -139,7 +139,7 @@ class MigrationController :
     override fun setMigrationManga(title: String, manga: List<MangaItem>?) {
         this.title = title
         if (adapter !is MangaAdapter) {
-            adapter = MangaAdapter(this, presenter.preferences.outlineOnCovers().get())
+            adapter = MangaAdapter(this, presenter.uiPreferences.outlineOnCovers().get())
             binding.migrationRecycler.adapter = adapter
         }
         adapter?.updateDataSet(manga, true)

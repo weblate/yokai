@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.migration
 
+import dev.yokai.domain.ui.UiPreferences
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
@@ -21,6 +22,7 @@ import uy.kohesive.injekt.injectLazy
 abstract class BaseMigrationPresenter<T : BaseMigrationInterface>(
     protected val sourceManager: SourceManager = Injekt.get(),
     protected val db: DatabaseHelper = Injekt.get(),
+    val uiPreferences: UiPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
 ) : BaseCoroutinePresenter<T>() {
     private var selectedSource: Pair<String, Long>? = null

@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.source.browse
 
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -48,7 +49,8 @@ open class BrowseSourcePresenter(
     var useLatest: Boolean = false,
     val sourceManager: SourceManager = Injekt.get(),
     val db: DatabaseHelper = Injekt.get(),
-    val prefs: PreferencesHelper = Injekt.get(),
+    val uiPreferences: UiPreferences = Injekt.get(),
+    val preferences: PreferencesHelper = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),
 ) : BaseCoroutinePresenter<BrowseSourceController>() {
 
@@ -159,9 +161,9 @@ open class BrowseSourcePresenter(
 
         val sourceId = source.id
 
-        val browseAsList = prefs.browseAsList()
-        val sourceListType = prefs.libraryLayout()
-        val outlineCovers = prefs.outlineOnCovers()
+        val browseAsList = preferences.browseAsList()
+        val sourceListType = preferences.libraryLayout()
+        val outlineCovers = uiPreferences.outlineOnCovers()
         items.clear()
 
         // Prepare the pager.
@@ -171,7 +173,7 @@ open class BrowseSourcePresenter(
                 try {
                     val mangas = second
                         .map { networkToLocalManga(it, sourceId) }
-                        .filter { !prefs.hideInLibraryItems().get() || !it.favorite }
+                        .filter { !preferences.hideInLibraryItems().get() || !it.favorite }
                     if (mangas.isEmpty() && page == 1) {
                         withUIContext { view?.onAddPageError(NoResultsException()) }
                         return@onEach

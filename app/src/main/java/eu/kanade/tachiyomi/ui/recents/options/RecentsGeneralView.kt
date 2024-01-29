@@ -19,11 +19,11 @@ class RecentsGeneralView @JvmOverloads constructor(context: Context, attrs: Attr
             .withSubtitle(binding.showRemoveHistory.context, R.string.press_and_hold_to_also_reset)
         binding.uniformCovers.text = uniformText
             .withSubtitle(binding.uniformCovers.context, R.string.affects_library_grid)
-        binding.showRecentsDownload.bindToPreference(preferences.showRecentsDownloads())
-        binding.showRemoveHistory.bindToPreference(preferences.showRecentsRemHistory())
-        binding.showReadInAll.bindToPreference(preferences.showReadInAllRecents())
-        binding.showTitleFirst.bindToPreference(preferences.showTitleFirstInRecents())
-        binding.uniformCovers.bindToPreference(preferences.uniformGrid())
-        binding.outlineOnCovers.bindToPreference(preferences.outlineOnCovers())
+        binding.showRecentsDownload.bindToPreference(recentsPreferences.showRecentsDownloads())
+        binding.showRemoveHistory.bindToPreference(recentsPreferences.showRecentsRemHistory())
+        binding.showReadInAll.bindToPreference(recentsPreferences.showReadInAllRecents())
+        binding.showTitleFirst.bindToPreference(recentsPreferences.showTitleFirstInRecents())
+        binding.uniformCovers.bindToPreference(uiPreferences.uniformGrid())
+        binding.outlineOnCovers.bindToPreference(uiPreferences.outlineOnCovers())
     }
 }

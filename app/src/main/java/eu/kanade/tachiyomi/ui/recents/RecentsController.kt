@@ -486,7 +486,7 @@ class RecentsController(bundle: Bundle? = null) :
 
     override fun canStillGoBack(): Boolean {
         return showingDownloads ||
-            presenter.preferences.recentsViewType().get() != presenter.viewType.mainValue
+            presenter.uiPreferences.recentsViewType().get() != presenter.viewType.mainValue
     }
 
     override fun handleOnBackStarted(backEvent: BackEventCompat) {
@@ -516,7 +516,7 @@ class RecentsController(bundle: Bundle? = null) :
             binding.downloadBottomSheet.dlBottomSheet.dismiss()
             return true
         }
-        val viewType = RecentsViewType.valueOf(presenter.preferences.recentsViewType().get())
+        val viewType = RecentsViewType.valueOf(presenter.uiPreferences.recentsViewType().get())
         if (viewType != presenter.viewType) {
             tempJumpTo(viewType)
             return true

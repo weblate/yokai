@@ -26,12 +26,12 @@ class LibraryDisplayView @JvmOverloads constructor(context: Context, attrs: Attr
     override fun inflateBinding() = LibraryDisplayLayoutBinding.bind(this)
     override fun initGeneralPreferences() {
         binding.displayGroup.bindToPreference(preferences.libraryLayout())
-        binding.uniformGrid.bindToPreference(preferences.uniformGrid()) {
+        binding.uniformGrid.bindToPreference(uiPreferences.uniformGrid()) {
             binding.staggeredGrid.isEnabled = !it
         }
-        binding.outlineOnCovers.bindToPreference(preferences.outlineOnCovers())
+        binding.outlineOnCovers.bindToPreference(uiPreferences.outlineOnCovers())
         binding.staggeredGrid.text = context.getString(R.string.use_staggered_grid).addBetaTag(context)
-        binding.staggeredGrid.isEnabled = !preferences.uniformGrid().get()
+        binding.staggeredGrid.isEnabled = !uiPreferences.uniformGrid().get()
         binding.staggeredGrid.bindToPreference(preferences.useStaggeredGrid())
         binding.gridSeekbar.value = ((preferences.gridSize().get() + .5f) * 2f).roundToInt().toFloat()
         binding.resetGridSize.setOnClickListener {

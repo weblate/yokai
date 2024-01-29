@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.source.globalsearch
 
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -17,8 +18,9 @@ class GlobalSearchCardAdapter(controller: GlobalSearchController) :
      * Listen for browse item clicks.
      */
     val mangaClickListener: OnMangaClickListener = controller
+    private val uiPreferences: UiPreferences by injectLazy()
     private val preferences: PreferencesHelper by injectLazy()
-    val showOutlines = preferences.outlineOnCovers().get()
+    val showOutlines = uiPreferences.outlineOnCovers().get()
 
     /**
      * Listener which should be called when user clicks browse.

@@ -47,6 +47,7 @@ import eu.kanade.tachiyomi.util.chapter.updateTrackChapterMarkedAsRead
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.lang.trimOrNull
 import eu.kanade.tachiyomi.util.manga.MangaShortcutManager
+import eu.kanade.tachiyomi.util.manga.MangaUtil
 import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
@@ -673,8 +674,11 @@ class MangaDetailsPresenter(
 
     fun setScanlatorFilter(filteredScanlators: Set<String>) {
         val manga = manga
-        manga.filtered_scanlators = if (filteredScanlators.size == allChapterScanlators.size || filteredScanlators.isEmpty()) null else ChapterUtil.getScanlatorString(filteredScanlators)
-        db.updateMangaFilteredScanlators(manga).executeAsBlocking()
+        MangaUtil.setScanlatorFilter(
+            db,
+            manga,
+            if (filteredScanlators.size == allChapterScanlators.size) emptySet() else filteredScanlators
+        )
         asyncUpdateMangaAndChapters()
     }
 

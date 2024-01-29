@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.data.database.models.TrackImpl
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.source.model.UpdateStrategy
+import eu.kanade.tachiyomi.util.chapter.ChapterUtil
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 
@@ -40,6 +41,7 @@ data class BackupManga(
     @ProtoNumber(103) var viewer_flags: Int? = null,
     @ProtoNumber(104) var history: List<BackupHistory> = emptyList(),
     @ProtoNumber(105) var updateStrategy: UpdateStrategy = UpdateStrategy.ALWAYS_UPDATE,
+    @ProtoNumber(108) var excludedScanlators: List<String> = emptyList(),
 
     // SY specific values
     @ProtoNumber(602) var customStatus: Int = 0,
@@ -126,6 +128,7 @@ data class BackupManga(
                 viewer_flags = manga.viewer_flags.takeIf { it != -1 } ?: 0,
                 chapterFlags = manga.chapter_flags,
                 updateStrategy = manga.update_strategy,
+                excludedScanlators = ChapterUtil.getScanlators(manga.filtered_scanlators),
             ).also { backupManga ->
                 customMangaManager?.getManga(manga)?.let {
                     backupManga.customTitle = it.title

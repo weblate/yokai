@@ -45,7 +45,17 @@ jobs:
       - name: Extract branch name
         id: branch_name
         shell: bash
-        run: echo "name=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        run: echo "NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Get changelog
+        id: changelog
+        shell: bash
+        run: |
+          {
+            echo "CHANGELOG<<END_OF_FILE"
+            cat CHANGELOG.md || echo ""
+            echo "END_OF_FILE"
+          } >> "$GITHUB_OUTPUT" 2> /dev/null
 
       # PROD
       - name: Prepare release build
@@ -56,7 +66,7 @@ jobs:
 
       # NIGHTLY
       - name: Prepare nightly build
-        if: steps.branch_name.outputs.name == 'master' && github.event.inputs.version == ''
+        if: steps.branch_name.outputs.NAME == 'master' && github.event.inputs.version == ''
         run: |
           set -x
           echo "VERSION_TAG=r$(git rev-list --count HEAD)" >> $GITHUB_ENV
@@ -121,6 +131,8 @@ jobs:
           tag_name: ${{ env.VERSION_TAG }}
           name: Yōkai ${{ env.VERSION_TAG }}
           body: |
+            ${{ steps.changelog.outputs.CHANGELOG }}
+            
             ---
 
             ### Checksums
@@ -158,6 +170,8 @@ jobs:
             > _**This alpha version is for testing only!**_
 
             It is not ready for daily use and we do not guarantee its usability. Please download the latest stable releases instead (https://github.com/null2264/yokai/releases/latest)
+            
+            ${{ steps.changelog.outputs.CHANGELOG }}
             
             ---
 

@@ -8,7 +8,7 @@
 ## Other
 -->
 ## Additions
-- Scanlator filter is now being backed up
+- Scanlator filter is now being backed up (jobobby04)
 
 ## Fixes
 - Fixed error handling for MAL tracking (AntsyLich)

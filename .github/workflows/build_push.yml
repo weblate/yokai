@@ -52,9 +52,9 @@ jobs:
         shell: bash
         run: |
           {
-            echo 'CHANGELOG<<END_OF_FILE'
-            cat CHANGELOG.md || echo ''
-            echo END_OF_FILE
+            echo "CHANGELOG<<END_OF_FILE"
+            cat CHANGELOG.md || echo ""
+            echo "\nEND_OF_FILE"
           } >> "$GITHUB_OUTPUT" 2> /dev/null
           cat $GITHUB_OUTPUT
 

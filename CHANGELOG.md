@@ -18,3 +18,4 @@
 - Split PreferencesHelper even more
 - Simplify extension install issue fix (AwkwardPeak7)
 - Update dependency com.github.tachiyomiorg:image-decoder to fbd6601290
+- Update dependency com.github.tachiyomiorg:subsampling-scale-image-view to 7e57335

@@ -147,7 +147,7 @@ dependencies {
     implementation(androidx.glance.appwidget)
 
     // Modified dependencies
-    implementation(libs.subsampling.scale.image.view) {
+    implementation(libs.subsamplingscaleimageview) {
         exclude(module = "image-decoder")
     }
     implementation(libs.image.decoder)

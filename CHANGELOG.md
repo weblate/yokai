@@ -19,4 +19,4 @@
 - Simplify extension install issue fix (AwkwardPeak7)
 - Update dependency com.github.tachiyomiorg:image-decoder to fbd6601290
 - Replace dependency com.github.jays2kings:subsampling-scale-image-view with com.github.null2264:subsampling-scale-image-view
-- Update dependency com.github.null2264:subsampling-scale-image-view to 7e573353d4
+- Update dependency com.github.null2264:subsampling-scale-image-view to e3cffd59c5

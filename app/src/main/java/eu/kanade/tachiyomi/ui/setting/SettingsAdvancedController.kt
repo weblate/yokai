@@ -342,7 +342,7 @@ class SettingsAdvancedController : SettingsController() {
                 entryValues = values.map { it.name }.toTypedArray().toList()
 
                 onChange {
-                    it as Int
+                    it as ExtensionInstaller
                     if (it == ExtensionInstaller.SHIZUKU) {
                         return@onChange if (!context.isPackageInstalled(ShizukuInstaller.shizukuPkgName) && !Sui.isSui()) {
                             context.materialAlertDialog()

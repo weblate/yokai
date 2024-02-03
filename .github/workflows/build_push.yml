@@ -57,7 +57,6 @@ jobs:
             echo
             echo "END_OF_FILE"
           } >> "$GITHUB_OUTPUT" 2> /dev/null
-          cat $GITHUB_OUTPUT
 
       # PROD
       - name: Prepare release build

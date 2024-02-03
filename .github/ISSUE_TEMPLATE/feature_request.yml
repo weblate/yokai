@@ -1,6 +1,6 @@
 name: 🌟 Feature request
 description: Suggest a feature to improve Yōkai
-labels: [feature]
+labels: [enhancement]
 body:
 
   - type: textarea

@@ -12,7 +12,6 @@ import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import dev.yokai.domain.base.BasePreferences
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.ShizukuInstaller
@@ -267,12 +266,12 @@ internal class ExtensionInstaller(private val context: Context) {
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.S
         val basePreferences: BasePreferences by injectLazy()
         when (basePreferences.extensionInstaller().get()) {
-            SHIZUKU -> {
+            BasePreferences.ExtensionInstaller.SHIZUKU -> {
                 pkgName ?: return
                 setInstalling(pkgName, uri.hashCode())
                 shizukuInstaller?.addToQueue(downloadId, pkgName, uri)
             }
-            PRIVATE -> installPrivately(downloadId, pkgName, uri)
+            BasePreferences.ExtensionInstaller.PRIVATE -> installPrivately(downloadId, pkgName, uri)
             else -> {
                 val extensionManager = Injekt.get<ExtensionManager>()
                 if (extensionManager.installedExtensionsFlow.value.find { it.pkgName == pkgName }?.isShared == false) {
@@ -478,8 +477,9 @@ internal class ExtensionInstaller(private val context: Context) {
         const val EXTRA_DOWNLOAD_ID = "ExtensionInstaller.extra.DOWNLOAD_ID"
         const val FILE_SCHEME = "file://"
 
-        const val PACKAGE_INSTALLER = 0
+        @Deprecated("Use BasePreferences.ExtensionInstaller instead")
         const val SHIZUKU = 1
+        @Deprecated("Use BasePreferences.ExtensionInstaller instead")
         const val PRIVATE = 2
     }
 }

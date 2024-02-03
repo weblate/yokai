@@ -16,6 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
 import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
@@ -29,7 +31,6 @@ import eu.kanade.tachiyomi.data.library.LibraryUpdateJob.Target
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.extension.ShizukuInstaller
-import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.network.PREF_DOH_360
 import eu.kanade.tachiyomi.network.PREF_DOH_ADGUARD
@@ -332,19 +333,13 @@ class SettingsAdvancedController : SettingsController() {
         preferenceCategory {
             titleRes = R.string.extensions
 
-            intListPreference(activity) {
+            listPreference(activity) {
                 bindTo(basePreferences.extensionInstaller())
                 titleRes = R.string.ext_installer_pref
-                entriesRes = arrayOf(
-                    R.string.default_value,
-                    R.string.ext_installer_shizuku,
-                    R.string.ext_installer_private,
-                )
-                entryValues = listOf(
-                    ExtensionInstaller.PACKAGE_INSTALLER,
-                    ExtensionInstaller.SHIZUKU,
-                    ExtensionInstaller.PRIVATE,
-                )
+
+                val values = ExtensionInstaller.entries.toList()
+                entriesRes = values.map { it.titleResId }.toTypedArray()
+                entryValues = values.map { it.name }.toTypedArray().toList()
 
                 onChange {
                     it as Int
@@ -369,7 +364,7 @@ class SettingsAdvancedController : SettingsController() {
             infoPreference(R.string.ext_installer_summary).apply {
                 basePreferences.extensionInstaller().changesIn(viewScope) {
                     isVisible =
-                        it != ExtensionInstaller.PACKAGE_INSTALLER && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+                        it != ExtensionInstaller.PACKAGEINSTALLER && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
                 }
             }
             preference {

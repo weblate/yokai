@@ -7,7 +7,6 @@ import android.os.Parcelable
 import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.plusAssign
 import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.InstallStep
@@ -463,10 +462,10 @@ class ExtensionManager(
             val prefs = Injekt.get<BasePreferences>().extensionInstaller().get()
             return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ||
                 (
-                    prefs == ExtensionInstaller.SHIZUKU &&
+                    prefs == BasePreferences.ExtensionInstaller.SHIZUKU &&
                         (!checkIfShizukuIsRunning || ShizukuInstaller.isShizukuRunning())
                     ) ||
-                prefs == ExtensionInstaller.PRIVATE
+                prefs == BasePreferences.ExtensionInstaller.PRIVATE
         }
     }
 }

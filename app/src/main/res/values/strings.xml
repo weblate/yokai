@@ -1205,4 +1205,5 @@
     <string name="sfw">SFW</string>
     <string name="nsfw">NSFW</string>
     <string name="content_type">Content Type</string>
+    <string name="ext_installer_packageinstaller">Default</string>
 </resources>

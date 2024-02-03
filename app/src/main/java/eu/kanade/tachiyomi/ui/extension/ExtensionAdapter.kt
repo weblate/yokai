@@ -2,10 +2,10 @@ package eu.kanade.tachiyomi.ui.extension
 
 import android.widget.TextView
 import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.ui.extension.ExtensionAdapter.OnButtonClickListener
 import uy.kohesive.injekt.injectLazy
 

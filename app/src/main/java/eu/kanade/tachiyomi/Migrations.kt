@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi
 
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -15,6 +16,7 @@ import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.data.updater.AppUpdateJob
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
+import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.network.PREF_DOH_CLOUDFLARE
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.library.LibrarySort
@@ -258,6 +260,21 @@ object Migrations {
             if (oldVersion < 112) {
                 prefs.edit {
                     remove("trusted_signatures")
+                }
+            }
+            if (oldVersion < 119) {
+                val basePreferences: BasePreferences = Injekt.get()
+                try {
+                    val oldExtensionInstall = prefs.getInt("extension_installer", 0)
+                    basePreferences.extensionInstaller().set(
+                        when (oldExtensionInstall) {
+                            ExtensionInstaller.SHIZUKU -> BasePreferences.ExtensionInstaller.SHIZUKU
+                            ExtensionInstaller.PRIVATE -> BasePreferences.ExtensionInstaller.PRIVATE
+                            else -> BasePreferences.ExtensionInstaller.PACKAGEINSTALLER
+                        }
+                    )
+                } catch (_: Exception) {
+                    basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.PACKAGEINSTALLER)
                 }
             }
 

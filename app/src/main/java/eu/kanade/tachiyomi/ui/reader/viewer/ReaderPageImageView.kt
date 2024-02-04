@@ -180,6 +180,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         setMinimumScaleType(config.minimumScaleType)
         setMinimumDpi(1) // Just so that very small image will be fit for initial load
         setCropBorders(config.cropBorders)
+        /*
         if (config.insetInfo != null) {
             val topInsets = config.insetInfo.topCutoutInset
             val bottomInsets = config.insetInfo.bottomCutoutInset
@@ -200,6 +201,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 )
             }
         }
+         */
         setOnImageEventListener(
             object : SubsamplingScaleImageView.DefaultOnImageEventListener() {
                 override fun onReady() {

@@ -105,9 +105,8 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun pageTransitions() = preferenceStore.getBoolean(Keys.enableTransitions, true)
 
+    // ReaderPrefs
     fun pagerCutoutBehavior() = preferenceStore.getInt(Keys.pagerCutoutBehavior, 0)
-
-    fun landscapeCutoutBehavior() = preferenceStore.getInt("landscape_cutout_behavior", 0)
 
     fun doubleTapAnimSpeed() = preferenceStore.getInt(Keys.doubleTapAnimationSpeed, 500)
 

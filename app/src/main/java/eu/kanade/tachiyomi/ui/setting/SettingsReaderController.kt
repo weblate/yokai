@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.Display
 import androidx.core.content.getSystemService
 import androidx.preference.PreferenceScreen
+import dev.yokai.domain.ui.settings.ReaderPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.changesIn
@@ -15,11 +16,15 @@ import eu.kanade.tachiyomi.ui.reader.settings.ReaderBottomButton
 import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation
 import eu.kanade.tachiyomi.util.lang.addBetaTag
+import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.isTablet
 import eu.kanade.tachiyomi.util.view.activityBinding
+import uy.kohesive.injekt.injectLazy
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsReaderController : SettingsController() {
+
+    private val readerPreferences: ReaderPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = R.string.reader
@@ -122,8 +127,13 @@ class SettingsReaderController : SettingsController() {
                 titleRes = R.string.show_page_number
                 defaultValue = true
             }
+            switchPreference {
+                bindTo(readerPreferences.cutoutShort())
+                titleRes = R.string.pref_cutout_short
+                isVisible = DeviceUtil.hasCutout(activity) || preferences.fullscreen().get()
+            }
             intListPreference(activity) {
-                bindTo(preferences.landscapeCutoutBehavior())
+                bindTo(readerPreferences.landscapeCutoutBehavior())
                 title = "${context.getString(R.string.cutout_area_behavior)} (${context.getString(R.string.landscape)})"
                 entriesRes = arrayOf(
                     R.string.pad_cutout_areas,
@@ -131,12 +141,7 @@ class SettingsReaderController : SettingsController() {
                 )
                 entryRange = 0..1
                 defaultValue = 0
-                isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    activity?.getSystemService<DisplayManager>()
-                        ?.getDisplay(Display.DEFAULT_DISPLAY)?.cutout != null
-                } else {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-                }
+                isVisible = DeviceUtil.hasCutout(activity)
             }
         }
 

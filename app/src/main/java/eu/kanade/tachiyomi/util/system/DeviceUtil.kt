@@ -1,7 +1,11 @@
 package eu.kanade.tachiyomi.util.system
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.hardware.display.DisplayManager
 import android.os.Build
+import android.view.Display
+import androidx.core.content.getSystemService
 import timber.log.Timber
 
 object DeviceUtil {
@@ -74,5 +78,12 @@ object DeviceUtil {
             Timber.w(e, "Unable to use SystemProperties.get")
             null
         }
+    }
+
+    fun hasCutout(activity: Activity? = null) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        activity?.getSystemService<DisplayManager>()
+            ?.getDisplay(Display.DEFAULT_DISPLAY)?.cutout != null
+    } else {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
     }
 }

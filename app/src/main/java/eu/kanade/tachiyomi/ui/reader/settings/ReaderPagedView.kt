@@ -10,15 +10,19 @@ import android.view.Display
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import dev.yokai.domain.ui.settings.ReaderPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.ReaderPagedLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.widget.BaseReaderSettingsView
+import uy.kohesive.injekt.injectLazy
 
 class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     BaseReaderSettingsView<ReaderPagedLayoutBinding>(context, attrs) {
+
+    private val readerPreferences: ReaderPreferences by injectLazy()
 
     var needsActivityRecreate = false
     override fun inflateBinding() = ReaderPagedLayoutBinding.bind(this)
@@ -38,7 +42,7 @@ class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: Attribu
             pagerNav.bindToPreference(preferences.navigationModePager())
             pagerInvert.bindToPreference(preferences.pagerNavInverted())
             extendPastCutout.bindToPreference(preferences.pagerCutoutBehavior())
-            extendPastCutoutLandscape.bindToPreference(preferences.landscapeCutoutBehavior()) {
+            extendPastCutoutLandscape.bindToPreference(readerPreferences.landscapeCutoutBehavior()) {
                 needsActivityRecreate = true
             }
             pageLayout.bindToPreference(preferences.pageLayout()) {

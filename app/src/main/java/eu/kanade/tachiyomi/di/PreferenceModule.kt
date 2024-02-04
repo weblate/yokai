@@ -5,6 +5,7 @@ import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.recents.RecentsPreferences
 import dev.yokai.domain.source.SourcePreferences
 import dev.yokai.domain.ui.UiPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -25,6 +26,8 @@ class PreferenceModule(val application: Application) : InjektModule {
         addSingletonFactory { TrackPreferences(get()) }
 
         addSingletonFactory { UiPreferences(get()) }
+
+        addSingletonFactory { ReaderPreferences(get()) }
 
         addSingletonFactory { RecentsPreferences(get()) }
 

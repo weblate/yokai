@@ -652,7 +652,7 @@
     <string name="last_used_library_recents">Laatst gebruikt (Bibliotheek of Nieuwste)</string>
     <string name="custom_manga_info">Aangepaste manga-informatie</string>
     <string name="mark_all_chapters_as_unread">Alle hoofstukken als ongelezen markeren\?</string>
-    <string name="ignore_cutout_areas">Uitgeknipte gebieden negeren</string>
+    <string name="cutout_ignore">Uitgeknipte gebieden negeren</string>
     <string name="start_past_cutout">Beginnen na het uitgeknipte gebied</string>
     <string name="pad_cutout_areas">Uitgesneden gebied opvullen</string>
     <string name="cutout_area_behavior">Gedrag van het uitgesneden gebied</string>

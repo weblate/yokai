@@ -825,7 +825,7 @@
     <string name="no_match_found">Nessun risultato trovato</string>
     <string name="source_unsupported">Fonte non supportata</string>
     <string name="custom_manga_info">Informazioni serie personalizzate</string>
-    <string name="ignore_cutout_areas">Ignora aree ritagliate</string>
+    <string name="cutout_ignore">Ignora aree ritagliate</string>
     <string name="pad_cutout_areas">Riempi aree ritagliate</string>
     <plurals name="_updates_pending">
         <item quantity="one">%d aggiornamento in attesa</item>

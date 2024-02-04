@@ -72,6 +72,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import dev.yokai.domain.ui.settings.ReaderPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -951,7 +952,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             setNavColor(insets)
             val systemInsets = insets.ignoredSystemInsets
             val currentOrientation = resources.configuration.orientation
-            val isLandscapeFully = currentOrientation == Configuration.ORIENTATION_LANDSCAPE && readerPreferences.landscapeCutoutBehavior().get() == 1
+            val isLandscapeFully = currentOrientation == Configuration.ORIENTATION_LANDSCAPE && readerPreferences.landscapeCutoutBehavior().get() == LandscapeCutoutBehaviour.DEFAULT
             val cutOutInsets = if (isLandscapeFully) insets.displayCutout else null
             val vis = insets.isVisible(statusBars())
             val fullscreen = preferences.fullscreen().get() && !isSplitScreen
@@ -1827,18 +1828,14 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             val params = window.attributes
             if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                 params.layoutInDisplayCutoutMode =
-                    if (readerPreferences.landscapeCutoutBehavior().get() == 0) {
+                    if (readerPreferences.landscapeCutoutBehavior().get() == LandscapeCutoutBehaviour.HIDE) {
                         WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
                     } else {
                         WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
                     }
             } else {
                 params.layoutInDisplayCutoutMode =
-                    if (readerPreferences.cutoutShort().get()) {
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-                    } else {
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
-                    }
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             }
         }
     }
@@ -1917,11 +1914,6 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             preferences.showPageNumber().changesIn(scope) { setPageNumberVisibility(it) }
 
             readerPreferences.landscapeCutoutBehavior().changes()
-                .drop(1)
-                .onEach { setCutoutMode() }
-                .launchIn(scope)
-
-            readerPreferences.cutoutShort().changes()
                 .drop(1)
                 .onEach { setCutoutMode() }
                 .launchIn(scope)

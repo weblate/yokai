@@ -625,7 +625,7 @@
     <string name="automatic_can_still_switch">Khi sử dụng dạng trang tự động, bạn có thể chuyển qua từng loại dạng trang trong khi đọc mà không cần ghi đè cài đặt này</string>
     <string name="page_layout">Dạng trang</string>
     <string name="cutout_behavior_only_applies">Hành vị cắt khu vực chỉ được áp dụng trong chế độ dọc với một số kiểu tỉ lệ</string>
-    <string name="ignore_cutout_areas">Bỏ qua khu vực bị cắt</string>
+    <string name="cutout_ignore">Bỏ qua khu vực bị cắt</string>
     <string name="start_past_cutout">Bắt đầu sau phần bị cắt</string>
     <string name="pad_cutout_areas">Chèn khoảng trống vào khu vực bị cắt</string>
     <string name="cutout_area_behavior">Hành vi khi cắt khu vực</string>

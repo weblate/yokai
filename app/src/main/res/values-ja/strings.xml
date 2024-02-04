@@ -691,7 +691,7 @@
 \nダウンロードを削除しますか？</item>
     </plurals>
     <string name="show_on_long_press">長押しで表示</string>
-    <string name="ignore_cutout_areas">カットアウト領域を無視</string>
+    <string name="cutout_ignore">カットアウト領域を無視</string>
     <string name="automatic_removal">自動削除</string>
     <string name="search_">%1$sを検索</string>
     <string name="date_fetched">登録された日付</string>

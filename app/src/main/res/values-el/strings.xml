@@ -671,7 +671,7 @@
     <string name="automatic_orientation">Αυτόματη (βάση προσανατολισμού)</string>
     <string name="page_layout">Διάταξη σελίδας</string>
     <string name="cutout_behavior_only_applies">Η συμπεριφορά της περιοχής αποκοπής ισχύει μόνο σε λειτουργία πορτραίτου με ορισμένους τύπους κλίμακας</string>
-    <string name="ignore_cutout_areas">Παράβλεψη περιοχών αποκοπής</string>
+    <string name="cutout_ignore">Παράβλεψη περιοχών αποκοπής</string>
     <string name="start_past_cutout">Έναρξη μετά την αποκοπή</string>
     <string name="pad_cutout_areas">Γέμισμα περιοχής αποκοπής</string>
     <string name="cutout_area_behavior">Συμπεριφορά περιοχής αποκοπής</string>

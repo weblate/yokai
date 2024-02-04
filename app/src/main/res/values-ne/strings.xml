@@ -867,7 +867,7 @@
     <string name="automatic_orientation">स्वचालित (अभिमुखीकरणमा आधारित)</string>
     <string name="switch_to_single">एकल पृष्ठमा स्विच गर्नुहोस्</string>
     <string name="smart_based_on_page">स्मार्ट (पृष्ठमा आधारित)</string>
-    <string name="ignore_cutout_areas">कटआउट क्षेत्रहरू बेवास्ता गर्नुहोस्</string>
+    <string name="cutout_ignore">कटआउट क्षेत्रहरू बेवास्ता गर्नुहोस्</string>
     <string name="cutout_behavior_only_applies">कटआउट क्षेत्र व्यवहार निश्चित स्केल प्रकारहरूसँग पोर्ट्रेट मोडमा मात्र लागू हुन्छ</string>
     <string name="search_chapters">अध्यायहरू खोज्नुहोस्</string>
     <string name="mark_all_chapters_as_unread">सबै अध्यायहरू नपढिएको रूपमा चिन्ह लगाउने हो\?</string>

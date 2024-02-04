@@ -538,7 +538,7 @@
         <item quantity="one">%1$d sayfa</item>
         <item quantity="other">%1$d sayfa</item>
     </plurals>
-    <string name="ignore_cutout_areas">Kesme alanlarını yoksay</string>
+    <string name="cutout_ignore">Kesme alanlarını yoksay</string>
     <string name="single_page">Tek Sayfa</string>
     <string name="page_layout">Sayfa düzeni</string>
     <string name="pad_cutout_areas">Kesme alanlarını dolgula</string>

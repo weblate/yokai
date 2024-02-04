@@ -689,7 +689,7 @@
     <string name="crash_log_saved">Rapports de plantage sauvegardés</string>
     <string name="updated_to_">Mise à jour de v%1$s</string>
     <string name="pressing_back_to_start">Revenir à l\'écran de démarrage en appuyant sur retour</string>
-    <string name="ignore_cutout_areas">Ignorer les zones de découpe</string>
+    <string name="cutout_ignore">Ignorer les zones de découpe</string>
     <string name="previous">Précédent</string>
     <string name="next">Suivant</string>
     <string name="menu">menu</string>

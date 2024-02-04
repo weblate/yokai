@@ -842,7 +842,7 @@
     <string name="cutout_area_behavior">Поведінка вирізу</string>
     <string name="pad_cutout_areas">Заповніть площу вирізу</string>
     <string name="start_past_cutout">Почати після вирізання</string>
-    <string name="ignore_cutout_areas">Ігнорувати виріз</string>
+    <string name="cutout_ignore">Ігнорувати виріз</string>
     <string name="cutout_behavior_only_applies">Поведінка вирізу вживається лише в портретному режимі з визначеними типами масштабів</string>
     <string name="automatic_orientation">Автоматичне (на основі орієнтації)</string>
     <string name="custom_manga_info">Користувальницька інформація про манґу</string>

@@ -820,7 +820,7 @@
     <string name="automatic_can_still_switch">Ved bruk av automatisk sideoppsett kan du fremdeles bytte mellom oppsett mens du leser, uten å overstyre denne innstillingen</string>
     <string name="page_layout">Sideoppsett</string>
     <string name="cutout_behavior_only_applies">Oppførsel for utklippsområde har kun innvirkning i stående sideretning med noen skaleringstyper</string>
-    <string name="ignore_cutout_areas">Ignorer utklipte områder</string>
+    <string name="cutout_ignore">Ignorer utklipte områder</string>
     <string name="start_past_cutout">Start etter utklipp</string>
     <string name="cutout_area_behavior">Oppførsel for utklippsområde</string>
     <string name="if_disabled_transition_will_skip">Hvis avskrudd vil overgangssiden hoppes over hvis neste kapittel er innlastet</string>

@@ -648,7 +648,7 @@
     <string name="saves_error_logs">将错误记录保存到文件中，以便与开发人员共享</string>
     <string name="crash_log_saved">崩溃日志已保存</string>
     <string name="updated_to_">已更新到 v%1$s</string>
-    <string name="ignore_cutout_areas">忽略刘海屏区域</string>
+    <string name="cutout_ignore">忽略刘海屏区域</string>
     <string name="pad_cutout_areas">平板刘海屏区域</string>
     <string name="cutout_area_behavior">刘海屏行为</string>
     <string name="mark_all_chapters_as_unread">标记所有章节为未读？</string>

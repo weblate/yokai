@@ -721,7 +721,7 @@
     <string name="show_unread_count">Показывать значки и счётчик непрочитанных глав</string>
     <string name="show_unread_badges">Показывать значки непрочитанных глав</string>
     <string name="hide_unread_badges">Скрыть значки непрочитанных глав</string>
-    <string name="ignore_cutout_areas">Игнорировать области выреза</string>
+    <string name="cutout_ignore">Игнорировать области выреза</string>
     <string name="cutout_area_behavior">Поведение области выреза</string>
     <string name="pad_cutout_areas">Блокнотная область выреза</string>
     <string name="start_past_cutout">Начать с прошлого выреза</string>

@@ -666,7 +666,7 @@
     </plurals>
     <string name="hide_bottom_nav">Cua automaticamente su butone de navigatzione</string>
     <string name="custom_manga_info">Informatziones personalizadas de su manga</string>
-    <string name="ignore_cutout_areas">Ignora sas àreas segadas</string>
+    <string name="cutout_ignore">Ignora sas àreas segadas</string>
     <string name="cutout_area_behavior">Cumportamentu de s\'àrea de segadura</string>
     <string name="filter_languages">Filtra sas limbas</string>
     <string name="selection">Seletzione</string>

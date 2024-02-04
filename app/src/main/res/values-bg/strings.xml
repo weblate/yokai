@@ -643,7 +643,7 @@
     <string name="cutout_area_behavior">Поведение на зоната на изрязване</string>
     <string name="pad_cutout_areas">Области на изрязване на подложката</string>
     <string name="start_past_cutout">Започнете след изрязване</string>
-    <string name="ignore_cutout_areas">Игнориране на областите на изрязване</string>
+    <string name="cutout_ignore">Игнориране на областите на изрязване</string>
     <string name="cutout_behavior_only_applies">Поведението на зоната на изрязване се прилага само в портретен режим с определени типове мащаби</string>
     <string name="page_layout">Оформление на страница</string>
     <string name="automatic_orientation">Автоматично (в зависимост от ориентацията)</string>

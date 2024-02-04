@@ -795,7 +795,7 @@
     <string name="cutout_area_behavior">কাটআউট এলাকার আচরণ</string>
     <string name="pad_cutout_areas">প্যাড কাটআউটএর এলাকা</string>
     <string name="start_past_cutout">অতীত কাটআউট শুরু কর</string>
-    <string name="ignore_cutout_areas">কাটআউট এলাকা উপেক্ষা কর</string>
+    <string name="cutout_ignore">কাটআউট এলাকা উপেক্ষা কর</string>
     <string name="cutout_behavior_only_applies">কাটআউট এলাকার আচরণ শুধুমাত্র নির্দিষ্ট স্কেলের প্রকারের সাথে প্রতিকৃতি মোডে প্রযোজ্য</string>
     <string name="automatic_can_still_switch">স্বয়ংক্রিয় পৃষ্ঠা বিন্যাস ব্যবহার করার সময়, আপনি এখনও এই সেটিং ওভাররাইড না করে পড়ার সময় লেআউটগুলির মধ্যে স্যুইচ করতে পারেন</string>
     <string name="show_on_long_press">দীর্ঘ প্রেসে দেখও</string>

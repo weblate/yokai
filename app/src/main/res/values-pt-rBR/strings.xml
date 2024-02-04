@@ -770,7 +770,7 @@
     <string name="automatic_can_still_switch">Ao usar o layout de página automático, você ainda pode mudar entre os layouts enquanto lê sem sobrepôr esta configuração</string>
     <string name="page_layout">Layout de página</string>
     <string name="cutout_behavior_only_applies">O comportamento da área de corte da tela aplica apenas no modo paisagem com certos tipos de escala</string>
-    <string name="ignore_cutout_areas">Ignorar as áreas de corte da tela</string>
+    <string name="cutout_ignore">Ignorar as áreas de corte da tela</string>
     <string name="start_past_cutout">Iniciar após o corte da tela</string>
     <string name="pad_cutout_areas">Preencher as áreas de corte da tela</string>
     <plurals name="pages_plural">

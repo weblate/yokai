@@ -1,6 +1,8 @@
 package eu.kanade.tachiyomi.ui.reader.viewer.pager
 
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import dev.yokai.domain.ui.settings.ReaderPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.reader.settings.PageLayout
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerConfig
@@ -24,6 +26,7 @@ class PagerConfig(
     scope: CoroutineScope,
     private val viewer: PagerViewer,
     preferences: PreferencesHelper = Injekt.get(),
+    readerPreferences: ReaderPreferences = Injekt.get(),
 ) :
     ViewerConfig(preferences, scope) {
 
@@ -48,7 +51,7 @@ class PagerConfig(
     var readerTheme = 0
         private set
 
-    var cutoutBehavior = 0
+    var cutoutBehavior: CutoutBehaviour = CutoutBehaviour.SHOW
         private set
 
     var isFullscreen = true
@@ -99,7 +102,7 @@ class PagerConfig(
             }
             .launchIn(scope)
 
-        preferences.pagerCutoutBehavior()
+        readerPreferences.pagerCutoutBehavior()
             .register({ cutoutBehavior = it }, { imagePropertyChangedListener?.invoke() })
 
         preferences.zoomStart()

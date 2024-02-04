@@ -743,7 +743,7 @@
     <string name="gray_background">Gris</string>
     <string name="switch_to_double">Canvia a pàgines dobles</string>
     <string name="switch_to_single">Canvia a pàgina única</string>
-    <string name="ignore_cutout_areas">Ignora les àrees retallades</string>
+    <string name="cutout_ignore">Ignora les àrees retallades</string>
     <string name="cutout_behavior_only_applies">El comportament de l’àrea retallada només s’aplica en mode vertical amb certs tipus d’escalat</string>
     <string name="automatic_can_still_switch">Quan utilitzeu la distribució de pàgines automàtiques, podeu canviar igualment entre distribucions mentre llegiu sense canviar aquesta configuració</string>
     <string name="continue_reading_chapter_">Continua llegint el capítol %1$s</string>

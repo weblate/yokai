@@ -551,7 +551,7 @@
     <string name="error_saving_cover">Při ukládání přebalu došlo k chybě</string>
     <string name="cover_saved">Přebal uložen</string>
     <string name="page_layout">Rozložení stránek</string>
-    <string name="ignore_cutout_areas">Ignorovat vyřežané oblasti</string>
+    <string name="cutout_ignore">Ignorovat vyřežané oblasti</string>
     <string name="cutout_area_behavior">Chování oblasti výřezu</string>
     <string name="both_axes">Na Obou Osách</string>
     <string name="vertically">Vertikálně</string>

@@ -1,11 +1,10 @@
 package eu.kanade.tachiyomi.ui.setting
 
-import android.hardware.display.DisplayManager
 import android.os.Build
-import android.view.Display
-import androidx.core.content.getSystemService
 import androidx.preference.PreferenceScreen
 import dev.yokai.domain.ui.settings.ReaderPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
+import dev.yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.changesIn
@@ -127,21 +126,38 @@ class SettingsReaderController : SettingsController() {
                 titleRes = R.string.show_page_number
                 defaultValue = true
             }
-            switchPreference {
-                bindTo(readerPreferences.cutoutShort())
-                titleRes = R.string.pref_cutout_short
-                isVisible = DeviceUtil.hasCutout(activity) || preferences.fullscreen().get()
+            listPreference(activity) {
+                bindTo(readerPreferences.pagerCutoutBehavior())
+                titleRes = R.string.cutout_area_behavior
+                val values = CutoutBehaviour.entries
+                entriesRes = values.map { it.titleResId }.toTypedArray()
+                entryValues = values.map { it.name }.toTypedArray().toList()
+                // Calling this once to show only on cutout
+                isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
+                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
+                } else {
+                    false
+                } && preferences.fullscreen().get()
+                // Calling this a second time in case activity is recreated while on this page
+                // Keep the first so it shouldn't animate hiding the preference for phones without
+                // cutouts
+                activityBinding?.root?.post {
+                    isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
+                            activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
+                    } else {
+                        false
+                    } && preferences.fullscreen().get()
+                }
             }
-            intListPreference(activity) {
+            listPreference(activity) {
                 bindTo(readerPreferences.landscapeCutoutBehavior())
                 title = "${context.getString(R.string.cutout_area_behavior)} (${context.getString(R.string.landscape)})"
-                entriesRes = arrayOf(
-                    R.string.pad_cutout_areas,
-                    R.string.ignore_cutout_areas,
-                )
-                entryRange = 0..1
-                defaultValue = 0
-                isVisible = DeviceUtil.hasCutout(activity)
+                val values = LandscapeCutoutBehaviour.entries
+                entriesRes = values.map { it.titleResId }.toTypedArray()
+                entryValues = values.map { it.name }.toTypedArray().toList()
+                isVisible = DeviceUtil.hasCutout(activity) && preferences.fullscreen().get()
             }
         }
 
@@ -214,36 +230,6 @@ class SettingsReaderController : SettingsController() {
                 defaultValue = 1
             }
 
-            intListPreference(activity) {
-                key = Keys.pagerCutoutBehavior
-                titleRes = R.string.cutout_area_behavior
-                entriesRes = arrayOf(
-                    R.string.pad_cutout_areas,
-                    R.string.start_past_cutout,
-                    R.string.ignore_cutout_areas,
-                )
-                summaryRes = R.string.cutout_behavior_only_applies
-                entryRange = 0..2
-                defaultValue = 0
-                // Calling this once to show only on cutout
-                isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
-                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
-                } else {
-                    false
-                }
-                // Calling this a second time in case activity is recreated while on this page
-                // Keep the first so it shouldn't animate hiding the preference for phones without
-                // cutouts
-                activityBinding?.root?.post {
-                    isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
-                            activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
-                    } else {
-                        false
-                    }
-                }
-            }
             switchPreference {
                 bindTo(preferences.landscapeZoom())
                 titleRes = R.string.zoom_double_page_spreads

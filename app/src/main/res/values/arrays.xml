@@ -135,14 +135,14 @@
     </string-array>
 
     <string-array name="cutout_behavior">
-        <item>@string/pad_cutout_areas</item>
-        <item>@string/start_past_cutout</item>
-        <item>@string/ignore_cutout_areas</item>
+        <item>@string/cutout_show</item>
+        <item>@string/cutout_hide</item>
+        <item>@string/cutout_ignore</item>
     </string-array>
 
     <string-array name="cutout_behavior_landscape">
-        <item>@string/pad_cutout_areas</item>
-        <item>@string/ignore_cutout_areas</item>
+        <item>@string/cutout_hide</item>
+        <item>@string/cutout_landscape</item>
     </string-array>
 
     <string-array name="clean_up_downloads">

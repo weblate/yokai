@@ -817,7 +817,7 @@
     <string name="pref_update_only_completely_read_summary">I-update lang ang manga kung walang kabanatang di pa nabasa (lahat nabasa)</string>
     <string name="both_axes">Pareho</string>
     <string name="cutout_area_behavior">Gagawin sa cutout area</string>
-    <string name="ignore_cutout_areas">Balewalain ang mga cutout area</string>
+    <string name="cutout_ignore">Balewalain ang mga cutout area</string>
     <string name="all_but_bookmarked_chapters">Lahat ng walang pananda</string>
     <string name="clear_tags">Tanggalin ang mga tag</string>
     <string name="reset_cover">I-reset ang pabalat</string>

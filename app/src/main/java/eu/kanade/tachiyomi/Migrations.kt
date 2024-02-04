@@ -3,6 +3,9 @@ package eu.kanade.tachiyomi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
+import dev.yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -21,6 +24,7 @@ import eu.kanade.tachiyomi.network.PREF_DOH_CLOUDFLARE
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.library.LibrarySort
 import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
+import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.toast
@@ -275,6 +279,33 @@ object Migrations {
                     )
                 } catch (_: Exception) {
                     basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.PACKAGEINSTALLER)
+                }
+            }
+            if (oldVersion < 121) {
+                val readerPreferences: ReaderPreferences = Injekt.get()
+                try {
+                    val oldCutoutBehaviour = prefs.getInt(PreferenceKeys.pagerCutoutBehavior, 0)
+                    readerPreferences.pagerCutoutBehavior().set(
+                        when (oldCutoutBehaviour) {
+                            PagerConfig.CUTOUT_PAD -> CutoutBehaviour.HIDE
+                            PagerConfig.CUTOUT_IGNORE -> CutoutBehaviour.IGNORE
+                            else -> CutoutBehaviour.SHOW
+                        }
+                    )
+                } catch (_: Exception) {
+                    readerPreferences.pagerCutoutBehavior().set(CutoutBehaviour.SHOW)
+                }
+
+                try {
+                    val oldCutoutBehaviour = prefs.getInt("landscape_cutout_behavior", 0)
+                    readerPreferences.landscapeCutoutBehavior().set(
+                        when (oldCutoutBehaviour) {
+                            0 -> LandscapeCutoutBehaviour.HIDE
+                            else -> LandscapeCutoutBehaviour.DEFAULT
+                        }
+                    )
+                } catch (_: Exception) {
+                    readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.DEFAULT)
                 }
             }
 

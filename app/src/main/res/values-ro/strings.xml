@@ -485,7 +485,7 @@
     <string name="automatic_can_still_switch">În timp ce utilizați aspectul automat al paginii, puteți comuta între diferitele aspecte în timp ce citiți fără a suprascrie această setare</string>
     <string name="page_layout">Aspect pagină</string>
     <string name="cutout_behavior_only_applies">Comportamentul zonei de decupaj se aplică numai în modul portret cu anumite tipuri de scală</string>
-    <string name="ignore_cutout_areas">Ignoră zonele de decupaj</string>
+    <string name="cutout_ignore">Ignoră zonele de decupaj</string>
     <string name="start_past_cutout">Începeți după decupaj</string>
     <string name="cutout_area_behavior">Comportamentul zonei de decupare</string>
     <string name="both_axes">Ambele axe</string>

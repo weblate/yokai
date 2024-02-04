@@ -632,7 +632,7 @@
     <string name="last_used_library_recents">Akhir digunakan (Pustaka atau Terkini)</string>
     <string name="custom_manga_info">Maklumat manga tersuai</string>
     <string name="mark_all_chapters_as_unread">Tanda semua bab sebagai belum dibaca\?</string>
-    <string name="ignore_cutout_areas">Abai kawasan bertakuk</string>
+    <string name="cutout_ignore">Abai kawasan bertakuk</string>
     <string name="start_past_cutout">Mula selepas kawasan bertakuk</string>
     <string name="pad_cutout_areas">Berpad kawasan bertakuk</string>
     <string name="cutout_area_behavior">Kelakuan kawasan bertakuk</string>

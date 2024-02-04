@@ -677,7 +677,7 @@
     <string name="sort_by_ignoring_articles">Sortiraj ignorisanjem članova</string>
     <string name="restrictions_">Ograničenja: %1$s</string>
     <string name="smart_based_on_page">Pametno (na osnovu stranice)</string>
-    <string name="ignore_cutout_areas">Zanemarite područja izreza</string>
+    <string name="cutout_ignore">Zanemarite područja izreza</string>
     <string name="page_layout">Raspored na stranici</string>
     <plurals name="pages_plural">
         <item quantity="one">%1$d strana</item>

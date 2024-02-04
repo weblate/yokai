@@ -41,7 +41,7 @@ class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: Attribu
             pageTransitions.bindToPreference(preferences.pageTransitions())
             pagerNav.bindToPreference(preferences.navigationModePager())
             pagerInvert.bindToPreference(preferences.pagerNavInverted())
-            extendPastCutout.bindToPreference(preferences.pagerCutoutBehavior())
+            extendPastCutout.bindToPreference(readerPreferences.pagerCutoutBehavior())
             extendPastCutoutLandscape.bindToPreference(readerPreferences.landscapeCutoutBehavior()) {
                 needsActivityRecreate = true
             }

@@ -847,7 +847,7 @@
     <string name="tag">แท็ก</string>
     <string name="amount_of_pages_to_preload">จำนวนหน้าที่จะโหลดล่วงหน้าเมื่ออ่าน ค่าที่สูงขึ้นจะส่งผลให้ประสบการณ์การอ่านราบรื่นขึ้น แต่จะต้องใช้พื้นที่แคชและเครือข่ายที่มากขึ้น</string>
     <string name="smart_by_theme">อัตโนมัติ (ตามธีม)</string>
-    <string name="ignore_cutout_areas">ไม่สนใจพื้นที่ที่ตัดออก</string>
+    <string name="cutout_ignore">ไม่สนใจพื้นที่ที่ตัดออก</string>
     <string name="cutout_behavior_only_applies">ลักษณะการทำงานของพื้นที่ที่ตัดออกจะใช้ได้เฉพาะในโหมดแนวตั้งตามขนาดที่กำหนด</string>
     <string name="search_manually">ค้นหาด้วยตนเอง</string>
     <string name="include_extra_search_parameter">รวมพารามิเตอร์การค้นหาเพิ่มเติมเมื่อค้นหา</string>

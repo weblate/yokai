@@ -2,6 +2,8 @@ package eu.kanade.tachiyomi.data.backup
 
 import android.content.Context
 import android.net.Uri
+import dev.yokai.domain.ui.settings.ReaderPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.models.BackupCategory
 import eu.kanade.tachiyomi.data.backup.models.BackupHistory
@@ -25,6 +27,8 @@ import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.getEnum
+import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.sourcePreferences
@@ -407,6 +411,15 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
                 return@forEach
             }
             // end j2k fork differences
+            
+            // <-- yokai
+            if (key == "cutout_short" && value is BooleanPreferenceValue) {
+                preferenceStore.getEnum(PreferenceKeys.pagerCutoutBehavior, CutoutBehaviour.SHOW)
+                    .set(if (value.value) CutoutBehaviour.SHOW else CutoutBehaviour.HIDE)
+                return@forEach
+            }
+            // --> yokai
+
             when (value) {
                 is IntPreferenceValue -> {
                     if (prefs[key] is Int?) {

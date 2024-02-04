@@ -724,7 +724,7 @@
     <string name="add_x_to">Dodaj %1$s u …</string>
     <string name="move_x_to">Premjesti %1$s u …</string>
     <string name="use_last_saved_migration_preferences">Za grupno migriranje koristi zadnje spremljene postavke i izvore prije migracije</string>
-    <string name="ignore_cutout_areas">Zanemari područja izreska</string>
+    <string name="cutout_ignore">Zanemari područja izreska</string>
     <string name="start_past_cutout">Počni izvan izreska</string>
     <string name="pad_cutout_areas">Područjima izreska dodaj odmak</string>
     <string name="cutout_area_behavior">Ponašanje područja izreska</string>

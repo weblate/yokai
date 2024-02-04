@@ -896,7 +896,7 @@
     <string name="remove_crop">移除裁剪</string>
     <string name="vertically">縱向</string>
     <string name="both_axes">兩個軸</string>
-    <string name="ignore_cutout_areas">忽略切割區域</string>
+    <string name="cutout_ignore">忽略切割區域</string>
     <string name="cutout_behavior_only_applies">切割區域行為僅適用於特定縮放類型的直向模式</string>
     <plurals name="pages_plural">
         <item quantity="other">%1$d 頁</item>

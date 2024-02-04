@@ -858,7 +858,7 @@
     <string name="add_tag">سِم</string>
     <string name="mark_all_chapters_as_unread">أأحدِّد كلَّ الفصول غير مقروءة؟</string>
     <string name="cutout_behavior_only_applies">لا ينطبق سلوك الحزِّ إلا في الوضع الطولي وفي أنواع معينة من التحجيم</string>
-    <string name="ignore_cutout_areas">تجاهَل الحزوز</string>
+    <string name="cutout_ignore">تجاهَل الحزوز</string>
     <string name="start_past_cutout">ابدأ بعد الحزِّ</string>
     <string name="pad_cutout_areas">أزح الحزوز</string>
     <string name="cutout_area_behavior">سلوك الحَزِّ</string>

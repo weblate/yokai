@@ -25,6 +25,8 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 import com.github.chrisbanes.photoview.PhotoView
+import dev.yokai.domain.ui.settings.ReaderPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
 import eu.kanade.tachiyomi.util.system.GLUtil
@@ -161,7 +163,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         val insetInfo = config.insetInfo ?: return
         val topInsets = insetInfo.topCutoutInset
         val bottomInsets = insetInfo.bottomCutoutInset
-        if (insetInfo.cutoutBehavior == PagerConfig.CUTOUT_START_EXTENDED &&
+        if (insetInfo.cutoutBehavior == CutoutBehaviour.SHOW &&
             topInsets + bottomInsets > 0 &&
             insetInfo.scaleTypeIsFullFit
         ) {
@@ -180,15 +182,14 @@ open class ReaderPageImageView @JvmOverloads constructor(
         setMinimumScaleType(config.minimumScaleType)
         setMinimumDpi(1) // Just so that very small image will be fit for initial load
         setCropBorders(config.cropBorders)
-        /*
         if (config.insetInfo != null) {
             val topInsets = config.insetInfo.topCutoutInset
             val bottomInsets = config.insetInfo.bottomCutoutInset
             setExtendPastCutout(
-                config.insetInfo.cutoutBehavior == PagerConfig.CUTOUT_START_EXTENDED &&
+                config.insetInfo.cutoutBehavior == CutoutBehaviour.SHOW &&
                     config.insetInfo.scaleTypeIsFullFit && topInsets + bottomInsets > 0,
             )
-            if ((config.insetInfo.cutoutBehavior != PagerConfig.CUTOUT_IGNORE || !config.insetInfo.scaleTypeIsFullFit) &&
+            if ((config.insetInfo.cutoutBehavior != CutoutBehaviour.IGNORE || !config.insetInfo.scaleTypeIsFullFit) &&
                 android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
                 config.insetInfo.isFullscreen
             ) {
@@ -201,7 +202,6 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 )
             }
         }
-         */
         setOnImageEventListener(
             object : SubsamplingScaleImageView.DefaultOnImageEventListener() {
                 override fun onReady() {
@@ -318,7 +318,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
     )
 
     data class InsetInfo(
-        val cutoutBehavior: Int,
+        val cutoutBehavior: CutoutBehaviour,
         val topCutoutInset: Float,
         val bottomCutoutInset: Float,
         val scaleTypeIsFullFit: Boolean,

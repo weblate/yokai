@@ -730,7 +730,7 @@
     <string name="last_used_library_recents">Ostatnio użyte (Biblioteka lub Ostatnie)</string>
     <string name="custom_manga_info">Własna informacja o mandze</string>
     <string name="mark_all_chapters_as_unread">Oznaczyć wszystkie rozdziały jako nieprzeczytane\?</string>
-    <string name="ignore_cutout_areas">Ignoruj obszary wycięcia</string>
+    <string name="cutout_ignore">Ignoruj obszary wycięcia</string>
     <string name="start_past_cutout">Zacznij za wycięciem</string>
     <string name="pad_cutout_areas">Wypełnij obszar wycięcia</string>
     <string name="cutout_area_behavior">Zachowanie obszaru wycięcia</string>

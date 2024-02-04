@@ -151,15 +151,17 @@ class MaterialSpinnerView constructor(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    inline fun <reified T : Enum<T>> bindToPreference(pref: Preference<T>) {
+    inline fun <reified T : Enum<T>> bindToPreference(pref: Preference<T>, crossinline block: (T) -> Unit) {
         val enumConstants = T::class.java.enumConstants
         enumConstants?.indexOf(pref.get())?.let { setSelection(it) }
-        val popup = makeSettingsPopup(pref)
+        val popup = makeSettingsPopup(pref, block)
         setOnTouchListener(popup.dragToOpenListener)
         setOnClickListener {
             popup.show()
         }
     }
+
+    inline fun <reified T : Enum<T>> bindToPreference(pref: Preference<T>) = bindToPreference(pref) { }
 
     fun bindToIntPreference(
         pref: Preference<Int>,
@@ -177,7 +179,7 @@ class MaterialSpinnerView constructor(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    inline fun <reified T : Enum<T>> makeSettingsPopup(preference: Preference<T>): PopupMenu {
+    inline fun <reified T : Enum<T>> makeSettingsPopup(preference: Preference<T>, crossinline block: (T) -> Unit): PopupMenu {
         val popup = popup()
 
         // Set a listener so we are notified if a menu item is clicked
@@ -190,7 +192,10 @@ class MaterialSpinnerView constructor(context: Context, attrs: AttributeSet?) :
         popup.setOnMenuItemClickListener { menuItem ->
             val enumConstants = T::class.java.enumConstants
             val pos = menuClicked(menuItem)
-            enumConstants?.get(pos)?.let { preference.set(it) }
+            enumConstants?.get(pos)?.let {
+                preference.set(it)
+                block.invoke(it)
+            }
             true
         }
         return popup

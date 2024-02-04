@@ -717,7 +717,7 @@
     <string name="dont_migrate">마이그레이션하지 않음</string>
     <string name="details_page">세부내용 페이지</string>
     <string name="turn_off_">%s 끄기</string>
-    <string name="ignore_cutout_areas">컷아웃 영역 무시</string>
+    <string name="cutout_ignore">컷아웃 영역 무시</string>
     <string name="page_layout">페이지 레이아웃</string>
     <string name="remember_this_choice">이 선택을 기억하십시오</string>
     <string name="stop_migrating">마이그레이션을 중지하시겠습니까\?</string>

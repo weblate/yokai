@@ -638,7 +638,7 @@
     <string name="automatic_can_still_switch">Ketika menggunakan tata letak halaman secara otomatis, Anda masih dapat menukar tata letak ketika sedang membaca tanpa menimpa pengaturan ini</string>
     <string name="page_layout">Tata letak halaman</string>
     <string name="cutout_behavior_only_applies">Tingkah area potong hanya diterapkan pada mode tegak dengan beberapa jenis skala</string>
-    <string name="ignore_cutout_areas">Abaikan area potong</string>
+    <string name="cutout_ignore">Abaikan area potong</string>
     <string name="start_past_cutout">Mulai potong terakhir</string>
     <string name="pad_cutout_areas">Area potong pad</string>
     <string name="cutout_area_behavior">Tingkah area potong</string>

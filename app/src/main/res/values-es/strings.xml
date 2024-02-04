@@ -657,7 +657,7 @@
     <string name="use_first_source">Utilice la primera fuente con alternativa</string>
     <string name="custom_manga_info">Información sobre las series personalizadas</string>
     <string name="mark_all_chapters_as_unread">¿Marcar todos los capítulos como no leídos\?</string>
-    <string name="ignore_cutout_areas">Ignorar áreas recortadas</string>
+    <string name="cutout_ignore">Ignorar áreas recortadas</string>
     <string name="start_past_cutout">Empezar más allá del recorte</string>
     <string name="cutout_area_behavior">Comportamiento del área de corte</string>
     <string name="both_axes">Ambos Ejes</string>

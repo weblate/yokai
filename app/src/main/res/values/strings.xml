@@ -332,6 +332,8 @@
     <string name="ext_installer_pref">Installer</string>
     <string name="ext_installer_shizuku" translatable="false">Shizuku</string>
     <string name="ext_installer_private" translatable="false">Private</string>
+    <string name="ext_installer_packageinstaller">Default</string>
+    <string name="ext_installer_legacy">Legacy</string>
     <string name="ext_installer_summary">Allows extensions to be installed without user prompts and enables automatic updates for devices under Android 12</string>
     <string name="untrusted_extension">Untrusted extension</string>
     <string name="untrusted_extension_message">Malicious extensions can read any stored login credentials or execute arbitrary code.\n\nBy trusting this extension you accept these risks.</string>
@@ -1205,5 +1207,4 @@
     <string name="sfw">SFW</string>
     <string name="nsfw">NSFW</string>
     <string name="content_type">Content Type</string>
-    <string name="ext_installer_packageinstaller">Default</string>
 </resources>

@@ -76,7 +76,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 <details><summary>Issues</summary>
 
-**Before reporting a new issue, take a look at the [FAQ](https://github.com/tachiyomiorg/tachiyomi/wiki/FAQ), the [changelog](https://github.com/null2264/yokai/releases) and the already opened [issues](https://github.com/null2264/yokai/issues).**
+**Before reporting a new issue, take a look at the [FAQ](https://mihon.app/docs/faq/general), the [changelog](https://github.com/null2264/yokai/releases) and the already opened [issues](https://github.com/null2264/yokai/issues).**
 
 </details>
 
@@ -90,8 +90,8 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 * If it could be device-dependent, try reproducing on another device (if possible).
 * For large logs use [Pastebin](https://pastebin.com/) (or similar).
 * Don't group unrelated requests into one issue.
-- **DO**: [Example #1](https://github.com/tachiyomiorg/tachiyomi/issues/24), [Example #2](https://github.com/tachiyomiorg/tachiyomi/issues/71).
-- **DON'T**: [Example #1](https://github.com/tachiyomiorg/tachiyomi/issues/75).
+- **DO**: [Example #1](https://web.archive.org/web/20240117150729/https://github.com/tachiyomiorg/tachiyomi/issues/24), [Example #2](https://web.archive.org/web/20240117150735/https://github.com/tachiyomiorg/tachiyomi/issues/71).
+- **DON'T**: [Example #1](https://web.archive.org/web/20240117150741/https://github.com/tachiyomiorg/tachiyomi/issues/75).
 
 </details>
 

@@ -1,33 +1,25 @@
-1. **Before reporting a new issue, take a look at the [FAQ](https://github.com/inorichi/tachiyomi/wiki/FAQ), the [changelog](https://github.com/inorichi/tachiyomi/releases) and the already opened [issues](https://github.com/inorichi/tachiyomi/issues).**
-2. If you are unsure, ask here: [![Discord](https://img.shields.io/discord/349436576037732353.svg)](https://discord.gg/tachiyomi)
-3. What is your type of issue?
-    * [Catalogue request](#catalogue-requests)
-    * [Bugs](#bugs)
-    * [Feature requests](#feature-requests)
-    * [Translations](https://github.com/inorichi/tachiyomi/wiki/Translation)
-4. After following 1. and 3. you can [open your issue](https://github.com/inorichi/tachiyomi/issues/new)
+> [!IMPORTANT]
+> Looking to report an issue/bug or make a feature request? Please refer to the [README file](https://github.com/null2264/yokai#contributing).
 
-***
+---
 
-# Catalogue requests
+Thanks for your interest in contributing to Yōkai!
 
-* Catalogue requests should be created at https://github.com/inorichi/tachiyomi-extensions#readme, not here
+# Code contributions
 
-# Bugs
-* Include version (Setting > About > Version)
- * If not latest, try updating, it may have already been solved
- * Dev version is equal to the number of commits as seen in the main page
-* Include steps to reproduce (if not obvious from description)
-* Include screenshot (if needed)
-* If it could be device-dependent, try reproducing on another device (if possible)
-* For large logs use http://pastebin.com/ (or similar)
-* Don't group unrelated requests into one issue
+Pull requests are welcome!
 
-DO: https://github.com/inorichi/tachiyomi/issues/24 https://github.com/inorichi/tachiyomi/issues/71
+If you're interested in taking on [an open issue](https://github.com/null2264/yokai/issues), please comment on it so others are aware.
+You do not need to ask for permission nor an assignment.
 
-DON'T: https://github.com/inorichi/tachiyomi/issues/75
+## Prerequisites
 
-# Feature requests
+Before you start, please note that the ability to use following technologies is **required** and that existing contributors will not actively teach them to you.
 
-* Write a detailed issue, explaning what it should do or how. Avoid writing just "like X app does"
-* Include screenshot (if needed)
+- Basic [Android development](https://developer.android.com/)
+- [Kotlin](https://kotlinlang.org/)
+
+### Tools
+
+- [Android Studio](https://developer.android.com/studio)
+- Emulator or phone with developer options enabled to test changes.

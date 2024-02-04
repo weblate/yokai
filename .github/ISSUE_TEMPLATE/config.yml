@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 📘 Main Tachiyomi issue
-    url: https://github.com/tachiyomiorg/tachiyomi/issues/new/choose
-    about: Issues that exist on both this fork AND the original Tachiyomi should be opened in the tachiyomi repository instead
-  - name: 🖥️ Tachiyomi website
-    url: https://tachiyomi.org/help/
+  - name: 🖥️ Mihon website
+    url: https://mihon.app/help/
     about: Guides, troubleshooting, and answers to common questions

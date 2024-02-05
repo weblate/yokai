@@ -1,4 +1,5 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tint="@color/splashIcon"
     android:height="256dp"
     android:width="256dp"
     android:viewportHeight="338.67"

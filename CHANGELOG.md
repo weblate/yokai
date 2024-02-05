@@ -7,3 +7,5 @@
 
 ## Other
 -->
+## Fixes
+- Fixed splash icon hardcoded to white

@@ -16,6 +16,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import coil.dispose
 import coil.imageLoader
@@ -25,7 +26,6 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 import com.github.chrisbanes.photoview.PhotoView
-import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
@@ -190,15 +190,14 @@ open class ReaderPageImageView @JvmOverloads constructor(
                     config.insetInfo.scaleTypeIsFullFit && topInsets + bottomInsets > 0,
             )
             if ((config.insetInfo.cutoutBehavior != CutoutBehaviour.IGNORE || !config.insetInfo.scaleTypeIsFullFit) &&
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
                 config.insetInfo.isFullscreen
             ) {
-                val insets: WindowInsets? = config.insetInfo.insets
+                val insets = config.insetInfo.insets?.let { WindowInsetsCompat.toWindowInsetsCompat(it) }
                 setExtraSpace(
                     0f,
-                    insets?.displayCutout?.boundingRectTop?.height()?.toFloat() ?: 0f,
+                    insets?.displayCutout?.boundingRects?.get(1)?.height()?.toFloat() ?: 0f,
                     0f,
-                    insets?.displayCutout?.boundingRectBottom?.height()?.toFloat() ?: 0f,
+                    insets?.displayCutout?.boundingRects?.get(3)?.height()?.toFloat() ?: 0f,
                 )
             }
         }

@@ -127,31 +127,6 @@ class SettingsReaderController : SettingsController() {
                 defaultValue = true
             }
             listPreference(activity) {
-                bindTo(readerPreferences.pagerCutoutBehavior())
-                titleRes = R.string.cutout_area_behavior
-                val values = CutoutBehaviour.entries
-                entriesRes = values.map { it.titleResId }.toTypedArray()
-                entryValues = values.map { it.name }.toTypedArray().toList()
-                // Calling this once to show only on cutout
-                isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
-                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
-                } else {
-                    false
-                } && preferences.fullscreen().get()
-                // Calling this a second time in case activity is recreated while on this page
-                // Keep the first so it shouldn't animate hiding the preference for phones without
-                // cutouts
-                activityBinding?.root?.post {
-                    isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
-                            activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
-                    } else {
-                        false
-                    } && preferences.fullscreen().get()
-                }
-            }
-            listPreference(activity) {
                 bindTo(readerPreferences.landscapeCutoutBehavior())
                 title = "${context.getString(R.string.cutout_area_behavior)} (${context.getString(R.string.landscape)})"
                 val values = LandscapeCutoutBehaviour.entries
@@ -228,6 +203,32 @@ class SettingsReaderController : SettingsController() {
                 )
                 entryRange = 1..6
                 defaultValue = 1
+            }
+
+            listPreference(activity) {
+                bindTo(readerPreferences.pagerCutoutBehavior())
+                titleRes = R.string.cutout_area_behavior
+                val values = CutoutBehaviour.entries
+                entriesRes = values.map { it.titleResId }.toTypedArray()
+                entryValues = values.map { it.name }.toTypedArray().toList()
+                // Calling this once to show only on cutout
+                isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
+                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
+                } else {
+                    false
+                } && preferences.fullscreen().get()
+                // Calling this a second time in case activity is recreated while on this page
+                // Keep the first so it shouldn't animate hiding the preference for phones without
+                // cutouts
+                activityBinding?.root?.post {
+                    isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
+                            activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
+                    } else {
+                        false
+                    } && preferences.fullscreen().get()
+                }
             }
 
             switchPreference {

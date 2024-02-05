@@ -411,14 +411,6 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
                 return@forEach
             }
             // end j2k fork differences
-            
-            // <-- yokai
-            if (key == "cutout_short" && value is BooleanPreferenceValue) {
-                preferenceStore.getEnum(PreferenceKeys.pagerCutoutBehavior, CutoutBehaviour.SHOW)
-                    .set(if (value.value) CutoutBehaviour.SHOW else CutoutBehaviour.HIDE)
-                return@forEach
-            }
-            // --> yokai
 
             when (value) {
                 is IntPreferenceValue -> {

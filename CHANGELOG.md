@@ -12,3 +12,4 @@
 
 ## Fixes
 - Fixed splash icon hardcoded to white
+- Fixed preference summary not updating after being changed once

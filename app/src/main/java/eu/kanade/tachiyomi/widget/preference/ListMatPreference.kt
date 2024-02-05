@@ -78,7 +78,7 @@ open class ListMatPreference @JvmOverloads constructor(
                     notifyChanged()
                 }
             }
-            this@ListMatPreference.summary = this@ListMatPreference.summary
+            this@ListMatPreference.setSummary(0)
             dialog.dismiss()
         }
     }

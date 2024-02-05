@@ -117,16 +117,6 @@ class SettingsReaderController : SettingsController() {
                 defaultValue = true
             }
             switchPreference {
-                key = Keys.keepScreenOn
-                titleRes = R.string.keep_screen_on
-                defaultValue = true
-            }
-            switchPreference {
-                key = Keys.showPageNumber
-                titleRes = R.string.show_page_number
-                defaultValue = true
-            }
-            switchPreference {
                 bindTo(readerPreferences.cutoutShort())
                 // FIXME: Transition from reader to homepage is broken when cutout short is disabled
                 title = context.getString(R.string.pref_cutout_short).addBetaTag(context)
@@ -139,9 +129,18 @@ class SettingsReaderController : SettingsController() {
                 val values = LandscapeCutoutBehaviour.entries
                 entriesRes = values.map { it.titleResId }.toTypedArray()
                 entryValues = values.map { it.name }
-                defaultValue = LandscapeCutoutBehaviour.HIDE.name
 
                 preferences.fullscreen().changesIn(viewScope) { isVisible = DeviceUtil.hasCutout(activity) && it}
+            }
+            switchPreference {
+                key = Keys.keepScreenOn
+                titleRes = R.string.keep_screen_on
+                defaultValue = true
+            }
+            switchPreference {
+                key = Keys.showPageNumber
+                titleRes = R.string.show_page_number
+                defaultValue = true
             }
         }
 
@@ -220,7 +219,6 @@ class SettingsReaderController : SettingsController() {
                 val values = CutoutBehaviour.entries
                 entriesRes = values.map { it.titleResId }.toTypedArray()
                 entryValues = values.map { it.name }
-                defaultValue = CutoutBehaviour.HIDE.name
 
                 // Calling this once to show only on cutout
                 isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

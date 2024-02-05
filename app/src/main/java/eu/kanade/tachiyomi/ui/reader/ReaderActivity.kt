@@ -107,6 +107,8 @@ import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
 import eu.kanade.tachiyomi.ui.webview.WebViewActivity
 import eu.kanade.tachiyomi.util.chapter.ChapterUtil.Companion.preferredChapterName
 import eu.kanade.tachiyomi.util.storage.getUriCompat
+import eu.kanade.tachiyomi.util.system.DeviceUtil
+import eu.kanade.tachiyomi.util.system.DeviceUtil.LegacyCutoutMode
 import eu.kanade.tachiyomi.util.system.ThemeUtil
 import eu.kanade.tachiyomi.util.system.contextCompatColor
 import eu.kanade.tachiyomi.util.system.contextCompatDrawable
@@ -1822,30 +1824,50 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
      * Sets notch cutout mode to "NEVER", if mobile is in a landscape view
      */
     private fun setCutoutMode() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val currentOrientation = resources.configuration.orientation
 
-        val currentOrientation = resources.configuration.orientation
+            val attributes = window.attributes
+            attributes.layoutInDisplayCutoutMode =
+                when (currentOrientation) {
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        if (readerPreferences.landscapeCutoutBehavior().get() == LandscapeCutoutBehaviour.HIDE) {
+                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
+                        } else {
+                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                        }
+                    }
 
-        val attributes = window.attributes
-        attributes.layoutInDisplayCutoutMode =
-            when (currentOrientation) {
-                Configuration.ORIENTATION_LANDSCAPE -> {
-                    if (readerPreferences.landscapeCutoutBehavior().get() == LandscapeCutoutBehaviour.HIDE) {
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
-                    } else {
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                    else -> {
+                        if (readerPreferences.cutoutShort().get()) {
+                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                        } else {
+                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
+                        }
                     }
                 }
-                else -> {
-                    if (readerPreferences.cutoutShort().get()) {
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-                    } else {
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
-                    }
-                }
-            }
 
-        window.attributes = attributes
+            window.attributes = attributes
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val currentOrientation = resources.configuration.orientation
+            DeviceUtil.setLegacyCutoutMode(
+                window,
+                when (currentOrientation) {
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        if (readerPreferences.landscapeCutoutBehavior().get() == LandscapeCutoutBehaviour.HIDE)
+                            LegacyCutoutMode.NEVER
+                        else
+                            LegacyCutoutMode.SHORT_EDGES
+                    }
+                    else -> {
+                        if (readerPreferences.cutoutShort().get())
+                            LegacyCutoutMode.SHORT_EDGES
+                        else
+                            LegacyCutoutMode.NEVER
+                    }
+                },
+            )
+        }
     }
 
     private fun setDoublePageMode(viewer: PagerViewer) {

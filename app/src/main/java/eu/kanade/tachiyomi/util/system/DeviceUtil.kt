@@ -5,6 +5,9 @@ import android.content.Context
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.view.Display
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.core.content.getSystemService
 import timber.log.Timber
 
@@ -80,10 +83,69 @@ object DeviceUtil {
         }
     }
 
-    fun hasCutout(context: Context? = null) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        context?.getSystemService<DisplayManager>()
-            ?.getDisplay(Display.DEFAULT_DISPLAY)?.cutout != null
-    } else {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+    val isVivo by lazy {
+        val prop = getSystemProperty("ro.vivo.os.name")
+        !prop.isNullOrBlank() &&
+            prop.contains("funtouch", true)
+    }
+
+    fun setLegacyCutoutMode(window: Window, mode: LegacyCutoutMode) {
+        when (mode) {
+            LegacyCutoutMode.SHORT_EDGES -> {
+                /* Deprecated method
+                if (isVivo) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                    window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                    var systemUiVisibility = window.decorView.systemUiVisibility
+                    systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    window.decorView.systemUiVisibility = systemUiVisibility
+                }
+                 */
+            }
+            LegacyCutoutMode.NEVER -> {
+                /* Deprecated method
+                if (isVivo) {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                    var systemUiVisibility = window.decorView.systemUiVisibility
+                    systemUiVisibility = systemUiVisibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN.inv()
+                    systemUiVisibility = systemUiVisibility and View.SYSTEM_UI_FLAG_LAYOUT_STABLE.inv()
+                    window.decorView.systemUiVisibility = systemUiVisibility
+                }
+                 */
+            }
+        }
+    }
+
+    fun hasCutout(context: Context? = null): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                return context?.getSystemService<DisplayManager>()
+                    ?.getDisplay(Display.DEFAULT_DISPLAY)?.cutout != null
+            }
+        }
+        /*
+        else if (isVivo && context != null) {
+            try {
+                @SuppressLint("PrivateApi")
+                val ftFeature = context.classLoader
+                    .loadClass("android.util.FtFeature")
+                val isFeatureSupportMethod = ftFeature.getMethod(
+                    "isFeatureSupport",
+                    Int::class.javaPrimitiveType
+                )
+                val isNotchOnScreen = 0x00000020
+                return isFeatureSupportMethod.invoke(ftFeature, isNotchOnScreen) as Boolean
+            } catch (_: Exception) {
+            }
+        }
+        */
+        return false
+    }
+
+    enum class LegacyCutoutMode {
+        SHORT_EDGES,
+        NEVER,
     }
 }

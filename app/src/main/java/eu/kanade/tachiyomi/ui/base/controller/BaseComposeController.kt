@@ -17,6 +17,7 @@ abstract class BaseComposeController(bundle: Bundle? = null) :
         container: ViewGroup,
         savedViewState: Bundle?
     ): View {
+        hideLegacyAppBar()
         return ComposeView(container.context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

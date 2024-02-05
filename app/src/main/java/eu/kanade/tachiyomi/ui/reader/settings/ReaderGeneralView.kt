@@ -2,9 +2,11 @@ package eu.kanade.tachiyomi.ui.reader.settings
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.databinding.ReaderGeneralLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.bindToPreference
+import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.widget.BaseReaderSettingsView
 
 class ReaderGeneralView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
@@ -50,9 +52,14 @@ class ReaderGeneralView @JvmOverloads constructor(context: Context, attrs: Attri
             preferences.readerTheme().set(backgroundColor.prefValue)
         }
         binding.showPageNumber.bindToPreference(preferences.showPageNumber())
-        binding.fullscreen.bindToPreference(preferences.fullscreen())
+        binding.fullscreen.bindToPreference(preferences.fullscreen()) {
+            updatePrefs()
+        }
+        binding.cutoutShort.bindToPreference(readerPreferences.cutoutShort())
         binding.keepscreen.bindToPreference(preferences.keepScreenOn())
         binding.alwaysShowChapterTransition.bindToPreference(preferences.alwaysShowChapterTransition())
+
+        updatePrefs()
     }
 
     /**
@@ -64,5 +71,9 @@ class ReaderGeneralView @JvmOverloads constructor(context: Context, attrs: Attri
 
     private fun initPagerPreferences() {
         sheet.updateTabs(false)
+    }
+
+    private fun updatePrefs() {
+        binding.cutoutShort.isVisible = DeviceUtil.hasCutout(context) && preferences.fullscreen().get()
     }
 }

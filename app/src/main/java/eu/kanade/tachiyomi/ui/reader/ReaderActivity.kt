@@ -1822,22 +1822,30 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
      * Sets notch cutout mode to "NEVER", if mobile is in a landscape view
      */
     private fun setCutoutMode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val currentOrientation = resources.configuration.orientation
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
 
-            val params = window.attributes
-            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                params.layoutInDisplayCutoutMode =
+        val currentOrientation = resources.configuration.orientation
+
+        val attributes = window.attributes
+        attributes.layoutInDisplayCutoutMode =
+            when (currentOrientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
                     if (readerPreferences.landscapeCutoutBehavior().get() == LandscapeCutoutBehaviour.HIDE) {
                         WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
                     } else {
                         WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
                     }
-            } else {
-                params.layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                }
+                else -> {
+                    if (readerPreferences.cutoutShort().get()) {
+                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                    } else {
+                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
+                    }
+                }
             }
-        }
+
+        window.attributes = attributes
     }
 
     private fun setDoublePageMode(viewer: PagerViewer) {
@@ -1912,6 +1920,8 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                 .launchIn(scope)
 
             preferences.showPageNumber().changesIn(scope) { setPageNumberVisibility(it) }
+
+            readerPreferences.cutoutShort().changesIn(scope) { setCutoutMode() }
 
             readerPreferences.landscapeCutoutBehavior().changes()
                 .drop(1)

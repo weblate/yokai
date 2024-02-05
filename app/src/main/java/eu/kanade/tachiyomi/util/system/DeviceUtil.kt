@@ -1,7 +1,7 @@
 package eu.kanade.tachiyomi.util.system
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Context
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.view.Display
@@ -80,8 +80,8 @@ object DeviceUtil {
         }
     }
 
-    fun hasCutout(activity: Activity? = null) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        activity?.getSystemService<DisplayManager>()
+    fun hasCutout(context: Context? = null) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        context?.getSystemService<DisplayManager>()
             ?.getDisplay(Display.DEFAULT_DISPLAY)?.cutout != null
     } else {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.P

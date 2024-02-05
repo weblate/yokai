@@ -79,6 +79,14 @@
             android:textColor="?attr/colorOnBackground" />
 
         <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/cutout_short"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/pref_cutout_short"
+            android:textColor="?attr/colorOnBackground" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/keepscreen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

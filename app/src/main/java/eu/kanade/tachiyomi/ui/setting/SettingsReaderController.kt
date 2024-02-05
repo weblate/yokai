@@ -126,13 +126,22 @@ class SettingsReaderController : SettingsController() {
                 titleRes = R.string.show_page_number
                 defaultValue = true
             }
+            switchPreference {
+                bindTo(readerPreferences.cutoutShort())
+                // FIXME: Transition from reader to homepage is broken when cutout short is disabled
+                title = context.getString(R.string.pref_cutout_short).addBetaTag(context)
+
+                preferences.fullscreen().changesIn(viewScope) { isVisible = DeviceUtil.hasCutout(activity) && it}
+            }
             listPreference(activity) {
                 bindTo(readerPreferences.landscapeCutoutBehavior())
                 title = "${context.getString(R.string.cutout_area_behavior)} (${context.getString(R.string.landscape)})"
                 val values = LandscapeCutoutBehaviour.entries
                 entriesRes = values.map { it.titleResId }.toTypedArray()
-                entryValues = values.map { it.name }.toTypedArray().toList()
-                isVisible = DeviceUtil.hasCutout(activity) && preferences.fullscreen().get()
+                entryValues = values.map { it.name }
+                defaultValue = LandscapeCutoutBehaviour.HIDE.name
+
+                preferences.fullscreen().changesIn(viewScope) { isVisible = DeviceUtil.hasCutout(activity) && it}
             }
         }
 
@@ -210,14 +219,16 @@ class SettingsReaderController : SettingsController() {
                 titleRes = R.string.cutout_area_behavior
                 val values = CutoutBehaviour.entries
                 entriesRes = values.map { it.titleResId }.toTypedArray()
-                entryValues = values.map { it.name }.toTypedArray().toList()
+                entryValues = values.map { it.name }
+                defaultValue = CutoutBehaviour.HIDE.name
+
                 // Calling this once to show only on cutout
                 isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
                         activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
                 } else {
                     false
-                } && preferences.fullscreen().get()
+                }
                 // Calling this a second time in case activity is recreated while on this page
                 // Keep the first so it shouldn't animate hiding the preference for phones without
                 // cutouts
@@ -227,7 +238,7 @@ class SettingsReaderController : SettingsController() {
                             activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
                     } else {
                         false
-                    } && preferences.fullscreen().get()
+                    }
                 }
             }
 

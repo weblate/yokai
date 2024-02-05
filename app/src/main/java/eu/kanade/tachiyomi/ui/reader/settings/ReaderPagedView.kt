@@ -16,13 +16,12 @@ import eu.kanade.tachiyomi.databinding.ReaderPagedLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.lang.addBetaTag
+import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.widget.BaseReaderSettingsView
 import uy.kohesive.injekt.injectLazy
 
 class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     BaseReaderSettingsView<ReaderPagedLayoutBinding>(context, attrs) {
-
-    private val readerPreferences: ReaderPreferences by injectLazy()
 
     var needsActivityRecreate = false
     override fun inflateBinding() = ReaderPagedLayoutBinding.bind(this)
@@ -115,15 +114,9 @@ class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: Attribu
         } else {
             false
         }
-        val hasAnyCutout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.getSystemService<DisplayManager>()
-                ?.getDisplay(Display.DEFAULT_DISPLAY)?.cutout != null
-        } else {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-        }
         binding.landscapeZoom.isVisible = show && preferences.imageScaleType().get() == SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
         binding.extendPastCutout.isVisible = show && isFullFit && hasCutout && preferences.fullscreen().get()
-        binding.extendPastCutoutLandscape.isVisible = hasAnyCutout && preferences.fullscreen().get() &&
+        binding.extendPastCutoutLandscape.isVisible = DeviceUtil.hasCutout(context) && preferences.fullscreen().get() &&
             ogView?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE
         if (binding.extendPastCutoutLandscape.isVisible) {
             binding.filterLinearLayout.removeView(binding.extendPastCutoutLandscape)

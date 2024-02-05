@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.databinding.ReaderGeneralLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.bindToPreference
+import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.widget.BaseReaderSettingsView
 
@@ -56,6 +57,7 @@ class ReaderGeneralView @JvmOverloads constructor(context: Context, attrs: Attri
             updatePrefs()
         }
         binding.cutoutShort.bindToPreference(readerPreferences.cutoutShort())
+        binding.cutoutShort.text = binding.cutoutShort.text.toString().addBetaTag(context)
         binding.keepscreen.bindToPreference(preferences.keepScreenOn())
         binding.alwaysShowChapterTransition.bindToPreference(preferences.alwaysShowChapterTransition())
 

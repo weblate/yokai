@@ -502,9 +502,6 @@
     <string name="start_past_cutout">Start past cutout</string>
     <string name="cutout_behavior_only_applies">Cutout area behavior only applies in portrait mode with certain scale types</string>
     <string name="pref_cutout_short">Show content in cutout area</string>
-    <string name="cutout_landscape">Same as portrait</string>
-    <string name="cutout_show">Show content in cutout area</string>
-    <string name="cutout_hide">Hide content in cutout area</string>
     <string name="cutout_ignore">Ignore cutout areas</string>
     <string name="page_layout">Page layout</string>
     <string name="automatic_can_still_switch">While using automatic page layout, you can still switch between layouts while reading without overriding this setting</string>

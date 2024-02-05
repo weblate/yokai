@@ -12,13 +12,13 @@ class ReaderPreferences(private val preferenceStore: PreferenceStore) {
     fun landscapeCutoutBehavior() = preferenceStore.getEnum("landscape_cutout_behavior", LandscapeCutoutBehaviour.DEFAULT)
 
     enum class CutoutBehaviour(@StringRes val titleResId: Int) {
-        SHOW(R.string.cutout_show),
-        HIDE(R.string.cutout_hide),
-        IGNORE(R.string.cutout_ignore),
+        HIDE(R.string.pad_cutout_areas),  // Similar to CUTOUT_MODE_NEVER / J2K's pad
+        SHOW(R.string.start_past_cutout), // Similar to CUTOUT_MODE_SHORT_EDGES / J2K's start past
+        IGNORE(R.string.cutout_ignore),   // Similar to CUTOUT_MODE_DEFAULT / J2K's ignore
     }
 
     enum class LandscapeCutoutBehaviour(@StringRes val titleResId: Int) {
-        HIDE(R.string.cutout_hide),
-        DEFAULT(R.string.cutout_landscape),
+        HIDE(R.string.pad_cutout_areas),  // Similar to CUTOUT_MODE_NEVER / J2K's pad
+        DEFAULT(R.string.cutout_ignore),  // Similar to CUTOUT_MODE_SHORT_EDGES / J2K's ignore
     }
 }

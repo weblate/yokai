@@ -127,6 +127,7 @@ object DeviceUtil {
         }
         /*
         else if (isVivo && context != null) {
+            // https://swsdl.vivo.com.cn/appstore/developer/uploadfile/20180328/20180328152252602.pdf
             try {
                 @SuppressLint("PrivateApi")
                 val ftFeature = context.classLoader

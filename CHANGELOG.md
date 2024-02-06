@@ -20,3 +20,4 @@ Since there's a lot of new people coming over, I'll repeat my statement a few re
 - Fixed splash icon hardcoded to white
 - Fixed preference summary not updating after being changed once
 - Fixed legacy appbar is visible on compose when being launched from deeplink
+- Fixed some app icon not generated properly

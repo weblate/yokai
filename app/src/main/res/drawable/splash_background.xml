@@ -3,11 +3,10 @@
 
     <item android:drawable="@color/splashBackground" />
 
-
     <item
-        android:width="64dp"
-        android:height="64dp"
-        android:drawable="@drawable/ic_yokai"
+        android:width="160dp"
+        android:height="160dp"
+        android:drawable="@drawable/ic_yokai_splash"
         android:gravity="center" />
 
 </layer-list>

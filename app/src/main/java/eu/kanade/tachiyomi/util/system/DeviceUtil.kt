@@ -124,6 +124,8 @@ object DeviceUtil {
                 return context?.getSystemService<DisplayManager>()
                     ?.getDisplay(Display.DEFAULT_DISPLAY)?.cutout != null
             }
+            // TODO: Actually check for cutout
+            return true
         }
         /*
         else if (isVivo && context != null) {

@@ -6,7 +6,7 @@
     <item
         android:width="160dp"
         android:height="160dp"
-        android:drawable="@drawable/ic_yokai_splash"
+        android:drawable="@mipmap/ic_launcher_round"
         android:gravity="center" />
 
 </layer-list>

@@ -14,6 +14,7 @@ Since there's a lot of new people coming over, I'll repeat my statement a few re
 
 ## Changes
 - Repositioned cutout options in settings
+- Splash icon now uses coloured variant of the icon
 
 ## Fixes
 - Fixed splash icon hardcoded to white

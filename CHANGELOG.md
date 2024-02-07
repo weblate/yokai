@@ -21,3 +21,7 @@ Since there's a lot of new people coming over, I'll repeat my statement a few re
 - Fixed preference summary not updating after being changed once
 - Fixed legacy appbar is visible on compose when being launched from deeplink
 - Fixed some app icon not generated properly
+- Fixed splash icon doesn't fit properly on Android 12+
+
+## Other
+- Migrate to using Android 12's SplashScreen API

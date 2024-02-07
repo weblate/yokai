@@ -54,7 +54,7 @@
             android:name=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing"
             android:label="@string/app_short_name"
-            android:theme="@style/Theme.Splash"
+            android:theme="@style/Theme.Tachiyomi.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -74,7 +74,7 @@
         </activity>
         <activity
             android:name=".ui.main.SearchActivity"
-            android:theme="@style/Theme.Splash"
+            android:theme="@style/Theme.Tachiyomi.SplashScreen"
             android:label="@string/label_global_search"
             android:exported="true">
             <intent-filter>
@@ -95,7 +95,7 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
         <activity android:name=".ui.reader.ReaderActivity"
-            android:theme="@style/Theme.Splash"
+            android:theme="@style/Theme.Tachiyomi.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

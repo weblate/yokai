@@ -43,6 +43,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -53,6 +55,8 @@ import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -236,7 +240,11 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
+    var ready = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = if (savedInstanceState == null) installSplashScreen() else null
+
         // Set up shared element transition and disable overlay so views don't show above system bars
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         setExitSharedElementCallback(
@@ -262,6 +270,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         window.sharedElementsUseOverlay = false
 
         super.onCreate(savedInstanceState)
+
         backPressedCallback = object : OnBackPressedCallback(enabled = true) {
             var startTime: Long = 0
             var lastX: Float = 0f
@@ -386,6 +395,21 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         val container: ViewGroup = binding.controllerContainer
 
         val content: ViewGroup = binding.mainContent
+
+        if (savedInstanceState == null && this !is SearchActivity) {
+            // Reset Incognito Mode on relaunch
+            preferences.incognitoMode().set(false)
+
+            // Show changelog if needed
+            if (Migrations.upgrade(preferences, Injekt.get(), lifecycleScope)) {
+                if (!BuildConfig.DEBUG) {
+                    content.post {
+                        whatsNewSheet().show()
+                    }
+                }
+            }
+        }
+
         DownloadJob.downloadFlow.onEach(::downloadStatusChanged).launchIn(lifecycleScope)
         lifecycleScope
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -629,19 +653,13 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.setTitle()
         (router.backstack.lastOrNull()?.controller as? SettingsController)?.setTitle()
 
-        if (savedInstanceState == null && this !is SearchActivity) {
-            // Reset Incognito Mode on relaunch
-            preferences.incognitoMode().set(false)
-
-            // Show changelog if needed
-            if (Migrations.upgrade(preferences, Injekt.get(), lifecycleScope)) {
-                if (!BuildConfig.DEBUG) {
-                    content.post {
-                        whatsNewSheet().show()
-                    }
-                }
-            }
+        val startTime = System.currentTimeMillis()
+        splashScreen?.setKeepOnScreenCondition {
+            val elapsed = System.currentTimeMillis() - startTime
+            elapsed <= SPLASH_MIN_DURATION || (!ready && elapsed <= SPLASH_MAX_DURATION)
         }
+        setSplashScreenExitAnimation(splashScreen)
+
         getExtensionUpdates(true)
 
         preferences.extensionUpdatesCount()
@@ -680,6 +698,43 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                             (router.backstack.lastOrNull()?.controller as? HingeSupportedController)?.updateForHinge()
                         }
                     }
+            }
+        }
+    }
+
+    private fun setSplashScreenExitAnimation(splashScreen: SplashScreen?) {
+        val root = findViewById<View>(android.R.id.content)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && splashScreen != null) {
+            window.statusBarColor = Color.TRANSPARENT
+            window.navigationBarColor = Color.TRANSPARENT
+
+            splashScreen.setOnExitAnimationListener { splashProvider ->
+                // For some reason the SplashScreen applies (incorrect) Y translation to the iconView
+                splashProvider.iconView.translationY = 0F
+
+                val activityAnim = ValueAnimator.ofFloat(1F, 0F).apply {
+                    interpolator = LinearOutSlowInInterpolator()
+                    duration = SPLASH_EXIT_ANIM_DURATION
+                    addUpdateListener { va ->
+                        val value = va.animatedValue as Float
+                        root.translationY = value * 16.dpToPx
+                    }
+                }
+
+                val splashAnim = ValueAnimator.ofFloat(1F, 0F).apply {
+                    interpolator = FastOutSlowInInterpolator()
+                    duration = SPLASH_EXIT_ANIM_DURATION
+                    addUpdateListener { va ->
+                        val value = va.animatedValue as Float
+                        splashProvider.view.alpha = value
+                    }
+                    doOnEnd {
+                        splashProvider.remove()
+                    }
+                }
+
+                activityAnim.start()
+                splashAnim.start()
             }
         }
     }
@@ -1567,6 +1622,11 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         const val INTENT_SEARCH = "eu.kanade.tachiyomi.SEARCH"
         const val INTENT_SEARCH_QUERY = "query"
         const val INTENT_SEARCH_FILTER = "filter"
+
+        // Splash screen
+        private const val SPLASH_MIN_DURATION = 500 // ms
+        private const val SPLASH_MAX_DURATION = 5000 // ms
+        private const val SPLASH_EXIT_ANIM_DURATION = 400L // ms
 
         var chapterIdToExitTo = 0L
         var backVelocity = 0f

@@ -78,6 +78,7 @@ import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.isExpanded
 import eu.kanade.tachiyomi.util.view.isHidden
 import eu.kanade.tachiyomi.util.view.moveRecyclerViewUp
+import eu.kanade.tachiyomi.util.view.onAnimationsFinished
 import eu.kanade.tachiyomi.util.view.requestFilePermissionsSafe
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
@@ -170,6 +171,9 @@ class RecentsController(bundle: Bundle? = null) :
         binding.recycler.setHasFixedSize(true)
         binding.recycler.recycledViewPool.setMaxRecycledViews(0, 0)
         binding.recycler.addItemDecoration(RecentMangaDivider(view.context))
+        binding.recycler.onAnimationsFinished {
+            (activity as? MainActivity)?.ready = true
+        }
         adapter.isSwipeEnabled = true
         adapter.itemTouchHelperCallback.setSwipeFlags(
             if (view.resources.isLTR) ItemTouchHelper.LEFT else ItemTouchHelper.RIGHT,

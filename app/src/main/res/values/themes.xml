@@ -10,9 +10,6 @@
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
         <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/background</item>
-        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/ic_yokai_splash</item>
-        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="31">775</item>
         <!--Standard Material colors -->
         <item name="colorPrimary">@color/primaryTachiyomi</item>
         <item name="colorPrimaryInverse">@color/primaryInverseTachiyomi</item>
@@ -219,12 +216,16 @@
     <!--===============-->
     <!-- Launch Screen -->
     <!--===============-->
-    <style name="Theme.Splash" parent="Theme.Tachiyomi">
-        <item name="android:windowBackground">@drawable/splash_background</item>
-        <item name="android:statusBarColor">@color/splashBackground</item>
-        <item name="android:navigationBarColor">@color/splashBackground</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+
+    <!-- Splash -->
+    <style name="Theme.Tachiyomi.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splashBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_yokai_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.Tachiyomi</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
     <style name="Theme.OSS" parent="Theme.Tachiyomi.Monet">

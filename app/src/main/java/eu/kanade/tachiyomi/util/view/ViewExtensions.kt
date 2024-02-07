@@ -586,3 +586,20 @@ fun View?.isVisibleOnScreen(): Boolean {
     val screen = Rect(0, 0, Resources.getSystem().displayMetrics.widthPixels, Resources.getSystem().displayMetrics.heightPixels)
     return actualPosition.intersect(screen)
 }
+
+/**
+ * Callback will be run immediately when no animation running
+ */
+fun RecyclerView.onAnimationsFinished(callback: (RecyclerView) -> Unit) = post(
+    object : Runnable {
+        override fun run() {
+            if (isAnimating) {
+                itemAnimator?.isRunning {
+                    post(this)
+                }
+            } else {
+                callback(this@onAnimationsFinished)
+            }
+        }
+    }
+)

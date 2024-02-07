@@ -1129,6 +1129,7 @@ open class LibraryController(
                     emptyList()
                 },
             )
+            (activity as? MainActivity)?.ready = true
         }
         adapter.setItems(mangaMap)
         if (binding.libraryGridRecycler.recycler.translationX != 0f) {

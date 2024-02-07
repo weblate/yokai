@@ -58,6 +58,7 @@ import eu.kanade.tachiyomi.util.view.expand
 import eu.kanade.tachiyomi.util.view.isCollapsed
 import eu.kanade.tachiyomi.util.view.isCompose
 import eu.kanade.tachiyomi.util.view.isControllerVisible
+import eu.kanade.tachiyomi.util.view.onAnimationsFinished
 import eu.kanade.tachiyomi.util.view.requestFilePermissionsSafe
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
@@ -141,6 +142,9 @@ class BrowseController :
         binding.sourceRecycler.layoutManager = LinearLayoutManagerAccurateOffset(view.context)
 
         binding.sourceRecycler.adapter = adapter
+        binding.sourceRecycler.onAnimationsFinished {
+            (activity as? MainActivity)?.ready = true
+        }
         adapter?.isSwipeEnabled = true
         adapter?.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         scrollViewWith(

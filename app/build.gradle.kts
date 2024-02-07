@@ -165,6 +165,7 @@ dependencies {
     implementation(androidx.palette)
     implementation(androidx.activity)
     implementation(androidx.core)
+    implementation(androidx.core.splashscreen)
     implementation(libs.flexbox)
     implementation(androidx.window)
     implementation(androidx.swiperefreshlayout)

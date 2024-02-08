@@ -95,36 +95,8 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
         <activity android:name=".ui.reader.ReaderActivity"
-            android:theme="@style/Theme.Tachiyomi.SplashScreen"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="reader.kireicake.com"
-                    android:pathPattern="/read/..*/..*/..*/..*"
-                    android:scheme="https" />
-
-                <data
-                    android:host="mangaplus.shueisha.co.jp"
-                    android:pathPattern="/viewer/..*"
-                    android:scheme="https" />
-
-                <data
-                    android:host="cubari.moe"
-                    android:pathPattern="/read/imgur/..*"
-                    android:scheme="https" />
-
-                <!-- Only link to a chapter if the gist contains a chapter number -->
-                <data
-                    android:host="cubari.moe"
-                    android:pathPattern="/read/gist/..*/..*"
-                    android:scheme="https" />
-            </intent-filter>
-
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.samsung.android.support.REMOTE_ACTION" />
             </intent-filter>

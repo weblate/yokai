@@ -83,8 +83,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         }
 
         private fun getBaseDirectories(context: Context): List<File> {
-            val library = context.getString(R.string.app_name_prod) + File.separator + "local"
-            val normalized = context.getString(R.string.app_name_normalized) + File.separator + "local"
+            val library = context.getString(R.string.app_short_name) + File.separator + "local"
+            val normalized = context.getString(R.string.app_normalized_name) + File.separator + "local"
             val j2k = "TachiyomiJ2K" + File.separator + "local"
             val tachi = "Tachiyomi" + File.separator + "local"
             return DiskUtil.getExternalStorages(context).map {

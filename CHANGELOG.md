@@ -16,6 +16,7 @@ Since there's a lot of new people coming over, I'll repeat my statement a few re
 - Repositioned cutout options in settings
 - Splash icon now uses coloured variant of the icon
 - Removed deep link for sources, this should be handled by extensions
+- Removed braces from nightly (and debug) app name
 
 ## Fixes
 - Fixed splash icon hardcoded to white

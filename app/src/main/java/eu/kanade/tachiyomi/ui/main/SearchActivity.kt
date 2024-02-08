@@ -33,6 +33,8 @@ class SearchActivity : MainActivity() {
     private var backToMain = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        skipSplashInstall = intentShouldGoBack()
+
         super.onCreate(savedInstanceState)
         binding.toolbar.navigationIcon = backDrawable
         binding.toolbar.setNavigationOnClickListener { popToRoot() }
@@ -73,6 +75,7 @@ class SearchActivity : MainActivity() {
         } else if (!router.handleBack()) {
             val intent = Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(SPLASH_SKIP, true)
             }
             backToMain = true
             startActivity(intent)

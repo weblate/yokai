@@ -240,10 +240,23 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
+    var skipSplashInstall = false
     var ready = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = if (savedInstanceState == null) installSplashScreen() else null
+        if (this !is SearchActivity) skipSplashInstall = intent.action !in listOf(Intent.ACTION_MAIN, Intent.ACTION_VIEW)
+        skipSplashInstall = intent.extras?.getBoolean(SPLASH_SKIP, false) ?: skipSplashInstall
+
+        val splashScreen = if (skipSplashInstall) {
+            null
+        } else {
+            if (savedInstanceState == null) installSplashScreen() else null
+        }
+
+        if (skipSplashInstall && splashScreen == null) {
+            setTheme(R.style.Theme_Tachiyomi)
+            ready = true
+        }
 
         // Set up shared element transition and disable overlay so views don't show above system bars
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -1626,6 +1639,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         private const val SPLASH_MIN_DURATION = 500 // ms
         private const val SPLASH_MAX_DURATION = 5000 // ms
         private const val SPLASH_EXIT_ANIM_DURATION = 400L // ms
+        const val SPLASH_SKIP = "${BuildConfig.APPLICATION_ID}.SHOULD_SKIP_SPLASH"
 
         var chapterIdToExitTo = 0L
         var backVelocity = 0f

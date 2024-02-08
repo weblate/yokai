@@ -245,7 +245,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (this !is SearchActivity) skipSplashInstall = intent.action !in listOf(Intent.ACTION_MAIN, Intent.ACTION_VIEW)
-        skipSplashInstall = intent.extras?.getBoolean(SPLASH_SKIP, false) ?: skipSplashInstall
+        skipSplashInstall = intent.getBooleanExtra(SPLASH_SKIP, skipSplashInstall)
 
         val splashScreen = if (skipSplashInstall) {
             null

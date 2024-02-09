@@ -74,6 +74,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Ints.max
+import dev.yokai.domain.AppState
 import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.Migrations
@@ -240,23 +241,11 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
-    var skipSplashInstall = false
+    private val appState: AppState by injectLazy()
     var ready = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (this !is SearchActivity) skipSplashInstall = intent.action !in listOf(Intent.ACTION_MAIN, Intent.ACTION_VIEW)
-        skipSplashInstall = intent.getBooleanExtra(SPLASH_SKIP, skipSplashInstall)
-
-        val splashScreen = if (skipSplashInstall) {
-            null
-        } else {
-            if (savedInstanceState == null) installSplashScreen() else null
-        }
-
-        if (skipSplashInstall && splashScreen == null) {
-            setTheme(R.style.Theme_Tachiyomi)
-            ready = true
-        }
+        val splashScreen = maybeInstallSplashScreen(savedInstanceState)
 
         // Set up shared element transition and disable overlay so views don't show above system bars
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -713,6 +702,18 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     }
             }
         }
+    }
+
+    private fun maybeInstallSplashScreen(savedInstanceState: Bundle?): SplashScreen? {
+        if (appState.isSplashShown || savedInstanceState != null) {
+            setTheme(R.style.Theme_Tachiyomi)
+            ready = true
+            return null
+        } else {
+            appState.isSplashShown = true
+        }
+
+        return installSplashScreen()
     }
 
     private fun setSplashScreenExitAnimation(splashScreen: SplashScreen?) {
@@ -1639,7 +1640,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         private const val SPLASH_MIN_DURATION = 500 // ms
         private const val SPLASH_MAX_DURATION = 5000 // ms
         private const val SPLASH_EXIT_ANIM_DURATION = 400L // ms
-        const val SPLASH_SKIP = "${BuildConfig.APPLICATION_ID}.SHOULD_SKIP_SPLASH"
 
         var chapterIdToExitTo = 0L
         var backVelocity = 0f

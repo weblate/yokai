@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.PreferenceManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
@@ -57,12 +58,13 @@ object ThemeUtil {
 
 fun AppCompatActivity.setThemeByPref(preferences: PreferencesHelper) {
     setTheme(getPrefTheme(preferences).styleRes)
+    val wic = WindowInsetsControllerCompat(window, window.decorView)
+    wic.isAppearanceLightStatusBars = preferences.nightMode().get() == AppCompatDelegate.MODE_NIGHT_NO
+    wic.isAppearanceLightNavigationBars = preferences.nightMode().get() == AppCompatDelegate.MODE_NIGHT_NO
 }
 
 fun AppCompatActivity.getThemeWithExtras(theme: Resources.Theme, preferences: PreferencesHelper, oldTheme: Resources.Theme?): Resources.Theme {
-    val useAmoled =
-        (isInNightMode() || preferences.nightMode().get() == AppCompatDelegate.MODE_NIGHT_YES) &&
-            preferences.themeDarkAmoled().get()
+    val useAmoled = isDarkMode(preferences) && preferences.themeDarkAmoled().get()
     if (oldTheme != null && useAmoled) {
         val array = oldTheme.obtainStyledAttributes(intArrayOf(R.attr.background))
         val bg = array.getColor(0, 0)
@@ -76,13 +78,14 @@ fun AppCompatActivity.getThemeWithExtras(theme: Resources.Theme, preferences: Pr
     return theme
 }
 
+fun Context.isDarkMode(preferences: PreferencesHelper) =
+    applicationContext.isInNightMode() || preferences.nightMode().get() == AppCompatDelegate.MODE_NIGHT_YES
+
 fun Context.getPrefTheme(preferences: PreferencesHelper): Themes {
     // Using a try catch in case I start to remove themes
     return try {
         (
-            if ((applicationContext.isInNightMode() || preferences.nightMode().get() == AppCompatDelegate.MODE_NIGHT_YES) &&
-                preferences.nightMode().get() != AppCompatDelegate.MODE_NIGHT_NO
-            ) {
+            if (isDarkMode(preferences) && preferences.nightMode().get() != AppCompatDelegate.MODE_NIGHT_NO) {
                 preferences.darkTheme()
             } else {
                 preferences.lightTheme()

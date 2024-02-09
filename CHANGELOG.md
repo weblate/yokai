@@ -11,6 +11,7 @@ Since there's a lot of new people coming over, I'll repeat my statement a few re
 
 ## Additions
 - Ported Tachi's cutout option
+- Added Doki theme (dark only)
 
 ## Changes
 - Repositioned cutout options in settings

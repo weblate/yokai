@@ -730,6 +730,7 @@
     <string name="lime_time">Lime Time</string>
     <string name="flat_lime">Flat Lime</string>
     <string name="white_theme">Pure White</string>
+    <string name="doki">Doki</string>
     <string name="locale">Locale</string>
     <string name="last_used_library_recents">Last used (Library or Recents)</string>
     <string name="system_default">System default</string>

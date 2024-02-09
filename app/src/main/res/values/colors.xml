@@ -181,4 +181,15 @@
     <color name="rippleColorYinYang">#1F000000</color>
     <color name="secondaryVariantYinYang">#000000</color>
     <color name="onSecondaryYinYang">@color/md_white_1000</color>
+
+    <!-- Doki Theme -->
+    <color name="primaryDoki">#FDE289</color>
+    <color name="primaryVariantDoki">#070F2C</color>
+    <color name="primaryInverseDoki">#EBBA6C</color>
+    <color name="onPrimaryDoki">#070F2C</color>
+    <color name="secondaryDoki">#EABD62</color>
+    <color name="secondaryVariantDoki">#F4CC8A</color>
+    <color name="tabBarIconColorDoki">@color/secondaryDoki</color>
+    <color name="rippleColorDoki">#1FEABD62</color>
+    <color name="backgroundDoki">#040716</color>
 </resources>

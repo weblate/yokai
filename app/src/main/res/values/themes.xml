@@ -187,6 +187,7 @@
         <item name="tabBarIconInactive">@color/inactiveTabTako</item>
     </style>
 
+    <!--== Yotsuba Theme ==-->
     <style name="Theme.Tachiyomi.Yotsuba">
         <item name="colorPrimary">@color/primaryYotsuba</item>
         <item name="colorPrimaryVariant">@color/primaryVariantYotsuba</item>
@@ -209,6 +210,21 @@
         <item name="colorOnSecondary">@color/onSecondaryYinYang</item>
         <item name="colorSecondaryVariant">@color/secondaryVariantYinYang</item>
         <item name="colorTertiary">@color/downloadBadgeDayNight</item>
+        <item name="colorOnTertiary">@color/colorOnDownloadBadgeDayNight</item>
+    </style>
+
+    <!--== Doki Theme ==-->
+    <style name="Theme.Tachiyomi.Doki">
+        <item name="colorPrimary">@color/primaryDoki</item>
+        <item name="colorPrimaryVariant">@color/primaryVariantDoki</item>
+        <item name="colorOnPrimary">@color/onPrimaryDoki</item>
+        <item name="colorPrimaryInverse">@color/primaryInverseDoki</item>
+        <item name="colorSecondary">@color/secondaryDoki</item>
+        <item name="colorOnSecondary">@color/textColorPrimaryInverse</item>
+        <item name="colorControlHighlight">@color/rippleColorDoki</item>
+        <item name="colorSecondaryVariant">@color/secondaryVariantDoki</item>
+        <item name="colorSurface">@color/backgroundDoki</item>
+        <item name="background">@color/backgroundDoki</item>
         <item name="colorOnTertiary">@color/colorOnDownloadBadgeDayNight</item>
     </style>
     <style name="Theme.Tachiyomi.Monet"/>

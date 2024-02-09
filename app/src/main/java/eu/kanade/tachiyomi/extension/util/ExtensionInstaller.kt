@@ -476,10 +476,5 @@ internal class ExtensionInstaller(private val context: Context) {
         const val APK_MIME = "application/vnd.android.package-archive"
         const val EXTRA_DOWNLOAD_ID = "ExtensionInstaller.extra.DOWNLOAD_ID"
         const val FILE_SCHEME = "file://"
-
-        @Deprecated("Use BasePreferences.ExtensionInstaller instead")
-        const val SHIZUKU = 1
-        @Deprecated("Use BasePreferences.ExtensionInstaller instead")
-        const val PRIVATE = 2
     }
 }

@@ -35,8 +35,8 @@ android {
         minSdk = AndroidConfig.minSdk
         targetSdk = AndroidConfig.targetSdk
         applicationId = "eu.kanade.tachiyomi"
-        versionCode = 121
-        versionName = "1.7.12"
+        versionCode = 122
+        versionName = "1.7.13"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 

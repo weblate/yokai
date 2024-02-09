@@ -272,8 +272,8 @@ object Migrations {
                     val oldExtensionInstall = prefs.getInt("extension_installer", 0)
                     basePreferences.extensionInstaller().set(
                         when (oldExtensionInstall) {
-                            ExtensionInstaller.SHIZUKU -> BasePreferences.ExtensionInstaller.SHIZUKU
-                            ExtensionInstaller.PRIVATE -> BasePreferences.ExtensionInstaller.PRIVATE
+                            1 -> BasePreferences.ExtensionInstaller.SHIZUKU
+                            2 -> BasePreferences.ExtensionInstaller.PRIVATE
                             else -> BasePreferences.ExtensionInstaller.PACKAGEINSTALLER
                         }
                     )

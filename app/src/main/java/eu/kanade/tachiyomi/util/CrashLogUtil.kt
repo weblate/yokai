@@ -69,7 +69,7 @@ class CrashLogUtil(private val context: Context) {
             }
         }
         if (extensionInfoList.isNotEmpty()) {
-            extensionInfoList.add(0, "Extensions that are outdated, obsolete, or unofficial")
+            extensionInfoList.add(0, "Extensions that are outdated or obsolete")
         }
         return extensionInfoList.joinToString("\n")
     }

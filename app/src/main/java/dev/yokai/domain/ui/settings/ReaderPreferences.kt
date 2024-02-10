@@ -9,7 +9,7 @@ import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 class ReaderPreferences(private val preferenceStore: PreferenceStore) {
     fun cutoutShort() = preferenceStore.getBoolean("cutout_short", true)
 
-    fun pagerCutoutBehavior() = preferenceStore.getEnum(PreferenceKeys.pagerCutoutBehavior, CutoutBehaviour.HIDE)
+    fun pagerCutoutBehavior() = preferenceStore.getEnum(PreferenceKeys.pagerCutoutBehavior, CutoutBehaviour.IGNORE)
 
     fun landscapeCutoutBehavior() = preferenceStore.getEnum("landscape_cutout_behavior", LandscapeCutoutBehaviour.HIDE)
 

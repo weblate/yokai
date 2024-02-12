@@ -55,6 +55,7 @@ import eu.kanade.tachiyomi.ui.recents.options.TabbedRecentsOptionsSheet
 import eu.kanade.tachiyomi.ui.source.browse.ProgressItem
 import eu.kanade.tachiyomi.util.chapter.updateTrackChapterMarkedAsRead
 import eu.kanade.tachiyomi.util.system.addCheckBoxPrompt
+import eu.kanade.tachiyomi.util.system.appState
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getBottomGestureInsets
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -172,7 +173,7 @@ class RecentsController(bundle: Bundle? = null) :
         binding.recycler.recycledViewPool.setMaxRecycledViews(0, 0)
         binding.recycler.addItemDecoration(RecentMangaDivider(view.context))
         binding.recycler.onAnimationsFinished {
-            (activity as? MainActivity)?.ready = true
+            view.context.appState.ready = true
         }
         adapter.isSwipeEnabled = true
         adapter.itemTouchHelperCallback.setSwipeFlags(

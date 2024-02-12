@@ -241,10 +241,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
-    var ready = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = maybeInstallSplashScreen(savedInstanceState)
+        maybeInstallSplashScreen(savedInstanceState)
 
         // Set up shared element transition and disable overlay so views don't show above system bars
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -654,13 +652,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.setTitle()
         (router.backstack.lastOrNull()?.controller as? SettingsController)?.setTitle()
 
-        val startTime = System.currentTimeMillis()
-        splashScreen?.setKeepOnScreenCondition {
-            val elapsed = System.currentTimeMillis() - startTime
-            elapsed <= SPLASH_MIN_DURATION || (!ready && elapsed <= SPLASH_MAX_DURATION)
-        }
-        setSplashScreenExitAnimation(splashScreen)
-
         getExtensionUpdates(true)
 
         preferences.extensionUpdatesCount()
@@ -699,54 +690,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                             (router.backstack.lastOrNull()?.controller as? HingeSupportedController)?.updateForHinge()
                         }
                     }
-            }
-        }
-    }
-
-    private fun maybeInstallSplashScreen(savedInstanceState: Bundle?): SplashScreen? {
-        if (appState.isSplashShown || savedInstanceState != null) {
-            setTheme(R.style.Theme_Tachiyomi)
-            ready = true
-            return null
-        } else {
-            appState.isSplashShown = true
-        }
-
-        return installSplashScreen()
-    }
-
-    private fun setSplashScreenExitAnimation(splashScreen: SplashScreen?) {
-        val root = findViewById<View>(android.R.id.content)
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && splashScreen != null) {
-
-            splashScreen.setOnExitAnimationListener { splashProvider ->
-                // For some reason the SplashScreen applies (incorrect) Y translation to the iconView
-                splashProvider.iconView.translationY = 0F
-
-                val activityAnim = ValueAnimator.ofFloat(1F, 0F).apply {
-                    interpolator = LinearOutSlowInInterpolator()
-                    duration = SPLASH_EXIT_ANIM_DURATION
-                    addUpdateListener { va ->
-                        val value = va.animatedValue as Float
-                        root.translationY = value * 16.dpToPx
-                    }
-                }
-
-                val splashAnim = ValueAnimator.ofFloat(1F, 0F).apply {
-                    interpolator = FastOutSlowInInterpolator()
-                    duration = SPLASH_EXIT_ANIM_DURATION
-                    addUpdateListener { va ->
-                        val value = va.animatedValue as Float
-                        splashProvider.view.alpha = value
-                    }
-                    doOnEnd {
-                        splashProvider.remove()
-                    }
-                }
-
-                activityAnim.start()
-                splashAnim.start()
             }
         }
     }
@@ -1135,6 +1078,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
             else -> return false
         }
+
+        appState.ready = true
         return true
     }
 
@@ -1634,11 +1579,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         const val INTENT_SEARCH = "eu.kanade.tachiyomi.SEARCH"
         const val INTENT_SEARCH_QUERY = "query"
         const val INTENT_SEARCH_FILTER = "filter"
-
-        // Splash screen
-        private const val SPLASH_MIN_DURATION = 500 // ms
-        private const val SPLASH_MAX_DURATION = 5000 // ms
-        private const val SPLASH_EXIT_ANIM_DURATION = 400L // ms
 
         var chapterIdToExitTo = 0L
         var backVelocity = 0f

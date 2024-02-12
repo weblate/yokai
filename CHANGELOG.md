@@ -7,3 +7,12 @@
 
 ## Other
 -->
+## Changes
+- Added splash to reader (in case it being opened from shortcut)
+- Increased long strip split height
+
+## Fixes
+- Fixed cutout support being broken
+
+## Other
+- Move AppState from DI to Application class to reduce race condition

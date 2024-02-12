@@ -190,14 +190,15 @@ open class ReaderPageImageView @JvmOverloads constructor(
                     config.insetInfo.scaleTypeIsFullFit && topInsets + bottomInsets > 0,
             )
             if ((config.insetInfo.cutoutBehavior != CutoutBehaviour.IGNORE || !config.insetInfo.scaleTypeIsFullFit) &&
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
                 config.insetInfo.isFullscreen
             ) {
-                val insets = config.insetInfo.insets?.let { WindowInsetsCompat.toWindowInsetsCompat(it) }
+                val insets: WindowInsets? = config.insetInfo.insets
                 setExtraSpace(
                     0f,
-                    insets?.displayCutout?.boundingRects?.get(1)?.height()?.toFloat() ?: 0f,
+                    insets?.displayCutout?.boundingRectTop?.height()?.toFloat() ?: 0f,
                     0f,
-                    insets?.displayCutout?.boundingRects?.get(3)?.height()?.toFloat() ?: 0f,
+                    insets?.displayCutout?.boundingRectBottom?.height()?.toFloat() ?: 0f,
                 )
             }
         }

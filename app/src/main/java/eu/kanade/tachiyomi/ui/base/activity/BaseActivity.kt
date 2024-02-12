@@ -55,16 +55,15 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             val elapsed = System.currentTimeMillis() - startTime
             elapsed <= SPLASH_MIN_DURATION || (!appState.ready && elapsed <= SPLASH_MAX_DURATION)
         }
-        setSplashScreenExitAnimation(splashScreen)
 
         return splashScreen
     }
 
-    private fun setSplashScreenExitAnimation(splashScreen: SplashScreen?) {
+    fun SplashScreen.setSplashScreenExitAnimation() {
         val root = findViewById<View>(android.R.id.content)
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && splashScreen != null) {
-            splashScreen.setOnExitAnimationListener { splashProvider ->
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            this.setOnExitAnimationListener { splashProvider ->
                 // For some reason the SplashScreen applies (incorrect) Y translation to the iconView
                 splashProvider.iconView.translationY = 0F
 

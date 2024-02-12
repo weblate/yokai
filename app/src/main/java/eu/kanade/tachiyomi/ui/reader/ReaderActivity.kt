@@ -275,7 +275,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
      * Called when the activity is created. Initializes the view model and configuration.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        maybeInstallSplashScreen(savedInstanceState)
+        val splashScreen = maybeInstallSplashScreen(savedInstanceState)
 
         // Setup shared element transitions
         if (intent.extras?.getString(TRANSITION_NAME) != null) {
@@ -300,6 +300,8 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         val lightStatusBar = a.getBoolean(0, false)
         a.recycle()
         setCutoutMode()
+
+        splashScreen?.setSplashScreenExitAnimation()
 
         wic.isAppearanceLightStatusBars = lightStatusBar
         wic.isAppearanceLightNavigationBars = lightStatusBar

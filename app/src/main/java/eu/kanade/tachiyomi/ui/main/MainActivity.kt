@@ -242,7 +242,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        maybeInstallSplashScreen(savedInstanceState)
+        val splashScreen = maybeInstallSplashScreen(savedInstanceState)
 
         // Set up shared element transition and disable overlay so views don't show above system bars
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -651,6 +651,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         binding.toolbar.navigationIcon = navIcon
         (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.setTitle()
         (router.backstack.lastOrNull()?.controller as? SettingsController)?.setTitle()
+
+        splashScreen?.setSplashScreenExitAnimation()
 
         getExtensionUpdates(true)
 

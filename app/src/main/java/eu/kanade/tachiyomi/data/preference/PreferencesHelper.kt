@@ -69,7 +69,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     private val defaultDownloadsDir = Uri.fromFile(
         File(
             Environment.getExternalStorageDirectory().absolutePath + File.separator +
-                context.getString(R.string.app_name),
+                context.getString(R.string.app_normalized_name),
             "downloads",
         ),
     )
@@ -77,7 +77,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     private val defaultBackupDir = Uri.fromFile(
         File(
             Environment.getExternalStorageDirectory().absolutePath + File.separator +
-                context.getString(R.string.app_name),
+                context.getString(R.string.app_normalized_name),
             "backup",
         ),
     )

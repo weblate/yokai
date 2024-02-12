@@ -860,14 +860,14 @@ class MangaDetailsPresenter(
             val directory = if (preferences.folderPerManga().get()) {
                 val baseDir = Environment.getExternalStorageDirectory().absolutePath +
                     File.separator + Environment.DIRECTORY_PICTURES +
-                    File.separator + preferences.context.getString(R.string.app_name)
+                    File.separator + preferences.context.getString(R.string.app_normalized_name)
 
                 File(baseDir + File.separator + DiskUtil.buildValidFilename(manga.title))
             } else {
                 File(
                     Environment.getExternalStorageDirectory().absolutePath +
                         File.separator + Environment.DIRECTORY_PICTURES +
-                        File.separator + preferences.context.getString(R.string.app_name),
+                        File.separator + preferences.context.getString(R.string.app_normalized_name),
                 )
             }
             val file = saveCover(directory)

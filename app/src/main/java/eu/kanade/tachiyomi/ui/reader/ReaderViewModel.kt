@@ -816,7 +816,7 @@ class ReaderViewModel(
         // Pictures directory.
         val baseDir = Environment.getExternalStorageDirectory().absolutePath +
             File.separator + Environment.DIRECTORY_PICTURES +
-            File.separator + context.getString(R.string.app_name)
+            File.separator + context.getString(R.string.app_normalized_name)
         val destDir = if (preferences.folderPerManga().get()) {
             File(baseDir + File.separator + DiskUtil.buildValidFilename(manga.title))
         } else {
@@ -850,7 +850,7 @@ class ReaderViewModel(
             // Pictures directory.
             val baseDir = Environment.getExternalStorageDirectory().absolutePath +
                 File.separator + Environment.DIRECTORY_PICTURES +
-                File.separator + context.getString(R.string.app_name)
+                File.separator + context.getString(R.string.app_normalized_name)
             val destDir = if (preferences.folderPerManga().get()) {
                 File(baseDir + File.separator + DiskUtil.buildValidFilename(manga.title))
             } else {

@@ -95,6 +95,7 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
         <activity android:name=".ui.reader.ReaderActivity"
+            android:theme="@style/Theme.Tachiyomi.SplashScreen"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>

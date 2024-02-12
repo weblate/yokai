@@ -49,17 +49,19 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             appState.isSplashShown = true
         }
 
-        val splashScreen = installSplashScreen()
+        return installSplashScreen()
+    }
+
+    fun SplashScreen.configure() {
         val startTime = System.currentTimeMillis()
-        splashScreen.setKeepOnScreenCondition {
+        this.setKeepOnScreenCondition {
             val elapsed = System.currentTimeMillis() - startTime
             elapsed <= SPLASH_MIN_DURATION || (!appState.ready && elapsed <= SPLASH_MAX_DURATION)
         }
-
-        return splashScreen
+        this.setSplashScreenExitAnimation()
     }
 
-    fun SplashScreen.setSplashScreenExitAnimation() {
+    private fun SplashScreen.setSplashScreenExitAnimation() {
         val root = findViewById<View>(android.R.id.content)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {

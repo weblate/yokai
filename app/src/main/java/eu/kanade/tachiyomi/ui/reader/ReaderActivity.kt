@@ -275,6 +275,8 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
      * Called when the activity is created. Initializes the view model and configuration.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = maybeInstallSplashScreen(savedInstanceState)
+
         // Setup shared element transitions
         if (intent.extras?.getString(TRANSITION_NAME) != null) {
             window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -291,8 +293,6 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             }
         }
 
-        val splashScreen = maybeInstallSplashScreen(savedInstanceState)
-
         super.onCreate(savedInstanceState)
         binding = ReaderActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -301,7 +301,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         a.recycle()
         setCutoutMode()
 
-        splashScreen?.setSplashScreenExitAnimation()
+        splashScreen?.configure()
 
         wic.isAppearanceLightStatusBars = lightStatusBar
         wic.isAppearanceLightNavigationBars = lightStatusBar

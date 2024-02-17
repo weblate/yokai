@@ -26,6 +26,7 @@ import eu.kanade.tachiyomi.ui.reader.viewer.ReaderErrorView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressBar
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig.ZoomType
+import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil.isPagePadded
 import eu.kanade.tachiyomi.util.system.ThemeUtil
@@ -543,12 +544,13 @@ class PagerPageHolder(
             zoomStartPosition = viewer.config.imageZoomType,
             landscapeZoom = viewer.config.landscapeZoom,
             insetInfo = InsetInfo(
+                cutoutSupport = DeviceUtil.hasCutout(viewer.activity),
                 cutoutBehavior = viewer.config.cutoutBehavior,
                 topCutoutInset = viewer.activity.window.decorView.rootWindowInsets?.topCutoutInset()?.toFloat() ?: 0f,
                 bottomCutoutInset = viewer.activity.window.decorView.rootWindowInsets?.bottomCutoutInset()?.toFloat() ?: 0f,
                 scaleTypeIsFullFit = viewer.config.scaleTypeIsFullFit(),
-                isFullscreen = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                    viewer.config.isFullscreen && !viewer.activity.isInMultiWindowMode,
+                isFullscreen = viewer.config.isFullscreen
+                    && if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) !viewer.activity.isInMultiWindowMode else true,
                 isSplitScreen = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && viewer.activity.isInMultiWindowMode,
                 insets = viewer.activity.window.decorView.rootWindowInsets,
             ),

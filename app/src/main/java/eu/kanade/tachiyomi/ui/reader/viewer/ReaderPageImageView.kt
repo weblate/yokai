@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.reader.viewer
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.PointF
 import android.graphics.drawable.Animatable
@@ -16,7 +17,6 @@ import androidx.annotation.AttrRes
 import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import coil.dispose
 import coil.imageLoader
@@ -29,6 +29,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
+import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
 import java.io.InputStream
@@ -190,15 +191,16 @@ open class ReaderPageImageView @JvmOverloads constructor(
                     config.insetInfo.scaleTypeIsFullFit && topInsets + bottomInsets > 0,
             )
             if ((config.insetInfo.cutoutBehavior != CutoutBehaviour.IGNORE || !config.insetInfo.scaleTypeIsFullFit) &&
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
                 config.insetInfo.isFullscreen
             ) {
                 val insets: WindowInsets? = config.insetInfo.insets
                 setExtraSpace(
                     0f,
-                    insets?.displayCutout?.boundingRectTop?.height()?.toFloat() ?: 0f,
+                    DeviceUtil.getCutoutHeight(context as? Activity, config.insetInfo.cutoutSupport).toFloat(),
                     0f,
-                    insets?.displayCutout?.boundingRectBottom?.height()?.toFloat() ?: 0f,
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
+                        insets?.displayCutout?.boundingRectBottom?.height()?.toFloat() ?: 0f
+                    else 0f,
                 )
             }
         }
@@ -318,6 +320,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
     )
 
     data class InsetInfo(
+        val cutoutSupport: DeviceUtil.CutoutSupport,
         val cutoutBehavior: CutoutBehaviour,
         val topCutoutInset: Float,
         val bottomCutoutInset: Float,

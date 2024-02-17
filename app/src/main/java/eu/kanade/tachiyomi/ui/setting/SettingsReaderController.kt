@@ -121,7 +121,9 @@ class SettingsReaderController : SettingsController() {
                 // FIXME: Transition from reader to homepage is broken when cutout short is disabled
                 title = context.getString(R.string.pref_cutout_short).addBetaTag(context)
 
-                preferences.fullscreen().changesIn(viewScope) { isVisible = DeviceUtil.hasCutout(activity) && it}
+                preferences.fullscreen().changesIn(viewScope) {
+                    isVisible = DeviceUtil.hasCutout(activity).ordinal >= DeviceUtil.CutoutSupport.MODERN.ordinal && it
+                }
             }
             listPreference(activity) {
                 bindTo(readerPreferences.landscapeCutoutBehavior())
@@ -130,7 +132,9 @@ class SettingsReaderController : SettingsController() {
                 entriesRes = values.map { it.titleResId }.toTypedArray()
                 entryValues = values.map { it.name }
 
-                preferences.fullscreen().changesIn(viewScope) { isVisible = DeviceUtil.hasCutout(activity) && it}
+                preferences.fullscreen().changesIn(viewScope) {
+                    isVisible = DeviceUtil.hasCutout(activity).ordinal >= DeviceUtil.CutoutSupport.MODERN.ordinal && it
+                }
             }
             switchPreference {
                 key = Keys.keepScreenOn
@@ -221,22 +225,13 @@ class SettingsReaderController : SettingsController() {
                 entryValues = values.map { it.name }
 
                 // Calling this once to show only on cutout
-                isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
-                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
-                } else {
-                    false
-                }
+                isVisible = DeviceUtil.hasCutout(activity).ordinal >= DeviceUtil.CutoutSupport.LEGACY.ordinal
+
                 // Calling this a second time in case activity is recreated while on this page
                 // Keep the first so it shouldn't animate hiding the preference for phones without
                 // cutouts
                 activityBinding?.root?.post {
-                    isVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetTop != null ||
-                            activityBinding?.root?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
-                    } else {
-                        false
-                    }
+                    isVisible = DeviceUtil.hasCutout(activity).ordinal >= DeviceUtil.CutoutSupport.LEGACY.ordinal
                 }
             }
 

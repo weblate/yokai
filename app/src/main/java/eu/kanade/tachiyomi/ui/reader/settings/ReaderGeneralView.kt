@@ -76,6 +76,7 @@ class ReaderGeneralView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun updatePrefs() {
-        binding.cutoutShort.isVisible = DeviceUtil.hasCutout(context) && preferences.fullscreen().get()
+        binding.cutoutShort.isVisible =
+            DeviceUtil.hasCutout(context as ReaderActivity).ordinal >= DeviceUtil.CutoutSupport.MODERN.ordinal && preferences.fullscreen().get()
     }
 }

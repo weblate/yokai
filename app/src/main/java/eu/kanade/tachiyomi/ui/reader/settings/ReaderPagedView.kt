@@ -3,14 +3,9 @@ package eu.kanade.tachiyomi.ui.reader.settings
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
-import android.hardware.display.DisplayManager
-import android.os.Build
 import android.util.AttributeSet
-import android.view.Display
-import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import dev.yokai.domain.ui.settings.ReaderPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.ReaderPagedLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
@@ -18,7 +13,6 @@ import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.widget.BaseReaderSettingsView
-import uy.kohesive.injekt.injectLazy
 
 class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     BaseReaderSettingsView<ReaderPagedLayoutBinding>(context, attrs) {
@@ -110,15 +104,15 @@ class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: Attribu
             else -> false
         }
         val ogView = (context as? Activity)?.window?.decorView
-        val hasCutout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ogView?.rootWindowInsets?.displayCutout?.safeInsetTop != null || ogView?.rootWindowInsets?.displayCutout?.safeInsetBottom != null
-        } else {
-            false
-        }
         binding.landscapeZoom.isVisible = show && preferences.imageScaleType().get() == SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
-        binding.extendPastCutout.isVisible = show && isFullFit && hasCutout && preferences.fullscreen().get()
-        binding.extendPastCutoutLandscape.isVisible = DeviceUtil.hasCutout(context) && preferences.fullscreen().get() &&
-            ogView?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE
+        binding.extendPastCutout.isVisible =
+            show && isFullFit
+                && DeviceUtil.hasCutout(context as? Activity).ordinal >= DeviceUtil.CutoutSupport.LEGACY.ordinal
+                && preferences.fullscreen().get()
+        binding.extendPastCutoutLandscape.isVisible =
+            DeviceUtil.hasCutout(context as? Activity).ordinal >= DeviceUtil.CutoutSupport.MODERN.ordinal
+                && preferences.fullscreen().get()
+                && ogView?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE
         if (binding.extendPastCutoutLandscape.isVisible) {
             binding.filterLinearLayout.removeView(binding.extendPastCutoutLandscape)
             binding.filterLinearLayout.addView(

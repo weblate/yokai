@@ -398,7 +398,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             var hasDownloads = false
             ensureActive()
             notifier.showProgressNotification(manga, progress, mangaToUpdate.size)
-            val fetchedChapters = source.getChapterList(manga)
+            val fetchedChapters = source.getChapterList(manga.copy())
 
             if (fetchedChapters.isNotEmpty()) {
                 val newChapters = syncChaptersWithSource(db, fetchedChapters, manga, source)

@@ -447,7 +447,7 @@ class MangaDetailsPresenter(
 
         presenterScope.launch(Dispatchers.IO) {
             val chapters = try {
-                source.getChapterList(manga)
+                source.getChapterList(manga.copy())
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) { view?.showError(trimException(e)) }
                 return@launch

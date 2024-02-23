@@ -12,4 +12,5 @@
 
 ## Fixes
 - Fixed cutout behaviour for Android P
-- Experimental fix for some extensions doesn't detect "added to library" entries properly (Track the issue at [GH-40](https://github.com/null2264/yokai/issues/40))
+- Fixed some extensions doesn't detect "added to library" entries properly ([GH-40](https://github.com/null2264/yokai/issues/40))
+- Fixed nightly and debug variant doesn't include their respective prefix on their app name

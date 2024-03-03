@@ -6,6 +6,13 @@
 
 # Yōkai
 
+</div>
+
+> [!NOTE]
+> I'm currently busy with irl stuff, so the development will slow down significantly, I'll try to work on the app whenever possible.
+
+<div align="center">
+
 A free and open source manga reader
 
 [![CI](https://github.com/null2264/yokai/actions/workflows/build_push.yml/badge.svg)](https://github.com/null2264/yokai/actions/workflows/build_push.yml)

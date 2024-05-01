@@ -22,11 +22,15 @@ import coil.dispose
 import coil.imageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import coil.size.Precision
+import coil.size.ViewSizeResolver
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 import com.github.chrisbanes.photoview.PhotoView
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
+import eu.kanade.tachiyomi.data.image.coil.cropBorders
+import eu.kanade.tachiyomi.data.image.coil.customDecoder
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
 import eu.kanade.tachiyomi.util.system.DeviceUtil
@@ -219,15 +223,36 @@ open class ReaderPageImageView @JvmOverloads constructor(
             },
         )
 
-        when (image) {
-            is Drawable -> {
-                val bitmap = (image as BitmapDrawable).bitmap
-                setImage(ImageSource.bitmap(bitmap))
+        if (isWebtoon) {
+            val request = ImageRequest.Builder(context)
+                .data(image)
+                .memoryCachePolicy(CachePolicy.DISABLED)
+                .diskCachePolicy(CachePolicy.DISABLED)
+                .target(
+                    onSuccess = { result ->
+                        val drawable = result as BitmapDrawable
+                        setImage(ImageSource.bitmap(drawable.bitmap))
+                        isVisible = true
+                    },
+                    onError = {
+                        this@ReaderPageImageView.onImageLoadError()
+                    },
+                )
+                .size(ViewSizeResolver(this@ReaderPageImageView))
+                .precision(Precision.INEXACT)
+                .cropBorders(config.cropBorders)
+                .customDecoder(true)
+                .crossfade(false)
+                .build()
+            context.imageLoader.enqueue(request)
+        } else {
+            when (image) {
+                is BitmapDrawable -> setImage(ImageSource.bitmap(image.bitmap))
+                is InputStream -> setImage(ImageSource.inputStream(image))
+                else -> throw IllegalArgumentException("Not implemented for class ${image::class.simpleName}")
             }
-            is InputStream -> setImage(ImageSource.inputStream(image))
-            else -> throw IllegalArgumentException("Not implemented for class ${image::class.simpleName}")
+            isVisible = true
         }
-        isVisible = true
     }
 
     private fun prepareAnimatedImageView() {

@@ -91,7 +91,7 @@ class AppUpdateChecker {
         val newPreReleaseVer = newVersion.split("-")
         val oldPreReleaseVer = oldVersion.split("-")
         val newSemVer = newPreReleaseVer.first().split(".").map { it.toInt() }
-        val isNightly = newSemVer == 1
+        val isNightly = newSemVer.size == 1
         val oldSemVer = oldPreReleaseVer.first().split(".").map { it.toInt() }
 
         oldSemVer.mapIndexed { index, i ->

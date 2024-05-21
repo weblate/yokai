@@ -91,10 +91,11 @@ class AppUpdateChecker {
         val newPreReleaseVer = newVersion.split("-")
         val oldPreReleaseVer = oldVersion.split("-")
         val newSemVer = newPreReleaseVer.first().split(".").map { it.toInt() }
+        val isNightly = newSemVer == 1
         val oldSemVer = oldPreReleaseVer.first().split(".").map { it.toInt() }
 
         oldSemVer.mapIndexed { index, i ->
-            if (newSemVer.getOrElse(index) { i } > i) {
+            if (!isNightly && newSemVer.getOrElse(index) { i } > i) {
                 return true
             } else if (newSemVer.getOrElse(index) { i } < i) {
                 return false
@@ -103,7 +104,7 @@ class AppUpdateChecker {
         // For cases of extreme patch versions (new: 1.2.3.1 vs old: 1.2.3, return true)
         return if (newSemVer.size > oldSemVer.size) {
             true
-        } else if (newSemVer.size < oldSemVer.size && newSemVer.size != 1) {
+        } else if (newSemVer.size < oldSemVer.size && !isNightly) {
             false
         } else {
             // If the version numbers match, check the beta versions

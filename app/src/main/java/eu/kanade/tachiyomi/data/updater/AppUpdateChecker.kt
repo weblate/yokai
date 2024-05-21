@@ -103,26 +103,21 @@ class AppUpdateChecker {
         // For cases of extreme patch versions (new: 1.2.3.1 vs old: 1.2.3, return true)
         return if (newSemVer.size > oldSemVer.size) {
             true
-        } else if (newSemVer.size < oldSemVer.size && newSemVer.size != 1) {  // also check yokai format
+        } else if (newSemVer.size < oldSemVer.size && newSemVer.size != 1) {
             false
         } else {
             // If the version numbers match, check the beta versions
-            val newNightlyVersion =  // Yokai formatting (e.g. r123)
-                newPreReleaseVer.getOrNull(0)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
             val newPreVersion =
-                newPreReleaseVer.getOrNull(1)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
+                newPreReleaseVer.getOrNull(if (newPreReleaseVer.size > 1) 1 else 0)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
             val oldPreVersion =
                 oldPreReleaseVer.getOrNull(1)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
             when {
                 // For prod, don't bother with betas (current: 1.2.3 vs new: 1.2.3-b1)
                 oldPreVersion == null -> false
                 // For betas, always use prod builds (current: 1.2.3-b1 vs new: 1.2.3)
-                // Also check for new nightly formatting (r123)
-                newPreVersion == null && newNightlyVersion == null -> true
+                newPreVersion == null -> true
                 // For betas, higher beta ver is newer (current: 1.2.3-b1 vs new: 1.2.3-b2)
-                newNightlyVersion == null -> (oldPreVersion < newPreVersion)
-                // For (yokai) betas, higher beta ver is newer (current: 1.2.3-b1 vs new: r2)
-                else -> (oldPreVersion < newNightlyVersion)
+                else -> (oldPreVersion < newPreVersion)
             }
         }
     }

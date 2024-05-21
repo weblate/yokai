@@ -28,14 +28,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - name: Setup Gradle
+        uses: null2264/actions/gradle-setup@b697b0b95bb90ab23c1145b744dddd2fd3e3a838
         with:
-          java-version: 17
-          distribution: temurin
+          java: 17
+          distro: adopt
 
       - name: Copy CI gradle.properties
         run: |

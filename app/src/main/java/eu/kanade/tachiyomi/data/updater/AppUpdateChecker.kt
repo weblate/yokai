@@ -91,11 +91,11 @@ class AppUpdateChecker {
         val newPreReleaseVer = newVersion.split("-")
         val oldPreReleaseVer = oldVersion.split("-")
         val newSemVer = newPreReleaseVer.first().split(".").map { it.toInt() }
-        val isNightly = newSemVer.size == 1
+        val isNewVersionNightly = newSemVer.size == 1
         val oldSemVer = oldPreReleaseVer.first().split(".").map { it.toInt() }
 
         oldSemVer.mapIndexed { index, i ->
-            if (!isNightly && newSemVer.getOrElse(index) { i } > i) {
+            if (!isNewVersionNightly && newSemVer.getOrElse(index) { i } > i) {
                 return true
             } else if (newSemVer.getOrElse(index) { i } < i) {
                 return false
@@ -104,7 +104,7 @@ class AppUpdateChecker {
         // For cases of extreme patch versions (new: 1.2.3.1 vs old: 1.2.3, return true)
         return if (newSemVer.size > oldSemVer.size) {
             true
-        } else if (newSemVer.size < oldSemVer.size && !isNightly) {
+        } else if (newSemVer.size < oldSemVer.size && !isNewVersionNightly) {
             false
         } else {
             // If the version numbers match, check the beta versions
@@ -113,11 +113,14 @@ class AppUpdateChecker {
             val oldPreVersion =
                 oldPreReleaseVer.getOrNull(1)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
             when {
+                oldPreVersion == null || newPreVersion == null -> false  // FIXME: Check if the app is Nightly or Beta
+                /*
                 // For prod, don't bother with betas (current: 1.2.3 vs new: 1.2.3-b1)
                 oldPreVersion == null -> false
                 // For betas, always use prod builds (current: 1.2.3-b1 vs new: 1.2.3)
                 newPreVersion == null -> true
-                // For betas, higher beta ver is newer (current: 1.2.3-b1 vs new: 1.2.3-b2)
+                */
+                // For nightly, higher beta ver is newer (current: 1.2.3-b1 vs new: 1.2.3-b2 or r2)
                 else -> (oldPreVersion < newPreVersion)
             }
         }

@@ -74,6 +74,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Ints.max
+import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.Migrations
@@ -203,6 +205,18 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     .setMessage(R.string.allow_notifications_recommended)
                     .setPositiveButton(android.R.string.ok, null)
                     .show()
+            }
+        }
+
+    // Ideally we want this to be inside the controller itself, but Conductor doesn't support the new ActivityResult API
+    // Should be fine once we moved completely to Compose..... someday....
+    // REF: https://github.com/bluelinelabs/Conductor/issues/612
+    private fun requestColourProfile(context: Context, basePreferences: BasePreferences) =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            uri?.let {
+                val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                context.contentResolver.takePersistableUriPermission(uri, flags)
+                basePreferences.displayProfile().set(uri.toString())
             }
         }
 
@@ -993,6 +1007,11 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             preferences.hasShownNotifPermission().set(true)
             requestNotificationPermissionLauncher.launch((notificationPermission))
         }
+    }
+
+    fun showColourProfilePicker(context: Context, basePreferences: BasePreferences) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        requestColourProfile(context, basePreferences).launch(arrayOf("*/*"))
     }
 
     override fun onNewIntent(intent: Intent) {

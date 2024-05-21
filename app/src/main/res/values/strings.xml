@@ -522,6 +522,7 @@
         <item quantity="one">Skipping %d chapter, either the source is missing it or it has been filtered out</item>
         <item quantity="other">Skipping %d chapters, either the source is missing them or they have been filtered out</item>
     </plurals>
+    <string name="pref_display_profile">Custom display profile</string>
 
     <!-- Manga details -->
     <string name="about_this_">About this %1$s</string>

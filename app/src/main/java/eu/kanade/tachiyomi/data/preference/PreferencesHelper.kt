@@ -109,8 +109,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun showPageNumber() = preferenceStore.getBoolean(Keys.showPageNumber, true)
 
-    fun trueColor() = preferenceStore.getBoolean(Keys.trueColor, false)
-
     fun fullscreen() = preferenceStore.getBoolean(Keys.fullscreen, true)
 
     fun keepScreenOn() = preferenceStore.getBoolean(Keys.keepScreenOn, true)

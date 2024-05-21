@@ -16,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
-import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
 import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
@@ -41,6 +40,7 @@ import eu.kanade.tachiyomi.network.PREF_DOH_GOOGLE
 import eu.kanade.tachiyomi.network.PREF_DOH_QUAD101
 import eu.kanade.tachiyomi.network.PREF_DOH_QUAD9
 import eu.kanade.tachiyomi.source.SourceManager
+import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.setting.database.ClearDatabaseController
 import eu.kanade.tachiyomi.ui.setting.debug.DebugController
 import eu.kanade.tachiyomi.util.CrashLogUtil
@@ -396,6 +396,20 @@ class SettingsAdvancedController : SettingsController() {
                 summaryRes = R.string.updates_tracking_details
 
                 onClick { LibraryUpdateJob.startNow(context, target = Target.TRACKING) }
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            preferenceCategory {
+                titleRes = R.string.reader
+
+                preference {
+                    key = "pref_display_profile"
+                    titleRes = R.string.pref_display_profile
+                    onClick {
+                        (activity as? MainActivity)?.showColourProfilePicker(context, basePreferences)
+                    }
+                }
             }
         }
     }

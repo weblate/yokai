@@ -58,14 +58,6 @@ class SettingsReaderController : SettingsController() {
                 titleRes = R.string.animate_page_transitions
                 defaultValue = true
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                switchPreference {
-                    key = Keys.trueColor
-                    titleRes = R.string.true_32bit_color
-                    summaryRes = R.string.reduces_banding_impacts_performance
-                    defaultValue = false
-                }
-            }
             intListPreference(activity) {
                 key = Keys.preloadSize
                 titleRes = R.string.page_preload_amount

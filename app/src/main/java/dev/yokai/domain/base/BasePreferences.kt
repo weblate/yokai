@@ -15,4 +15,6 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
         PRIVATE(R.string.ext_installer_private, false),
         LEGACY(R.string.ext_installer_legacy, true),  // Technically useless, but just in case it being missing crashes the app
     }
+
+    fun displayProfile() = preferenceStore.getString("pref_display_profile_key", "")
 }

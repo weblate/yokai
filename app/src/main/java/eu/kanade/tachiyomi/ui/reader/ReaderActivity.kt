@@ -41,6 +41,7 @@ import androidx.activity.viewModels
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.transition.addListener
@@ -71,6 +72,8 @@ import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.hippo.unifile.UniFile
+import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import eu.kanade.tachiyomi.BuildConfig
@@ -155,6 +158,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -239,6 +243,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         }
 
     private val readerPreferences: ReaderPreferences by injectLazy()
+    private val basePreferences: BasePreferences by injectLazy()
 
     companion object {
 
@@ -1954,7 +1959,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                 .onEach { setCutoutMode() }
                 .launchIn(scope)
 
-            preferences.trueColor().changesIn(scope) { setTrueColor(it) }
+            basePreferences.displayProfile().changesIn(scope) { setDisplayProfile(it) }
 
             preferences.fullscreen().changesIn(scope) { setFullscreen(it) }
 
@@ -2001,13 +2006,19 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         }
 
         /**
-         * Sets the 32-bit color mode according to [enabled].
+         * Sets the display profile to [path].
          */
-        private fun setTrueColor(enabled: Boolean) {
-            if (enabled) {
-                SubsamplingScaleImageView.setPreferredBitmapConfig(Bitmap.Config.ARGB_8888)
-            } else {
-                SubsamplingScaleImageView.setPreferredBitmapConfig(Bitmap.Config.RGB_565)
+        private fun setDisplayProfile(path: String) {
+            val file = UniFile.fromUri(baseContext, path.toUri())
+            if (file != null && file.exists()) {
+                val inputStream = file.openInputStream()
+                val outputStream = ByteArrayOutputStream()
+                inputStream.use { input ->
+                    outputStream.use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                SubsamplingScaleImageView.setDisplayProfile(outputStream.toByteArray())
             }
         }
 

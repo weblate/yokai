@@ -412,7 +412,7 @@ class SettingsAdvancedController : SettingsController() {
                     }
 
                     basePreferences.displayProfile().changesIn(viewScope) { path ->
-                        val actualPath = UniFile.fromUri(context, path.toUri()).filePath ?: path
+                        val actualPath = UniFile.fromUri(context, path.toUri())?.filePath ?: path
                         if (actualPath.isNotEmpty()) summary = actualPath
                     }
                 }

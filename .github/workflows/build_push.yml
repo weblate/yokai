@@ -80,6 +80,11 @@ jobs:
         if: startsWith(env.VERSION_TAG, 'r')
         run: ./gradlew assembleStandardNightly testStandardNightlyUnitTest
 
+      # DEBUG
+      - name: Build nightly build and run tests
+        if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
+        run: ./gradlew assembleStandardDebug testStandardDebugUnitTest
+
       - name: Publish test report
         uses: mikepenz/action-junit-report@v4
         if: success() || failure()

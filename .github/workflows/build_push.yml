@@ -81,7 +81,7 @@ jobs:
         run: ./gradlew assembleStandardNightly testStandardNightlyUnitTest
 
       # DEBUG
-      - name: Build nightly build and run tests
+      - name: Build and run tests
         if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
         run: ./gradlew assembleStandardDebug testStandardDebugUnitTest
 

@@ -80,6 +80,12 @@ jobs:
         if: startsWith(env.VERSION_TAG, 'r')
         run: ./gradlew assembleStandardNightly testStandardNightlyUnitTest
 
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+
       - name: Sign APK
         if: env.VERSION_TAG != ''
         uses: ilharp/sign-android-release@v1

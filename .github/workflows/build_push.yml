@@ -71,19 +71,21 @@ jobs:
           echo "PREV_TAG=$(git tag -l | grep 'r' | tail -1)" >> $GITHUB_ENV
 
       # PROD
-      - name: Build release build
+      - name: Build release build and run tests
         if: startsWith(env.VERSION_TAG, 'v')
         run: ./gradlew assembleStandardRelease testStandardReleaseUnitTest
 
       # NIGHTLY
-      - name: Build nightly build
+      - name: Build nightly build and run tests
         if: startsWith(env.VERSION_TAG, 'r')
         run: ./gradlew assembleStandardNightly testStandardNightlyUnitTest
 
-      - name: Publish Test Report
+      - name: Publish test report
         uses: mikepenz/action-junit-report@v4
         if: success() || failure()
         with:
+          include_passed: true
+          detailed_summary: true
           report_paths: '**/build/test-results/test*/TEST-*.xml'
 
       - name: Sign APK

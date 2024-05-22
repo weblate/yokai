@@ -305,6 +305,10 @@ dependencies {
 
     // Android Chart
     implementation(libs.mpandroidchart)
+
+    // Tests
+    testImplementation(libs.bundles.test)
+    androidTestImplementation(libs.junit.android)
 }
 
 tasks {

@@ -68,7 +68,13 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx"
 unifile = { module = "com.github.tachiyomiorg:unifile", version = "17bec43" }
 viewstatepageradapter = { module = "com.nightlynexus.viewstatepageradapter:viewstatepageradapter", version = "1.1.0" }
 viewtooltip = { module = "com.github.florent37:viewtooltip", version = "1.2.2" }
+junit = { module = "junit:junit", version = "4.13.2" }
+junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
+mockk = { module = "io.mockk:mockk", version = "1.13.11" }
 
 [plugins]
 kotlinter = { id = "org.jmailen.kotlinter", version = "4.1.1" }
 gradle-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
+
+[bundles]
+test = [ "junit", "mockk" ]

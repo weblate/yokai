@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.updater
 
 import android.content.Context
 import android.os.Build
+import androidx.annotation.VisibleForTesting
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.GET
@@ -11,15 +12,16 @@ import eu.kanade.tachiyomi.network.parseAs
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.serialization.json.Json
-import uy.kohesive.injekt.injectLazy
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
-class AppUpdateChecker {
-
-    private val json: Json by injectLazy()
-    private val networkService: NetworkHelper by injectLazy()
-    private val preferences: PreferencesHelper by injectLazy()
+class AppUpdateChecker(
+    private val json: Json = Injekt.get(),
+    private val networkService: NetworkHelper = Injekt.get(),
+    private val preferences: PreferencesHelper = Injekt.get(),
+) {
 
     suspend fun checkForUpdate(context: Context, isUserPrompt: Boolean = false, doExtrasAfterNewUpdate: Boolean = true): AppUpdateResult {
         // Limit checks to once a day at most
@@ -84,7 +86,8 @@ class AppUpdateChecker {
         }
     }
 
-    private fun isNewVersion(versionTag: String, currentVersion: String = BuildConfig.VERSION_NAME): Boolean {
+    @VisibleForTesting
+    fun isNewVersion(versionTag: String, currentVersion: String = BuildConfig.VERSION_NAME, isNightly: Boolean = BuildConfig.NIGHTLY): Boolean {
         // Removes prefixes like "r" or "v"
         val newVersion = versionTag.replace("[^\\d.-]".toRegex(), "")
         val oldVersion = currentVersion.replace("[^\\d.-]".toRegex(), "")
@@ -94,15 +97,11 @@ class AppUpdateChecker {
         val isNewVersionNightly = newSemVer.size == 1
         val oldSemVer = oldPreReleaseVer.first().split(".").map { it.toInt() }
 
-        // Nightly doesn't use semver
-        if (!BuildConfig.NIGHTLY) {
-            oldSemVer.mapIndexed { index, i ->
-                // Keeping this nightly check for backwards compat
-                if (!isNewVersionNightly && newSemVer.getOrElse(index) { i } > i) {
-                    return true
-                } else if (newSemVer.getOrElse(index) { i } < i) {
-                    return false
-                }
+        oldSemVer.mapIndexed { index, i ->
+            if (!isNewVersionNightly && !isNightly && newSemVer.getOrElse(index) { i } > i) {
+                return true
+            } else if (newSemVer.getOrElse(index) { i } < i) {
+                return false
             }
         }
         // For cases of extreme patch versions (new: 1.2.3.1 vs old: 1.2.3, return true)
@@ -118,12 +117,12 @@ class AppUpdateChecker {
                 oldPreReleaseVer.getOrNull(1)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
             when {
                 // For prod, don't bother with betas (current: 1.2.3 vs new: 1.2.3-b1)
-                oldPreVersion == null -> false
+                oldPreVersion == null && !isNightly -> false
                 // For betas, always use prod builds (current: 1.2.3-b1 vs new: 1.2.3)
                 // For nightly, don't use prod builds
-                newPreVersion == null -> !BuildConfig.NIGHTLY
+                newPreVersion == null -> !isNightly
                 // For nightly, higher beta ver is newer (current: 1.2.3-b1 vs new: 1.2.3-b2 or r2)
-                else -> (oldPreVersion < newPreVersion)
+                else -> (oldPreVersion ?: 0) < newPreVersion
             }
         }
     }

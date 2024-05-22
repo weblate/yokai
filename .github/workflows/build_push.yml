@@ -73,16 +73,12 @@ jobs:
       # PROD
       - name: Build release build
         if: startsWith(env.VERSION_TAG, 'v')
-        uses: gradle/gradle-command-action@v2
-        with:
-          arguments: assembleStandardRelease
+        run: ./gradlew assembleStandardRelease testStandardReleaseUnitTest
 
       # NIGHTLY
       - name: Build nightly build
         if: startsWith(env.VERSION_TAG, 'r')
-        uses: gradle/gradle-command-action@v2
-        with:
-          arguments: assembleStandardNightly
+        run: ./gradlew assembleStandardNightly testStandardNightlyUnitTest
 
       - name: Sign APK
         if: env.VERSION_TAG != ''

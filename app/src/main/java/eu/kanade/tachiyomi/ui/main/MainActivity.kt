@@ -208,14 +208,16 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
 
+    private val basePreferences: BasePreferences by injectLazy()
+
     // Ideally we want this to be inside the controller itself, but Conductor doesn't support the new ActivityResult API
     // Should be fine once we moved completely to Compose..... someday....
     // REF: https://github.com/bluelinelabs/Conductor/issues/612
-    private fun requestColourProfile(context: Context, basePreferences: BasePreferences) =
+    private val requestColourProfile =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             uri?.let {
                 val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                context.contentResolver.takePersistableUriPermission(uri, flags)
+                applicationContext.contentResolver.takePersistableUriPermission(uri, flags)
                 basePreferences.displayProfile().set(uri.toString())
             }
         }
@@ -1009,9 +1011,9 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
-    fun showColourProfilePicker(context: Context, basePreferences: BasePreferences) {
+    fun showColourProfilePicker() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        requestColourProfile(context, basePreferences).launch(arrayOf("*/*"))
+        requestColourProfile.launch(arrayOf("*/*"))
     }
 
     override fun onNewIntent(intent: Intent) {

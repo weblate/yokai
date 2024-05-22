@@ -9,6 +9,10 @@
 -->
 ## Additions
 - Added cutout support for some pre-Android P devices
+- Added option to add custom colour profile
+
+## Changes
+- Permanently enable 32-bit colour mode
 
 ## Fixes
 - Fixed cutout behaviour for Android P

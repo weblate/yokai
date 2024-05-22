@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import com.hippo.unifile.UniFile
 import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
 import dev.yokai.domain.extension.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
@@ -407,7 +408,12 @@ class SettingsAdvancedController : SettingsController() {
                     key = "pref_display_profile"
                     titleRes = R.string.pref_display_profile
                     onClick {
-                        (activity as? MainActivity)?.showColourProfilePicker(context, basePreferences)
+                        (activity as? MainActivity)?.showColourProfilePicker()
+                    }
+
+                    basePreferences.displayProfile().changesIn(viewScope) { path ->
+                        val actualPath = UniFile.fromUri(context, path.toUri()).filePath ?: path
+                        if (actualPath.isNotEmpty()) summary = actualPath
                     }
                 }
             }

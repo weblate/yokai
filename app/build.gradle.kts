@@ -45,8 +45,11 @@ android {
         buildConfigField("String", "BUILD_TIME", "\"${getBuildTime()}\"")
         buildConfigField("Boolean", "INCLUDE_UPDATER", "false")
         buildConfigField("Boolean", "BETA", "false")
+        buildConfigField("Boolean", "NIGHTLY", "false")
 
         ndk {
+            // False positive, we have x86 abi support
+            //noinspection ChromeOsAbiSupport
             abiFilters += supportedAbis
         }
         externalNativeBuild {
@@ -60,6 +63,8 @@ android {
         abi {
             isEnable = true
             reset()
+            // False positive, we have x86 abi support
+            //noinspection ChromeOsAbiSupport
             include(*supportedAbis.toTypedArray())
             isUniversalApk = true
         }
@@ -76,9 +81,17 @@ android {
             isMinifyEnabled = true
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
         }
+        create("beta") {
+            initWith(getByName("release"))
+            buildConfigField("boolean", "BETA", "true")
+
+            matchingFallbacks.add("release")
+            versionNameSuffix = "-b${getCommitCount()}"
+        }
         create("nightly") {
             initWith(getByName("release"))
             buildConfigField("boolean", "BETA", "true")
+            buildConfigField("boolean", "NIGHTLY", "true")
 
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks.add("release")

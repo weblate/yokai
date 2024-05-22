@@ -94,11 +94,15 @@ class AppUpdateChecker {
         val isNewVersionNightly = newSemVer.size == 1
         val oldSemVer = oldPreReleaseVer.first().split(".").map { it.toInt() }
 
-        oldSemVer.mapIndexed { index, i ->
-            if (!isNewVersionNightly && newSemVer.getOrElse(index) { i } > i) {
-                return true
-            } else if (newSemVer.getOrElse(index) { i } < i) {
-                return false
+        // Nightly doesn't use semver
+        if (!BuildConfig.NIGHTLY) {
+            oldSemVer.mapIndexed { index, i ->
+                // Keeping this nightly check for backwards compat
+                if (!isNewVersionNightly && newSemVer.getOrElse(index) { i } > i) {
+                    return true
+                } else if (newSemVer.getOrElse(index) { i } < i) {
+                    return false
+                }
             }
         }
         // For cases of extreme patch versions (new: 1.2.3.1 vs old: 1.2.3, return true)
@@ -113,13 +117,11 @@ class AppUpdateChecker {
             val oldPreVersion =
                 oldPreReleaseVer.getOrNull(1)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
             when {
-                oldPreVersion == null || newPreVersion == null -> false  // FIXME: Check if the app is Nightly or Beta
-                /*
                 // For prod, don't bother with betas (current: 1.2.3 vs new: 1.2.3-b1)
                 oldPreVersion == null -> false
                 // For betas, always use prod builds (current: 1.2.3-b1 vs new: 1.2.3)
-                newPreVersion == null -> true
-                */
+                // For nightly, don't use prod builds
+                newPreVersion == null -> !BuildConfig.NIGHTLY
                 // For nightly, higher beta ver is newer (current: 1.2.3-b1 vs new: 1.2.3-b2 or r2)
                 else -> (oldPreVersion < newPreVersion)
             }

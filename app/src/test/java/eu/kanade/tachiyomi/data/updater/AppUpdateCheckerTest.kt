@@ -1,16 +1,11 @@
 package eu.kanade.tachiyomi.data.updater
 
-import android.content.Context
-import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.NetworkHelper
-import io.mockk.MockKAnnotations
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.impl.annotations.SpyK
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -58,6 +53,11 @@ class AppUpdateCheckerTest {
     @Test
     fun `Prod should get latest Prod build (Check for Betas)`() {
         assertTrue(isNewVersion("1.2.4-r1", "1.2.3", false))
+    }
+
+    @Test
+    fun `Prod shouldn't get nightly build (Check for Betas)`() {
+        assertFalse(isNewVersion("r1", "1.2.3", false))
     }
 
     @Test

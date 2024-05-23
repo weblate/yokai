@@ -55,6 +55,26 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
             }
         }
 
+        if (maxOf(bitmap.width, bitmap.height) > GLUtil.maxTextureSize) {
+            val widthRatio = bitmap.width / GLUtil.maxTextureSize.toFloat()
+            val heightRatio = bitmap.height / GLUtil.maxTextureSize.toFloat()
+
+            val targetWidth: Float
+            val targetHeight: Float
+
+            if (widthRatio >= heightRatio) {
+                targetWidth = GLUtil.maxTextureSize.toFloat()
+                targetHeight = (targetWidth / bitmap.width) * bitmap.height
+            } else {
+                targetHeight = GLUtil.maxTextureSize.toFloat()
+                targetWidth = (targetHeight / bitmap.height) * bitmap.width
+            }
+
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth.toInt(), targetHeight.toInt(), false)
+            bitmap.recycle()
+            bitmap = scaledBitmap
+        }
+
         return DecodeResult(
             drawable = bitmap.toDrawable(options.context.resources),
             isSampled = sampleSize > 1,
@@ -64,8 +84,8 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
     class Factory : Decoder.Factory {
 
         override fun create(result: SourceResult, options: Options, imageLoader: ImageLoader): Decoder? {
-            if (!isApplicable(result.source.source()) || !options.customDecoder) return null
-            return TachiyomiImageDecoder(result.source, options)
+            if (isApplicable(result.source.source()) || options.customDecoder) return TachiyomiImageDecoder(result.source, options)
+            return null
         }
 
         private fun isApplicable(source: BufferedSource): Boolean {

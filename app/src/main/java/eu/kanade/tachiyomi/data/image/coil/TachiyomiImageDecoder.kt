@@ -55,6 +55,7 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
             }
         }
 
+        /*
         val maxTextureSize = 4096f
         if (maxOf(bitmap.width, bitmap.height) > maxTextureSize) {
             val widthRatio = bitmap.width / maxTextureSize
@@ -75,6 +76,7 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
             bitmap.recycle()
             bitmap = scaledBitmap
         }
+        */
 
         return DecodeResult(
             drawable = bitmap.toDrawable(options.context.resources),

@@ -223,7 +223,8 @@ open class ReaderPageImageView @JvmOverloads constructor(
             },
         )
 
-        if (isWebtoon) {
+        val useCoilPipeline = false  // FIXME: "Bitmap too large to be uploaded into a texture"
+        if (isWebtoon && useCoilPipeline) {
             val request = ImageRequest.Builder(context)
                 .data(image)
                 .memoryCachePolicy(CachePolicy.DISABLED)

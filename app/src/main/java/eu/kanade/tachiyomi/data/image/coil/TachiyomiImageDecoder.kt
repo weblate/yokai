@@ -55,18 +55,19 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
             }
         }
 
-        if (maxOf(bitmap.width, bitmap.height) > GLUtil.maxTextureSize) {
-            val widthRatio = bitmap.width / GLUtil.maxTextureSize.toFloat()
-            val heightRatio = bitmap.height / GLUtil.maxTextureSize.toFloat()
+        val maxTextureSize = 4096f
+        if (maxOf(bitmap.width, bitmap.height) > maxTextureSize) {
+            val widthRatio = bitmap.width / maxTextureSize
+            val heightRatio = bitmap.height / maxTextureSize
 
             val targetWidth: Float
             val targetHeight: Float
 
             if (widthRatio >= heightRatio) {
-                targetWidth = GLUtil.maxTextureSize.toFloat()
+                targetWidth = maxTextureSize
                 targetHeight = (targetWidth / bitmap.width) * bitmap.height
             } else {
-                targetHeight = GLUtil.maxTextureSize.toFloat()
+                targetHeight = maxTextureSize
                 targetWidth = (targetHeight / bitmap.height) * bitmap.width
             }
 

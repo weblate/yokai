@@ -1,14 +1,14 @@
 package eu.kanade.tachiyomi.data.image.coil
 
-import android.graphics.Bitmap
-import android.os.Build
-import coil.request.ImageRequest
-import coil.request.Options
-import coil.size.Dimension
-import coil.size.Scale
-import coil.size.Size
-import coil.size.isOriginal
-import coil.size.pxOrElse
+import coil3.Extras
+import coil3.getExtra
+import coil3.request.ImageRequest
+import coil3.request.Options
+import coil3.size.Dimension
+import coil3.size.Scale
+import coil3.size.Size
+import coil3.size.isOriginal
+import coil3.size.pxOrElse
 
 internal inline fun Size.widthPx(scale: Scale, original: () -> Int): Int {
     return if (isOriginal) original() else width.toPx(scale)
@@ -26,22 +26,19 @@ internal fun Dimension.toPx(scale: Scale): Int = pxOrElse {
 }
 
 fun ImageRequest.Builder.cropBorders(enable: Boolean) = apply {
-    setParameter(cropBordersKey, enable)
+    extras[cropBordersKey] = enable
 }
 
 val Options.cropBorders: Boolean
-    get() = parameters.value(cropBordersKey) ?: false
+    get() = getExtra(cropBordersKey)
 
-private val cropBordersKey = "crop_borders"
+private val cropBordersKey = Extras.Key(default = false)
 
 fun ImageRequest.Builder.customDecoder(enable: Boolean) = apply {
-    setParameter(customDecoderKey, enable)
+    extras[customDecoderKey] = enable
 }
 
 val Options.customDecoder: Boolean
-    get() = parameters.value(customDecoderKey) ?: false
+    get() = getExtra(customDecoderKey)
 
-private val customDecoderKey = "custom_decoder"
-
-val Options.bitmapConfig: Bitmap.Config
-    get() = this.config
+private val customDecoderKey = Extras.Key(default = false)

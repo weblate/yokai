@@ -18,12 +18,14 @@ import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
-import coil.dispose
-import coil.imageLoader
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.size.Precision
-import coil.size.ViewSizeResolver
+import coil3.BitmapImage
+import coil3.dispose
+import coil3.imageLoader
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.size.Precision
+import coil3.size.ViewSizeResolver
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
@@ -180,7 +182,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
     }
 
     private fun setNonAnimatedImage(
-        image: Any,
+        data: Any,
         config: Config,
     ) = (pageView as? SubsamplingScaleImageView)?.apply {
         setDoubleTapZoomDuration(config.zoomDuration.getSystemScaledDuration())
@@ -226,13 +228,13 @@ open class ReaderPageImageView @JvmOverloads constructor(
         val useCoilPipeline = false  // FIXME: "Bitmap too large to be uploaded into a texture"
         if (isWebtoon && useCoilPipeline) {
             val request = ImageRequest.Builder(context)
-                .data(image)
+                .data(data)
                 .memoryCachePolicy(CachePolicy.DISABLED)
                 .diskCachePolicy(CachePolicy.DISABLED)
                 .target(
                     onSuccess = { result ->
-                        val drawable = result as BitmapDrawable
-                        setImage(ImageSource.bitmap(drawable.bitmap))
+                        val image = result as BitmapDrawable
+                        setImage(ImageSource.bitmap(image.bitmap))
                         isVisible = true
                     },
                     onError = {
@@ -247,10 +249,10 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 .build()
             context.imageLoader.enqueue(request)
         } else {
-            when (image) {
-                is BitmapDrawable -> setImage(ImageSource.bitmap(image.bitmap))
-                is InputStream -> setImage(ImageSource.inputStream(image))
-                else -> throw IllegalArgumentException("Not implemented for class ${image::class.simpleName}")
+            when (data) {
+                is BitmapDrawable -> setImage(ImageSource.bitmap(data.bitmap))
+                is InputStream -> setImage(ImageSource.inputStream(data))
+                else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
             }
             isVisible = true
         }
@@ -314,8 +316,9 @@ open class ReaderPageImageView @JvmOverloads constructor(
             .diskCachePolicy(CachePolicy.DISABLED)
             .target(
                 onSuccess = { result ->
-                    setImageDrawable(result)
-                    (result as? Animatable)?.start()
+                    val drawable = result.asDrawable(context.resources)
+                    setImageDrawable(drawable)
+                    (drawable as? Animatable)?.start()
                     isVisible = true
                     this@ReaderPageImageView.onImageLoaded()
                 },

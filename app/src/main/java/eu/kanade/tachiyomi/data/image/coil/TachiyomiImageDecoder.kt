@@ -2,11 +2,15 @@ package eu.kanade.tachiyomi.data.image.coil
 
 import android.graphics.Bitmap
 import android.os.Build
-import androidx.core.graphics.drawable.toDrawable
-import coil.ImageLoader
-import coil.decode.*
-import coil.fetch.SourceResult
-import coil.request.Options
+import coil3.ImageLoader
+import coil3.asCoilImage
+import coil3.decode.DecodeResult
+import coil3.decode.DecodeUtils
+import coil3.decode.Decoder
+import coil3.decode.ImageSource
+import coil3.fetch.SourceFetchResult
+import coil3.request.Options
+import coil3.request.bitmapConfig
 import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import okio.BufferedSource
@@ -79,16 +83,16 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
         */
 
         return DecodeResult(
-            drawable = bitmap.toDrawable(options.context.resources),
+            image = bitmap.asCoilImage(),
             isSampled = sampleSize > 1,
         )
     }
 
     class Factory : Decoder.Factory {
 
-        override fun create(result: SourceResult, options: Options, imageLoader: ImageLoader): Decoder? {
-            if (isApplicable(result.source.source()) || options.customDecoder) return TachiyomiImageDecoder(result.source, options)
-            return null
+        override fun create(result: SourceFetchResult, options: Options, imageLoader: ImageLoader): Decoder? {
+            if (!isApplicable(result.source.source())) return null
+            return TachiyomiImageDecoder(result.source, options)
         }
 
         private fun isApplicable(source: BufferedSource): Boolean {

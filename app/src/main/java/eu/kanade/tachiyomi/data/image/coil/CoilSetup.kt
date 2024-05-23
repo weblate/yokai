@@ -28,6 +28,7 @@ class CoilSetup {
                     add(TachiyomiImageDecoder.Factory())
                     add(MangaCoverFetcher.Factory(callFactoryLazy, diskCacheLazy))
                     add(MangaCoverKeyer())
+                    add(InputStreamFetcher.Factory())
                 }
                 diskCache(diskCacheLazy::value)
                 memoryCache { MemoryCache.Builder().maxSizePercent(context, 0.40).build() }

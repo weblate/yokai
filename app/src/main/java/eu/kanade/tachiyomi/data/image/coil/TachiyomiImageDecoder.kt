@@ -70,7 +70,7 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
                 targetWidth = (targetHeight / bitmap.height) * bitmap.width
             }
 
-            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth.toInt(), targetHeight.toInt(), false)
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth.toInt(), targetHeight.toInt(), true)
             bitmap.recycle()
             bitmap = scaledBitmap
         }

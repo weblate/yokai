@@ -91,8 +91,8 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
     class Factory : Decoder.Factory {
 
         override fun create(result: SourceFetchResult, options: Options, imageLoader: ImageLoader): Decoder? {
-            if (!isApplicable(result.source.source())) return null
-            return TachiyomiImageDecoder(result.source, options)
+            if (isApplicable(result.source.source()) || options.customDecoder) return TachiyomiImageDecoder(result.source, options)
+            return null
         }
 
         private fun isApplicable(source: BufferedSource): Boolean {

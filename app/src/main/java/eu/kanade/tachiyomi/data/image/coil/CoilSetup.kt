@@ -11,6 +11,8 @@ import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.allowHardware
 import coil3.request.allowRgb565
 import coil3.request.crossfade
+import coil3.util.DebugLogger
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.network.NetworkHelper
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -32,6 +34,9 @@ class CoilSetup {
                 crossfade(true)
                 allowRgb565(context.getSystemService<ActivityManager>()!!.isLowRamDevice)
                 allowHardware(true)
+                if (BuildConfig.DEBUG) {
+                    logger(DebugLogger())
+                }
             }.build()
         }
     }

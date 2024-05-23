@@ -44,6 +44,4 @@ val Options.customDecoder: Boolean
 private val customDecoderKey = "custom_decoder"
 
 val Options.bitmapConfig: Bitmap.Config
-    get() = parameters.value(bitmapConfigKey) ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Bitmap.Config.HARDWARE else Bitmap.Config.RGB_565
-
-private val bitmapConfigKey = "bitmap_config"
+    get() = this.config

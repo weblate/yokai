@@ -21,4 +21,5 @@
 - Fixed nightly version checker
 
 ## Other
+- Added Unit Test for version checker
 - Use Coil pipeline instead of SSIV for image decode, might improve Webtoon performance

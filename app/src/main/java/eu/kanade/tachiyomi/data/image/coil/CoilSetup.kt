@@ -10,6 +10,8 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import coil.util.DebugLogger
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.network.NetworkHelper
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -35,6 +37,9 @@ class CoilSetup(context: Context) {
             crossfade(true)
             allowRgb565(context.getSystemService<ActivityManager>()!!.isLowRamDevice)
             allowHardware(true)
+            if (BuildConfig.DEBUG) {
+                logger(DebugLogger())
+            }
         }.build()
         Coil.setImageLoader(imageLoader)
     }

@@ -126,9 +126,10 @@ jobs:
                     --key-pass pass:'${{ secrets.KEY_PASSWORD }}' \
                     "${i}.aligned" && {
                       SIGNED="y";
+                      BASENAME_I=$(basename -- "${i}");
                       BASENAME=$(basename -- "$SIGNED_NAME");
                       echo "<tr>" >> $GITHUB_STEP_SUMMARY;
-                      echo "<td>${i}</td><td>$BASENAME</td>" >> $GITHUB_STEP_SUMMARY;
+                      echo "<td>$BASENAME_I</td><td>$BASENAME</td>" >> $GITHUB_STEP_SUMMARY;
                       echo "</tr>" >> $GITHUB_STEP_SUMMARY;
                     }
           done

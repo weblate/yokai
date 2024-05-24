@@ -24,5 +24,5 @@
 - Update dependency com.github.tachiyomiorg:image-decoder to e08e9be535
 - Update dependency com.github.null2264:subsampling-scale-image-view to 338caedb5f
 - Added Unit Test for version checker
-<!-- - Use Coil pipeline instead of SSIV for image decode, might improve Webtoon performance -->
+- Use Coil pipeline instead of SSIV for image decode (disabled due to a bug)
 - Migrated from Coil2 to Coil3

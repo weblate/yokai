@@ -26,3 +26,4 @@
 - Added Unit Test for version checker
 <!-- - Use Coil pipeline instead of SSIV for image decode, might improve Webtoon performance -->
 - Migrated from Coil2 to Coil3
+- Migrated from JUnit4 to JUnit5

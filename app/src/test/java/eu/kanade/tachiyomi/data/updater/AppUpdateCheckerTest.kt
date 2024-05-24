@@ -4,15 +4,14 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.NetworkHelper
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class AppUpdateCheckerTest {
-    lateinit var appUpdateChecker: AppUpdateChecker
+    private lateinit var appUpdateChecker: AppUpdateChecker
 
-    @Before
+    @BeforeEach
     fun setup() {
         val json = mockk<Json>()
         val network = mockk<NetworkHelper>()

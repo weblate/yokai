@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.11.0
+        uses: styfle/cancel-workflow-action@0.12.1
         with:
           access_token: ${{ github.token }}
           all_but_latest: true
@@ -133,7 +133,7 @@ jobs:
 
       - name: Create Release
         if: startsWith(env.VERSION_TAG, 'v')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION_TAG }}
           name: Yōkai ${{ env.VERSION_TAG }}
@@ -168,7 +168,7 @@ jobs:
 
       - name: Create Nightly
         if: startsWith(env.VERSION_TAG, 'r')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION_TAG }}
           name: Yōkai Nightly (${{ env.VERSION_TAG }})

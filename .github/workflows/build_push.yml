@@ -115,8 +115,8 @@ jobs:
                     --ks /tmp/signingkey.jks \
                     --out $SIGNED_NAME \
                     --ks-key-alias '${{ secrets.ALIAS }}' \
-                    --ks-pass '${{ secrets.KEY_STORE_PASSWORD }}' \
-                    --key-pass '${{ secrets.KEY_PASSWORD }}' \
+                    --ks-pass pass:'${{ secrets.KEY_STORE_PASSWORD }}' \
+                    --key-pass pass:'${{ secrets.KEY_PASSWORD }}' \
                     "${i}.aligned"
           done
 

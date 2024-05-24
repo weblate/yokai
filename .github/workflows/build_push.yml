@@ -114,9 +114,9 @@ jobs:
                   $BUILD_TOOLS/apksigner sign \
                     --ks /tmp/signingkey.jks \
                     --out $SIGNED_NAME \
-                    --ks-key-alias "${{ secrets.ALIAS }}" \
-                    --ks-pass "${{ secrets.KEY_STORE_PASSWORD }}" \
-                    --key-pass "${{ secrets.KEY_PASSWORD }}" \
+                    --ks-key-alias '${{ secrets.ALIAS }}' \
+                    --ks-pass '${{ secrets.KEY_STORE_PASSWORD }}' \
+                    --key-pass '${{ secrets.KEY_PASSWORD }}' \
                     "${i}.aligned"
           done
 

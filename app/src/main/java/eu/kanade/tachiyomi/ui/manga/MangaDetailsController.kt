@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Icon
@@ -40,8 +41,9 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.imageLoader
-import coil.request.ImageRequest
+import coil3.imageLoader
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.chip.Chip
@@ -56,7 +58,7 @@ import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.image.coil.getBestColor
+import eu.kanade.tachiyomi.data.coil.getBestColor
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.databinding.MangaDetailsControllerBinding
@@ -569,8 +571,20 @@ class MangaDetailsController :
         val request = ImageRequest.Builder(view.context).data(presenter.manga).allowHardware(false)
             .memoryCacheKey(presenter.manga.key())
             .target(
-                onSuccess = { drawable ->
-                    val bitmap = (drawable as? BitmapDrawable)?.bitmap
+                onSuccess = { image ->
+                    val drawable = image.asDrawable(view.context.resources)
+
+                    val copy = (drawable as? BitmapDrawable)?.let {
+                        BitmapDrawable(
+                            view.context.resources,
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                                it.bitmap.copy(Bitmap.Config.HARDWARE, false)
+                            else
+                                it.bitmap.copy(it.bitmap.config, false),
+                        )
+                    } ?: drawable
+
+                    val bitmap = (copy as? BitmapDrawable)?.bitmap
                     // Generate the Palette on a background thread.
                     if (bitmap != null) {
                         Palette.from(bitmap).generate {
@@ -590,7 +604,7 @@ class MangaDetailsController :
                             }
                         }
                     }
-                    binding.mangaCoverFull.setImageDrawable(drawable)
+                    binding.mangaCoverFull.setImageDrawable(copy)
                     getHeader()?.updateCover(manga!!)
                 },
                 onError = {

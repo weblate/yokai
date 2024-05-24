@@ -4,9 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import coil.dispose
+import coil3.dispose
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.image.coil.loadManga
+import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.MangaListItemBinding
 import eu.kanade.tachiyomi.util.lang.highlightText
 import eu.kanade.tachiyomi.util.system.dpToPx

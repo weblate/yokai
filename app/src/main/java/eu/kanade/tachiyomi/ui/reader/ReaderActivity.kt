@@ -81,7 +81,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.core.preference.toggle
-import eu.kanade.tachiyomi.data.image.coil.TachiyomiImageDecoder
+import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.databinding.ReaderActivityBinding

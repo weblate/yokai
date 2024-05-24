@@ -25,12 +25,14 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.transition.TransitionSet
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import coil.request.CachePolicy
+import coil3.request.CachePolicy
+import coil3.request.placeholder
+import coil3.request.error
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.image.coil.loadManga
+import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.ChapterHeaderItemBinding
 import eu.kanade.tachiyomi.databinding.MangaHeaderItemBinding
 import eu.kanade.tachiyomi.source.SourceManager
@@ -289,7 +291,7 @@ class MangaHeaderHolder(
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "StringFormatInvalid")
     fun bind(item: MangaHeaderItem, manga: Manga) {
         val presenter = adapter.delegate.mangaPresenter()
         if (binding == null) {
@@ -680,9 +682,10 @@ class MangaHeaderHolder(
                 diskCachePolicy(CachePolicy.READ_ONLY)
                 target(
                     onSuccess = {
-                        val bitmap = (it as? BitmapDrawable)?.bitmap
+                        val result = it.asDrawable(itemView.resources)
+                        val bitmap = (result as? BitmapDrawable)?.bitmap
                         if (bitmap == null) {
-                            binding.backdrop.setImageDrawable(it)
+                            binding.backdrop.setImageDrawable(result)
                             return@target
                         }
                         val yOffset = (bitmap.height / 2 * 0.33).toInt()

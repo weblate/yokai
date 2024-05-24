@@ -1,12 +1,12 @@
-package eu.kanade.tachiyomi.data.image.coil
+package eu.kanade.tachiyomi.data.coil
 
-import coil.ImageLoader
-import coil.decode.DataSource
-import coil.decode.ImageSource
-import coil.fetch.FetchResult
-import coil.fetch.Fetcher
-import coil.fetch.SourceResult
-import coil.request.Options
+import coil3.ImageLoader
+import coil3.decode.DataSource
+import coil3.decode.ImageSource
+import coil3.fetch.FetchResult
+import coil3.fetch.Fetcher
+import coil3.fetch.SourceFetchResult
+import coil3.request.Options
 import okio.Buffer
 import java.io.InputStream
 
@@ -15,10 +15,10 @@ class InputStreamFetcher(
     private val options: Options,
 ) : Fetcher {
     override suspend fun fetch(): FetchResult {
-        return SourceResult(
+        return SourceFetchResult(
             source = ImageSource(
                 source = stream.use { Buffer().readFrom(it) },
-                context = options.context,
+                fileSystem = options.fileSystem,
             ),
             mimeType = null,
             dataSource = DataSource.MEMORY,

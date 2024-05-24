@@ -19,7 +19,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
 import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.image.coil.loadManga
+import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.RecentMangaItemBinding
 import eu.kanade.tachiyomi.databinding.RecentSubChapterItemBinding
 import eu.kanade.tachiyomi.ui.download.DownloadButton

@@ -9,10 +9,10 @@ import androidx.core.text.color
 import androidx.core.text.scale
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import coil.dispose
-import coil.load
+import coil3.dispose
+import coil3.load
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.image.coil.CoverViewTarget
+import eu.kanade.tachiyomi.data.coil.CoverViewTarget
 import eu.kanade.tachiyomi.databinding.ExtensionCardItemBinding
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.InstallStep

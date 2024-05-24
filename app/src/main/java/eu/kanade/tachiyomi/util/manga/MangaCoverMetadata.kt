@@ -5,7 +5,7 @@ import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.image.coil.getBestColor
+import eu.kanade.tachiyomi.data.coil.getBestColor
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import uy.kohesive.injekt.injectLazy
 import java.io.File

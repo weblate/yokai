@@ -306,10 +306,18 @@ dependencies {
 
     // Tests
     testImplementation(libs.bundles.test)
+    testRuntimeOnly(libs.bundles.test.runtime)
     androidTestImplementation(libs.junit.android)
 }
 
 tasks {
+    withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
+
     // See https://kotlinlang.org/docs/reference/experimental.html#experimental-status-of-experimental-api(-markers)
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.freeCompilerArgs += listOf(

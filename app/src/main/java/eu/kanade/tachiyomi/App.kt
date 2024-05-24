@@ -33,11 +33,11 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import dev.yokai.domain.AppState
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
-import eu.kanade.tachiyomi.data.image.coil.CoilDiskCache
-import eu.kanade.tachiyomi.data.image.coil.InputStreamFetcher
-import eu.kanade.tachiyomi.data.image.coil.MangaCoverFetcher
-import eu.kanade.tachiyomi.data.image.coil.MangaCoverKeyer
-import eu.kanade.tachiyomi.data.image.coil.TachiyomiImageDecoder
+import eu.kanade.tachiyomi.data.coil.CoilDiskCache
+import eu.kanade.tachiyomi.data.coil.InputStreamFetcher
+import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
+import eu.kanade.tachiyomi.data.coil.MangaCoverKeyer
+import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.di.AppModule

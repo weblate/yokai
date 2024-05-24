@@ -18,7 +18,6 @@ import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
-import coil3.BitmapImage
 import coil3.dispose
 import coil3.imageLoader
 import coil3.request.CachePolicy
@@ -31,8 +30,8 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 import com.github.chrisbanes.photoview.PhotoView
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
-import eu.kanade.tachiyomi.data.image.coil.cropBorders
-import eu.kanade.tachiyomi.data.image.coil.customDecoder
+import eu.kanade.tachiyomi.data.coil.cropBorders
+import eu.kanade.tachiyomi.data.coil.customDecoder
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
 import eu.kanade.tachiyomi.util.system.DeviceUtil

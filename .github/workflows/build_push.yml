@@ -120,17 +120,6 @@ jobs:
                     "${i}.aligned"
           done
 
-#       - name: Sign APK
-#         if: env.VERSION_TAG != ''
-#         uses: ilharp/sign-android-release@v1
-#         id: sign_app
-#         with:
-#           releaseDir: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
-#           signingKey: ${{ secrets.SIGNING_KEY }}
-#           keyAlias: ${{ secrets.ALIAS }}
-#           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-#           keyPassword: ${{ secrets.KEY_PASSWORD }}
-
       - name: Clean up build artifacts
         if: env.VERSION_TAG != ''
         run: |

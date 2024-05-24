@@ -31,7 +31,7 @@ jobs:
       - name: Setup Android SDK
         run: |
           ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;29.0.3"
-          ls ${ANDROID_SDK_ROOT}
+          ls ${ANDROID_SDK_ROOT}/build-tools/*
           exit 1
 
       - name: Setup Gradle

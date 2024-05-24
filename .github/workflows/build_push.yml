@@ -107,18 +107,39 @@ jobs:
 
           APKS=($(ls -1 $APK_DIR/app-standard-*.apk))
 
+          SIGNED=""
+
+          echo "<table>" >> $GITHUB_STEP_SUMMARY
+          echo "<tr>" >> $GITHUB_STEP_SUMMARY
+          echo "<th>Source File</th><th>Signed File</th>" >> $GITHUB_STEP_SUMMARY
+          echo "</tr>" >> $GITHUB_STEP_SUMMARY
+
           for i in "${APKS[@]}"; do
-                  echo "Compiling ${i}"
+                  echo "Signing '${i}'..."
                   SIGNED_NAME="$(echo $i | sed 's/.apk$/-signed.apk/g')"
-                  $BUILD_TOOLS/zipalign -p -f -v 4 $i "${i}.aligned"
+                  $BUILD_TOOLS/zipalign -p -f -v 4 $i "${i}.aligned" >/dev/null
                   $BUILD_TOOLS/apksigner sign \
                     --ks /tmp/signingkey.jks \
                     --out $SIGNED_NAME \
                     --ks-key-alias '${{ secrets.ALIAS }}' \
                     --ks-pass pass:'${{ secrets.KEY_STORE_PASSWORD }}' \
                     --key-pass pass:'${{ secrets.KEY_PASSWORD }}' \
-                    "${i}.aligned"
+                    "${i}.aligned" && {
+                      SIGNED="y";
+                      BASENAME=$(basename -- "$SIGNED_NAME");
+                      echo "<tr>" >> $GITHUB_STEP_SUMMARY;
+                      echo "<td>${i}</td><td>$BASENAME</td>" >> $GITHUB_STEP_SUMMARY;
+                      echo "</tr>" >> $GITHUB_STEP_SUMMARY;
+                    }
           done
+
+          [ $SIGNED = "" ] && {
+            echo "<tr>" >> $GITHUB_STEP_SUMMARY;
+            echo "<td>No successful signing</td><td>-</td>" >> $GITHUB_STEP_SUMMARY;
+            echo "</tr>" >> $GITHUB_STEP_SUMMARY;
+          }
+
+          echo "</table>" >> $GITHUB_STEP_SUMMARY
 
       - name: Clean up build artifacts
         if: env.VERSION_TAG != ''

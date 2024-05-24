@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -23,13 +25,24 @@ import androidx.multidex.MultiDex
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
+import coil3.memory.MemoryCache
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.allowHardware
+import coil3.request.allowRgb565
+import coil3.request.crossfade
+import coil3.util.DebugLogger
 import dev.yokai.domain.AppState
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
-import eu.kanade.tachiyomi.data.image.coil.CoilSetup
+import eu.kanade.tachiyomi.data.image.coil.CoilDiskCache
+import eu.kanade.tachiyomi.data.image.coil.InputStreamFetcher
+import eu.kanade.tachiyomi.data.image.coil.MangaCoverFetcher
+import eu.kanade.tachiyomi.data.image.coil.MangaCoverKeyer
+import eu.kanade.tachiyomi.data.image.coil.TachiyomiImageDecoder
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.di.AppModule
 import eu.kanade.tachiyomi.di.PreferenceModule
+import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
@@ -44,6 +57,7 @@ import kotlinx.coroutines.flow.onEach
 import org.conscrypt.Conscrypt
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import java.security.Security
 
@@ -175,7 +189,25 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     }
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {
-        return CoilSetup.setup(this@App)
+        return ImageLoader.Builder(this@App).apply {
+            val callFactoryLazy = lazy { Injekt.get<NetworkHelper>().client }
+            val diskCacheLazy = lazy { CoilDiskCache.get(this@App) }
+            components {
+                add(OkHttpNetworkFetcherFactory(callFactoryLazy::value))
+                add(TachiyomiImageDecoder.Factory())
+                add(MangaCoverFetcher.Factory(callFactoryLazy, diskCacheLazy))
+                add(MangaCoverKeyer())
+                add(InputStreamFetcher.Factory())
+            }
+            diskCache(diskCacheLazy::value)
+            memoryCache { MemoryCache.Builder().maxSizePercent(this@App, 0.40).build() }
+            crossfade(true)
+            allowRgb565(this@App.getSystemService<ActivityManager>()!!.isLowRamDevice)
+            allowHardware(true)
+            if (BuildConfig.DEBUG) {
+                logger(DebugLogger())
+            }
+        }.build()
     }
 }
 

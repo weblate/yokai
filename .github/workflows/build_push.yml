@@ -33,7 +33,7 @@ jobs:
           ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;29.0.3"
 
       - name: Setup Gradle
-        uses: null2264/actions/gradle-setup@b697b0b95bb90ab23c1145b744dddd2fd3e3a838
+        uses: null2264/actions/gradle-setup@c63d62af63686cb442114b979d4bedb96a514881
         with:
           java: 17
           distro: adopt
@@ -99,48 +99,14 @@ jobs:
 
       - name: Sign APK
         if: env.VERSION_TAG != ''
-        run: |
-          BUILD_TOOLS="${ANDROID_SDK_ROOT}/build-tools/29.0.3"
-          APK_DIR=app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
-
-          echo "${{ secrets.SIGNING_KEY }}" | base64 -d > /tmp/signingkey.jks
-
-          APKS=($(ls -1 $APK_DIR/app-standard-*.apk))
-
-          SIGNED=""
-
-          echo "<table>" >> $GITHUB_STEP_SUMMARY
-          echo "<tr>" >> $GITHUB_STEP_SUMMARY
-          echo "<th>Source File</th><th>Signed File</th>" >> $GITHUB_STEP_SUMMARY
-          echo "</tr>" >> $GITHUB_STEP_SUMMARY
-
-          for i in "${APKS[@]}"; do
-                  echo "Signing '${i}'..."
-                  SIGNED_NAME="$(echo $i | sed 's/.apk$/-signed.apk/g')"
-                  $BUILD_TOOLS/zipalign -p -f -v 4 $i "${i}.aligned" >/dev/null
-                  $BUILD_TOOLS/apksigner sign \
-                    --ks /tmp/signingkey.jks \
-                    --out $SIGNED_NAME \
-                    --ks-key-alias '${{ secrets.ALIAS }}' \
-                    --ks-pass pass:'${{ secrets.KEY_STORE_PASSWORD }}' \
-                    --key-pass pass:'${{ secrets.KEY_PASSWORD }}' \
-                    "${i}.aligned" && {
-                      SIGNED="y";
-                      BASENAME_I=$(basename -- "${i}");
-                      BASENAME=$(basename -- "$SIGNED_NAME");
-                      echo "<tr>" >> $GITHUB_STEP_SUMMARY;
-                      echo "<td>$BASENAME_I</td><td>$BASENAME</td>" >> $GITHUB_STEP_SUMMARY;
-                      echo "</tr>" >> $GITHUB_STEP_SUMMARY;
-                    }
-          done
-
-          [ $SIGNED = "" ] && {
-            echo "<tr>" >> $GITHUB_STEP_SUMMARY;
-            echo "<td>No successful signing</td><td>-</td>" >> $GITHUB_STEP_SUMMARY;
-            echo "</tr>" >> $GITHUB_STEP_SUMMARY;
-          }
-
-          echo "</table>" >> $GITHUB_STEP_SUMMARY
+        uses: null2264/actions/android-signer@c63d62af63686cb442114b979d4bedb96a514881
+        with:
+          releaseDir: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          keyAlias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          summarise: true
 
       - name: Clean up build artifacts
         if: env.VERSION_TAG != ''

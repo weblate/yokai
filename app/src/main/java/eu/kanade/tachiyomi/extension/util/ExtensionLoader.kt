@@ -255,6 +255,7 @@ internal object ExtensionLoader {
         return selectExtensionPackage(sharedPkg, privatePkg)
     }
 
+    @Suppress("DEPRECATION")
     fun isExtensionInstalledByApp(context: Context, pkgName: String): Boolean {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

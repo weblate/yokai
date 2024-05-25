@@ -5,6 +5,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.source.SourceManager
+import eu.kanade.tachiyomi.util.system.getParcelableArrayListCompat
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -36,8 +37,9 @@ class MigrationSourceAdapter(
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         val sourceManager: SourceManager by injectLazy()
-        savedInstanceState.getParcelableArrayList<MigrationSourceItem.ParcelableSI>(
+        savedInstanceState.getParcelableArrayListCompat(
             SELECTED_SOURCES_KEY,
+            MigrationSourceItem.ParcelableSI::class.java
         )?.let {
             updateDataSet(it.map { MigrationSourceItem.fromParcelable(sourceManager, it) })
         }

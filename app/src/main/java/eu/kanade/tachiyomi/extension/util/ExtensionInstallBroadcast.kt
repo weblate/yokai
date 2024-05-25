@@ -19,6 +19,7 @@ import eu.kanade.tachiyomi.extension.util.ExtensionInstallBroadcast.Companion.EX
 import eu.kanade.tachiyomi.extension.util.ExtensionInstallBroadcast.Companion.PACKAGE_INSTALLED_ACTION
 import eu.kanade.tachiyomi.extension.util.ExtensionInstallBroadcast.Companion.packageInstallStep
 import eu.kanade.tachiyomi.util.system.DeviceUtil
+import eu.kanade.tachiyomi.util.system.getParcelableCompat
 import eu.kanade.tachiyomi.util.system.toast
 import uy.kohesive.injekt.injectLazy
 
@@ -88,7 +89,7 @@ class ExtensionInstallBroadcast : BroadcastReceiver() {
                 val extensionManager: ExtensionManager by injectLazy()
                 when (val status = extras.getInt(PackageInstaller.EXTRA_STATUS)) {
                     PackageInstaller.STATUS_PENDING_USER_ACTION -> {
-                        val confirmIntent = extras[Intent.EXTRA_INTENT] as? Intent
+                        val confirmIntent = extras.getParcelableCompat(Intent.EXTRA_INTENT, Intent::class.java)
                         if (context is Activity) {
                             context.startActivity(confirmIntent)
                         } else {

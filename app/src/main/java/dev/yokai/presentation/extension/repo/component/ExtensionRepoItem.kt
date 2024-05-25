@@ -3,18 +3,18 @@ package dev.yokai.presentation.extension.repo.component
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.IconButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.outlined.Label
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,7 +45,7 @@ fun ExtensionRepoItem(
     ) {
         Icon(
             modifier = Modifier.padding(horizontal = 8.dp),
-            imageVector = if (repoUrl != null) Icons.Outlined.Label else Icons.Filled.Add,
+            imageVector = if (repoUrl != null) Icons.AutoMirrored.Outlined.Label else Icons.Filled.Add,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground,
         )
@@ -64,10 +64,14 @@ fun ExtensionRepoItem(
                 )
             }
         } else {
-            val colors = TextFieldDefaults.textFieldColors(
+            val colors = TextFieldDefaults.colors().copy(
                 cursorColor = MaterialTheme.colorScheme.secondary,
-                placeholderColor = MaterialTheme.colorScheme.textHint,
-                textColor = MaterialTheme.colorScheme.onBackground,
+                focusedPlaceholderColor = MaterialTheme.colorScheme.textHint,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.textHint,
+                errorPlaceholderColor = MaterialTheme.colorScheme.textHint,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                errorTextColor = MaterialTheme.colorScheme.onBackground,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,

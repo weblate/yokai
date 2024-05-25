@@ -62,7 +62,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
     PreferenceManager.OnDisplayPreferenceDialogListener,
     DialogPreference.TargetFragment {
 
-    private var lastOpenPreferencePosition: Int? = null
+    private var lastOpenPreferencePosition: Int = 0
 
     private var preferenceScreen: PreferenceScreen? = null
 
@@ -141,13 +141,13 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        lastOpenPreferencePosition?.let { outState.putInt(LASTOPENPREFERENCE_KEY, it) }
+        outState.putInt(LASTOPENPREFERENCE_KEY, lastOpenPreferencePosition)
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        lastOpenPreferencePosition = savedInstanceState.get(LASTOPENPREFERENCE_KEY) as? Int
+        lastOpenPreferencePosition = savedInstanceState.getInt(LASTOPENPREFERENCE_KEY)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -349,10 +349,10 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
     private fun Extension.getPreferenceKey(): String = "extension_$pkgName"
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Preference> findPreference(key: CharSequence): T? {
+    override fun <T : Preference> findPreference(key: CharSequence): T {
         // We track [lastOpenPreferencePosition] when displaying the dialog
         // [key] isn't useful since there may be duplicates
-        return preferenceScreen!!.getPreference(lastOpenPreferencePosition!!) as T
+        return preferenceScreen!!.getPreference(lastOpenPreferencePosition) as T
     }
 
     private companion object {

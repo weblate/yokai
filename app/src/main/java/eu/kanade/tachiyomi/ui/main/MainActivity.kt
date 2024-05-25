@@ -45,7 +45,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -162,7 +161,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     protected val searchDrawable by lazy { contextCompatDrawable(R.drawable.ic_search_24dp) }
     protected val backDrawable by lazy { contextCompatDrawable(R.drawable.ic_arrow_back_24dp) }
-    private var gestureDetector: GestureDetectorCompat? = null
+    private var gestureDetector: GestureDetector? = null
 
     private var snackBar: Snackbar? = null
     private var extraViewForUndo: View? = null
@@ -366,7 +365,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             finish()
             return
         }
-        gestureDetector = GestureDetectorCompat(this, GestureListener())
+        gestureDetector = GestureDetector(this, GestureListener())
         binding = MainActivityBinding.inflate(layoutInflater)
 
         setContentView(binding.root)

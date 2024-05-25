@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.TypedValue
+import android.view.GestureDetector
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -29,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsCompat
@@ -175,7 +175,7 @@ open class LibraryController(
     var singleCategory: Boolean = false
         private set
     var hopperAnimation: ValueAnimator? = null
-    var catGestureDetector: GestureDetectorCompat? = null
+    var catGestureDetector: GestureDetector? = null
 
     /**
      * Library search query.
@@ -750,7 +750,7 @@ open class LibraryController(
                 true
             }.show()
         }
-        catGestureDetector = GestureDetectorCompat(binding.root.context, LibraryCategoryGestureDetector(this))
+        catGestureDetector = GestureDetector(binding.root.context, LibraryCategoryGestureDetector(this))
 
         binding.roundedCategoryHopper.categoryButton.setOnLongClickListener {
             when (preferences.hopperLongPressAction().get()) {
@@ -783,7 +783,7 @@ open class LibraryController(
         }
         hopperGravity = gravityPref
 
-        val gestureDetector = GestureDetectorCompat(binding.root.context, LibraryGestureDetector(this))
+        val gestureDetector = GestureDetector(binding.root.context, LibraryGestureDetector(this))
         with(binding.roundedCategoryHopper) {
             listOf(categoryHopperLayout, upCategory, downCategory, categoryButton).forEach {
                 it.setOnTouchListener { _, event ->

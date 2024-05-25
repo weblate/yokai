@@ -80,7 +80,7 @@ class BangumiApi(private val client: OkHttpClient, interceptor: BangumiIntercept
             authClient.newCall(GET(url.toString()))
                 .awaitSuccess()
                 .use {
-                    var responseBody = it.body?.string().orEmpty()
+                    var responseBody = it.body.string().orEmpty()
                     if (responseBody.isEmpty()) {
                         throw Exception("Null Response")
                     }
@@ -138,7 +138,7 @@ class BangumiApi(private val client: OkHttpClient, interceptor: BangumiIntercept
 
             // TODO: get user readed chapter here
             var response = authClient.newCall(requestUserRead).awaitSuccess()
-            var responseBody = response.body?.string().orEmpty()
+            var responseBody = response.body.string().orEmpty()
             if (responseBody.isEmpty()) {
                 throw Exception("Null Response")
             }

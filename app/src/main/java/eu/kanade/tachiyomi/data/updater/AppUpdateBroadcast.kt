@@ -8,6 +8,7 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.util.system.getParcelableCompat
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.toast
 
@@ -17,7 +18,7 @@ class AppUpdateBroadcast : BroadcastReceiver() {
             val extras = intent.extras ?: return
             when (val status = extras.getInt(PackageInstaller.EXTRA_STATUS)) {
                 PackageInstaller.STATUS_PENDING_USER_ACTION -> {
-                    val confirmIntent = extras[Intent.EXTRA_INTENT] as? Intent
+                    val confirmIntent = extras.getParcelableCompat(Intent.EXTRA_INTENT, Intent::class.java)
                     context.startActivity(confirmIntent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 }
                 PackageInstaller.STATUS_SUCCESS -> {

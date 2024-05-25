@@ -11,6 +11,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.Page
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -242,6 +243,7 @@ class DownloadManager(val context: Context) {
      * @param manga the manga of the chapters.
      * @param source the source of the chapters.
      */
+    @OptIn(DelicateCoroutinesApi::class)
     fun deleteChapters(chapters: List<Chapter>, manga: Manga, source: Source, force: Boolean = false) {
         val filteredChapters = if (force) chapters else getChaptersToDelete(chapters, manga)
         GlobalScope.launch(Dispatchers.IO) {

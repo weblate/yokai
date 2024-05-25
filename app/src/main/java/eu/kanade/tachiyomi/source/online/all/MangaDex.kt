@@ -46,7 +46,7 @@ class MangaDex : DelegatedHttpSource() {
             GET("https:///api.mangadex.org/v2$url", delegate!!.headers, CacheControl.FORCE_NETWORK)
         val response = network.client.newCall(request).await()
         if (response.code != 200) throw Exception("HTTP error ${response.code}")
-        val body = response.body?.string().orEmpty()
+        val body = response.body.string().orEmpty()
         if (body.isEmpty()) {
             throw Exception("Null Response")
         }

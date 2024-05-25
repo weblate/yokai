@@ -10,9 +10,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -42,16 +45,22 @@ fun ToolTipButton(
     require(icon != null || painter != null)
 
     val haptic = LocalHapticFeedback.current
-    PlainTooltipBox(
-        tooltip = { Text(modifier = Modifier.padding(4.dp), style = MaterialTheme.typography.bodyLarge, text = toolTipLabel) },
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
+    TooltipBox(
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = {
+            PlainTooltip(
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
+            ) {
+                Text(modifier = Modifier.padding(4.dp), style = MaterialTheme.typography.bodyLarge, text = toolTipLabel)
+            }
+        },
+        state = rememberTooltipState(),
     ) {
         CombinedClickableIconButton(
             enabled = isEnabled,
             enabledTint = enabledTint,
             modifier = modifier
-                .tooltipAnchor()
                 .iconButtonCombinedClickable(
                     toolTipLabel = toolTipLabel,
                     onClick = buttonClicked,

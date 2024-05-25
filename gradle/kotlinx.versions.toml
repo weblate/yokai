@@ -1,7 +1,7 @@
 [versions]
-kotlin = "1.9.10"
-coroutines = "1.7.3"
-serialization = "1.6.0"
+kotlin = "1.9.24"
+coroutines = "1.8.0"
+serialization = "1.6.2"
 
 [libraries]
 gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

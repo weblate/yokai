@@ -24,16 +24,16 @@ directionalviewpager = { module = "com.github.tachiyomiorg:DirectionalViewPager"
 disklrucache = { module = "com.jakewharton:disklrucache", version = "2.0.2" }
 fastadapter-extensions-binding = { module = "com.mikepenz:fastadapter-extensions-binding", version.ref = "fast_adapter" }
 fastadapter = { module = "com.mikepenz:fastadapter", version.ref = "fast_adapter" }
-firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.4" }
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "3.0.1" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
 flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter", version.ref = "flexible-adapter" }
-google-services = { module = "com.google.gms:google-services", version = "4.3.15" }
+google-services = { module = "com.google.gms:google-services", version = "4.4.1" }
 gradle = { module = "com.android.tools.build:gradle", version = "8.1.4" }
 guava = { module = "com.google.guava:guava", version = "31.1-android" }
 image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "e08e9be535" }
 injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65b0440" }
-material = { module = "com.google.android.material:material", version = "1.11.0" }
+material = { module = "com.google.android.material:material", version = "1.12.0" }
 material-design-dimens = { module = "com.dmitrymalkovich.android:material-design-dimens", version = "1.4" }
 markwon = { module = "io.noties.markwon:core", version = "4.6.2" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version = "v3.1.0" }
@@ -44,7 +44,7 @@ java-string-similarity = { module = "info.debatty:java-string-similarity", versi
 jsoup = { module = "org.jsoup:jsoup", version = "1.16.1" }
 junrar = { module = "com.github.junrar:junrar", version = "7.5.5" }
 loading-button = { module = "br.com.simplepass:loading-button-android", version = "2.2.0" }
-okio = { module = "com.squareup.okio:okio", version = "3.6.0" }
+okio = { module = "com.squareup.okio:okio", version = "3.8.0" }
 okhttp-brotli = { module = "com.squareup.okhttp3:okhttp-brotli", version.ref = "okhttp" }
 okhttp-dnsoverhttps = { module = "com.squareup.okhttp3:okhttp-dnsoverhttps", version.ref = "okhttp" }
 okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
@@ -64,7 +64,7 @@ shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizu
 taptargetview = { module = "com.getkeepsafe.taptargetview:taptargetview", version = "1.13.3" }
 timber = { module = "com.jakewharton.timber:timber", version = "4.7.1" }
 oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version = "0.10.6" }
-firebase = { module = "com.google.firebase:firebase-bom", version = "32.7.0" }
+firebase = { module = "com.google.firebase:firebase-bom", version = "33.0.0" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 unifile = { module = "com.github.tachiyomiorg:unifile", version = "17bec43" }

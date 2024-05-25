@@ -791,4 +791,9 @@ object ImageUtil {
         // https://issuetracker.google.com/issues/182703810
         "image/jxl" to "jxl",
     )
+
+    fun isMaxTextureSizeExceeded(imageStream: InputStream): Boolean {
+        val opts = extractImageOptions(imageStream)
+        return opts.outWidth >= GLUtil.maxTextureSize || opts.outHeight >= GLUtil.maxTextureSize
+    }
 }

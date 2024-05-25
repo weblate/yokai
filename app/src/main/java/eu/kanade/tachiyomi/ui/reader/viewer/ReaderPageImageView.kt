@@ -36,6 +36,7 @@ import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.GLUtil
+import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
 import java.io.InputStream
 import java.nio.ByteBuffer
@@ -224,7 +225,8 @@ open class ReaderPageImageView @JvmOverloads constructor(
             },
         )
 
-        val useCoilPipeline = false  // FIXME: "Bitmap too large to be uploaded into a texture"
+        val useCoilPipeline = isWebtoon && data is InputStream && ImageUtil.isMaxTextureSizeExceeded(data)
+
         if (isWebtoon && useCoilPipeline) {
             val request = ImageRequest.Builder(context)
                 .data(data)
@@ -232,7 +234,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 .diskCachePolicy(CachePolicy.DISABLED)
                 .target(
                     onSuccess = { result ->
-                        val image = result as BitmapDrawable
+                        val image = result.asDrawable(context.resources) as BitmapDrawable
                         setImage(ImageSource.bitmap(image.bitmap))
                         isVisible = true
                     },

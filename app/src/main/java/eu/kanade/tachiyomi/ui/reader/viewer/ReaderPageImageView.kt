@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.ui.reader.viewer
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
@@ -224,7 +225,16 @@ open class ReaderPageImageView @JvmOverloads constructor(
             },
         )
 
-        val useCoilPipeline = false  // FIXME: "Bitmap too large to be uploaded into a texture"
+        var useCoilPipeline = false
+
+        if (isWebtoon && data is InputStream) {
+            val opts = BitmapFactory.Options()
+            opts.inJustDecodeBounds = true
+            val bitmap = BitmapFactory.decodeStream(data, null, opts)
+            if (bitmap != null)
+                useCoilPipeline = bitmap.width <= GLUtil.maxTextureSize && bitmap.height <= GLUtil.maxTextureSize
+        }
+
         if (isWebtoon && useCoilPipeline) {
             val request = ImageRequest.Builder(context)
                 .data(data)

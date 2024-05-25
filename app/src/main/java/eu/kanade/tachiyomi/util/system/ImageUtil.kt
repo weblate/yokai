@@ -794,6 +794,6 @@ object ImageUtil {
 
     fun isMaxTextureSizeExceeded(imageStream: InputStream): Boolean {
         val opts = extractImageOptions(imageStream)
-        return opts.outWidth >= GLUtil.maxTextureSize || opts.outHeight >= GLUtil.maxTextureSize
+        return opts.outWidth > GLUtil.maxTextureSize || opts.outHeight > GLUtil.maxTextureSize
     }
 }

@@ -27,13 +27,13 @@
 - Use Coil pipeline instead of SSIV for image decode whenever possible, might improve webtoon performance
 - Migrated from Coil2 to Coil3
 - Update compose compiler to v1.5.14
-- Update androidx.compose.animation:animation to v1.6.7
-- Update androidx.compose.foundation:foundation to v1.6.7
-- Update androidx.compose.material:material to v1.6.7
-- Update androidx.compose.ui:ui to v1.6.7
-- Update androidx.compose.ui:ui-tooling to v1.6.7
-- Update androidx.compose.ui:ui-tooling-preview to v1.6.7
-- Update androidx.compose.material:material-icons-extended to v1.6.7
+- Update dependency androidx.compose.animation:animation to v1.6.7
+- Update dependency androidx.compose.foundation:foundation to v1.6.7
+- Update dependency androidx.compose.material:material to v1.6.7
+- Update dependency androidx.compose.ui:ui to v1.6.7
+- Update dependency androidx.compose.ui:ui-tooling to v1.6.7
+- Update dependency androidx.compose.ui:ui-tooling-preview to v1.6.7
+- Update dependency androidx.compose.material:material-icons-extended to v1.6.7
 - Update dependency androidx.lifecycle:lifecycle-viewmodel-compose to v2.8.0
 - Update dependency androidx.activity:activity-ktx to v1.9.0
 - Update dependency androidx.activity:activity-compose to v1.9.0
@@ -62,3 +62,4 @@
 - Update dependency org.jetbrains.kotlinx:kotlinx-serialization-protobuf to v1.6.2
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-android to v1.8.0
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-core to v1.8.0
+- Resolved some compile warnings

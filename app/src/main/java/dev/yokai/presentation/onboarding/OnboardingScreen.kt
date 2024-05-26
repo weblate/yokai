@@ -26,7 +26,6 @@ import eu.kanade.tachiyomi.R
 import soup.compose.material.motion.animation.materialSharedAxisX
 import soup.compose.material.motion.animation.rememberSlideDistance
 
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 fun OnboardingScreen(
     onComplete: () -> Unit = {}
@@ -82,8 +81,8 @@ fun OnboardingScreen(
                     )
                 },
                 label = "stepContent",
-            ) {
-                steps[currentStep].Content()
+            ) { step ->
+                steps[step].Content()
             }
         }
     }

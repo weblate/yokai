@@ -37,6 +37,7 @@ import eu.kanade.tachiyomi.ui.migration.manga.design.PreMigrationController
 import eu.kanade.tachiyomi.util.chapter.syncChaptersWithSource
 import eu.kanade.tachiyomi.util.lang.toNormalized
 import eu.kanade.tachiyomi.util.system.executeOnIO
+import eu.kanade.tachiyomi.util.system.getParcelableCompat
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
@@ -77,7 +78,7 @@ class MigrationListController(bundle: Bundle? = null) :
 
     override val coroutineContext: CoroutineContext = Job() + Dispatchers.Default
 
-    val config: MigrationProcedureConfig? = args.getParcelable(CONFIG_EXTRA)
+    val config = args.getParcelableCompat(CONFIG_EXTRA, MigrationProcedureConfig::class.java)
 
     private val db: DatabaseHelper by injectLazy()
     private val preferences: PreferencesHelper by injectLazy()
@@ -196,7 +197,7 @@ class MigrationListController(bundle: Bundle? = null) :
                                                 } catch (e: Exception) {
                                                     return@source null
                                                 }
-                                                manga.progress.send(validSources.size to processedSources.incrementAndGet())
+                                                manga.progress.value = validSources.size to processedSources.incrementAndGet()
                                                 localManga to chapters.size
                                             } else {
                                                 null
@@ -243,7 +244,7 @@ class MigrationListController(bundle: Bundle? = null) :
                                     null
                                 }
 
-                                manga.progress.send(validSources.size to (index + 1))
+                                manga.progress.value = validSources.size to (index + 1)
 
                                 if (searchResult != null) return@async searchResult
                             }
@@ -266,7 +267,7 @@ class MigrationListController(bundle: Bundle? = null) :
                     } catch (e: CancellationException) {
                         // Ignore cancellations
                         throw e
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                     }
                 }
 
@@ -383,7 +384,7 @@ class MigrationListController(bundle: Bundle? = null) :
                 } catch (e: CancellationException) {
                     // Ignore cancellations
                     throw e
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                 }
 
                 migratingManga.manga.migrationStatus = MigrationStatus.MANGA_FOUND

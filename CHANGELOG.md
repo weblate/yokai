@@ -63,3 +63,4 @@
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-android to v1.8.0
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-core to v1.8.0
 - Resolved some compile warnings
+- Update dependency com.github.tachiyomiorg:unifile to 7c257e1c64

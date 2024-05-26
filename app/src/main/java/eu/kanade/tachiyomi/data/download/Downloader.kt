@@ -352,7 +352,7 @@ class Downloader(
             return
         }
         val chapterDirname = provider.getChapterDirName(download.chapter)
-        val tmpDir = mangaDir.createDirectory(chapterDirname + TMP_DIR_SUFFIX)
+        val tmpDir = mangaDir.createDirectory(chapterDirname + TMP_DIR_SUFFIX)!!
 
         try {
             // If the page list already exists, start from the file
@@ -500,7 +500,7 @@ class Downloader(
         page.progress = 0
         return flow {
             val response = source.getImage(page)
-            val file = tmpDir.createFile("$filename.tmp")
+            val file = tmpDir.createFile("$filename.tmp")!!
             try {
                 response.body.source().saveTo(file.openOutputStream())
                 val extension = getImageExtension(response, file)
@@ -532,7 +532,7 @@ class Downloader(
      * @param filename the filename of the image.
      */
     private fun moveImageFromCache(cacheFile: File, tmpDir: UniFile, filename: String): UniFile {
-        val tmpFile = tmpDir.createFile("$filename.tmp")
+        val tmpFile = tmpDir.createFile("$filename.tmp")!!
         cacheFile.inputStream().use { input ->
             tmpFile.openOutputStream().use { output ->
                 input.copyTo(output)
@@ -646,7 +646,7 @@ class Downloader(
         dirname: String,
         tmpDir: UniFile,
     ) {
-        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")
+        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")!!
         ZipOutputStream(BufferedOutputStream(zip.openOutputStream())).use { zipOut ->
             zipOut.setMethod(ZipEntry.STORED)
 

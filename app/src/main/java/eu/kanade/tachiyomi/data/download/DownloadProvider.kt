@@ -37,15 +37,16 @@ class DownloadProvider(private val context: Context) {
     /**
      * The root directory for downloads.
      */
+    // TODO: Unified Storage
     private var downloadsDir = preferences.downloadsDirectory().get().let {
         val dir = UniFile.fromUri(context, it.toUri())
         DiskUtil.createNoMediaFile(dir, context)
-        dir
+        dir!!
     }
 
     init {
         preferences.downloadsDirectory().changes().drop(1).onEach {
-            downloadsDir = UniFile.fromUri(context, it.toUri())
+            downloadsDir = UniFile.fromUri(context, it.toUri())!!
         }.launchIn(scope)
     }
 
@@ -57,8 +58,8 @@ class DownloadProvider(private val context: Context) {
      */
     internal fun getMangaDir(manga: Manga, source: Source): UniFile {
         try {
-            return downloadsDir.createDirectory(getSourceDirName(source))
-                .createDirectory(getMangaDirName(manga))
+            return downloadsDir.createDirectory(getSourceDirName(source))!!
+                .createDirectory(getMangaDirName(manga))!!
         } catch (e: NullPointerException) {
             throw Exception(context.getString(R.string.invalid_download_location))
         }

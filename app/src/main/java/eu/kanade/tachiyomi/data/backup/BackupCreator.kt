@@ -98,8 +98,8 @@ class BackupCreator(val context: Context) {
             file = (
                 if (isAutoBackup) {
                     // Get dir of file and create
-                    var dir = UniFile.fromUri(context, uri)
-                    dir = dir.createDirectory("automatic")
+                    // TODO: Unified Storage
+                    val dir = UniFile.fromUri(context, uri)!!.createDirectory("automatic")!!
 
                     // Delete older backups
                     val numberOfBackups = preferences.numberOfBackups().get()
@@ -112,7 +112,7 @@ class BackupCreator(val context: Context) {
                     // Create new file to place backup
                     dir.createFile(Backup.getBackupFilename())
                 } else {
-                    UniFile.fromUri(context, uri)
+                    UniFile.fromUri(context, uri)!!
                 }
                 )
                 ?: throw Exception("Couldn't create backup file")

@@ -36,7 +36,7 @@ class SettingsDownloadController : SettingsController() {
             }
 
             preferences.downloadsDirectory().changesIn(viewScope) { path ->
-                val dir = UniFile.fromUri(context, path.toUri())
+                val dir = UniFile.fromUri(context, path.toUri())!!
                 summary = dir.filePath ?: path
             }
         }
@@ -162,7 +162,7 @@ class SettingsDownloadController : SettingsController() {
                     context.contentResolver.takePersistableUriPermission(uri, flags)
                 }
 
-                val file = UniFile.fromUri(context, uri)
+                val file = UniFile.fromUri(context, uri)!!
                 preferences.downloadsDirectory().set(file.uri.toString())
             }
         }

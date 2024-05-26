@@ -67,7 +67,7 @@ oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", v
 firebase = { module = "com.google.firebase:firebase-bom", version = "33.0.0" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
-unifile = { module = "com.github.tachiyomiorg:unifile", version = "17bec43" }
+unifile = { module = "com.github.tachiyomiorg:unifile", version = "7c257e1c64" }
 viewstatepageradapter = { module = "com.nightlynexus.viewstatepageradapter:viewstatepageradapter", version = "1.1.0" }
 viewtooltip = { module = "com.github.florent37:viewtooltip", version = "1.2.2" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }

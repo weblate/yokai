@@ -36,7 +36,7 @@ class ExtensionInstallBroadcast : BroadcastReceiver() {
 
             val downloadId = intent.extras!!.getLong(ExtensionInstaller.EXTRA_DOWNLOAD_ID)
             val packageInstaller = context.packageManager.packageInstaller
-            val data = UniFile.fromUri(context, intent.data).openInputStream()
+            val data = UniFile.fromUri(context, intent.data)!!.openInputStream()
 
             val params = SessionParams(
                 SessionParams.MODE_FULL_INSTALL,
@@ -135,7 +135,7 @@ class ExtensionInstallActivity : Activity() {
 
             val downloadId = intent.extras!!.getLong(ExtensionInstaller.EXTRA_DOWNLOAD_ID)
             val packageInstaller = packageManager.packageInstaller
-            val data = UniFile.fromUri(this, intent.data).openInputStream()
+            val data = UniFile.fromUri(this, intent.data)!!.openInputStream()
 
             val params = SessionParams(
                 SessionParams.MODE_FULL_INSTALL,

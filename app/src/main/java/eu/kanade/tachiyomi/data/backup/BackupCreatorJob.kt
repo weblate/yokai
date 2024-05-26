@@ -36,7 +36,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
         notifier.showBackupProgress()
         return try {
             val location = BackupCreator(context).createBackup(uri, flags, isAutoBackup)
-            if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri()))
+            if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri())!!)
             Result.success()
         } catch (e: Exception) {
             Timber.e(e)

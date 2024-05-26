@@ -64,8 +64,9 @@ class DownloadCache(
      * Returns the downloads directory from the user's preferences.
      */
     private fun getDirectoryFromPreference(): UniFile {
+        // TODO: Unified Storage
         val dir = preferences.downloadsDirectory().get()
-        return UniFile.fromUri(context, dir.toUri())
+        return UniFile.fromUri(context, dir.toUri())!!
     }
 
     /**

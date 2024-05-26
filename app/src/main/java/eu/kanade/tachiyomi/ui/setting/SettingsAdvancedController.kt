@@ -57,6 +57,7 @@ import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -420,6 +421,7 @@ class SettingsAdvancedController : SettingsController() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun cleanupDownloads(removeRead: Boolean, removeNonFavorite: Boolean) {
         if (job?.isActive == true) return
         activity?.toast(R.string.starting_cleanup)

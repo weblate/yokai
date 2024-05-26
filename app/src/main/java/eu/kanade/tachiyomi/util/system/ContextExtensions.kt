@@ -17,6 +17,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.AttrRes
@@ -135,13 +136,16 @@ val Float.pxToDp: Float
  * Converts to px.
  */
 val Int.dpToPx: Int
-    get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+    get() = this.toFloat().dpToPx.toInt()
 
 val Int.spToPx: Int
-    get() = (this * Resources.getSystem().displayMetrics.scaledDensity).toInt()
+    get() = this.toFloat().spToPx.toInt()
+
+val Float.spToPx: Float
+    get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this, Resources.getSystem().displayMetrics)
 
 val Float.dpToPx: Float
-    get() = (this * Resources.getSystem().displayMetrics.density)
+    get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, Resources.getSystem().displayMetrics)
 
 /** Converts to px and takes into account LTR/RTL layout */
 fun Float.dpToPxEnd(resources: Resources): Float {

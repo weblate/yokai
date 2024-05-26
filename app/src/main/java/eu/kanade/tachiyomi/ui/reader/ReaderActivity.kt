@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ImageSpan
+import android.view.GestureDetector
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
@@ -45,7 +46,6 @@ import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.transition.addListener
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -880,7 +880,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             false
         }
         val readerNavGestureDetector = ReaderNavGestureDetector(this)
-        val gestureDetector = GestureDetectorCompat(this, readerNavGestureDetector)
+        val gestureDetector = GestureDetector(this, readerNavGestureDetector)
         with(binding.readerNav) {
             binding.readerNav.pageSeekbar.addOnSliderTouchListener(
                 object : Slider.OnSliderTouchListener {

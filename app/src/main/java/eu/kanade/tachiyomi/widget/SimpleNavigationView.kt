@@ -47,10 +47,7 @@ open class SimpleNavigationView @JvmOverloads constructor(
             R.style.Widget_Design_NavigationView,
         )
 
-        ViewCompat.setBackground(
-            this,
-            a.getDrawable(R.styleable.NavigationView_android_background),
-        )
+        this.background = a.getDrawable(R.styleable.NavigationView_android_background)
 
         if (a.hasValue(R.styleable.NavigationView_elevation)) {
             ViewCompat.setElevation(

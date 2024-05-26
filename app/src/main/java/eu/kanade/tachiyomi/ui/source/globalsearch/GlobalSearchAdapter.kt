@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
 import eu.davidea.flexibleadapter.FlexibleAdapter
+import eu.kanade.tachiyomi.util.system.getSparseParcelableArrayCompat
 
 /**
  * Adapter that holds the search cards.
@@ -62,7 +63,7 @@ class GlobalSearchAdapter(val controller: GlobalSearchController) :
      */
     private fun restoreHolderState(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder) {
         val key = "holder_${holder.bindingAdapterPosition}"
-        val holderState = bundle.getSparseParcelableArray<Parcelable>(key)
+        val holderState = bundle.getSparseParcelableArrayCompat(key, Parcelable::class.java)
         if (holderState != null) {
             holder.itemView.restoreHierarchyState(holderState)
             bundle.remove(key)

@@ -37,6 +37,7 @@ object SecureActivityDelegate {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun promptLockIfNeeded(activity: Activity?, requireSuccess: Boolean = false) {
         if (activity == null || AuthenticatorUtil.isAuthenticating) return
         val lockApp = preferences.useBiometrics().get()

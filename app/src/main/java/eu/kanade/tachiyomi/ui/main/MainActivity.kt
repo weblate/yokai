@@ -76,6 +76,7 @@ import com.google.common.primitives.Ints.max
 import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.presentation.extension.repo.ExtensionRepoController
+import dev.yokai.presentation.onboarding.OnboardingController
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.Migrations
 import eu.kanade.tachiyomi.R
@@ -519,6 +520,9 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             // Set start screen
             if (!handleIntentAction(intent)) {
                 goToStartingTab()
+                if (!basePreferences.hasShownOnboarding().get()) {
+                    router.pushController(OnboardingController().withFadeInTransaction())
+                }
             }
         }
 

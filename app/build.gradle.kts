@@ -147,15 +147,9 @@ android {
 dependencies {
     // Compose
     implementation(androidx.activity.compose)
-    implementation(compose.foundation)
-    implementation(compose.animation)
-    implementation(compose.ui)
+    implementation(compose.bundles.compose)
     debugImplementation(compose.ui.tooling)
-    implementation(compose.ui.tooling.preview)
-    implementation(compose.material)
-    implementation(compose.material3)
     implementation(libs.compose.theme.adapter3)
-    implementation(compose.icons)
     implementation(libs.accompanist.webview)
     implementation(androidx.glance.appwidget)
 

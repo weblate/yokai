@@ -29,7 +29,7 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
 flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter", version.ref = "flexible-adapter" }
 google-services = { module = "com.google.gms:google-services", version = "4.4.1" }
-gradle = { module = "com.android.tools.build:gradle", version = "8.1.4" }
+gradle = { module = "com.android.tools.build:gradle", version = "8.2.0" }
 guava = { module = "com.google.guava:guava", version = "31.1-android" }
 image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "e08e9be535" }
 injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65b0440" }

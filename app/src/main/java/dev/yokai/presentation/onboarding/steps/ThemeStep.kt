@@ -85,7 +85,10 @@ class ThemeStep : OnboardingStep {
             }
         }
 
-        Column(modifier = Modifier.padding(Size.medium)) {
+        Column(
+            modifier = Modifier.padding(Size.medium),
+            verticalArrangement = Arrangement.spacedBy(Size.medium),
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -94,8 +97,7 @@ class ThemeStep : OnboardingStep {
                 Text(text = stringResource(id = R.string.follow_system_theme))
                 Switch(
                     checked = nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-                    colors =
-                    SwitchDefaults.colors(
+                    colors = SwitchDefaults.colors(
                         checkedTrackColor = MaterialTheme.colorScheme.primary
                     ),
                     onCheckedChange = {

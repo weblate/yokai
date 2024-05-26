@@ -3,6 +3,8 @@ package eu.kanade.tachiyomi.di
 import android.app.Application
 import androidx.core.content.ContextCompat
 import dev.yokai.domain.extension.TrustExtension
+import dev.yokai.domain.storage.StorageManager
+import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -58,6 +60,9 @@ class AppModule(val app: Application) : InjektModule {
         addSingletonFactory { MangaShortcutManager() }
 
         addSingletonFactory { TrustExtension() }
+
+        addSingletonFactory { AndroidStorageFolderProvider(app) }
+        addSingletonFactory { StorageManager(app, get()) }
 
         // Asynchronously init expensive components for a faster cold start
 

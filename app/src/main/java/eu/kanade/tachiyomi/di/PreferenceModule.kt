@@ -4,10 +4,12 @@ import android.app.Application
 import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.recents.RecentsPreferences
 import dev.yokai.domain.source.SourcePreferences
+import dev.yokai.domain.storage.StoragePreferences
 import dev.yokai.domain.ui.UiPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import uy.kohesive.injekt.api.InjektModule
@@ -34,6 +36,13 @@ class PreferenceModule(val application: Application) : InjektModule {
         addSingletonFactory {
             PreferencesHelper(
                 context = application,
+                preferenceStore = get(),
+            )
+        }
+
+        addSingletonFactory {
+            StoragePreferences(
+                folderProvider = get<AndroidStorageFolderProvider>(),
                 preferenceStore = get(),
             )
         }

@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import dev.yokai.presentation.onboarding.steps.PermissionStep
+import dev.yokai.presentation.onboarding.steps.StorageStep
 import dev.yokai.presentation.onboarding.steps.ThemeStep
 import dev.yokai.presentation.theme.Size
 import eu.kanade.tachiyomi.R
@@ -36,8 +38,8 @@ fun OnboardingScreen(
     val steps = remember {
         listOf(
             ThemeStep(),
-            ThemeStep(),
-            ThemeStep(),
+            StorageStep(),
+            PermissionStep(),
         )
     }
     val isLastStep = currentStep == steps.lastIndex

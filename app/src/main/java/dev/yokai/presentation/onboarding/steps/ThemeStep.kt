@@ -35,7 +35,7 @@ import eu.kanade.tachiyomi.util.system.Themes
 import eu.kanade.tachiyomi.util.system.appDelegateNightMode
 import uy.kohesive.injekt.injectLazy
 
-class ThemeStep : OnboardingStep {
+internal class ThemeStep : OnboardingStep {
     override val isComplete: Boolean = true
 
     private val preferences: PreferencesHelper by injectLazy()

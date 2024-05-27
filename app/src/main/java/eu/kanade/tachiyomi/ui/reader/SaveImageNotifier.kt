@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
+import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.NotificationHandler
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -37,9 +38,9 @@ class SaveImageNotifier(private val context: Context) {
      *
      * @param file image file containing downloaded page image.
      */
-    fun onComplete(file: File) {
+    fun onComplete(file: UniFile) {
         val request = ImageRequest.Builder(context).memoryCachePolicy(CachePolicy.DISABLED).diskCachePolicy(CachePolicy.DISABLED)
-            .data(file)
+            .data(file.uri)
             .size(720, 1280)
             .target(
                 onSuccess = {
@@ -54,7 +55,7 @@ class SaveImageNotifier(private val context: Context) {
         context.imageLoader.enqueue(request)
     }
 
-    private fun showCompleteNotification(file: File, image: Bitmap) {
+    private fun showCompleteNotification(file: UniFile, image: Bitmap) {
         with(notificationBuilder) {
             setContentTitle(context.getString(R.string.picture_saved))
             setSmallIcon(R.drawable.ic_photo_24dp)
@@ -70,13 +71,13 @@ class SaveImageNotifier(private val context: Context) {
             addAction(
                 R.drawable.ic_share_24dp,
                 context.getString(R.string.share),
-                NotificationReceiver.shareImagePendingBroadcast(context, file.absolutePath, notificationId),
+                NotificationReceiver.shareImagePendingBroadcast(context, file.filePath!!, notificationId),
             )
             // Delete action
             addAction(
                 R.drawable.ic_delete_24dp,
                 context.getString(R.string.delete),
-                NotificationReceiver.deleteImagePendingBroadcast(context, file.absolutePath, notificationId),
+                NotificationReceiver.deleteImagePendingBroadcast(context, file.filePath!!, notificationId),
             )
 
             updateNotification()

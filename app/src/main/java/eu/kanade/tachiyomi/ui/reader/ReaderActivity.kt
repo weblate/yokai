@@ -42,6 +42,7 @@ import androidx.activity.viewModels
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
@@ -1670,7 +1671,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
      * Called from the view model when a page is ready to be shared. It shows Android's default
      * sharing tool.
      */
-    private fun onShareImageResult(file: File, page: ReaderPage, secondPage: ReaderPage? = null) {
+    private fun onShareImageResult(file: UniFile, page: ReaderPage, secondPage: ReaderPage? = null) {
         val manga = viewModel.manga ?: return
         val chapter = page.chapter.chapter
 
@@ -1689,7 +1690,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         }
         }, $pageNumber"
 
-        val stream = file.getUriCompat(this)
+        val stream = file.uri.toFile().getUriCompat(this)
         val intent = Intent(Intent.ACTION_SEND).apply {
             putExtra(Intent.EXTRA_TEXT, text)
             putExtra(Intent.EXTRA_STREAM, stream)

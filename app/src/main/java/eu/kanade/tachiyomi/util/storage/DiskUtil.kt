@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.util.storage
 
 import android.content.Context
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Environment
 import android.os.StatFs
 import androidx.core.content.ContextCompat
@@ -77,7 +78,14 @@ object DiskUtil {
      * Scans the given file so that it can be shown in gallery apps, for example.
      */
     fun scanMedia(context: Context, file: UniFile) {
-        scanMedia(context, file.filePath)
+        scanMedia(context, file.uri)
+    }
+
+    /**
+     * Scans the given file so that it can be shown in gallery apps, for example.
+     */
+    fun scanMedia(context: Context, uri: Uri) {
+        scanMedia(context, uri.path)
     }
 
     /**

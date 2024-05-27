@@ -4,6 +4,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toFile
+import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.storage.getUriCompat
 import java.io.File
@@ -30,9 +32,9 @@ object NotificationHandler {
      * @param context context of application
      * @param file file containing image
      */
-    internal fun openImagePendingActivity(context: Context, file: File): PendingIntent {
+    internal fun openImagePendingActivity(context: Context, file: UniFile): PendingIntent {
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            val uri = file.getUriCompat(context)
+            val uri = file.uri.toFile().getUriCompat(context)
             setDataAndType(uri, "image/*")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
         }

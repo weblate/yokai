@@ -36,6 +36,7 @@ class AppUpdateCheckerTest {
         assertFalse(isNewVersion("1.2.3", "1.2.3-r2", true))
         assertFalse(isNewVersion("1.2.4", "1.2.3-r2", true))
         assertFalse(isNewVersion("1.2.4", "1.2.3", true))
+        assertFalse(isNewVersion("1.2.4.1", "1.2.4-r2", true))
     }
 
     @Test
@@ -47,6 +48,7 @@ class AppUpdateCheckerTest {
     @Test
     fun `Prod should get latest Prod build`() {
         assertTrue(isNewVersion("1.2.4", "1.2.3", false))
+        assertTrue(isNewVersion("1.2.4.1", "1.2.4", false))
     }
 
     @Test

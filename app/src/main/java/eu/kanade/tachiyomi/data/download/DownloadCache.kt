@@ -126,7 +126,7 @@ class DownloadCache(
     private fun renew() {
         val onlineSources = sourceManager.getOnlineSources()
 
-        val sourceDirs = storageManager.getDownloadsDirectory()!!.listFiles().orEmpty()
+        val sourceDirs = storageManager.getDownloadsDirectory()?.listFiles().orEmpty()
             .associate { it.name to SourceDirectory(it) }.mapNotNullKeys { entry ->
                 onlineSources.find { provider.getSourceDirName(it).equals(entry.key, ignoreCase = true) }?.id
             }

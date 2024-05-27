@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.download
 import android.content.Context
 import androidx.core.net.toUri
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -31,6 +32,7 @@ class DownloadProvider(private val context: Context) {
      * Preferences helper.
      */
     private val preferences: PreferencesHelper by injectLazy()
+    private val storageManager: StorageManager by injectLazy()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -38,15 +40,11 @@ class DownloadProvider(private val context: Context) {
      * The root directory for downloads.
      */
     // TODO: Unified Storage
-    private var downloadsDir = preferences.downloadsDirectory().get().let {
-        val dir = UniFile.fromUri(context, it.toUri())
-        DiskUtil.createNoMediaFile(dir, context)
-        dir!!
-    }
+    private var downloadsDir = storageManager.getDownloadsDirectory()
 
     init {
-        preferences.downloadsDirectory().changes().drop(1).onEach {
-            downloadsDir = UniFile.fromUri(context, it.toUri())!!
+        storageManager.changes.onEach {
+            downloadsDir = storageManager.getDownloadsDirectory()
         }.launchIn(scope)
     }
 
@@ -58,7 +56,7 @@ class DownloadProvider(private val context: Context) {
      */
     internal fun getMangaDir(manga: Manga, source: Source): UniFile {
         try {
-            return downloadsDir.createDirectory(getSourceDirName(source))!!
+            return downloadsDir!!.createDirectory(getSourceDirName(source))!!
                 .createDirectory(getMangaDirName(manga))!!
         } catch (e: NullPointerException) {
             throw Exception(context.getString(R.string.invalid_download_location))
@@ -71,7 +69,7 @@ class DownloadProvider(private val context: Context) {
      * @param source the source to query.
      */
     fun findSourceDir(source: Source): UniFile? {
-        return downloadsDir.findFile(getSourceDirName(source), true)
+        return downloadsDir!!.findFile(getSourceDirName(source), true)
     }
 
     /**

@@ -1,18 +1,16 @@
 package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
-import androidx.core.net.toUri
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.Injekt
@@ -35,7 +33,7 @@ class DownloadCache(
     private val context: Context,
     private val provider: DownloadProvider,
     private val sourceManager: SourceManager,
-    private val preferences: PreferencesHelper = Injekt.get(),
+    private val storageManager: StorageManager = Injekt.get(),
 ) {
 
     /**
@@ -54,19 +52,9 @@ class DownloadCache(
     val scope = CoroutineScope(Job() + Dispatchers.IO)
 
     init {
-        preferences.downloadsDirectory().changes()
-            .drop(1)
-            .onEach { lastRenew = 0L } // invalidate cache
+        storageManager.changes
+            .onEach { forceRenewCache() } // invalidate cache
             .launchIn(scope)
-    }
-
-    /**
-     * Returns the downloads directory from the user's preferences.
-     */
-    private fun getDirectoryFromPreference(): UniFile {
-        // TODO: Unified Storage
-        val dir = preferences.downloadsDirectory().get()
-        return UniFile.fromUri(context, dir.toUri())!!
     }
 
     /**
@@ -138,7 +126,7 @@ class DownloadCache(
     private fun renew() {
         val onlineSources = sourceManager.getOnlineSources()
 
-        val sourceDirs = getDirectoryFromPreference().listFiles().orEmpty()
+        val sourceDirs = storageManager.getDownloadsDirectory()!!.listFiles().orEmpty()
             .associate { it.name to SourceDirectory(it) }.mapNotNullKeys { entry ->
                 onlineSources.find { provider.getSourceDirName(it).equals(entry.key, ignoreCase = true) }?.id
             }

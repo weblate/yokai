@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.data.coil
 
 import android.webkit.MimeTypeMap
+import androidx.core.net.toUri
 import coil3.Extras
 import coil3.ImageLoader
 import coil3.decode.DataSource
@@ -11,6 +12,7 @@ import coil3.fetch.Fetcher
 import coil3.fetch.SourceFetchResult
 import coil3.getOrDefault
 import coil3.request.Options
+import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.network.await
@@ -31,6 +33,7 @@ import okio.Path.Companion.toOkioPath
 import okio.Source
 import okio.buffer
 import okio.sink
+import okio.source
 import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.File
@@ -61,6 +64,7 @@ class MangaCoverFetcher(
                 setRatioAndColorsInScope(manga, File(url.substringAfter("file://")))
                 fileLoader(File(url.substringAfter("file://")))
             }
+            Type.URI -> fileUriLoader(url)
             null -> error("Invalid image")
         }
     }
@@ -304,11 +308,24 @@ class MangaCoverFetcher(
         )
     }
 
+    private fun fileUriLoader(uri: String): FetchResult {
+        val source = UniFile.fromUri(options.context, uri.toUri())!!
+            .openInputStream()
+            .source()
+            .buffer()
+        return SourceFetchResult(
+            source = ImageSource(source = source, fileSystem = FileSystem.SYSTEM),
+            mimeType = "image/*",
+            dataSource = DataSource.DISK,
+        )
+    }
+
     private fun getResourceType(cover: String?): Type? {
         return when {
             cover.isNullOrEmpty() -> null
             cover.startsWith("http") || cover.startsWith("Custom-", true) -> Type.URL
             cover.startsWith("/") || cover.startsWith("file://") -> Type.File
+            cover.startsWith("content") -> Type.URI
             else -> null
         }
     }
@@ -328,7 +345,7 @@ class MangaCoverFetcher(
     }
 
     private enum class Type {
-        File, URL;
+        File, URL, URI;
     }
 
     companion object {

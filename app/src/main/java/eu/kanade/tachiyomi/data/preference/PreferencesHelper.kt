@@ -1,20 +1,16 @@
 package eu.kanade.tachiyomi.data.preference
 
 import android.content.Context
-import android.net.Uri
-import android.os.Environment
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import eu.kanade.tachiyomi.BuildConfig
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.preference.getEnum
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.extension.model.InstalledExtensionsOrder
-import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.ui.library.LibraryItem
 import eu.kanade.tachiyomi.ui.library.filter.FilterBottomSheet
@@ -23,14 +19,12 @@ import eu.kanade.tachiyomi.ui.reader.settings.PageLayout
 import eu.kanade.tachiyomi.ui.reader.settings.ReaderBottomButton
 import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation
-import eu.kanade.tachiyomi.ui.recents.RecentMangaAdapter
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.Themes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.io.File
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -65,22 +59,6 @@ operator fun <T> Preference<Set<T>>.minusAssign(item: Collection<T>) {
 class PreferencesHelper(val context: Context, val preferenceStore: PreferenceStore) {
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-
-    private val defaultDownloadsDir = Uri.fromFile(
-        File(
-            Environment.getExternalStorageDirectory().absolutePath + File.separator +
-                context.getString(R.string.app_normalized_name),
-            "downloads",
-        ),
-    )
-
-    private val defaultBackupDir = Uri.fromFile(
-        File(
-            Environment.getExternalStorageDirectory().absolutePath + File.separator +
-                context.getString(R.string.app_normalized_name),
-            "backup",
-        ),
-    )
 
     fun getInt(key: String, default: Int) = preferenceStore.getInt(key, default)
     fun getStringPref(key: String, default: String = "") = preferenceStore.getString(key, default)
@@ -215,16 +193,12 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun anilistScoreType() = preferenceStore.getString("anilist_score_type", "POINT_10")
 
-    fun backupsDirectory() = preferenceStore.getString(Keys.backupDirectory, defaultBackupDir.toString())
-
     fun dateFormat(format: String = preferenceStore.getString(Keys.dateFormat, "").get()): DateFormat = when (format) {
         "" -> DateFormat.getDateInstance(DateFormat.SHORT)
         else -> SimpleDateFormat(format, Locale.getDefault())
     }
 
     fun appLanguage() = preferenceStore.getString("app_language", "")
-
-    fun downloadsDirectory() = preferenceStore.getString(Keys.downloadsDirectory, defaultDownloadsDir.toString())
 
     fun downloadOnlyOverWifi() = prefs.getBoolean(Keys.downloadOnlyOverWifi, true)
 

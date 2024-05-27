@@ -2,6 +2,7 @@ package dev.yokai.domain.base
 
 import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.preference.getEnum
 import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
@@ -17,4 +18,6 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
     }
 
     fun displayProfile() = preferenceStore.getString("pref_display_profile_key", "")
+
+    fun hasShownOnboarding() = preferenceStore.getBoolean(Preference.appStateKey("onboarding_complete"), false)
 }

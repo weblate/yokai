@@ -13,6 +13,8 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.storage.StorageManager
+import dev.yokai.domain.storage.StoragePreferences
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.localeContext
@@ -20,16 +22,16 @@ import eu.kanade.tachiyomi.util.system.notificationManager
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import java.util.concurrent.TimeUnit
 
 class BackupCreatorJob(private val context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        val preferences = Injekt.get<PreferencesHelper>()
+        val storageManager: StorageManager by injectLazy()
         val notifier = BackupNotifier(context.localeContext)
-        val uri = inputData.getString(LOCATION_URI_KEY)?.let { Uri.parse(it) }
-            ?: preferences.backupsDirectory().get().toUri()
+        val uri = inputData.getString(LOCATION_URI_KEY)?.toUri() ?: storageManager.getAutomaticBackupsDirectory()?.uri!!
         val flags = inputData.getInt(BACKUP_FLAGS_KEY, BackupConst.BACKUP_ALL)
         val isAutoBackup = inputData.getBoolean(IS_AUTO_BACKUP_KEY, true)
 

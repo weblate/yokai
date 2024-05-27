@@ -124,7 +124,7 @@ class EditMangaDialog : DialogController {
                 },
             )
             binding.mangaLang.setSelection(
-                languages.indexOf(LocalSource.getMangaLang(manga, binding.root.context))
+                languages.indexOf(LocalSource.getMangaLang(manga))
                     .takeIf { it > -1 } ?: 0,
             )
         } else {

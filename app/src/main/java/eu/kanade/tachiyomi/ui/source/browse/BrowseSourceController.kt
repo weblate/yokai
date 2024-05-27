@@ -48,7 +48,6 @@ import eu.kanade.tachiyomi.util.view.applyBottomAnimatedInsets
 import eu.kanade.tachiyomi.util.view.fullAppBarHeight
 import eu.kanade.tachiyomi.util.view.inflate
 import eu.kanade.tachiyomi.util.view.isControllerVisible
-import eu.kanade.tachiyomi.util.view.requestFilePermissionsSafe
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.snack
@@ -182,7 +181,6 @@ open class BrowseSourceController(bundle: Bundle) :
         } else {
             binding.progress.isVisible = true
         }
-        requestFilePermissionsSafe(301, preferences, presenter.source is LocalSource)
     }
 
     override fun onDestroyView(view: View) {

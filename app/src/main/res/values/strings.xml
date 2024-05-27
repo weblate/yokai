@@ -8,6 +8,26 @@
     <string name="external_storage_permission_notice">TachiyomiJ2K requires access to all files in Android 11 to download chapters, create automatic backups, and read local series. \n\nOn the next screen, enable \"Allow access to manage all files.\"</string>
     <string name="external_storage_download_notice">TachiyomiJ2K requires access to all files to download chapters. Tap here, then enable \"Allow access to manage all files.\"</string>
 
+    <string name="onboarding_heading">Welcome!</string>
+    <string name="onboarding_description">Let\'s pick some defaults. You can always change these things later in the settings.</string>
+    <string name="onboarding_finish">Get started</string>
+    <string name="onboarding_storage_info">Select a folder where %1$s will store chapter downloads, backups, and more.\n\nA dedicated folder is recommended.\n\nSelected folder: %2$s</string>
+    <string name="onboarding_storage_action_select">Select a folder</string>
+    <string name="onboarding_storage_help_info">Updating from an older version and not sure what to select? Refer to the Tachiyomi upgrade section on the Mihon storage guide for more information.</string>
+    <string name="onboarding_storage_help_action">Storage guide</string>
+    <string name="onboarding_permission_type_required">Required</string>
+    <string name="onboarding_permission_type_optional">Optional but recommended</string>
+    <string name="onboarding_permission_install_apps">Install apps permission</string>
+    <string name="onboarding_permission_install_apps_description">To install the app on updates.</string>
+    <string name="onboarding_permission_notifications">Notification permission</string>
+    <string name="onboarding_permission_notifications_description">Get notified for library updates and more.</string>
+    <string name="onboarding_permission_ignore_battery_opts">Background battery usage</string>
+    <string name="onboarding_permission_ignore_battery_opts_description">Avoid interruptions to long-running library updates, downloads, and backup restores.</string>
+    <string name="onboarding_permission_action_grant">Grant</string>
+
+    <string name="no_location_set">No storage location set</string>
+    <string name="invalid_location">Invalid location: %s</string>
+
     <!--Models-->
 
     <!-- Manga Type -->
@@ -772,6 +792,10 @@
     <string name="includes_recently_read_updated_added">Includes recently read, updated, and added series</string>
     <string name="series_opens_new_chapters">Series shortcuts opens new chapters</string>
     <string name="no_new_chapters_open_details">When there\'s no new chapters, the series\' details will open instead</string>
+
+    <!-- Storage -->
+    <string name="data_and_storage">Data and storage</string>
+    <string name="storage_location">Storage location</string>
 
     <!-- Backup -->
     <string name="backup">Backup</string>

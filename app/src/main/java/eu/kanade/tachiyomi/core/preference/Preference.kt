@@ -1,5 +1,9 @@
 package eu.kanade.tachiyomi.core.preference
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,4 +76,10 @@ operator fun <T> Preference<Set<T>>.minusAssign(item: T) {
 fun Preference<Boolean>.toggle(): Boolean {
     set(!get())
     return get()
+}
+
+@Composable
+fun <T> Preference<T>.collectAsState(): State<T> {
+    val flow = remember(this) { changes() }
+    return flow.collectAsState(initial = get())
 }

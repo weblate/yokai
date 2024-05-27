@@ -43,6 +43,8 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.di.AppModule
 import eu.kanade.tachiyomi.di.PreferenceModule
 import eu.kanade.tachiyomi.network.NetworkHelper
+import eu.kanade.tachiyomi.ui.crash.CrashActivity
+import eu.kanade.tachiyomi.ui.crash.GlobalExceptionHandler
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
@@ -72,6 +74,9 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     @SuppressLint("LaunchActivityFromNotification")
     override fun onCreate() {
         super<Application>.onCreate()
+
+        GlobalExceptionHandler.initialize(applicationContext, CrashActivity::class.java)
+
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
         // TLS 1.3 support for Android 10 and below

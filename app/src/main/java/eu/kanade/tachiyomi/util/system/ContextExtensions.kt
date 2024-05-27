@@ -43,6 +43,9 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.ui.main.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -480,3 +483,6 @@ val Context.application: App
 
 val Context.appState: AppState
     get() = application.state
+
+suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) =
+    withContext(NonCancellable, block)

@@ -13,6 +13,8 @@ import eu.kanade.tachiyomi.util.system.createFileInCacheDir
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withNonCancellableContext
+import eu.kanade.tachiyomi.util.system.withUIContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.IOException
@@ -23,15 +25,15 @@ class CrashLogUtil(private val context: Context) {
         setSmallIcon(R.drawable.ic_tachij2k_notification)
     }
 
-    fun dumpLogs() {
+    suspend fun dumpLogs() = withNonCancellableContext {
         try {
-            val file = context.createFileInCacheDir("tachiyomi_crash_logs.txt")
+            val file = context.createFileInCacheDir("yokai_crash_logs.txt")
             file.appendText(getDebugInfo() + "\n\n")
             file.appendText(getExtensionsInfo() + "\n\n")
             Runtime.getRuntime().exec("logcat *:E -d -f ${file.absolutePath}")
             showNotification(file.getUriCompat(context))
         } catch (e: IOException) {
-            context.toast("Failed to get logs")
+            withUIContext { context.toast("Failed to get logs") }
         }
     }
 

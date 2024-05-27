@@ -54,7 +54,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
         }
 
-        fun updateCover(manga: SManga, input: InputStream): UniFile? {
+        fun updateCover(manga: SManga, input: InputStream): UniFile {
             val dir = getBaseDirectory()
             var cover = getCoverFile(dir.findFile(manga.url))
             if (cover == null) {
@@ -67,7 +67,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     input.copyTo(it)
                 }
             }
-            manga.thumbnail_url = cover.filePath
+            manga.thumbnail_url = cover.uri.toString()
             return cover
         }
 
@@ -141,7 +141,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 // Try to find the cover
                 val cover = getCoverFile(mangaDir)
                 if (cover != null && cover.exists()) {
-                    thumbnail_url = cover.filePath
+                    thumbnail_url = cover.uri.toString()
                 }
 
                 val manga = this

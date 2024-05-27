@@ -41,10 +41,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
         fun getMangaLang(manga: SManga): String {
             return langMap.getOrPut(manga.url) {
-                val localDetails = getBaseDirectories()
-                    .asSequence()
-                    .mapNotNull { it.findFile(manga.url)?.listFiles()?.toList() }
-                    .flatten()
+                val localDetails = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
+                    .filter { !it.isDirectory }
                     .firstOrNull { it.extension.equals("json", ignoreCase = true) }
 
                 return if (localDetails != null) {
@@ -57,11 +55,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         }
 
         fun updateCover(manga: SManga, input: InputStream): UniFile? {
-            val dir = getBaseDirectories().firstOrNull()
-            if (dir == null) {
-                input.close()
-                return null
-            }
+            val dir = getBaseDirectory()
             var cover = getCoverFile(dir.findFile(manga.url))
             if (cover == null) {
                 cover = dir.findFile(manga.url)?.findFile(COVER_NAME)!!
@@ -86,9 +80,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
         }
 
-        private fun getBaseDirectories(): List<UniFile> {
+        private fun getBaseDirectory(): UniFile {
             val storageManager: StorageManager by injectLazy()
-            return listOf(storageManager.getLocalSourceDirectory()!!)
+            return storageManager.getLocalSourceDirectory()!!
         }
     }
 
@@ -108,18 +102,18 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         query: String,
         filters: FilterList,
     ): MangasPage {
-        val baseDirs = getBaseDirectories()
-
         val time =
             if (filters === latestFilters) System.currentTimeMillis() - LATEST_THRESHOLD else 0L
-        var mangaDirs = baseDirs
-            .asSequence()
-            .mapNotNull { it.listFiles()?.toList() }
-            .flatten()
-            .filter { it.isDirectory }
-            .filterNot { it.name.orEmpty().startsWith('.') }
-            .filter { if (time == 0L) it.name.orEmpty().contains(query, ignoreCase = true) else it.lastModified() >= time }
+
+        var mangaDirs = getBaseDirectory().listFiles().orEmpty()
+            .filter { it.isDirectory || !it.name.orEmpty().startsWith('.') }
             .distinctBy { it.name }
+            .filter {
+                if (time == 0L)
+                    it.name.orEmpty().contains(query, ignoreCase = true)
+                else
+                    it.lastModified() >= time
+            }
 
         val state = ((if (filters.isEmpty()) popularFilters else filters)[0] as OrderBy).state
         when (state?.index) {
@@ -145,12 +139,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 url = mangaDir.name.orEmpty()
 
                 // Try to find the cover
-                for (dir in baseDirs) {
-                    val cover = getCoverFile(mangaDir.findFile(url))
-                    if (cover != null && cover.exists()) {
-                        thumbnail_url = cover.filePath
-                        break
-                    }
+                val cover = getCoverFile(mangaDir)
+                if (cover != null && cover.exists()) {
+                    thumbnail_url = cover.filePath
                 }
 
                 val manga = this
@@ -185,10 +176,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     override suspend fun getLatestUpdates(page: Int) = getSearchManga(page, "", latestFilters)
 
     override suspend fun getMangaDetails(manga: SManga): SManga {
-        val localDetails = getBaseDirectories()
-            .asSequence()
-            .mapNotNull { it.findFile(manga.url)?.listFiles()?.toList() }
-            .flatten()
+        val localDetails = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
+            .filter { !it.isDirectory }
             .firstOrNull { it.extension.equals("json", ignoreCase = true) }
 
         return if (localDetails != null) {
@@ -209,12 +198,12 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     fun updateMangaInfo(manga: SManga, lang: String?) {
-        val directory = getBaseDirectories().map { it.findFile(manga.url) }.find {
-            it?.exists() == true
-        } ?: return
+        val directory = getBaseDirectory().findFile(manga.url) ?: return
+        if (!directory.exists()) return
+
         lang?.let { langMap[manga.url] = it }
         val json = Json { prettyPrint = true }
-        val existingFileName = directory.listFiles()?.find { it.name.orEmpty().endsWith("json", true) }?.name
+        val existingFileName = directory.listFiles()?.find { it.extension.equals("json", ignoreCase = true) }?.name
         val file = directory.findFile(existingFileName ?: "info.json")!!
         file.writeText(json.encodeToString(manga.toJson(lang)))
     }
@@ -250,10 +239,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     override suspend fun getChapterList(manga: SManga): List<SChapter> {
-        val chapters = getBaseDirectories()
-            .asSequence()
-            .mapNotNull { it.findFile(manga.url)?.listFiles()?.toList() }
-            .flatten()
+        val chapters = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
             .filter { it.isDirectory || isSupportedFile(it.extension.orEmpty()) }
             .map { chapterFile ->
                 SChapter.create().apply {
@@ -291,15 +277,16 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     fun getFormat(chapter: SChapter): Format {
-        val baseDirs = getBaseDirectories()
+        val dir = getBaseDirectory()
 
-        for (dir in baseDirs) {
-            val chapFile = dir.findFile(chapter.url)
-            if (chapFile == null || !chapFile.exists()) continue
+        val (mangaDirName, chapterName) = chapter.url.split('/', limit = 2)
+        val chapFile = dir
+            .findFile(mangaDirName)
+            ?.findFile(chapterName)
+        if (chapFile == null || !chapFile.exists())
+            throw Exception(context.getString(R.string.chapter_not_found))
 
-            return getFormat(chapFile)
-        }
-        throw Exception(context.getString(R.string.chapter_not_found))
+        return getFormat(chapFile)
     }
 
     private fun getFormat(file: UniFile) = with(file) {

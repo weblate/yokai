@@ -11,6 +11,7 @@ import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StorageManager
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -728,7 +729,7 @@ class MangaDetailsPresenter(
             try {
                 val uri = saveCover(destDir)
                 withUIContext {
-                    view?.shareManga(uri.toFile())
+                    view?.shareManga(uri.uri.toFile())
                 }
             } catch (_: java.lang.Exception) {
             }
@@ -850,7 +851,7 @@ class MangaDetailsPresenter(
         return try {
             val destDir = UniFile.fromFile(coverCache.context.cacheDir)!!.createDirectory("shared_image")!!
             val file = saveCover(destDir)
-            file
+            file.uri
         } catch (e: Exception) {
             null
         }
@@ -863,15 +864,16 @@ class MangaDetailsPresenter(
             } else {
                 storageManager.getCoversDirectory()!!
             }
-            val uri = saveCover(directory)
-            DiskUtil.scanMedia(preferences.context, uri.toFile())
+            val file = saveCover(directory)
+            DiskUtil.scanMedia(preferences.context, file)
             true
         } catch (e: Exception) {
+            if (BuildConfig.DEBUG) e.printStackTrace()
             false
         }
     }
 
-    private fun saveCover(directory: UniFile): Uri {
+    private fun saveCover(directory: UniFile): UniFile {
         val cover = coverCache.getCustomCoverFile(manga).takeIf { it.exists() } ?: coverCache.getCoverFile(manga)
         val type = ImageUtil.findImageType(cover.inputStream())
             ?: throw Exception("Not an image")
@@ -885,7 +887,7 @@ class MangaDetailsPresenter(
                 input.copyTo(output)
             }
         }
-        return destFile.uri
+        return destFile
     }
 
     fun isTracked(): Boolean =

@@ -68,9 +68,16 @@ object DiskUtil {
             val nomedia = dir.findFile(".nomedia")
             if (nomedia == null) {
                 dir.createFile(".nomedia")
-                context?.let { scanMedia(it, dir.filePath) }
+                context?.let { scanMedia(it, dir) }
             }
         }
+    }
+
+    /**
+     * Scans the given file so that it can be shown in gallery apps, for example.
+     */
+    fun scanMedia(context: Context, file: UniFile) {
+        scanMedia(context, file.filePath)
     }
 
     /**

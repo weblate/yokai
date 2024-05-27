@@ -73,7 +73,7 @@ class SettingsMainController : SettingsController(), FloatingSearchInterface {
             onClick { navigateTo(SettingsTrackingController()) }
         }
         preference {
-            iconRes = R.drawable.ic_backup_restore_24dp
+            iconRes = R.drawable.ic_storage_24dp
             iconTint = tintColor
             titleRes = R.string.data_and_storage
             onClick { navigateTo(SettingsDataController()) }

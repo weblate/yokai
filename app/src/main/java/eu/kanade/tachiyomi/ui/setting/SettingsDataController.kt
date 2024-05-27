@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.preference.PreferenceScreen
 import com.hippo.unifile.UniFile
@@ -29,6 +30,7 @@ import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
+import java.io.File
 
 class SettingsDataController : SettingsController() {
 
@@ -184,17 +186,21 @@ class SettingsDataController : SettingsController() {
         }
     }
 
-    private fun doBackup(flags: Int, uri: Uri, requestPersist: Boolean = false) {
+    private fun doBackup(flags: Int, uri: Uri, requirePersist: Boolean = false) {
         val activity = activity ?: return
 
-        if (requestPersist) {
-            val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        val actualUri =
+            if (requirePersist) {
+                val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
-            activity.contentResolver.takePersistableUriPermission(uri, intentFlags)
-        }
+                activity.contentResolver.takePersistableUriPermission(uri, intentFlags)
+                uri
+            } else {
+                UniFile.fromUri(activity, uri)?.createFile(Backup.getBackupFilename())?.uri
+            } ?: return
         activity.toast(R.string.creating_backup)
-        BackupCreatorJob.startNow(activity, uri, flags)
+        BackupCreatorJob.startNow(activity, actualUri, flags)
     }
 
     fun createBackup(flags: Int, picker: Boolean = false) {

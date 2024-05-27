@@ -335,6 +335,7 @@ class Downloader(
             notifier.onError(context.getString(R.string.couldnt_download_low_space), chapName)
             return
         }
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
             !Environment.isExternalStorageManager()
         ) {
@@ -351,6 +352,7 @@ class Downloader(
             )
             return
         }
+        */
         val chapterDirname = provider.getChapterDirName(download.chapter)
         val tmpDir = mangaDir.createDirectory(chapterDirname + TMP_DIR_SUFFIX)!!
 

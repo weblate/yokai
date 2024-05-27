@@ -8,6 +8,13 @@
 ## Other
 -->
 ## Additions
+- Added CrashScreen
+
+---
+
+Changelog for 1.8.0:
+
+## Additions
 - Added cutout support for some pre-Android P devices
 - Added option to add custom colour profile
 - Added onboarding screen

@@ -58,7 +58,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             val dir = getBaseDirectory()
             var cover = getCoverFile(dir.findFile(manga.url))
             if (cover == null) {
-                cover = dir.findFile(manga.url)?.findFile(COVER_NAME)!!
+                cover = dir.findFile(manga.url)?.createFile(COVER_NAME)!!
             }
             // It might not exist if using the external SD card
             cover.parentFile?.parentFile?.createDirectory(cover.parentFile?.name)
@@ -204,7 +204,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         lang?.let { langMap[manga.url] = it }
         val json = Json { prettyPrint = true }
         val existingFileName = directory.listFiles()?.find { it.extension.equals("json", ignoreCase = true) }?.name
-        val file = directory.findFile(existingFileName ?: "info.json")!!
+        val file = directory.createFile(existingFileName ?: "info.json")!!
         file.writeText(json.encodeToString(manga.toJson(lang)))
     }
 

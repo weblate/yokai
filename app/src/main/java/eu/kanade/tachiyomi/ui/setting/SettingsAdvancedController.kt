@@ -421,6 +421,14 @@ class SettingsAdvancedController : SettingsController() {
                 }
             }
         }
+
+        if (BuildConfig.DEBUG)
+            preference {
+                title = "Crash the app!"
+                onClick {
+                    throw RuntimeException("Fell into the void")
+                }
+            }
     }
 
     @OptIn(DelicateCoroutinesApi::class)

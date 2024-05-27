@@ -10,9 +10,11 @@
 ## Additions
 - Added cutout support for some pre-Android P devices
 - Added option to add custom colour profile
+- Added onboarding screen
 
 ## Changes
 - Permanently enable 32-bit colour mode
+- Unified Storage™ ([Click here](https://mihon.app/docs/faq/storage#migrating-from-tachiyomi-v0-14-x-or-earlier) to learn more about it)
 
 ## Fixes
 - Fixed cutout behaviour for Android P

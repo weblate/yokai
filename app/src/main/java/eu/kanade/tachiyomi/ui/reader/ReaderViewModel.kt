@@ -5,9 +5,12 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import androidx.annotation.ColorInt
+import androidx.core.net.toFile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hippo.unifile.UniFile
+import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -86,6 +89,7 @@ class ReaderViewModel(
     private val coverCache: CoverCache = Injekt.get(),
     private val preferences: PreferencesHelper = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
+    private val storageManager: StorageManager = Injekt.get(),
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(State())
@@ -743,12 +747,10 @@ class ReaderViewModel(
     /**
      * Saves the image of this [page] in the given [directory] and returns the file location.
      */
-    private fun saveImage(page: ReaderPage, directory: File, manga: Manga): File {
+    private fun saveImage(page: ReaderPage, directory: UniFile, manga: Manga): Uri {
         val stream = page.stream!!
         val type = ImageUtil.findImageType(stream) ?: throw Exception("Not an image")
         val context = Injekt.get<Application>()
-
-        directory.mkdirs()
 
         val chapter = page.chapter.chapter
 
@@ -757,13 +759,13 @@ class ReaderViewModel(
             "${manga.title} - ${chapter.preferredChapterName(context, manga, preferences)}".take(225),
         ) + " - ${page.number}.${type.extension}"
 
-        val destFile = File(directory, filename)
+        val destFile = directory.createFile(filename)!!
         stream().use { input ->
-            destFile.outputStream().use { output ->
+            destFile.openOutputStream().use { output ->
                 input.copyTo(output)
             }
         }
-        return destFile
+        return destFile.uri
     }
 
     /**
@@ -814,22 +816,20 @@ class ReaderViewModel(
         notifier.onClear()
 
         // Pictures directory.
-        val baseDir = Environment.getExternalStorageDirectory().absolutePath +
-            File.separator + Environment.DIRECTORY_PICTURES +
-            File.separator + context.getString(R.string.app_normalized_name)
+        val baseDir = storageManager.getPagesDirectory()!!
         val destDir = if (preferences.folderPerManga().get()) {
-            File(baseDir + File.separator + DiskUtil.buildValidFilename(manga.title))
+            baseDir.createDirectory(DiskUtil.buildValidFilename(manga.title))!!
         } else {
-            File(baseDir)
+            baseDir
         }
 
         // Copy file in background.
         viewModelScope.launchNonCancellable {
             try {
-                val file = saveImage(page, destDir, manga)
-                DiskUtil.scanMedia(context, file)
-                notifier.onComplete(file)
-                eventChannel.send(Event.SavedImage(SaveImageResult.Success(file)))
+                val uri = saveImage(page, destDir, manga)
+                DiskUtil.scanMedia(context, uri.toFile())
+                notifier.onComplete(uri.toFile())
+                eventChannel.send(Event.SavedImage(SaveImageResult.Success(uri.toFile())))
             } catch (e: Exception) {
                 notifier.onError(e.message)
                 eventChannel.send(Event.SavedImage(SaveImageResult.Error(e)))
@@ -880,12 +880,11 @@ class ReaderViewModel(
         val manga = manga ?: return
         val context = Injekt.get<Application>()
 
-        val destDir = File(context.cacheDir, "shared_image")
+        val destDir = UniFile.fromFile(context.cacheDir)!!.createDirectory("shared_image")!!
 
         viewModelScope.launchNonCancellable {
-            destDir.deleteRecursively() // Keep only the last shared file
-            val file = saveImage(page, destDir, manga)
-            eventChannel.send(Event.ShareImage(file, page))
+            val uri = saveImage(page, destDir, manga)
+            eventChannel.send(Event.ShareImage(uri.toFile(), page))
         }
     }
 
@@ -919,7 +918,7 @@ class ReaderViewModel(
                 if (manga.isLocal()) {
                     val context = Injekt.get<Application>()
                     coverCache.deleteFromCache(manga)
-                    LocalSource.updateCover(context, manga, stream())
+                    LocalSource.updateCover(manga, stream())
                     R.string.cover_updated
                     SetAsCoverResult.Success
                 } else {

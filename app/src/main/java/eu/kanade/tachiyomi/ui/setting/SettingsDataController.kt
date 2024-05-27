@@ -4,16 +4,16 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.preference.PreferenceScreen
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.storage.StorageManager
+import dev.yokai.domain.storage.StoragePreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupConst
 import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
@@ -26,23 +26,43 @@ import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
-import eu.kanade.tachiyomi.util.view.requestFilePermissionsSafe
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import uy.kohesive.injekt.injectLazy
 
-class SettingsBackupController : SettingsController() {
+class SettingsDataController : SettingsController() {
 
     /**
      * Flags containing information of what to backup.
      */
     private var backupFlags = 0
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requestFilePermissionsSafe(500, preferences)
-    }
+    internal val storagePreferences: StoragePreferences by injectLazy()
+    internal val storageManager: StorageManager by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.backup_and_restore
+        titleRes = R.string.data_and_storage
+
+        preference {
+            bindTo(storagePreferences.baseStorageDirectory())
+            titleRes = R.string.storage_location
+
+            onClick {
+                try {
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                    startActivityForResult(intent, CODE_DATA_DIR)
+                } catch (e: ActivityNotFoundException) {
+                    activity?.toast(R.string.file_picker_error)
+                }
+            }
+
+            storagePreferences.baseStorageDirectory().changes()
+                .onEach { path ->
+                    summary = UniFile.fromUri(context, path.toUri())!!.let { dir ->
+                        dir.filePath ?: context.getString(R.string.invalid_location, dir.uri)
+                    }
+                }
+                .launchIn(viewScope)
+        }
 
         preference {
             key = "pref_create_backup"
@@ -75,7 +95,7 @@ class SettingsBackupController : SettingsController() {
                     (activity as? MainActivity)?.getExtensionUpdates(true)
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
                     intent.addCategory(Intent.CATEGORY_OPENABLE)
-                    intent.type = "*/*"
+                    intent.setDataAndType(storageManager.getBackupsDirectory()!!.uri, "*/*")
                     val title = resources?.getString(R.string.select_backup_file)
                     val chooser = Intent.createChooser(intent, title)
                     startActivityForResult(chooser, CODE_BACKUP_RESTORE)
@@ -106,29 +126,6 @@ class SettingsBackupController : SettingsController() {
                     BackupCreatorJob.setupTask(context, interval)
                     true
                 }
-            }
-            preference {
-                bindTo(preferences.backupsDirectory())
-                titleRes = R.string.backup_location
-
-                onClick {
-                    try {
-                        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                        startActivityForResult(intent, CODE_BACKUP_DIR)
-                    } catch (e: ActivityNotFoundException) {
-                        activity?.toast(R.string.file_picker_error)
-                    }
-                }
-
-                visibleIf(preferences.backupInterval()) { it > 0 }
-
-                preferences.backupsDirectory().changes()
-                    .onEach { path ->
-                        val dir = UniFile.fromUri(context, path.toUri())!!
-                        val filePath = dir.filePath
-                        summary = if (filePath != null) "$filePath/automatic" else "Invalid directory: ${dir.uri}"
-                    }
-                    .launchIn(viewScope)
             }
             intListPreference(activity) {
                 bindTo(preferences.numberOfBackups())
@@ -165,22 +162,18 @@ class SettingsBackupController : SettingsController() {
             }
 
             when (requestCode) {
-                CODE_BACKUP_DIR -> {
+                CODE_DATA_DIR -> {
                     // Get UriPermission so it's possible to write files
                     val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                     activity.contentResolver.takePersistableUriPermission(uri, flags)
-                    preferences.backupsDirectory().set(uri.toString())
+                    val file = UniFile.fromUri(activity, uri)!!
+                    storagePreferences.baseStorageDirectory().set(file.uri.toString())
                 }
 
                 CODE_BACKUP_CREATE -> {
-                    val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-
-                    activity.contentResolver.takePersistableUriPermission(uri, flags)
-                    activity.toast(R.string.creating_backup)
-                    BackupCreatorJob.startNow(activity, uri, backupFlags)
+                    doBackup(backupFlags, uri)
                 }
 
                 CODE_BACKUP_RESTORE -> {
@@ -191,8 +184,25 @@ class SettingsBackupController : SettingsController() {
         }
     }
 
-    fun createBackup(flags: Int) {
+    private fun doBackup(flags: Int, uri: Uri) {
+        val activity = activity ?: return
+
+        val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+        activity.contentResolver.takePersistableUriPermission(uri, intentFlags)
+        activity.toast(R.string.creating_backup)
+        BackupCreatorJob.startNow(activity, uri, flags)
+    }
+
+    fun createBackup(flags: Int, picker: Boolean = false) {
         backupFlags = flags
+
+        if (!picker) {
+            doBackup(backupFlags, storageManager.getBackupsDirectory()!!.uri)
+            return
+        }
+
         try {
             // Use Android's built-in file creator
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
@@ -299,7 +309,7 @@ class SettingsBackupController : SettingsController() {
     }
 }
 
-private const val CODE_BACKUP_DIR = 503
+private const val CODE_DATA_DIR = 104
 private const val CODE_BACKUP_CREATE = 504
 private const val CODE_BACKUP_RESTORE = 505
 

@@ -32,6 +32,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.ColorUtils
+import androidx.core.net.toFile
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.isVisible
@@ -118,7 +119,6 @@ import eu.kanade.tachiyomi.util.view.findChild
 import eu.kanade.tachiyomi.util.view.getText
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.previousController
-import eu.kanade.tachiyomi.util.view.requestFilePermissionsSafe
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.setStyle
@@ -249,7 +249,6 @@ class MangaDetailsController :
         if (presenter.preferences.themeMangaDetails()) {
             setItemColors()
         }
-        requestFilePermissionsSafe(301, presenter.preferences, presenter.manga.isLocal())
     }
 
     private fun setAccentColorValue(colorToUse: Int? = null) {
@@ -1193,7 +1192,7 @@ class MangaDetailsController :
     fun shareCover() {
         val cover = presenter.shareCover()
         if (cover != null) {
-            val stream = cover.getUriCompat(activity!!)
+            val stream = cover.toFile().getUriCompat(activity!!)
             val intent = Intent(Intent.ACTION_SEND).apply {
                 putExtra(Intent.EXTRA_STREAM, stream)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION

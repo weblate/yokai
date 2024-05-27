@@ -793,6 +793,10 @@
     <string name="series_opens_new_chapters">Series shortcuts opens new chapters</string>
     <string name="no_new_chapters_open_details">When there\'s no new chapters, the series\' details will open instead</string>
 
+    <!-- Storage -->
+    <string name="data_and_storage">Data and storage</string>
+    <string name="storage_location">Storage location</string>
+
     <!-- Backup -->
     <string name="backup">Backup</string>
     <string name="backup_and_restore">Backup and restore</string>

@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.backup
 import android.content.Context
 import android.net.Uri
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_APP_PREFS
 import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_APP_PREFS_MASK
@@ -54,6 +55,7 @@ import okio.sink
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import java.io.FileOutputStream
 
 class BackupCreator(val context: Context) {
@@ -64,6 +66,7 @@ class BackupCreator(val context: Context) {
     private val sourceManager: SourceManager = Injekt.get()
     private val preferences: PreferencesHelper = Injekt.get()
     private val customMangaManager: CustomMangaManager = Injekt.get()
+    internal val storageManager: StorageManager by injectLazy()
 
     /**
      * Create backup Json file from database
@@ -98,8 +101,7 @@ class BackupCreator(val context: Context) {
             file = (
                 if (isAutoBackup) {
                     // Get dir of file and create
-                    // TODO: Unified Storage
-                    val dir = UniFile.fromUri(context, uri)!!.createDirectory("automatic")!!
+                    val dir = storageManager.getAutomaticBackupsDirectory()!!
 
                     // Delete older backups
                     val numberOfBackups = preferences.numberOfBackups().get()

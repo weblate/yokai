@@ -60,7 +60,6 @@ import eu.kanade.tachiyomi.util.view.isCollapsed
 import eu.kanade.tachiyomi.util.view.isCompose
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.onAnimationsFinished
-import eu.kanade.tachiyomi.util.view.requestFilePermissionsSafe
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.snack
@@ -182,7 +181,6 @@ class BrowseController :
             updateTitleAndMenu()
         }
 
-        requestFilePermissionsSafe(301, preferences)
         binding.bottomSheet.root.onCreate(this)
 
         basePreferences.extensionInstaller().changes()

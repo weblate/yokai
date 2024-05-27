@@ -578,7 +578,7 @@ class LibraryPresenter(
 
     private fun getLanguage(manga: Manga): String? {
         return if (manga.isLocal()) {
-            LocalSource.getMangaLang(manga, context)
+            LocalSource.getMangaLang(manga)
         } else {
             sourceManager.get(manga.source)?.lang
         }

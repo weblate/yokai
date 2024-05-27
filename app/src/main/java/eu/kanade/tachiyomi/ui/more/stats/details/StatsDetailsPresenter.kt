@@ -483,7 +483,7 @@ class StatsDetailsPresenter(
      */
     private fun LibraryManga.getLanguage(): String {
         val code = if (isLocal()) {
-            LocalSource.getMangaLang(this, context)
+            LocalSource.getMangaLang(this)
         } else {
             sourceManager.get(source)?.lang
         } ?: return context.getString(R.string.unknown)

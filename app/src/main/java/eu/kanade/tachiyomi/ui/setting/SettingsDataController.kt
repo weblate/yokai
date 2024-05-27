@@ -206,8 +206,9 @@ class SettingsDataController : SettingsController() {
     fun createBackup(flags: Int, picker: Boolean = false) {
         backupFlags = flags
 
-        if (!picker) {
-            doBackup(backupFlags, storageManager.getBackupsDirectory()!!.uri)
+        val dir = storageManager.getBackupsDirectory()
+        if (!picker && dir != null) {
+            doBackup(backupFlags, dir.uri)
             return
         }
 

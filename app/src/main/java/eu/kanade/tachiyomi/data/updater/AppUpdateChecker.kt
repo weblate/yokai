@@ -94,7 +94,7 @@ class AppUpdateChecker(
         val newPreReleaseVer = newVersion.split("-")
         val oldPreReleaseVer = oldVersion.split("-")
         val newSemVer = newPreReleaseVer.first().split(".").map { it.toInt() }
-        val isNewVersionNightly = newSemVer.size == 1
+        val isNewVersionNightly = newSemVer.size == 1 || (newPreReleaseVer.size > 1 && newPreReleaseVer[1].startsWith("r"))
         val oldSemVer = oldPreReleaseVer.first().split(".").map { it.toInt() }
 
         oldSemVer.mapIndexed { index, i ->
@@ -105,7 +105,7 @@ class AppUpdateChecker(
             }
         }
         // For cases of extreme patch versions (new: 1.2.3.1 vs old: 1.2.3, return true)
-        return if (newSemVer.size > oldSemVer.size) {
+        return if (newSemVer.size > oldSemVer.size && !isNewVersionNightly && !isNightly) {
             true
         } else if (newSemVer.size < oldSemVer.size && !isNewVersionNightly) {
             false

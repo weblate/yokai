@@ -173,7 +173,7 @@ class SettingsDataController : SettingsController() {
                 }
 
                 CODE_BACKUP_CREATE -> {
-                    doBackup(backupFlags, uri)
+                    doBackup(backupFlags, uri, true)
                 }
 
                 CODE_BACKUP_RESTORE -> {
@@ -184,13 +184,15 @@ class SettingsDataController : SettingsController() {
         }
     }
 
-    private fun doBackup(flags: Int, uri: Uri) {
+    private fun doBackup(flags: Int, uri: Uri, requestPersist: Boolean = false) {
         val activity = activity ?: return
 
-        val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        if (requestPersist) {
+            val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
-        activity.contentResolver.takePersistableUriPermission(uri, intentFlags)
+            activity.contentResolver.takePersistableUriPermission(uri, intentFlags)
+        }
         activity.toast(R.string.creating_backup)
         BackupCreatorJob.startNow(activity, uri, flags)
     }

@@ -10,6 +10,10 @@
 ## Additions
 - Added CrashScreen
 
+## Fixes
+- Fixed version checker for nightly against hotfix patch version
+- Fixed download cache causes the app to crash
+
 ---
 
 Changelog for 1.8.0:

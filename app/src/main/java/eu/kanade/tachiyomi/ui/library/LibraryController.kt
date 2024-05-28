@@ -94,7 +94,6 @@ import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.moveCategories
-import eu.kanade.tachiyomi.util.system.appState
 import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.dpToPx
@@ -1130,7 +1129,7 @@ open class LibraryController(
                     emptyList()
                 },
             )
-            view?.context?.appState?.ready = true
+            (activity as? MainActivity)?.appState?.ready = true
         }
         adapter.setItems(mangaMap)
         if (binding.libraryGridRecycler.recycler.translationX != 0f) {

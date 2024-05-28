@@ -12,12 +12,11 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.viewbinding.ViewBinding
+import dev.yokai.domain.AppState
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.main.SearchActivity
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
-import eu.kanade.tachiyomi.util.system.appState
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getThemeWithExtras
 import eu.kanade.tachiyomi.util.system.setLocaleByAppCompat
@@ -31,6 +30,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     val isBindingInitialized get() = this::binding.isInitialized
 
     private var updatedTheme: Resources.Theme? = null
+    internal val appState: AppState by injectLazy()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setLocaleByAppCompat()

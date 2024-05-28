@@ -31,7 +31,6 @@ import coil3.request.allowHardware
 import coil3.request.allowRgb565
 import coil3.request.crossfade
 import coil3.util.DebugLogger
-import dev.yokai.domain.AppState
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.data.coil.CoilDiskCache
 import eu.kanade.tachiyomi.data.coil.InputStreamFetcher
@@ -66,8 +65,6 @@ import java.security.Security
 open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factory {
 
     val preferences: PreferencesHelper by injectLazy()
-
-    val state: AppState by lazy { AppState() }
 
     private val disableIncognitoReceiver = DisableIncognitoReceiver()
 

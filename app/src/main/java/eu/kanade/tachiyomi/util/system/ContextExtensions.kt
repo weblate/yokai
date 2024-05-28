@@ -37,7 +37,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.hippo.unifile.UniFile
-import dev.yokai.domain.AppState
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -480,9 +479,6 @@ val Context.systemLangContext: Context
 
 val Context.application: App
     get() = applicationContext as App
-
-val Context.appState: AppState
-    get() = application.state
 
 suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) =
     withContext(NonCancellable, block)

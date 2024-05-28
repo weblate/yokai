@@ -1003,8 +1003,8 @@
     <string name="couldnt_download_low_space">Couldn\'t download chapters due to low disk space</string>
     <string name="download_notifier_split_page_not_found">Page %d not found while splitting</string>
     <string name="download_notifier_split_failed">Couldn\'t split downloaded image</string>
-    <string name="download_with_id">Include download filename with id</string>
-    <string name="download_with_id_details">May fix issue with downloaded chapters with the same name conflicting</string>
+    <string name="download_with_id">Auto-append ID</string>
+    <string name="download_with_id_details">May fix issue with downloaded chapters conflicts with one another when they have the same name</string>
 
     <!-- Download Notification -->
     <string name="could_not_download_unexpected_error">Could not download chapter due to unexpected error</string>

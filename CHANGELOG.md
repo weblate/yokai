@@ -7,6 +7,5 @@
 
 ## Other
 -->
-## Fixes
-- Fixed app crashes when backup directory is null
-- Fixed app asking for All Files access permission when it's no longer needed
+## Other
+- Wrap SplashState to singleton factory, might fix issue where splash screen shown multiple times

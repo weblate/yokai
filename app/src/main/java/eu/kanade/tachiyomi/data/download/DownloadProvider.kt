@@ -1,21 +1,19 @@
 package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
-import androidx.core.net.toUri
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.download.DownloadPreferences
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
@@ -31,7 +29,7 @@ class DownloadProvider(private val context: Context) {
     /**
      * Preferences helper.
      */
-    private val preferences: PreferencesHelper by injectLazy()
+    private val downloadPreferences: DownloadPreferences by injectLazy()
     private val storageManager: StorageManager by injectLazy()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -39,7 +37,6 @@ class DownloadProvider(private val context: Context) {
     /**
      * The root directory for downloads.
      */
-    // TODO: Unified Storage
     private var downloadsDir = storageManager.getDownloadsDirectory()
 
     init {
@@ -161,8 +158,14 @@ class DownloadProvider(private val context: Context) {
     ): List<UniFile> {
         val mangaDir = findMangaDir(manga, source) ?: return emptyList()
         val chapterNameHashSet = chapters.map { it.name }.toHashSet()
-        val scanalatorNameHashSet = chapters.map { getChapterDirName(it) }.toHashSet()
-        val scanalatorCbzNameHashSet = chapters.map { "${getChapterDirName(it)}.cbz" }.toHashSet()
+        val scanlatorNameHashSet = chapters.map {
+            getChapterDirName(it)
+            getChapterDirName(it, includeId = downloadPreferences.downloadWithId().get())
+        }.toHashSet()
+        val scanlatorCbzNameHashSet = chapters.map {
+            "${getChapterDirName(it)}.cbz"
+            "${getChapterDirName(it, includeId = downloadPreferences.downloadWithId().get())}.cbz"
+        }.toHashSet()
 
         return mangaDir.listFiles()!!.asList().filter { file ->
             file.name?.let { fileName ->
@@ -170,15 +173,15 @@ class DownloadProvider(private val context: Context) {
                     return@filter true
                 }
                 // check this first because this is the normal name format
-                if (scanalatorNameHashSet.contains(fileName)) {
+                if (scanlatorNameHashSet.contains(fileName)) {
                     return@filter false
                 }
-                if (scanalatorCbzNameHashSet.contains(fileName)) {
+                if (scanlatorCbzNameHashSet.contains(fileName)) {
                     return@filter false
                 }
 
                 val afterScanlatorCheck = fileName.substringAfter("_")
-                // check both these dont exist because who knows how a chapter name is and it might not trim scanlator correctly
+                // check both these don't exist because who knows how a chapter name is and it might not trim scanlator correctly
                 return@filter !chapterNameHashSet.contains(fileName) && !chapterNameHashSet.contains(afterScanlatorCheck)
             }
             // everything else is considered true
@@ -195,7 +198,9 @@ class DownloadProvider(private val context: Context) {
      */
     fun findTempChapterDirs(chapters: List<Chapter>, manga: Manga, source: Source): List<UniFile> {
         val mangaDir = findMangaDir(manga, source) ?: return emptyList()
-        return chapters.mapNotNull { mangaDir.findFile("${getChapterDirName(it)}_tmp") }
+        return chapters.mapNotNull {
+            mangaDir.findFile("${getChapterDirName(it, includeId = downloadPreferences.downloadWithId().get())}_tmp")
+        }
     }
 
     /**
@@ -221,13 +226,13 @@ class DownloadProvider(private val context: Context) {
      *
      * @param chapter the chapter to query.
      */
-    fun getChapterDirName(chapter: Chapter, includeBlank: Boolean = false): String {
+    fun getChapterDirName(chapter: Chapter, includeBlank: Boolean = false, includeId: Boolean = false): String {
         return DiskUtil.buildValidFilename(
             if (!chapter.scanlator.isNullOrBlank()) {
                 "${chapter.scanlator}_${chapter.name}"
             } else {
                 (if (includeBlank) "_" else "") + chapter.name
-            },
+            } + (if (includeId) chapter.id else ""),
         )
     }
 
@@ -237,11 +242,15 @@ class DownloadProvider(private val context: Context) {
      * @param chapter the chapter to query.
      */
     fun getValidChapterDirNames(chapter: Chapter): List<String> {
-        return listOf(
-            getChapterDirName(chapter),
-            getChapterDirName(chapter, true),
+        return buildList {
+            add(getChapterDirName(chapter))
+            add(getChapterDirName(chapter, includeBlank = true))
+
+            add(getChapterDirName(chapter, includeBlank = false, includeId = true))
+            add(getChapterDirName(chapter, includeBlank = true, includeId = true))
+
             // Legacy chapter directory name used in v0.8.4 and before
-            DiskUtil.buildValidFilename(chapter.name),
-        ).distinct()
+            add(DiskUtil.buildValidFilename(chapter.name))
+        }.distinct()
     }
 }

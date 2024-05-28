@@ -10,6 +10,7 @@ import android.provider.Settings
 import androidx.core.net.toUri
 import com.hippo.unifile.UniFile
 import com.jakewharton.rxrelay.PublishRelay
+import dev.yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -76,6 +77,7 @@ class Downloader(
     private val sourceManager: SourceManager,
 ) {
     private val preferences: PreferencesHelper by injectLazy()
+    private val downloadPreferences: DownloadPreferences by injectLazy()
     private val chapterCache: ChapterCache by injectLazy()
 
     /**
@@ -353,7 +355,7 @@ class Downloader(
             return
         }
         */
-        val chapterDirname = provider.getChapterDirName(download.chapter)
+        val chapterDirname = provider.getChapterDirName(download.chapter, includeId = downloadPreferences.downloadWithId().get())
         val tmpDir = mangaDir.createDirectory(chapterDirname + TMP_DIR_SUFFIX)!!
 
         try {

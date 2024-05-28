@@ -7,6 +7,9 @@
 
 ## Other
 -->
+## Additions
+- (Experimental) Option to append chapter ID to download filename to avoid conflict
+
 ## Fixes
 - Fixed not being able to open different chapter if another chapter is opened
 

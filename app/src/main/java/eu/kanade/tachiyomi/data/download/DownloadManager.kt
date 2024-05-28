@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -33,6 +34,8 @@ class DownloadManager(val context: Context) {
     private val sourceManager by injectLazy<SourceManager>()
 
     private val preferences by injectLazy<PreferencesHelper>()
+
+    private val downloadPreferences by injectLazy<DownloadPreferences>()
 
     /**
      * Downloads provider, used to retrieve the folders where the chapters are or should be stored.
@@ -374,7 +377,7 @@ class DownloadManager(val context: Context) {
      */
     fun renameChapter(source: Source, manga: Manga, oldChapter: Chapter, newChapter: Chapter) {
         val oldNames = provider.getValidChapterDirNames(oldChapter).map { listOf(it, "$it.cbz") }.flatten()
-        var newName = provider.getChapterDirName(newChapter)
+        var newName = provider.getChapterDirName(newChapter, includeId = downloadPreferences.downloadWithId().get())
         val mangaDir = provider.getMangaDir(manga, source)
 
         // Assume there's only 1 version of the chapter name formats present

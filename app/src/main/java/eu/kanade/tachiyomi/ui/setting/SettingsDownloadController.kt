@@ -3,10 +3,12 @@ package eu.kanade.tachiyomi.ui.setting
 import android.content.Intent
 import androidx.preference.PreferenceScreen
 import com.bluelinelabs.conductor.Controller
+import dev.yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.preference.changesIn
+import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.injectLazy
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
@@ -14,12 +16,12 @@ import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 class SettingsDownloadController : SettingsController() {
 
     private val db: DatabaseHelper by injectLazy()
+    private val downloadPreferences: DownloadPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = R.string.downloads
 
         preference {
-            key = Keys.downloadsDirectory
             titleRes = R.string.download_location
             onClick { navigateTo(SettingsDataController()) }
 
@@ -38,6 +40,11 @@ class SettingsDownloadController : SettingsController() {
             bindTo(preferences.splitTallImages())
             titleRes = R.string.split_tall_images
             summaryRes = R.string.split_tall_images_summary
+        }
+        switchPreference {
+            bindTo(downloadPreferences.downloadWithId())
+            title = context.getString(R.string.download_with_id).addBetaTag(context)
+            summaryRes = R.string.download_with_id_details
         }
 
         val dbCategories = db.getCategories().executeAsBlocking()

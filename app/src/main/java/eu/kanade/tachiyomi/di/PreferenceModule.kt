@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.di
 
 import android.app.Application
 import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.download.DownloadPreferences
 import dev.yokai.domain.recents.RecentsPreferences
 import dev.yokai.domain.source.SourcePreferences
 import dev.yokai.domain.storage.StoragePreferences
@@ -32,6 +33,8 @@ class PreferenceModule(val application: Application) : InjektModule {
         addSingletonFactory { ReaderPreferences(get()) }
 
         addSingletonFactory { RecentsPreferences(get()) }
+
+        addSingletonFactory { DownloadPreferences(get()) }
 
         addSingletonFactory {
             PreferencesHelper(

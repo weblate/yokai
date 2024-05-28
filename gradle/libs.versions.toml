@@ -16,6 +16,7 @@ coil3 = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 coil3-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil3" }
 coil3-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil3" }
 coil3-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil3" }
+common-compress = { module = "org.apache.commons:commons-compress", version = "1.26.0" }
 compose-theme-adapter3 = { module = "com.google.accompanist:accompanist-themeadapter-material3", version = "0.33.2-alpha" }
 conductor = { module = "com.bluelinelabs:conductor", version = "4.0.0-preview-4" }
 conductor-support-preference = { module = "com.github.tachiyomiorg:conductor-support-preference", version = "3.0.0" }
@@ -80,6 +81,7 @@ kotlinter = { id = "org.jmailen.kotlinter", version = "4.1.1" }
 gradle-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
 
 [bundles]
+archive = [ "common-compress", "junrar" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
 test = [ "junit-api", "mockk" ]
 test-runtime = [ "junit-engine" ]

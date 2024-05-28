@@ -3,9 +3,12 @@ package eu.kanade.tachiyomi.util.system
 import android.content.Context
 import android.os.Build
 import android.os.FileUtils
+import android.os.ParcelFileDescriptor
 import com.hippo.unifile.UniFile
+import org.apache.commons.compress.utils.SeekableInMemoryByteChannel
 import java.io.BufferedOutputStream
 import java.io.File
+import java.nio.channels.FileChannel
 
 val UniFile.nameWithoutExtension: String?
     get() = name?.substringBeforeLast('.')
@@ -41,5 +44,11 @@ fun UniFile.toTempFile(context: Context): File {
 fun UniFile.writeText(string: String) {
     this.openOutputStream().use {
         it.write(string.toByteArray())
+    }
+}
+
+fun UniFile.openReadOnlyChannel(context: Context): SeekableInMemoryByteChannel {
+    return ParcelFileDescriptor.AutoCloseInputStream(context.contentResolver.openFileDescriptor(uri, "r")).use {
+        SeekableInMemoryByteChannel(it.readBytes())
     }
 }

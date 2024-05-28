@@ -15,12 +15,12 @@ import java.util.concurrent.Executors
 /**
  * Loader used to load a chapter from a .rar or .cbr file.
  */
-class RarPageLoader(file: File) : PageLoader() {
+class RarPageLoader(inputStream: InputStream) : PageLoader() {
 
     /**
      * The rar archive to load pages from.
      */
-    private val archive = Archive(file)
+    private val archive = Archive(inputStream)
 
     /**
      * Pool for copying compressed files to an input stream.

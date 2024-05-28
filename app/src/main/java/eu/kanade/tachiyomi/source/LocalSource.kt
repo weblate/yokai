@@ -17,6 +17,8 @@ import eu.kanade.tachiyomi.util.storage.EpubFile
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.extension
 import eu.kanade.tachiyomi.util.system.nameWithoutExtension
+import eu.kanade.tachiyomi.util.system.openReadOnlyChannel
+import eu.kanade.tachiyomi.util.system.toZipFile
 import eu.kanade.tachiyomi.util.system.writeText
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -28,7 +30,6 @@ import uy.kohesive.injekt.injectLazy
 import java.io.FileInputStream
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
-import java.util.zip.ZipFile
 
 class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSource {
     companion object {
@@ -151,7 +152,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                         val chapter = chapters.last()
                         val format = getFormat(chapter)
                         if (format is Format.Epub) {
-                            EpubFile(format.file.uri.toFile()).use { epub ->
+                            EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
                                 epub.fillMangaMetadata(manga)
                             }
                         }
@@ -253,7 +254,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
                     val format = getFormat(chapterFile)
                     if (format is Format.Epub) {
-                        EpubFile(format.file.uri.toFile()).use { epub ->
+                        EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
                             epub.fillChapterMetadata(this)
                         }
                     }
@@ -310,8 +311,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     entry?.let { updateCover(manga, it.openInputStream()) }
                 }
                 is Format.Zip -> {
-                    ZipFile(format.file.uri.toFile()).use { zip ->
-                        val entry = zip.entries().toList()
+                    format.file.openReadOnlyChannel(context).toZipFile().use { zip ->
+                        val entry = zip.entries.toList()
                             .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
                             .find { !it.isDirectory && ImageUtil.isImage(it.name) { zip.getInputStream(it) } }
 
@@ -319,7 +320,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     }
                 }
                 is Format.Rar -> {
-                    Archive(format.file.uri.toFile()).use { archive ->
+                    Archive(format.file.openInputStream()).use { archive ->
                         val entry = archive.fileHeaders
                             .sortedWith { f1, f2 -> f1.fileName.compareToCaseInsensitiveNaturalOrder(f2.fileName) }
                             .find { !it.isDirectory && ImageUtil.isImage(it.fileName) { archive.getInputStream(it) } }
@@ -328,7 +329,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     }
                 }
                 is Format.Epub -> {
-                    EpubFile(format.file.uri.toFile()).use { epub ->
+                    EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
                         val entry = epub.getImagesFromPages()
                             .firstOrNull()
                             ?.let { epub.getEntry(it) }

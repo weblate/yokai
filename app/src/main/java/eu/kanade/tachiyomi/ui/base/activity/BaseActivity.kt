@@ -12,7 +12,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.viewbinding.ViewBinding
-import dev.yokai.domain.AppState
+import dev.yokai.domain.SplashState
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.main.SearchActivity
@@ -30,7 +30,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     val isBindingInitialized get() = this::binding.isInitialized
 
     private var updatedTheme: Resources.Theme? = null
-    internal val appState: AppState by injectLazy()
+    internal val splashState: SplashState by injectLazy()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setLocaleByAppCompat()
@@ -41,12 +41,12 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     }
 
     fun maybeInstallSplashScreen(savedInstanceState: Bundle?): SplashScreen? {
-        if (appState.isSplashShown || savedInstanceState != null) {
+        if (splashState.shown || savedInstanceState != null) {
             setTheme(R.style.Theme_Tachiyomi)
-            appState.ready = true
+            splashState.ready = true
             return null
         } else {
-            appState.isSplashShown = true
+            splashState.shown = true
         }
 
         return installSplashScreen()
@@ -56,7 +56,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         val startTime = System.currentTimeMillis()
         this.setKeepOnScreenCondition {
             val elapsed = System.currentTimeMillis() - startTime
-            elapsed <= SPLASH_MIN_DURATION || (!appState.ready && elapsed <= SPLASH_MAX_DURATION)
+            elapsed <= SPLASH_MIN_DURATION || (!splashState.ready && elapsed <= SPLASH_MAX_DURATION)
         }
         this.setSplashScreenExitAnimation()
     }

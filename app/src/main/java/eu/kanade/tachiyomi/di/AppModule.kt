@@ -2,7 +2,7 @@ package eu.kanade.tachiyomi.di
 
 import android.app.Application
 import androidx.core.content.ContextCompat
-import dev.yokai.domain.AppState
+import dev.yokai.domain.SplashState
 import dev.yokai.domain.extension.TrustExtension
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
@@ -65,7 +65,7 @@ class AppModule(val app: Application) : InjektModule {
         addSingletonFactory { AndroidStorageFolderProvider(app) }
         addSingletonFactory { StorageManager(app, get()) }
 
-        addSingletonFactory { AppState() }
+        addSingletonFactory { SplashState() }
 
         // Asynchronously init expensive components for a faster cold start
         ContextCompat.getMainExecutor(app).execute {

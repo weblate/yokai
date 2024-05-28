@@ -1129,7 +1129,7 @@ open class LibraryController(
                     emptyList()
                 },
             )
-            (activity as? MainActivity)?.appState?.ready = true
+            (activity as? MainActivity)?.splashState?.ready = true
         }
         adapter.setItems(mangaMap)
         if (binding.libraryGridRecycler.recycler.translationX != 0f) {

@@ -43,8 +43,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
-import androidx.core.splashscreen.SplashScreen
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -54,8 +52,6 @@ import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -74,7 +70,6 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Ints.max
 import dev.yokai.domain.base.BasePreferences
-import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import dev.yokai.presentation.onboarding.OnboardingController
 import eu.kanade.tachiyomi.BuildConfig
@@ -1104,7 +1099,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             else -> return false
         }
 
-        appState.ready = true
+        splashState.ready = true
         return true
     }
 

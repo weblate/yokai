@@ -1,6 +1,6 @@
 package dev.yokai.domain
 
-class AppState {
-    var isSplashShown = false
+class SplashState {
+    var shown = false
     var ready = false
 }

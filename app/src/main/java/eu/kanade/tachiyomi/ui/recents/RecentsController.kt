@@ -171,7 +171,7 @@ class RecentsController(bundle: Bundle? = null) :
         binding.recycler.recycledViewPool.setMaxRecycledViews(0, 0)
         binding.recycler.addItemDecoration(RecentMangaDivider(view.context))
         binding.recycler.onAnimationsFinished {
-            (activity as? MainActivity)?.appState?.ready = true
+            (activity as? MainActivity)?.splashState?.ready = true
         }
         adapter.isSwipeEnabled = true
         adapter.itemTouchHelperCallback.setSwipeFlags(

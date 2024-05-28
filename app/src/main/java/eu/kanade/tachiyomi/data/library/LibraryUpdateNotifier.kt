@@ -114,7 +114,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                     ),
                 )
                 setContentIntent(pendingIntent)
-                setSmallIcon(R.drawable.ic_tachij2k_notification)
+                setSmallIcon(R.drawable.ic_yokai)
                 addAction(
                     R.drawable.ic_file_open_24dp,
                     context.getString(R.string.open_log),
@@ -149,7 +149,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                     ),
                 )
                 setContentIntent(NotificationHandler.openUrl(context, HELP_SKIPPED_URL))
-                setSmallIcon(R.drawable.ic_tachij2k_notification)
+                setSmallIcon(R.drawable.ic_yokai)
                 addAction(
                     R.drawable.ic_file_open_24dp,
                     context.getString(R.string.open_log),
@@ -186,7 +186,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                     notifications.add(
                         Pair(
                             context.notification(Notifications.CHANNEL_NEW_CHAPTERS) {
-                                setSmallIcon(R.drawable.ic_tachij2k_notification)
+                                setSmallIcon(R.drawable.ic_yokai)
                                 try {
                                     val request = ImageRequest.Builder(context).data(manga)
                                         .networkCachePolicy(CachePolicy.DISABLED)
@@ -260,7 +260,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                 notify(
                     Notifications.ID_NEW_CHAPTERS,
                     context.notification(Notifications.CHANNEL_NEW_CHAPTERS) {
-                        setSmallIcon(R.drawable.ic_tachij2k_notification)
+                        setSmallIcon(R.drawable.ic_yokai)
                         setLargeIcon(notificationBitmap)
                         setContentTitle(context.getString(R.string.new_chapters_found))
                         color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)

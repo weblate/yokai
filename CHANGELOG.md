@@ -10,6 +10,9 @@
 ## Additions
 - (Experimental) Option to append chapter ID to download filename to avoid conflict
 
+## Changes
+- Changed notification icon to use Yōkai's logo instead
+
 ## Fixes
 - Fixed not being able to open different chapter if another chapter is opened
 

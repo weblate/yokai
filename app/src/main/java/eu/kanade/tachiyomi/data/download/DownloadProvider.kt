@@ -232,7 +232,7 @@ class DownloadProvider(private val context: Context) {
                 "${chapter.scanlator}_${chapter.name}"
             } else {
                 (if (includeBlank) "_" else "") + chapter.name
-            } + (if (includeId) chapter.id else ""),
+            } + (if (includeId) "_${chapter.id}" else ""),
         )
     }
 

@@ -38,8 +38,7 @@ import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
-import java.io.InputStream
-import java.nio.ByteBuffer
+import okio.BufferedSource
 
 /**
  * A wrapper view for showing page image.
@@ -99,13 +98,13 @@ open class ReaderPageImageView @JvmOverloads constructor(
         }
     }
 
-    fun setImage(inputStream: InputStream, isAnimated: Boolean, config: Config) {
+    fun setImage(source: BufferedSource, isAnimated: Boolean, config: Config) {
         if (isAnimated) {
             prepareAnimatedImageView()
-            setAnimatedImage(inputStream, config)
+            setAnimatedImage(source, config)
         } else {
             prepareNonAnimatedImageView()
-            setNonAnimatedImage(inputStream, config)
+            setNonAnimatedImage(source, config)
         }
     }
 
@@ -225,7 +224,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
             },
         )
 
-        val useCoilPipeline = isWebtoon && data is InputStream && !ImageUtil.isMaxTextureSizeExceeded(data)
+        val useCoilPipeline = isWebtoon && data is BufferedSource && !ImageUtil.isMaxTextureSizeExceeded(data)
 
         if (isWebtoon && useCoilPipeline) {
             val request = ImageRequest.Builder(context)
@@ -252,7 +251,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         } else {
             when (data) {
                 is BitmapDrawable -> setImage(ImageSource.bitmap(data.bitmap))
-                is InputStream -> setImage(ImageSource.inputStream(data))
+                is BufferedSource -> setImage(ImageSource.inputStream(data.inputStream()))
                 else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
             }
             isVisible = true
@@ -299,18 +298,13 @@ open class ReaderPageImageView @JvmOverloads constructor(
     }
 
     private fun setAnimatedImage(
-        image: Any,
+        data: Any,
         config: Config,
     ) = (pageView as? AppCompatImageView)?.apply {
         if (this is PhotoView) {
             setZoomTransitionDuration(config.zoomDuration.getSystemScaledDuration())
         }
 
-        val data = when (image) {
-            is Drawable -> image
-            is InputStream -> ByteBuffer.wrap(image.readBytes())
-            else -> throw IllegalArgumentException("Not implemented for class ${image::class.simpleName}")
-        }
         val request = ImageRequest.Builder(context)
             .data(data)
             .memoryCachePolicy(CachePolicy.DISABLED)

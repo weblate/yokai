@@ -32,8 +32,8 @@ import coil3.request.allowRgb565
 import coil3.request.crossfade
 import coil3.util.DebugLogger
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
+import eu.kanade.tachiyomi.data.coil.BufferedSourceFetcher
 import eu.kanade.tachiyomi.data.coil.CoilDiskCache
-import eu.kanade.tachiyomi.data.coil.InputStreamFetcher
 import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
 import eu.kanade.tachiyomi.data.coil.MangaCoverKeyer
 import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
@@ -199,7 +199,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
                 add(TachiyomiImageDecoder.Factory())
                 add(MangaCoverFetcher.Factory(callFactoryLazy, diskCacheLazy))
                 add(MangaCoverKeyer())
-                add(InputStreamFetcher.Factory())
+                add(BufferedSourceFetcher.Factory())
             }
             diskCache(diskCacheLazy::value)
             memoryCache { MemoryCache.Builder().maxSizePercent(this@App, 0.40).build() }

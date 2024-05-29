@@ -806,7 +806,6 @@ class MangaDetailsPresenter(
                 genre,
                 if (status != this.manga.originalStatus) status else null,
             )
-            // TODO: Use ComicInfo
             customMangaManager.saveMangaInfo(manga)
         }
         if (uri != null) {

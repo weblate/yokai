@@ -6,6 +6,61 @@ import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 
+const val COMIC_INFO_FILE = "ComicInfo.xml"
+
+fun SManga.toComicInfo() = ComicInfo(
+    title = null,
+    series = ComicInfo.Series(title),
+    number = null,
+    summary = description?.let { ComicInfo.Summary(it) },
+    writer = author?.let { ComicInfo.Writer(it) },
+    penciller = artist?.let { ComicInfo.Penciller(it) },
+    inker = null,
+    colorist = null,
+    letterer = null,
+    coverArtist = null,
+    translator = null,
+    genre = genre?.let { ComicInfo.Genre(it) },
+    tags = null,
+    web = null,
+    publishingStatus = ComicInfo.PublishingStatusTachiyomi(
+        ComicInfoPublishingStatus.toComicInfoValue(status.toLong())
+    ),
+    categories = null,
+    source = null,
+)
+
+fun SManga.copyFromComicInfo(comicInfo: ComicInfo) {
+    comicInfo.series?.let { title = it.value }
+    comicInfo.writer?.let { author = it.value }
+    comicInfo.summary?.let { description = it.value }
+
+    listOfNotNull(
+        comicInfo.genre?.value,
+        comicInfo.tags?.value,
+        comicInfo.categories?.value,
+    )
+        .distinct()
+        .joinToString(", ") { it.trim() }
+        .takeIf { it.isNotEmpty() }
+        ?.let { genre = it }
+
+    listOfNotNull(
+        comicInfo.penciller?.value,
+        comicInfo.inker?.value,
+        comicInfo.colorist?.value,
+        comicInfo.letterer?.value,
+        comicInfo.coverArtist?.value,
+    )
+        .flatMap { it.split(", ") }
+        .distinct()
+        .joinToString(", ") { it.trim() }
+        .takeIf { it.isNotEmpty() }
+        ?.let { artist = it }
+
+    status = ComicInfoPublishingStatus.toSMangaValue(comicInfo.publishingStatus?.value)
+}
+
 // REF: https://anansi-project.github.io/docs/comicinfo/schemas/v2.0
 @Serializable
 @XmlSerialName("ComicInfo", "", "")

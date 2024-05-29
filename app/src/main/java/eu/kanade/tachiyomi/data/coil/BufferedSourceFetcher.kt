@@ -7,17 +7,16 @@ import coil3.fetch.FetchResult
 import coil3.fetch.Fetcher
 import coil3.fetch.SourceFetchResult
 import coil3.request.Options
-import okio.Buffer
-import java.io.InputStream
+import okio.BufferedSource
 
-class InputStreamFetcher(
-    private val stream: InputStream,
+class BufferedSourceFetcher(
+    private val data: BufferedSource,
     private val options: Options,
 ) : Fetcher {
     override suspend fun fetch(): FetchResult {
         return SourceFetchResult(
             source = ImageSource(
-                source = stream.use { Buffer().readFrom(it) },
+                source = data,
                 fileSystem = options.fileSystem,
             ),
             mimeType = null,
@@ -25,9 +24,9 @@ class InputStreamFetcher(
         )
     }
 
-    class Factory : Fetcher.Factory<InputStream> {
-        override fun create(data: InputStream, options: Options, imageLoader: ImageLoader): Fetcher {
-            return InputStreamFetcher(data, options)
+    class Factory : Fetcher.Factory<BufferedSource> {
+        override fun create(data: BufferedSource, options: Options, imageLoader: ImageLoader): Fetcher {
+            return BufferedSourceFetcher(data, options)
         }
     }
 }

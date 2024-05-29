@@ -21,3 +21,4 @@
 
 ## Other
 - Wrap SplashState to singleton factory, might fix issue where splash screen shown multiple times
+- Use Okio instead of `java.io`, should improve reader stability (especially long strip)

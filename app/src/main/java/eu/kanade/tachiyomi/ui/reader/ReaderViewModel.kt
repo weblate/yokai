@@ -781,7 +781,7 @@ class ReaderViewModel(
         val imageBytes2 = stream2().readBytes()
         val imageBitmap2 = BitmapFactory.decodeByteArray(imageBytes2, 0, imageBytes2.size)
 
-        val stream = ImageUtil.mergeBitmaps(imageBitmap, imageBitmap2, isLTR, bg)
+        val stream = ImageUtil.mergeBitmaps(imageBitmap, imageBitmap2, isLTR, bg).inputStream()
 
         val chapter = page1.chapter.chapter
         val context = Injekt.get<Application>()

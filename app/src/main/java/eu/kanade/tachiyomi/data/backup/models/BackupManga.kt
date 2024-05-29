@@ -1,5 +1,7 @@
 package eu.kanade.tachiyomi.data.backup.models
 
+import dev.yokai.core.metadata.ComicInfo
+import dev.yokai.core.metadata.ComicInfoPublishingStatus
 import eu.kanade.tachiyomi.data.database.models.ChapterImpl
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
@@ -83,7 +85,7 @@ data class BackupManga(
         }
     }
 
-    fun getCustomMangaInfo(): CustomMangaManager.MangaJson? {
+    fun getCustomMangaInfo(): CustomMangaManager.ComicList.ComicInfoYokai? {
         if (customTitle != null ||
             customArtist != null ||
             customAuthor != null ||
@@ -91,14 +93,30 @@ data class BackupManga(
             customGenre != null ||
             customStatus != 0
         ) {
-            return CustomMangaManager.MangaJson(
+            return CustomMangaManager.ComicList.ComicInfoYokai(
                 id = 0L,
-                title = customTitle,
-                author = customAuthor,
-                artist = customArtist,
-                description = customDescription,
-                genre = customGenre?.toTypedArray(),
-                status = customStatus.takeUnless { it == 0 },
+                value = ComicInfo(
+                    title = null,
+                    series = customTitle?.let { ComicInfo.Series(it) },
+                    number = null,
+                    writer = customAuthor?.let { ComicInfo.Writer(it) },
+                    penciller = customArtist?.let { ComicInfo.Penciller(it) },
+                    inker = null,
+                    colorist = null,
+                    letterer = null,
+                    coverArtist = null,
+                    translator = null,
+                    summary = customDescription?.let { ComicInfo.Summary(it) },
+                    genre = customGenre?.joinToString(", ")?.let { ComicInfo.Genre(it) },
+                    tags = null,
+                    web = null,
+                    publishingStatus = customStatus.takeUnless { it == 0 }?.let { ComicInfo.PublishingStatusTachiyomi(
+                        ComicInfoPublishingStatus.toComicInfoValue(status.toLong())
+                    ) },
+                    categories = null,
+                    source = null,
+                    language = null,
+                )
             )
         }
         return null

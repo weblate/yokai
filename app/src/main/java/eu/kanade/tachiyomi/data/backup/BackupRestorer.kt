@@ -198,7 +198,7 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
         tracks: List<Track>,
         backupCategories: List<BackupCategory>,
         filteredScanlators: List<String>,
-        customManga: CustomMangaManager.MangaJson?,
+        customManga: CustomMangaManager.ComicList.ComicInfoYokai?,
     ) {
         val fetchedManga = manga.also {
             it.initialized = it.description != null
@@ -218,7 +218,7 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
         tracks: List<Track>,
         backupCategories: List<BackupCategory>,
         filteredScanlators: List<String>,
-        customManga: CustomMangaManager.MangaJson?,
+        customManga: CustomMangaManager.ComicList.ComicInfoYokai?,
     ) {
         restoreChapters(backupManga, chapters)
         restoreExtras(backupManga, categories, history, tracks, backupCategories, filteredScanlators, customManga)
@@ -258,7 +258,7 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
         tracks: List<Track>,
         backupCategories: List<BackupCategory>,
         filteredScanlators: List<String>,
-        customManga: CustomMangaManager.MangaJson?,
+        customManga: CustomMangaManager.ComicList.ComicInfoYokai?,
     ) {
         restoreCategories(manga, categories, backupCategories)
         restoreHistoryForManga(history)

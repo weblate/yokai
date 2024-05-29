@@ -102,18 +102,18 @@ class CustomMangaManager(val context: Context) {
         saveCustomInfo { jsonFile.delete() }
     }
 
-    fun saveMangaInfo(manga: MangaJson) {
+    fun saveMangaInfo(manga: ComicList.ComicInfoYokai) {
         val mangaId = manga.id ?: return
-        if (manga.title == null &&
-            manga.author == null &&
-            manga.artist == null &&
-            manga.description == null &&
-            manga.genre == null &&
-            (manga.status ?: -1) == -1
+        if (manga.value.series == null &&
+            manga.value.writer == null &&
+            manga.value.penciller == null &&
+            manga.value.summary == null &&
+            manga.value.genre == null &&
+            (manga.value.publishingStatus?.value ?: "Invalid") == "Invalid"
         ) {
             customMangaMap.remove(mangaId)
         } else {
-            customMangaMap[mangaId] = manga.toManga()
+            customMangaMap[mangaId] = mangaFromComicInfoObject(mangaId, manga.value)
         }
         saveCustomInfo()
     }
@@ -176,7 +176,7 @@ class CustomMangaManager(val context: Context) {
         @XmlSerialName("ComicInfoYokai", "http://www.w3.org/2001/XMLSchema", "yk")
         data class ComicInfoYokai(
             @XmlValue(true) val value: ComicInfo,
-            val id: Long? = null,
+            var id: Long? = null,
         )
     }
 

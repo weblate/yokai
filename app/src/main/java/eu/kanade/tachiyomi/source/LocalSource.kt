@@ -103,14 +103,19 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         query: String,
         filters: FilterList,
     ): MangasPage {
-        val time =
-            if (filters === latestFilters) System.currentTimeMillis() - LATEST_THRESHOLD else 0L
+        val time = if (filters === latestFilters) {
+            System.currentTimeMillis() - LATEST_THRESHOLD
+        } else {
+            0L
+        }
 
         var mangaDirs = getBaseDirectory().listFiles().orEmpty()
             .filter { it.isDirectory || !it.name.orEmpty().startsWith('.') }
             .distinctBy { it.name }
             .filter {
-                if (time == 0L)
+                if (time == 0L && query.isBlank())
+                    true
+                else if (time == 0L)
                     it.name.orEmpty().contains(query, ignoreCase = true)
                 else
                     it.lastModified() >= time

@@ -23,8 +23,10 @@ import eu.kanade.tachiyomi.util.system.extension
 import eu.kanade.tachiyomi.util.system.nameWithoutExtension
 import eu.kanade.tachiyomi.util.system.openReadOnlyChannel
 import eu.kanade.tachiyomi.util.system.toZipFile
+import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.writeText
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -111,7 +113,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         page: Int,
         query: String,
         filters: FilterList,
-    ): MangasPage {
+    ): MangasPage = withIOContext {
         val time = if (filters === latestFilters) {
             System.currentTimeMillis() - LATEST_THRESHOLD
         } else {
@@ -149,18 +151,18 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         }
 
         val mangas = mangaDirs.map { mangaDir ->
-            SManga.create().apply {
-                title = mangaDir.name.orEmpty()
-                url = mangaDir.name.orEmpty()
+            async {
+                SManga.create().apply {
+                    title = mangaDir.name.orEmpty()
+                    url = mangaDir.name.orEmpty()
 
-                // Try to find the cover
-                val cover = getCoverFile(mangaDir)
-                if (cover != null && cover.exists()) {
-                    thumbnail_url = cover.uri.toString()
-                }
+                    // Try to find the cover
+                    val cover = getCoverFile(mangaDir)
+                    if (cover != null && cover.exists()) {
+                        thumbnail_url = cover.uri.toString()
+                    }
 
-                val manga = this
-                runBlocking {
+                    val manga = this
                     val chapters = getChapterList(manga)
                     if (chapters.isNotEmpty()) {
                         val chapter = chapters.last()
@@ -183,14 +185,14 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     }
                 }
             }
-        }
+        }.awaitAll()
 
-        return MangasPage(mangas.toList(), false)
+        MangasPage(mangas.toList(), false)
     }
 
     override suspend fun getLatestUpdates(page: Int) = getSearchManga(page, "", latestFilters)
 
-    override suspend fun getMangaDetails(manga: SManga): SManga {
+    override suspend fun getMangaDetails(manga: SManga): SManga = withIOContext {
         try {
             val localMangaDir = getBaseDirectory().findFile(manga.url) ?: throw Exception("${manga.url} is not a valid directory")
             val localMangaFiles = localMangaDir.listFiles().orEmpty().filter { !it.isDirectory }
@@ -198,7 +200,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             val legacyJsonFile = localMangaFiles.firstOrNull { it.extension.orEmpty().equals("json", true) }
 
             if (comicInfoFile != null)
-                return manga.copy().apply { setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this) }
+                return@withIOContext manga.copy().apply { setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this) }
 
             // TODO: Remove after awhile
             if (legacyJsonFile != null) {
@@ -206,13 +208,13 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 val comicInfo = rt.toComicInfo()
                 localMangaDir.createFile(COMIC_INFO_FILE)
                     ?.writeText(xml.encodeToString(ComicInfo.serializer(), comicInfo)) { legacyJsonFile.delete() }
-                return rt
+                return@withIOContext rt
             }
         } catch (e: Exception) {
             Timber.e(e)
         }
 
-        return manga
+        return@withIOContext manga
     }
 
     private fun setMangaDetailsFromComicInfoFile(stream: InputStream, manga: SManga) {
@@ -273,7 +275,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         }
     }
 
-    override suspend fun getChapterList(manga: SManga): List<SChapter> {
+    override suspend fun getChapterList(manga: SManga): List<SChapter> = withIOContext {
         val chapters = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
             .filter { it.isDirectory || isSupportedFile(it.extension.orEmpty()) }
             .map { chapterFile ->
@@ -302,7 +304,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
             .toList()
 
-        return chapters
+        chapters
     }
 
     override suspend fun getPageList(chapter: SChapter) = throw Exception("Unused")

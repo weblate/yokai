@@ -712,7 +712,7 @@ class MangaDetailsPresenter(
     fun confirmDeletion() {
         launchIO {
             coverCache.deleteFromCache(manga)
-            customMangaManager.saveMangaInfo(CustomMangaManager.MangaJson(manga.id!!))
+            customMangaManager.saveMangaInfo(CustomMangaManager.ComicList.ComicInfoYokai.create(manga.id!!))
             downloadManager.deleteManga(manga, source)
             asyncUpdateMangaAndChapters(true)
         }
@@ -797,8 +797,8 @@ class MangaDetailsPresenter(
                 manga.viewer_flags = -1
                 db.updateViewerFlags(manga).executeAsBlocking()
             }
-            val manga = CustomMangaManager.MangaJson(
-                manga.id!!,
+            val manga = CustomMangaManager.ComicList.ComicInfoYokai.create(
+                id = manga.id!!,
                 title?.trimOrNull(),
                 author?.trimOrNull(),
                 artist?.trimOrNull(),

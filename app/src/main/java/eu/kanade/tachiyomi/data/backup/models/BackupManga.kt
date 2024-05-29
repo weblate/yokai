@@ -93,30 +93,14 @@ data class BackupManga(
             customGenre != null ||
             customStatus != 0
         ) {
-            return CustomMangaManager.ComicList.ComicInfoYokai(
+            return CustomMangaManager.ComicList.ComicInfoYokai.create(
                 id = 0L,
-                value = ComicInfo(
-                    title = null,
-                    series = customTitle?.let { ComicInfo.Series(it) },
-                    number = null,
-                    writer = customAuthor?.let { ComicInfo.Writer(it) },
-                    penciller = customArtist?.let { ComicInfo.Penciller(it) },
-                    inker = null,
-                    colorist = null,
-                    letterer = null,
-                    coverArtist = null,
-                    translator = null,
-                    summary = customDescription?.let { ComicInfo.Summary(it) },
-                    genre = customGenre?.joinToString(", ")?.let { ComicInfo.Genre(it) },
-                    tags = null,
-                    web = null,
-                    publishingStatus = customStatus.takeUnless { it == 0 }?.let { ComicInfo.PublishingStatusTachiyomi(
-                        ComicInfoPublishingStatus.toComicInfoValue(status.toLong())
-                    ) },
-                    categories = null,
-                    source = null,
-                    language = null,
-                )
+                title = customTitle,
+                author = customAuthor,
+                artist = customArtist,
+                description = customDescription,
+                genre = customGenre?.toTypedArray(),
+                status = customStatus,
             )
         }
         return null

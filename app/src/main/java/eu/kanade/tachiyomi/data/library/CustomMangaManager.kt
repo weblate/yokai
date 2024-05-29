@@ -4,6 +4,7 @@ import android.content.Context
 import com.hippo.unifile.UniFile
 import dev.yokai.core.metadata.COMIC_INFO_EDITS_FILE
 import dev.yokai.core.metadata.ComicInfo
+import dev.yokai.core.metadata.ComicInfoPublishingStatus
 import dev.yokai.core.metadata.copyFromComicInfo
 import dev.yokai.core.metadata.toComicInfo
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -177,7 +178,47 @@ class CustomMangaManager(val context: Context) {
         data class ComicInfoYokai(
             @XmlValue(true) val value: ComicInfo,
             var id: Long? = null,
-        )
+        ) {
+            companion object {
+                fun create(
+                    id: Long? = null,
+                    title: String? = null,
+                    author: String? = null,
+                    artist: String? = null,
+                    description: String? = null,
+                    genre: Array<String>? = null,
+                    status: Int? = null,
+                ): ComicInfoYokai {
+                    return ComicInfoYokai(
+                        id = id,
+                        value = ComicInfo(
+                            title = null,
+                            series = title?.let { ComicInfo.Series(it) },
+                            number = null,
+                            writer = author?.let { ComicInfo.Writer(it) },
+                            penciller = artist?.let { ComicInfo.Penciller(it) },
+                            inker = null,
+                            colorist = null,
+                            letterer = null,
+                            coverArtist = null,
+                            translator = null,
+                            summary = description?.let { ComicInfo.Summary(it) },
+                            genre = genre?.joinToString(", ")?.let { ComicInfo.Genre(it) },
+                            tags = null,
+                            web = null,
+                            publishingStatus = status.takeUnless { it == 0 }?.let {
+                                ComicInfo.PublishingStatusTachiyomi(
+                                    ComicInfoPublishingStatus.toComicInfoValue(it.toLong())
+                                )
+                            },
+                            categories = null,
+                            source = null,
+                            language = null,
+                        )
+                    )
+                }
+            }
+        }
     }
 
     private fun mangaFromComicInfoObject(id: Long, comicInfo: ComicInfo) = MangaImpl().apply {

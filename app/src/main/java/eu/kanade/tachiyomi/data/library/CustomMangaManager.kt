@@ -11,7 +11,6 @@ import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.util.system.writeText
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import nl.adaptivity.xmlutil.AndroidXmlReader
@@ -35,18 +34,6 @@ class CustomMangaManager(val context: Context) {
 
     companion object {
         const val EDIT_JSON_FILE = "edits.json"
-
-        fun Manga.toJson(): MangaJson {
-            return MangaJson(
-                id!!,
-                title,
-                author,
-                artist,
-                description,
-                genre?.split(", ")?.toTypedArray(),
-                status.takeUnless { it == -1 },
-            )
-        }
 
         fun Manga.toComicInfo(): ComicList.ComicInfoYokai {
             return ComicList.ComicInfoYokai(

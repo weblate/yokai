@@ -6,6 +6,7 @@ import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 
+const val COMIC_INFO_EDITS_FILE = "ComicInfoEdits.xml"
 const val COMIC_INFO_FILE = "ComicInfo.xml"
 
 fun SManga.toComicInfo(lang: String? = null) = ComicInfo(
@@ -99,7 +100,7 @@ data class ComicInfo(
 
     @Serializable
     @XmlSerialName("Series", "", "")
-    data class Series(val value: String = "")
+    data class Series(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Number", "", "")
@@ -107,65 +108,65 @@ data class ComicInfo(
 
     @Serializable
     @XmlSerialName("Summary", "", "")
-    data class Summary(val value: String = "")
+    data class Summary(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Writer", "", "")
-    data class Writer(val value: String = "")
+    data class Writer(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Penciller", "", "")
-    data class Penciller(val value: String = "")
+    data class Penciller(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Inker", "", "")
-    data class Inker(val value: String = "")
+    data class Inker(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Colorist", "", "")
-    data class Colorist(val value: String = "")
+    data class Colorist(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Letterer", "", "")
-    data class Letterer(val value: String = "")
+    data class Letterer(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("CoverArtist", "", "")
-    data class CoverArtist(val value: String = "")
+    data class CoverArtist(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Translator", "", "")
-    data class Translator(val value: String = "")
+    data class Translator(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Genre", "", "")
-    data class Genre(val value: String = "")
+    data class Genre(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Tags", "", "")
-    data class Tags(val value: String = "")
+    data class Tags(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Web", "", "")
-    data class Web(val value: String = "")
+    data class Web(@XmlValue(true) val value: String = "")
 
     // Tachi Note: The spec doesn't have a good field for this
     // REF: https://github.com/anansi-project/comicinfo/issues/5
     @Serializable
     @XmlSerialName("PublishingStatusTachiyomi", "http://www.w3.org/2001/XMLSchema", "ty")
-    data class PublishingStatusTachiyomi(val value: String = "")
+    data class PublishingStatusTachiyomi(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("Categories", "http://www.w3.org/2001/XMLSchema", "ty")
-    data class CategoriesTachiyomi(val value: String = "")
+    data class CategoriesTachiyomi(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("SourceMihon", "http://www.w3.org/2001/XMLSchema", "mh")
-    data class SourceMihon(val value: String = "")
+    data class SourceMihon(@XmlValue(true) val value: String = "")
 
     @Serializable
     @XmlSerialName("LanguageJ2K", "http://www.w3.org/2001/XMLSchema", "j2k")
-    data class LanguageJ2K(val value: String = "")
+    data class LanguageJ2K(@XmlValue(true) val value: String = "")
 }
 
 enum class ComicInfoPublishingStatus(

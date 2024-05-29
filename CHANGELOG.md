@@ -14,7 +14,7 @@
 - Changed notification icon to use Yōkai's logo instead
 
 ## Fixes
-- Fixed not being able to open different chapter if another chapter is opened
+- Fixed not being able to open different chapter when a chapter is already opened
 - Fixed not being able to read chapters from local source
 - Fixed local source can't detect archives
 

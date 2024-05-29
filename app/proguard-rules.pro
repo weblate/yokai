@@ -89,6 +89,9 @@
 -keepclassmembers class kotlinx.serialization.** {
     <methods>;
 }
+
+# XmlUtil
+-keep public enum nl.adaptivity.xmlutil.EventType { *; }
 ##---------------End: proguard configuration for kotlinx.serialization  ----------
 
 # Apache Commons Compress

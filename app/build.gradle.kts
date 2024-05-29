@@ -213,9 +213,7 @@ dependencies {
     implementation(kotlin("reflect", version = kotlinx.versions.kotlin.get()))
 
     // JSON
-    implementation(kotlinx.serialization.json)
-    implementation(kotlinx.serialization.protobuf)
-    implementation(kotlinx.serialization.json.okio)
+    implementation(kotlinx.bundles.serialization)
 
     // JavaScript engine
     implementation(libs.quickjs.android)

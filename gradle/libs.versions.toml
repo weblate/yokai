@@ -25,6 +25,9 @@ directionalviewpager = { module = "com.github.tachiyomiorg:DirectionalViewPager"
 disklrucache = { module = "com.jakewharton:disklrucache", version = "2.0.2" }
 fastadapter-extensions-binding = { module = "com.mikepenz:fastadapter-extensions-binding", version.ref = "fast_adapter" }
 fastadapter = { module = "com.mikepenz:fastadapter", version.ref = "fast_adapter" }
+firebase = { module = "com.google.firebase:firebase-bom", version = "33.0.0" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "3.0.1" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
@@ -43,8 +46,12 @@ nucleus = { module = "info.android15.nucleus:nucleus", version.ref = "nucleus" }
 java-nat-sort = { module = "com.github.gpanther:java-nat-sort", version = "natural-comparator-1.1" }
 java-string-similarity = { module = "info.debatty:java-string-similarity", version = "2.0.0" }
 jsoup = { module = "org.jsoup:jsoup", version = "1.16.1" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
 junrar = { module = "com.github.junrar:junrar", version = "7.5.5" }
 loading-button = { module = "br.com.simplepass:loading-button-android", version = "2.2.0" }
+mockk = { module = "io.mockk:mockk", version = "1.13.11" }
 okio = { module = "com.squareup.okio:okio", version = "3.8.0" }
 okhttp-brotli = { module = "com.squareup.okhttp3:okhttp-brotli", version.ref = "okhttp" }
 okhttp-dnsoverhttps = { module = "com.squareup.okhttp3:okhttp-dnsoverhttps", version.ref = "okhttp" }
@@ -65,16 +72,9 @@ shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizu
 taptargetview = { module = "com.getkeepsafe.taptargetview:taptargetview", version = "1.13.3" }
 timber = { module = "com.jakewharton.timber:timber", version = "4.7.1" }
 oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version = "0.10.6" }
-firebase = { module = "com.google.firebase:firebase-bom", version = "33.0.0" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 unifile = { module = "com.github.tachiyomiorg:unifile", version = "7c257e1c64" }
 viewstatepageradapter = { module = "com.nightlynexus.viewstatepageradapter:viewstatepageradapter", version = "1.1.0" }
 viewtooltip = { module = "com.github.florent37:viewtooltip", version = "1.2.2" }
-junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
-junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
-junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
-mockk = { module = "io.mockk:mockk", version = "1.13.11" }
 
 [plugins]
 kotlinter = { id = "org.jmailen.kotlinter", version = "4.1.1" }

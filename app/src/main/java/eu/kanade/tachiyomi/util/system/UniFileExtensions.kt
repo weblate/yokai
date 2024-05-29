@@ -41,9 +41,10 @@ fun UniFile.toTempFile(context: Context): File {
     return tempFile
 }
 
-fun UniFile.writeText(string: String) {
+fun UniFile.writeText(string: String, onComplete: () -> Unit = {}) {
     this.openOutputStream().use {
         it.write(string.toByteArray())
+        onComplete()
     }
 }
 

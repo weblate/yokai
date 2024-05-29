@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.core.net.toFile
 import com.github.junrar.Archive
 import com.hippo.unifile.UniFile
+import dev.yokai.core.metadata.COMIC_INFO_FILE
+import dev.yokai.core.metadata.ComicInfo
+import dev.yokai.core.metadata.copyFromComicInfo
+import dev.yokai.core.metadata.toComicInfo
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.source.model.Filter
@@ -22,13 +26,15 @@ import eu.kanade.tachiyomi.util.system.toZipFile
 import eu.kanade.tachiyomi.util.system.writeText
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import nl.adaptivity.xmlutil.AndroidXmlReader
+import nl.adaptivity.xmlutil.serialization.XML
 import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.FileInputStream
 import java.io.InputStream
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSource {
@@ -44,11 +50,13 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             return langMap.getOrPut(manga.url) {
                 val localDetails = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
                     .filter { !it.isDirectory }
-                    .firstOrNull { it.extension.equals("json", ignoreCase = true) }
+                    .firstOrNull { it.name == COMIC_INFO_FILE }
 
                 return if (localDetails != null) {
-                    val obj = Json.decodeFromStream<MangaJson>(localDetails.openInputStream())
-                    obj.lang ?: "other"
+                    val obj = AndroidXmlReader(localDetails.openInputStream(), StandardCharsets.UTF_8.name()).use {
+                        XML.decodeFromReader<ComicInfo>(it)
+                    }
+                    obj.language?.value ?: "other"
                 } else {
                     "other"
                 }
@@ -88,6 +96,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     private val json: Json by injectLazy()
+    private val xml: XML by injectLazy()
 
     override val id = ID
     override val name = context.getString(R.string.local_source)
@@ -182,24 +191,49 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     override suspend fun getLatestUpdates(page: Int) = getSearchManga(page, "", latestFilters)
 
     override suspend fun getMangaDetails(manga: SManga): SManga {
-        val localDetails = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
-            .filter { !it.isDirectory }
-            .firstOrNull { it.extension.equals("json", ignoreCase = true) }
+        try {
+            val localMangaDir = getBaseDirectory().findFile(manga.url) ?: throw Exception("${manga.url} is not a valid directory")
+            val localMangaFiles = localMangaDir.listFiles().orEmpty().filter { !it.isDirectory }
+            val comicInfoFile = localMangaFiles.firstOrNull { it.name.orEmpty() == COMIC_INFO_FILE }
+            val legacyJsonFile = localMangaFiles.firstOrNull { it.extension.orEmpty().equals("json", true) }
 
-        return if (localDetails != null) {
-            val obj = json.decodeFromStream<MangaJson>(localDetails.openInputStream())
+            if (comicInfoFile != null)
+                return SManga.create().apply { setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this) }
 
-            obj.lang?.let { langMap[manga.url] = it }
-            SManga.create().apply {
-                title = obj.title ?: manga.title
-                author = obj.author ?: manga.author
-                artist = obj.artist ?: manga.artist
-                description = obj.description ?: manga.description
-                genre = obj.genre?.joinToString(", ") ?: manga.genre
-                status = obj.status ?: manga.status
+            // TODO: Remove after awhile
+            if (legacyJsonFile != null) {
+                val rt = SManga.create().apply { setMangaDetailsFromLegacyJsonFile(legacyJsonFile.openInputStream(), this) }
+                val comicInfo = rt.toComicInfo()
+                localMangaDir.createFile(COMIC_INFO_FILE)
+                    ?.writeText(xml.encodeToString(ComicInfo.serializer(), comicInfo)) { legacyJsonFile.delete() }
+                return rt
             }
-        } else {
-            manga
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+
+        return manga
+    }
+
+    private fun setMangaDetailsFromComicInfoFile(stream: InputStream, manga: SManga) {
+        val comicInfo = AndroidXmlReader(stream, StandardCharsets.UTF_8.name()).use {
+            xml.decodeFromReader<ComicInfo>(it)
+        }
+
+        manga.copyFromComicInfo(comicInfo)
+    }
+
+    private fun setMangaDetailsFromLegacyJsonFile(stream: InputStream, manga: SManga) {
+        val obj = json.decodeFromStream<MangaJson>(stream)
+
+        obj.lang?.let { langMap[manga.url] = it }
+        manga.apply {
+            title = obj.title ?: manga.title
+            author = obj.author ?: manga.author
+            artist = obj.artist ?: manga.artist
+            description = obj.description ?: manga.description
+            genre = obj.genre?.joinToString(", ") ?: manga.genre
+            status = obj.status ?: manga.status
         }
     }
 
@@ -208,14 +242,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         if (!directory.exists()) return
 
         lang?.let { langMap[manga.url] = it }
-        val json = Json { prettyPrint = true }
-        val existingFileName = directory.listFiles()?.find { it.extension.equals("json", ignoreCase = true) }?.name
-        val file = directory.createFile(existingFileName ?: "info.json")!!
-        file.writeText(json.encodeToString(manga.toJson(lang)))
-    }
-
-    private fun SManga.toJson(lang: String?): MangaJson {
-        return MangaJson(title, author, artist, description, genre?.split(", ")?.toTypedArray(), status, lang)
+        val file = directory.createFile(COMIC_INFO_FILE)!!
+        file.writeText(xml.encodeToString(ComicInfo.serializer(), manga.toComicInfo()))
     }
 
     @Serializable

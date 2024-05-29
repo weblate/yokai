@@ -28,6 +28,7 @@ fun SManga.toComicInfo() = ComicInfo(
     ),
     categories = null,
     source = null,
+    language = null,
 )
 
 fun SManga.copyFromComicInfo(comicInfo: ComicInfo) {
@@ -82,6 +83,7 @@ data class ComicInfo(
     val publishingStatus: PublishingStatusTachiyomi?,
     val categories: CategoriesTachiyomi?,
     val source: SourceMihon?,
+    val language: LanguageJ2K?,
 ) {
     @XmlElement(false)
     @XmlSerialName("xmlns:xsd", "", "")
@@ -160,6 +162,10 @@ data class ComicInfo(
     @Serializable
     @XmlSerialName("SourceMihon", "http://www.w3.org/2001/XMLSchema", "mh")
     data class SourceMihon(val value: String = "")
+
+    @Serializable
+    @XmlSerialName("LanguageJ2K", "http://www.w3.org/2001/XMLSchema", "j2k")
+    data class LanguageJ2K(val value: String = "")
 }
 
 enum class ComicInfoPublishingStatus(

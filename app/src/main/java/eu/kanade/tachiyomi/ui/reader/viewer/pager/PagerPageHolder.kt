@@ -48,6 +48,8 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.Buffer
+import okio.BufferedSource
 import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.InputStream
@@ -483,32 +485,29 @@ class PagerPageHolder(
             val streamFn = page.stream ?: return@launchIO
             val streamFn2 = extraPage?.stream
 
-            var openStream: InputStream? = null
+            var actualSource: BufferedSource? = null
             try {
-                val stream = streamFn().buffered(16)
+                val source1 = streamFn().buffered(16).use { Buffer().readFrom(it) }
+                val source2 = streamFn2?.invoke()?.buffered(16)?.use { Buffer().readFrom(it) }
 
-                val stream2 = streamFn2?.invoke()?.buffered(16)
-                openStream = this@PagerPageHolder.mergeOrSplitPages(stream, stream2)
-                val isAnimated = ImageUtil.isAnimatedAndSupported(stream) ||
-                    (stream2?.let { ImageUtil.isAnimatedAndSupported(stream2) } ?: false)
+                actualSource = this@PagerPageHolder.mergeOrSplitPages(source1, source2)
+                val isAnimated = ImageUtil.isAnimatedAndSupported(source1) ||
+                    (source2?.let { ImageUtil.isAnimatedAndSupported(source2) } ?: false)
                 withUIContext {
                     val bgColor = ReaderBackgroundColor.fromPreference(viewer.config.readerTheme)
                     if (!isAnimated) {
                         if (bgColor.isSmartColor) {
                             val bgType = getBGType(viewer.config.readerTheme, context)
                             if (page.bg != null && page.bgType == bgType) {
-                                setImage(openStream, false, imageConfig)
+                                setImage(actualSource, false, imageConfig)
                                 pageView?.background = page.bg
                             }
                             // if the user switches to automatic when pages are already cached, the bg needs to be loaded
                             else {
-                                val bytesArray = openStream.readBytes()
-                                val bytesStream = bytesArray.inputStream()
-                                setImage(bytesStream, false, imageConfig)
-                                closeStreams(bytesStream)
+                                setImage(actualSource, false, imageConfig)
 
                                 try {
-                                    pageView?.background = setBG(bytesArray)
+                                    pageView?.background = setBG(actualSource.inputStream())
                                 } catch (e: Exception) {
                                     Timber.e(e.localizedMessage)
                                     pageView?.background = ColorDrawable(Color.WHITE)
@@ -518,10 +517,10 @@ class PagerPageHolder(
                                 }
                             }
                         } else {
-                            setImage(openStream, false, imageConfig)
+                            setImage(actualSource, false, imageConfig)
                         }
                     } else {
-                        setImage(openStream, true, imageConfig)
+                        setImage(actualSource, true, imageConfig)
                         if (bgColor.isSmartColor && page.bg != null) {
                             pageView?.background = page.bg
                         }
@@ -529,7 +528,7 @@ class PagerPageHolder(
                 }
             } catch (_: Exception) {
                 try {
-                    openStream?.let { closeStreams(it) }
+                    actualSource?.let { closeSources(it) }
                 } catch (_: Exception) {
                 }
             }
@@ -557,15 +556,11 @@ class PagerPageHolder(
             hingeGapSize = viewer.config.hingeGapSize,
         )
 
-    private suspend fun setBG(bytesArray: ByteArray): Drawable {
+    private suspend fun setBG(stream: InputStream): Drawable {
         return withContext(Default) {
             val preferences by injectLazy<PreferencesHelper>()
             ImageUtil.autoSetBackground(
-                BitmapFactory.decodeByteArray(
-                    bytesArray,
-                    0,
-                    bytesArray.size,
-                ),
+                BitmapFactory.decodeStream(stream),
                 preferences.readerTheme().get() == 2,
                 context,
             )
@@ -631,26 +626,23 @@ class PagerPageHolder(
         return errorLayout!!.configureView(imageUrl)
     }
 
-    private suspend fun mergeOrSplitPages(imageStream: InputStream, imageStream2: InputStream?): InputStream {
-        if (ImageUtil.isAnimatedAndSupported(imageStream)) {
-            withContext(Dispatchers.IO) { imageStream.reset() }
+    private suspend fun mergeOrSplitPages(imageSource: BufferedSource, imageSource2: BufferedSource?): BufferedSource {
+        if (ImageUtil.isAnimatedAndSupported(imageSource)) {
             if (page.longPage == null) {
                 page.longPage = true
-                if (viewer.config.splitPages || imageStream2 != null) {
+                if (viewer.config.splitPages || imageSource2 != null) {
                     splitDoublePages()
                 }
             }
             scope.launchUI { progressBar.completeAndFadeOut() }
-            return imageStream
+            return imageSource
         }
         if (page.longPage == true && viewer.config.splitPages) {
-            val imageBytes = imageStream.readBytes()
             val imageBitmap = try {
-                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                BitmapFactory.decodeStream(imageSource.inputStream())
             } catch (e: Exception) {
-                closeStreams(imageStream)
                 Timber.e("Cannot split page ${e.message}")
-                return imageBytes.inputStream()
+                return imageSource
             }
             val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
             return ImageUtil.splitBitmap(imageBitmap, (page.firstHalf == false).xor(!isLTR)) {
@@ -663,22 +655,20 @@ class PagerPageHolder(
                 }
             }
         }
-        if (imageStream2 == null) {
+        if (imageSource2 == null) {
             if (viewer.config.splitPages && page.longPage == null) {
-                val imageBytes = imageStream.readBytes()
                 val imageBitmap = try {
-                    BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    BitmapFactory.decodeStream(imageSource.inputStream())
                 } catch (e: Exception) {
-                    closeStreams(imageStream)
                     page.longPage = true
                     splitDoublePages()
                     Timber.e("Cannot split page ${e.message}")
-                    return imageBytes.inputStream()
+                    return imageSource
                 }
                 val height = imageBitmap.height
                 val width = imageBitmap.width
                 return if (height < width) {
-                    closeStreams(imageStream)
+                    closeSources(imageSource)
                     page.longPage = true
                     splitDoublePages()
                     val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
@@ -693,35 +683,33 @@ class PagerPageHolder(
                     }
                 } else {
                     page.longPage = false
-                    imageBytes.inputStream()
+                    imageSource
                 }
             }
-            return supportHingeIfThere(imageStream)
+            return supportHingeIfThere(imageSource)
         }
-        if (page.fullPage == true) return supportHingeIfThere(imageStream)
-        val imageBytes = imageStream.readBytes()
+        if (page.fullPage == true) return supportHingeIfThere(imageSource)
         val imageBitmap = try {
-            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            BitmapFactory.decodeStream(imageSource.inputStream())
         } catch (e: Exception) {
-            closeStreams(imageStream, imageStream2)
+            closeSources(imageSource2)
             page.fullPage = true
             splitDoublePages()
             Timber.e("Cannot combine pages ${e.message}")
-            return supportHingeIfThere(imageBytes.inputStream())
+            return supportHingeIfThere(imageSource)
         }
         scope.launchUI { progressBar.setProgress(96) }
         val height = imageBitmap.height
         val width = imageBitmap.width
 
-        val imageBytes2 by lazy { imageStream2.readBytes() }
         val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
 
         val pages = page.chapter.pages
         if (height < width) {
             if (extraPage?.index == 1) {
-                setExtraPageBitmap(imageBytes2, isLTR)
+                setExtraPageBitmap(imageSource2.inputStream(), isLTR)
             }
-            closeStreams(imageStream, imageStream2)
+            closeSources(imageSource2)
             val oldValue = page.fullPage
             page.fullPage = true
             delayPageUpdate {
@@ -739,7 +727,7 @@ class PagerPageHolder(
                 }
                 extraPage = null
             }
-            return supportHingeIfThere(imageBytes.inputStream())
+            return supportHingeIfThere(imageSource)
         }
         val isNotEndPage: ReaderPage.() -> Boolean =
             { isEndPage != true || (page.endPageConfidence ?: 0) > (endPageConfidence ?: 0) }
@@ -750,13 +738,13 @@ class PagerPageHolder(
         if (page.index <= 2 && page.isEndPage == null && page.fullPage == null) {
             page.endPageConfidence = imageBitmap.isPagePadded(rightSide = !isLTR)
             if (extraPage?.index == 1 && extraPage?.isEndPage == null) {
-                earlyImageBitmap2 = setExtraPageBitmap(imageBytes2, isLTR)
+                earlyImageBitmap2 = setExtraPageBitmap(imageSource2.inputStream(), isLTR)
             }
             if (page.index == 1 && page.isEndPage == true && viewer.config.shiftDoublePage &&
                 (isFirstPageNotEnd || isThirdPageNotEnd)
             ) {
                 shiftDoublePages(false)
-                return supportHingeIfThere(imageBytes.inputStream())
+                return supportHingeIfThere(imageSource)
             } else if (page.isEndPage == true &&
                 when (page.index) {
                     // 3rd page shouldn't shift if the 1st page is a spread
@@ -770,43 +758,43 @@ class PagerPageHolder(
             ) {
                 shiftDoublePages(true)
                 extraPage = null
-                return supportHingeIfThere(imageBytes.inputStream())
+                return supportHingeIfThere(imageSource)
             }
         } else if (shouldShiftAnyway && (page.index == 0 || page.index == 2)) {
             // if for some reason the first page should be by itself but its not, fix that
             shiftDoublePages(true)
             extraPage = null
-            return supportHingeIfThere(imageBytes.inputStream())
+            return supportHingeIfThere(imageSource)
         } else if (shouldShiftAnyway && page.index == 1 &&
             viewer.config.shiftDoublePage && (isFirstPageNotEnd && isThirdPageNotEnd)
         ) {
             shiftDoublePages(false)
-            return supportHingeIfThere(imageBytes.inputStream())
+            return supportHingeIfThere(imageSource)
         }
 
         val imageBitmap2 = earlyImageBitmap2 ?: try {
-            BitmapFactory.decodeByteArray(imageBytes2, 0, imageBytes2.size)
+            BitmapFactory.decodeStream(imageSource2.inputStream())
         } catch (e: Exception) {
-            closeStreams(imageStream, imageStream2)
+            closeSources(imageSource2)
             extraPage?.fullPage = true
             page.isolatedPage = true
             splitDoublePages()
             Timber.e("Cannot combine pages ${e.message}")
-            return supportHingeIfThere(imageBytes.inputStream())
+            return supportHingeIfThere(imageSource)
         }
         scope.launchUI { progressBar.setProgress(97) }
         val height2 = imageBitmap2.height
         val width2 = imageBitmap2.width
 
         if (height2 < width2) {
-            closeStreams(imageStream, imageStream2)
+            closeSources(imageSource2)
             extraPage?.fullPage = true
             page.isolatedPage = true
             splitDoublePages()
-            return supportHingeIfThere(imageBytes.inputStream())
+            return supportHingeIfThere(imageSource)
         }
         val bg = ThemeUtil.readerBackgroundColor(viewer.config.readerTheme)
-        closeStreams(imageStream, imageStream2)
+        closeSources(imageSource2)
         extraPage?.let { extraPage ->
             val shouldSubShiftAnyway = !viewer.activity.manuallyShiftedPages &&
                 extraPage.isStartPage == true && extraPage.endPageConfidence == 0
@@ -820,16 +808,16 @@ class PagerPageHolder(
                     }
                     shiftDoublePages(page.index == 0 || pages?.get(0)?.fullPage == true)
                     this.extraPage = null
-                    return supportHingeIfThere(imageBytes.inputStream())
+                    return supportHingeIfThere(imageSource)
                 }
             } else if (shouldSubShiftAnyway && page.index == 1 && !viewer.config.shiftDoublePage) {
                 shiftDoublePages(true)
-                return supportHingeIfThere(imageBytes.inputStream())
+                return supportHingeIfThere(imageSource)
             }
         }
         // If page has been removed in another thread, don't show it
         if (extraPage == null) {
-            return supportHingeIfThere(imageBytes.inputStream())
+            return supportHingeIfThere(imageSource)
         }
         return ImageUtil.mergeBitmaps(imageBitmap, imageBitmap2, isLTR, bg, viewer.config.hingeGapSize, context) {
             scope.launchUI {
@@ -842,9 +830,9 @@ class PagerPageHolder(
         }
     }
 
-    private fun setExtraPageBitmap(imageBytes2: ByteArray, isLTR: Boolean): Bitmap? {
+    private fun setExtraPageBitmap(imageStream: InputStream, isLTR: Boolean): Bitmap? {
         val earlyImageBitmap2 = try {
-            BitmapFactory.decodeByteArray(imageBytes2, 0, imageBytes2.size)
+            BitmapFactory.decodeStream(imageStream)
         } catch (_: Exception) {
             return null
         }
@@ -855,19 +843,17 @@ class PagerPageHolder(
         return earlyImageBitmap2
     }
 
-    private suspend fun supportHingeIfThere(imageStream: InputStream): InputStream {
-        if (viewer.config.hingeGapSize > 0 && !ImageUtil.isAnimatedAndSupported(imageStream)) {
-            val imageBytes = imageStream.readBytes()
+    private suspend fun supportHingeIfThere(imageSource: BufferedSource): BufferedSource {
+        if (viewer.config.hingeGapSize > 0 && !ImageUtil.isAnimatedAndSupported(imageSource)) {
             val imageBitmap = try {
-                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                BitmapFactory.decodeStream(imageSource.inputStream())
             } catch (e: Exception) {
-                closeStreams(imageStream)
                 val wasNotFullPage = page.fullPage != true
                 page.fullPage = true
                 if (wasNotFullPage) {
                     splitDoublePages()
                 }
-                return imageBytes.inputStream()
+                return imageSource
             }
             val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
             val bg = ThemeUtil.readerBackgroundColor(viewer.config.readerTheme)
@@ -880,13 +866,13 @@ class PagerPageHolder(
                 context = context,
             )
         }
-        return imageStream
+        return imageSource
     }
 
-    private suspend fun closeStreams(stream1: InputStream?, stream2: InputStream? = null) {
+    private suspend fun closeSources(source1: BufferedSource?, source2: BufferedSource? = null) {
         withContext(Dispatchers.IO) {
-            stream1?.close()
-            stream2?.close()
+            source1?.close()
+            source2?.close()
         }
     }
 

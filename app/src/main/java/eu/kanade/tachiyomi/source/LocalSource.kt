@@ -220,6 +220,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             xml.decodeFromReader<ComicInfo>(it)
         }
 
+        comicInfo.language?.let { langMap[manga.url] = it.value }
         manga.copyFromComicInfo(comicInfo)
     }
 
@@ -243,7 +244,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
         lang?.let { langMap[manga.url] = it }
         val file = directory.createFile(COMIC_INFO_FILE)!!
-        file.writeText(xml.encodeToString(ComicInfo.serializer(), manga.toComicInfo()))
+        file.writeText(xml.encodeToString(ComicInfo.serializer(), manga.toComicInfo(lang)))
     }
 
     @Serializable

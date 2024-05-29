@@ -8,7 +8,7 @@ import nl.adaptivity.xmlutil.serialization.XmlValue
 
 const val COMIC_INFO_FILE = "ComicInfo.xml"
 
-fun SManga.toComicInfo() = ComicInfo(
+fun SManga.toComicInfo(lang: String? = null) = ComicInfo(
     title = null,
     series = ComicInfo.Series(title),
     number = null,
@@ -28,7 +28,7 @@ fun SManga.toComicInfo() = ComicInfo(
     ),
     categories = null,
     source = null,
-    language = null,
+    language = lang?.let { ComicInfo.LanguageJ2K(it) },
 )
 
 fun SManga.copyFromComicInfo(comicInfo: ComicInfo) {

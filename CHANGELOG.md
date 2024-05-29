@@ -12,6 +12,7 @@
 
 ## Changes
 - Changed notification icon to use Yōkai's logo instead
+- Yōkai is now ComicInfo compliant. [Click here to learn more](https://anansi-project.github.io/docs/comicinfo/intro)
 
 ## Fixes
 - Fixed not being able to open different chapter when a chapter is already opened

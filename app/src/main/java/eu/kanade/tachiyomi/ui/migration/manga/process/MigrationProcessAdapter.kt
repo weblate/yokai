@@ -9,7 +9,7 @@ import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
-import eu.kanade.tachiyomi.data.library.CustomMangaManager.Companion.toJson
+import eu.kanade.tachiyomi.data.library.CustomMangaManager.Companion.toComicInfo
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
@@ -229,7 +229,7 @@ class MigrationProcessAdapter(
                 }
                 customMangaManager.getManga(prevManga)?.let { customManga ->
                     customManga.id = manga.id!!
-                    customMangaManager.saveMangaInfo(customManga.toJson())
+                    customMangaManager.saveMangaInfo(customManga.toComicInfo())
                 }
             }
 

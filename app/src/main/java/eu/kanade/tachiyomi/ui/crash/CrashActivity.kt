@@ -4,11 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import dev.yokai.presentation.crash.CrashScreen
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import dev.yokai.presentation.onboarding.InfoScreen
+import dev.yokai.presentation.theme.Size
 import dev.yokai.presentation.theme.YokaiTheme
+import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.main.MainActivity
+import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.system.setThemeByPref
+import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
 
 class CrashActivity : AppCompatActivity() {
@@ -20,14 +37,42 @@ class CrashActivity : AppCompatActivity() {
 
         val exception = GlobalExceptionHandler.getThrowableFromIntent(intent)
         setContent {
+            val scope = rememberCoroutineScope()
+            val context = LocalContext.current
+
             YokaiTheme {
-                CrashScreen(
-                    exception = exception,
-                    onRestartClick = {
+                InfoScreen(
+                    icon = Icons.Outlined.BugReport,
+                    headingText = stringResource(R.string.crash_screen_title),
+                    subtitleText = stringResource(R.string.crash_screen_description, stringResource(id = R.string.app_name)),
+                    acceptText = stringResource(id = R.string.dump_crash_logs),
+                    onAcceptClick = {
+                        scope.launch {
+                            CrashLogUtil(context).dumpLogs()
+                        }
+                    },
+                    canAccept = true,
+                    rejectText = stringResource(R.string.crash_screen_restart_application),
+                    onRejectClick = {
                         finishAffinity()
                         startActivity(Intent(this@CrashActivity, MainActivity::class.java))
                     },
-                )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(vertical = Size.small)
+                            .clip(MaterialTheme.shapes.small)
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                    ) {
+                        Text(
+                            text = exception.toString(),
+                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                            modifier = Modifier.padding(all = Size.small),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
         }
     }

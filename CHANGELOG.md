@@ -15,6 +15,8 @@
 
 ## Fixes
 - Fixed not being able to open different chapter if another chapter is opened
+- Fixed not being able to read chapters from local source
+- Fixed local source can't detect archives
 
 ## Other
 - Wrap SplashState to singleton factory, might fix issue where splash screen shown multiple times

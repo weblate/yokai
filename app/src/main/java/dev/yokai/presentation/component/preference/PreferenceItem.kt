@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.unit.dp
-import androidx.glance.text.Text
 import dev.yokai.presentation.component.preference.widget.EditTextPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.InfoWidget
 import dev.yokai.presentation.component.preference.widget.ListPreferenceWidget

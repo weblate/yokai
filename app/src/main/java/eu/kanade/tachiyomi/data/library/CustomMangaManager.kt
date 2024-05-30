@@ -6,7 +6,6 @@ import dev.yokai.core.metadata.COMIC_INFO_EDITS_FILE
 import dev.yokai.core.metadata.ComicInfo
 import dev.yokai.core.metadata.ComicInfoPublishingStatus
 import dev.yokai.core.metadata.copyFromComicInfo
-import dev.yokai.core.metadata.toComicInfo
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.util.system.writeText
@@ -42,7 +41,7 @@ class CustomMangaManager(val context: Context) {
                 author = author,
                 artist = artist,
                 description = description,
-                genre = genre,
+                genre = genre.orEmpty(),
                 status = status,
             )
         }
@@ -178,7 +177,7 @@ class CustomMangaManager(val context: Context) {
                     author: String? = null,
                     artist: String? = null,
                     description: String? = null,
-                    genre: Array<String> = arrayOf(),
+                    genre: Array<String>? = null,
                     status: Int? = null,
                 ): ComicInfoYokai {
                     return create(
@@ -187,7 +186,7 @@ class CustomMangaManager(val context: Context) {
                         author = author,
                         artist = artist,
                         description = description,
-                        genre = genre.takeIf { it.isNotEmpty() }?.joinToString(", "),
+                        genre = genre?.joinToString(", ").orEmpty(),
                         status = status,
                     )
                 }
@@ -198,7 +197,7 @@ class CustomMangaManager(val context: Context) {
                     author: String? = null,
                     artist: String? = null,
                     description: String? = null,
-                    genre: String? = null,
+                    genre: String = "",
                     status: Int? = null,
                 ): ComicInfoYokai {
                     return ComicInfoYokai(
@@ -215,7 +214,7 @@ class CustomMangaManager(val context: Context) {
                             coverArtist = null,
                             translator = null,
                             summary = description?.let { ComicInfo.Summary(it) },
-                            genre = genre?.let { ComicInfo.Genre(it) },
+                            genre = genre.takeIf { it.isNotEmpty() }?.let { ComicInfo.Genre(it) },
                             tags = null,
                             web = null,
                             publishingStatus = status.takeUnless { it == 0 }?.let {

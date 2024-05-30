@@ -225,11 +225,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         )
 
         val useCoilPipeline = if (isWebtoon) {
-            when (data) {
-                is BitmapDrawable -> !ImageUtil.isMaxTextureSizeExceeded(data.bitmap)
-                is BufferedSource -> !ImageUtil.isMaxTextureSizeExceeded(data)
-                else -> false
-            }
+            !ImageUtil.isMaxTextureSizeExceeded(data)
         } else {
             false
         }

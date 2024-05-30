@@ -783,12 +783,25 @@ object ImageUtil {
         "image/jxl" to "jxl",
     )
 
-    fun isMaxTextureSizeExceeded(bitmap: Bitmap): Boolean {
-        return maxOf(bitmap.width, bitmap.height) > GLUtil.maxTextureSize
-    }
-
-    fun isMaxTextureSizeExceeded(imageSource: BufferedSource): Boolean {
-        val opts = extractImageOptions(imageSource)
-        return maxOf(opts.outWidth, opts.outHeight) > GLUtil.maxTextureSize
+    fun isMaxTextureSizeExceeded(data: Any): Boolean {
+        val width: Int
+        val height: Int
+        when (data) {
+            is BufferedSource -> {
+                val opts = extractImageOptions(data)
+                width = opts.outWidth
+                height = opts.outHeight
+            }
+            is BitmapDrawable -> {
+                width = data.bitmap.width
+                height = data.bitmap.height
+            }
+            is Bitmap -> {
+                width = data.width
+                height = data.height
+            }
+            else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
+        }
+        return maxOf(width, height) > GLUtil.maxTextureSize
     }
 }

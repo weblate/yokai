@@ -7,5 +7,5 @@
 
 ## Other
 -->
-## Fixes
-- Fixed crashes when user try to edit an entry
+## Additions
+- Added a couple new tags to set entry as SFW (`sfw` and `non-erotic`)

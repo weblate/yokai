@@ -504,17 +504,18 @@ class PagerPageHolder(
                             }
                             // if the user switches to automatic when pages are already cached, the bg needs to be loaded
                             else {
+                                val background =
+                                    try {
+                                        setBG(actualSource.peek().inputStream())
+                                    } catch (e: Exception) {
+                                        Timber.e(e.localizedMessage)
+                                        ColorDrawable(Color.WHITE)
+                                    }
                                 setImage(actualSource, false, imageConfig)
 
-                                try {
-                                    pageView?.background = setBG(actualSource.inputStream())
-                                } catch (e: Exception) {
-                                    Timber.e(e.localizedMessage)
-                                    pageView?.background = ColorDrawable(Color.WHITE)
-                                } finally {
-                                    page.bg = pageView?.background
-                                    page.bgType = bgType
-                                }
+                                pageView?.background = background
+                                page.bg = pageView?.background
+                                page.bgType = bgType
                             }
                         } else {
                             setImage(actualSource, false, imageConfig)

@@ -10,22 +10,25 @@ fun Manga.isLewd(): Boolean {
     val sourceName = Injekt.get<SourceManager>().get(source)?.name
     val tags = genre?.split(",")?.map { it.trim().lowercase(Locale.US) } ?: emptyList()
 
-    if (!tags.none { isNonHentai(it) }) return false
-    return (sourceName != null && sourceName.isFromHentaiSource()) || tags.any { isHentai(it) }
+    if (!tags.none { it.isNonHentai() }) return false
+    return (sourceName != null && sourceName.isFromHentaiSource()) || tags.any { it.isHentai() }
 }
 
-private fun isNonHentai(tag: String) = tag.contains("non-h", true)
+private fun String.isNonHentai() =
+    contains("non-h", true) ||
+    contains("non-erotic", true) ||
+    contains("sfw", true)
 
 private fun String.isFromHentaiSource() =
     contains("hentai", true) ||
     contains("adult", true)
 
-private fun isHentai(tag: String) =
-    tag.contains("hentai", true) ||
-    tag.contains("adult", true) ||
-    tag.contains("smut", true) ||
-    tag.contains("lewd", true) ||
-    tag.contains("nsfw", true) ||
-    tag.contains("erotic", true) ||
-    tag.contains("pornographic", true) ||
-    tag.contains("18+", true)
+private fun String.isHentai() =
+    contains("hentai", true) ||
+    contains("adult", true) ||
+    contains("smut", true) ||
+    contains("lewd", true) ||
+    contains("nsfw", true) ||
+    contains("erotic", true) ||
+    contains("pornographic", true) ||
+    contains("18+", true)

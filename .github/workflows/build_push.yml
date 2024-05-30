@@ -181,7 +181,7 @@ jobs:
             > [!CAUTION]
             > _**This alpha version is for testing only!**_
 
-            It is not ready for daily use and we do not guarantee its usability. Please download the latest stable releases instead (https://github.com/null2264/yokai/releases/latest)
+            It is not ready for daily use and we do not guarantee its usability. Please download the latest stable releases instead (https://github.com/null2264/yokai/releases/latest). If you insist, please be sure to ALWAYS backup before updating.
             
             ${{ steps.changelog.outputs.CHANGELOG }}
             

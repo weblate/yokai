@@ -178,7 +178,7 @@ class CustomMangaManager(val context: Context) {
                     author: String? = null,
                     artist: String? = null,
                     description: String? = null,
-                    genre: Array<String>? = null,
+                    genre: Array<String> = arrayOf(),
                     status: Int? = null,
                 ): ComicInfoYokai {
                     return create(
@@ -187,7 +187,7 @@ class CustomMangaManager(val context: Context) {
                         author = author,
                         artist = artist,
                         description = description,
-                        genre = genre?.joinToString(", "),
+                        genre = genre.takeIf { it.isNotEmpty() }?.joinToString(", "),
                         status = status,
                     )
                 }

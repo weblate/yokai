@@ -36,9 +36,14 @@ class CustomMangaManager(val context: Context) {
         const val EDIT_JSON_FILE = "edits.json"
 
         fun Manga.toComicInfo(): ComicList.ComicInfoYokai {
-            return ComicList.ComicInfoYokai(
-                this.toComicInfo(null),
-                id!!,
+            return ComicList.ComicInfoYokai.create(
+                id = id!!,
+                title = title,
+                author = author,
+                artist = artist,
+                description = description,
+                genre = genre,
+                status = status,
             )
         }
     }
@@ -176,6 +181,26 @@ class CustomMangaManager(val context: Context) {
                     genre: Array<String>? = null,
                     status: Int? = null,
                 ): ComicInfoYokai {
+                    return create(
+                        id = id,
+                        title = title,
+                        author = author,
+                        artist = artist,
+                        description = description,
+                        genre = genre?.joinToString(", "),
+                        status = status,
+                    )
+                }
+
+                fun create(
+                    id: Long? = null,
+                    title: String? = null,
+                    author: String? = null,
+                    artist: String? = null,
+                    description: String? = null,
+                    genre: String? = null,
+                    status: Int? = null,
+                ): ComicInfoYokai {
                     return ComicInfoYokai(
                         id = id,
                         value = ComicInfo(
@@ -190,7 +215,7 @@ class CustomMangaManager(val context: Context) {
                             coverArtist = null,
                             translator = null,
                             summary = description?.let { ComicInfo.Summary(it) },
-                            genre = genre?.joinToString(", ")?.let { ComicInfo.Genre(it) },
+                            genre = genre?.let { ComicInfo.Genre(it) },
                             tags = null,
                             web = null,
                             publishingStatus = status.takeUnless { it == 0 }?.let {

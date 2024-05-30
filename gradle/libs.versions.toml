@@ -84,4 +84,5 @@ gradle-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
 archive = [ "common-compress", "junrar" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
 test = [ "junit-api", "mockk" ]
+test-android = [ "junit-android" ]
 test-runtime = [ "junit-engine" ]

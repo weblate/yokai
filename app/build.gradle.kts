@@ -146,12 +146,10 @@ android {
 
 dependencies {
     // Compose
-    implementation(androidx.activity.compose)
     implementation(compose.bundles.compose)
     debugImplementation(compose.ui.tooling)
     implementation(libs.compose.theme.adapter3)
     implementation(libs.accompanist.webview)
-    implementation(androidx.glance.appwidget)
 
     // Modified dependencies
     implementation(libs.subsamplingscaleimageview) {
@@ -159,39 +157,17 @@ dependencies {
     }
     implementation(libs.image.decoder)
 
-    // Android X libraries
-    implementation(androidx.appcompat)
-    implementation(androidx.cardview)
-    implementation(libs.material)
-    implementation(androidx.webkit)
-    implementation(androidx.recyclerview)
-    implementation(androidx.preference)
-    implementation(androidx.annotation)
-    implementation(androidx.browser)
-    implementation(androidx.biometric)
-    implementation(androidx.palette)
-    implementation(androidx.activity)
-    implementation(androidx.core)
-    implementation(androidx.core.splashscreen)
     implementation(libs.flexbox)
-    implementation(androidx.window)
-    implementation(androidx.swiperefreshlayout)
 
-    implementation(androidx.constraintlayout)
+    implementation(libs.material)
 
-    implementation(androidx.multidex)
+    // Android X libraries
+    implementation(androidx.bundles.androidx)
 
     implementation(platform(libs.firebase))
 
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
-
-    implementation(androidx.lifecycle.viewmodel)
-    implementation(compose.lifecycle.viewmodel)
-    implementation(androidx.lifecycle.livedata)
-    implementation(androidx.lifecycle.common)
-    implementation(androidx.lifecycle.process)
-    implementation(androidx.lifecycle.runtime)
 
     // ReactiveX
     implementation(libs.rxandroid)
@@ -227,13 +203,11 @@ dependencies {
     implementation(libs.jsoup)
 
     // Job scheduling
-    implementation(androidx.work)
     implementation(libs.guava)
 
     implementation(libs.play.services.gcm)
 
     // Database
-    implementation(androidx.sqlite)
     implementation(libs.sqlite.android)
     //noinspection UseTomlInstead
     implementation("com.github.inorichi.storio:storio-common:8be19de@aar")
@@ -299,7 +273,7 @@ dependencies {
     // Tests
     testImplementation(libs.bundles.test)
     testRuntimeOnly(libs.bundles.test.runtime)
-    androidTestImplementation(libs.junit.android)
+    androidTestImplementation(libs.bundles.test.android)
 }
 
 tasks {

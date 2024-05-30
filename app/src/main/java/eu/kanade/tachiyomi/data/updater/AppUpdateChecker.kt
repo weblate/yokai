@@ -129,9 +129,19 @@ class AppUpdateChecker(
 }
 
 val RELEASE_TAG: String by lazy {
-    "v${BuildConfig.VERSION_NAME}"
+    if (BuildConfig.NIGHTLY) {
+        "r${BuildConfig.COMMIT_COUNT}"
+    } else {
+        "v${BuildConfig.VERSION_NAME}"
+    }
 }
 
-const val GITHUB_REPO: String = "null2264/yokai"
+val GITHUB_REPO: String by lazy {
+    if (BuildConfig.NIGHTLY) {
+        "null2264/yokai-nightly"
+    } else {
+        "null2264/yokai"
+    }
+}
 
 val RELEASE_URL = "https://github.com/$GITHUB_REPO/releases/tag/$RELEASE_TAG"

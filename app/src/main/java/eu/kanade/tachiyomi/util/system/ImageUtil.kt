@@ -783,6 +783,10 @@ object ImageUtil {
         "image/jxl" to "jxl",
     )
 
+    fun isMaxTextureSizeExceeded(bitmap: Bitmap): Boolean {
+        return maxOf(bitmap.width, bitmap.height) > GLUtil.maxTextureSize
+    }
+
     fun isMaxTextureSizeExceeded(imageSource: BufferedSource): Boolean {
         val opts = extractImageOptions(imageSource)
         return maxOf(opts.outWidth, opts.outHeight) > GLUtil.maxTextureSize

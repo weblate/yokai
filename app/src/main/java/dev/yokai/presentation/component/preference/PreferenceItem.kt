@@ -17,6 +17,7 @@ import dev.yokai.presentation.component.preference.widget.EditTextPreferenceWidg
 import dev.yokai.presentation.component.preference.widget.InfoWidget
 import dev.yokai.presentation.component.preference.widget.ListPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.MultiSelectListPreferenceWidget
+import dev.yokai.presentation.component.preference.widget.SliderPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.SwitchPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.TextPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.TrackingPreferenceWidget
@@ -78,23 +79,18 @@ internal fun PreferenceItem(
                 )
             }
             is Preference.PreferenceItem.SliderPreference -> {
-                // TODO: use different composable?
-                // FIXME: Add the actual thing
-                Text(text = "Hello World")
-                /*
-                SliderItem(
-                    label = item.title,
+                SliderPreferenceWidget(
+                    title = item.title,
+                    subtitle = item.subtitle.takeUnless { it.isNullOrEmpty() } ?: item.value.toString(),
+                    value = item.value,
                     min = item.min,
                     max = item.max,
-                    value = item.value,
-                    valueText = item.subtitle.takeUnless { it.isNullOrEmpty() } ?: item.value.toString(),
-                    onChange = {
+                    onValueChange = {
                         scope.launch {
-                            item.onValueChanged(it)
+                            item.onValueChanged(it.toInt())
                         }
                     },
                 )
-                 */
             }
             is Preference.PreferenceItem.ListPreference<*> -> {
                 val value by item.pref.collectAsState()

@@ -207,7 +207,7 @@ jobs:
             yokai-x86-${{ env.VERSION_TAG }}.apk
             yokai-x86_64-${{ env.VERSION_TAG }}.apk
           draft: false
-          prerelease: true
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.NIGHTLY_PAT }}
 

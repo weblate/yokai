@@ -197,7 +197,7 @@ class CustomMangaManager(val context: Context) {
                     author: String? = null,
                     artist: String? = null,
                     description: String? = null,
-                    genre: String = "",
+                    genre: String? = null,
                     status: Int? = null,
                 ): ComicInfoYokai {
                     return ComicInfoYokai(
@@ -214,7 +214,7 @@ class CustomMangaManager(val context: Context) {
                             coverArtist = null,
                             translator = null,
                             summary = description?.let { ComicInfo.Summary(it) },
-                            genre = genre.takeIf { it.isNotEmpty() }?.let { ComicInfo.Genre(it) },
+                            genre = genre?.let { ComicInfo.Genre(it) },
                             tags = null,
                             web = null,
                             publishingStatus = status.takeUnless { it == 0 }?.let {
@@ -235,5 +235,6 @@ class CustomMangaManager(val context: Context) {
     private fun mangaFromComicInfoObject(id: Long, comicInfo: ComicInfo) = MangaImpl().apply {
         this.id = id
         this.copyFromComicInfo(comicInfo)
+        this.title = comicInfo.series?.value ?: ""
     }
 }

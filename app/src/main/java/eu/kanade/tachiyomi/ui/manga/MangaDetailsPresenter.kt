@@ -712,7 +712,15 @@ class MangaDetailsPresenter(
     fun confirmDeletion() {
         launchIO {
             coverCache.deleteFromCache(manga)
-            customMangaManager.saveMangaInfo(CustomMangaManager.ComicList.ComicInfoYokai.create(manga.id!!))
+            customMangaManager.saveMangaInfo(CustomMangaManager.ComicList.ComicInfoYokai.create(
+                id = manga.id!!,
+                title = null,
+                author = null,
+                artist = null,
+                description = null,
+                genre = null as String?,
+                status = null,
+            ))
             downloadManager.deleteManga(manga, source)
             asyncUpdateMangaAndChapters(true)
         }

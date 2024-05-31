@@ -111,11 +111,10 @@ class CustomMangaManager(val context: Context) {
     }
 
     private fun saveCustomInfo(onComplete: () -> Unit = {}) {
-        var comicInfoEdits = externalDir?.findFile(COMIC_INFO_EDITS_FILE)
+        val comicInfoEdits = externalDir?.createFile(COMIC_INFO_EDITS_FILE) ?: return
 
         val edits = customMangaMap.values.map { it.toComicInfo() }
-        if (edits.isNotEmpty()) {
-            if (comicInfoEdits == null || !comicInfoEdits.exists()) comicInfoEdits = externalDir?.createFile(COMIC_INFO_EDITS_FILE)!!
+        if (edits.isNotEmpty() && comicInfoEdits.exists()) {
             comicInfoEdits.writeText(xml.encodeToString(ComicList.serializer(), ComicList(edits)), onComplete = onComplete)
         }
     }

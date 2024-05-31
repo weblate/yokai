@@ -1,5 +1,7 @@
 package dev.yokai.core.metadata
 
+import eu.kanade.tachiyomi.data.database.models.Chapter
+import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.source.model.SManga
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.serialization.XmlElement
@@ -8,6 +10,42 @@ import nl.adaptivity.xmlutil.serialization.XmlValue
 
 const val COMIC_INFO_EDITS_FILE = "ComicInfoEdits.xml"
 const val COMIC_INFO_FILE = "ComicInfo.xml"
+
+fun getComicInfo(
+    manga: Manga,
+    chapter: Chapter,
+    urls: List<String>,
+    categories: List<String>?,
+    sourceName: String,
+    lang: String?,
+) = ComicInfo(
+    title = ComicInfo.Title(chapter.name),
+    series = ComicInfo.Series(manga.title),
+    number = chapter.chapter_number.takeIf { it >= 0 }?.let {
+        if (it.rem(1) == 0.0f) {
+            ComicInfo.Number(it.toInt().toString())
+        } else {
+            ComicInfo.Number(it.toString())
+        }
+    },
+    summary = manga.description?.let { ComicInfo.Summary(it) },
+    writer = manga.author?.let { ComicInfo.Writer(it) },
+    penciller = manga.artist?.let { ComicInfo.Penciller(it) },
+    inker = null,
+    colorist = null,
+    letterer = null,
+    coverArtist = null,
+    translator = chapter.scanlator?.let { ComicInfo.Translator(it) },
+    genre = manga.genre?.let { ComicInfo.Genre(it) },
+    tags = null,
+    web = ComicInfo.Web(urls.joinToString(" ")),
+    publishingStatus = ComicInfo.PublishingStatusTachiyomi(
+        ComicInfoPublishingStatus.toComicInfoValue(manga.status.toLong())
+    ),
+    categories = categories?.let { ComicInfo.CategoriesTachiyomi(it.joinToString()) },
+    source = ComicInfo.SourceMihon(sourceName),
+    language = lang?.let { ComicInfo.LanguageJ2K(it) },
+)
 
 fun SManga.toComicInfo(lang: String? = null) = ComicInfo(
     title = null,

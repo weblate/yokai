@@ -33,6 +33,8 @@ import kotlinx.serialization.json.decodeFromStream
 import nl.adaptivity.xmlutil.AndroidXmlReader
 import nl.adaptivity.xmlutil.serialization.XML
 import timber.log.Timber
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import java.io.FileInputStream
 import java.io.InputStream
@@ -48,6 +50,12 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         private val LATEST_THRESHOLD = TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS)
         private val langMap = hashMapOf<String, String>()
 
+        fun decodeComicInfo(stream: InputStream, xml: XML = Injekt.get()): ComicInfo {
+            return AndroidXmlReader(stream, StandardCharsets.UTF_8.name()).use { reader ->
+                xml.decodeFromReader<ComicInfo>(reader)
+            }
+        }
+
         fun getMangaLang(manga: SManga): String {
             return langMap.getOrPut(manga.url) {
                 val localDetails = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
@@ -55,10 +63,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     .firstOrNull { it.name == COMIC_INFO_FILE }
 
                 return if (localDetails != null) {
-                    val obj = AndroidXmlReader(localDetails.openInputStream(), StandardCharsets.UTF_8.name()).use {
-                        XML.decodeFromReader<ComicInfo>(it)
-                    }
-                    obj.language?.value ?: "other"
+                    decodeComicInfo(localDetails.openInputStream()).language?.value ?: "other"
                 } else {
                     "other"
                 }
@@ -218,9 +223,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     private fun setMangaDetailsFromComicInfoFile(stream: InputStream, manga: SManga) {
-        val comicInfo = AndroidXmlReader(stream, StandardCharsets.UTF_8.name()).use {
-            xml.decodeFromReader<ComicInfo>(it)
-        }
+        val comicInfo = decodeComicInfo(stream, xml)
 
         comicInfo.language?.let { langMap[manga.url] = it.value }
         manga.copyFromComicInfo(comicInfo)
@@ -279,10 +282,14 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         val chapters = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
             .filter { it.isDirectory || isSupportedFile(it.extension.orEmpty()) }
             .map { chapterFile ->
+                val chapterComicInfo = chapterFile.findFile(COMIC_INFO_FILE)?.let {
+                    decodeComicInfo(it.openInputStream(), xml)
+                }
+
                 SChapter.create().apply {
                     url = "${manga.url}/${chapterFile.name}"
                     name = if (chapterFile.isDirectory) {
-                        chapterFile.name.orEmpty()
+                        chapterComicInfo?.title?.value ?: chapterFile.name.orEmpty()
                     } else {
                         chapterFile.nameWithoutExtension.orEmpty()
                     }

@@ -5,9 +5,13 @@ import android.os.Handler
 import android.os.Looper
 import com.hippo.unifile.UniFile
 import com.jakewharton.rxrelay.PublishRelay
+import dev.yokai.core.metadata.COMIC_INFO_FILE
+import dev.yokai.core.metadata.ComicInfo
+import dev.yokai.core.metadata.getComicInfo
 import dev.yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.ChapterCache
+import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.download.model.Download
@@ -27,6 +31,7 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
+import eu.kanade.tachiyomi.util.system.writeText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -38,6 +43,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.runBlocking
+import nl.adaptivity.xmlutil.serialization.XML
 import okhttp3.Response
 import rx.Observable
 import rx.Subscription
@@ -74,6 +80,8 @@ class Downloader(
     private val preferences: PreferencesHelper by injectLazy()
     private val downloadPreferences: DownloadPreferences by injectLazy()
     private val chapterCache: ChapterCache by injectLazy()
+    private val xml: XML by injectLazy()
+    private val db: DatabaseHelper by injectLazy()
 
     /**
      * Store for persisting downloads across restarts.
@@ -443,16 +451,8 @@ class Downloader(
             }
 
             // When the page is ready, set page path, progress (just in case) and status
-            val success = splitTallImageIfNeeded(page, tmpDir)
-            /*
-            if (!success) {
-                notifier.onError(
-                    context.getString(R.string.download_notifier_split_failed),
-                    chapName,
-                    download.manga.title,
-                )
-            }
-            */
+            splitTallImageIfNeeded(page, tmpDir)
+
             page.uri = file.uri
             page.progress = 100
             page.status = Page.State.READY
@@ -596,14 +596,12 @@ class Downloader(
         }
 
         download.status = if (downloadedImagesCount == downloadPageCount) {
-            // TODO: Uncomment when #8537 is resolved
-//            val chapterUrl = download.source.getChapterUrl(download.chapter)
-//            createComicInfoFile(
-//                tmpDir,
-//                download.manga,
-//                download.chapter.toDomainChapter()!!,
-//                chapterUrl,
-//            )
+            createComicInfoFile(
+                tmpDir,
+                download.manga,
+                download.chapter,
+                download.source,
+            )
 
             // Only rename the directory if it's downloaded
             if (preferences.saveChaptersAsCBZ().get()) {
@@ -655,28 +653,37 @@ class Downloader(
         tmpDir.delete()
     }
 
-//    /**
-//     * Creates a ComicInfo.xml file inside the given directory.
-//     *
-//     * @param dir the directory in which the ComicInfo file will be generated.
-//     * @param manga the manga.
-//     * @param chapter the chapter.
-//     * @param chapterUrl the resolved URL for the chapter.
-//     */
-//    private fun createComicInfoFile(
-//        dir: UniFile,
-//        manga: Manga,
-//        chapter: Chapter,
-//        chapterUrl: String,
-//    ) {
-//        val comicInfo = getComicInfo(manga, chapter, chapterUrl)
-//        val comicInfoString = xml.encodeToString(ComicInfo.serializer(), comicInfo)
-//        // Remove the old file
-//        dir.findFile(COMIC_INFO_FILE)?.delete()
-//        dir.createFile(COMIC_INFO_FILE).openOutputStream().use {
-//            it.write(comicInfoString.toByteArray())
-//        }
-//    }
+    /**
+     * Creates a ComicInfo.xml file inside the given directory.
+     *
+     * @param dir the directory in which the ComicInfo file will be generated.
+     * @param manga the manga.
+     * @param chapter the chapter.
+     * @param chapterUrl the resolved URL for the chapter.
+     */
+    private fun createComicInfoFile(
+        dir: UniFile,
+        manga: Manga,
+        chapter: Chapter,
+        source: HttpSource,
+    ) {
+        val categories =
+            db.getCategoriesForManga(manga).executeAsBlocking().map { it.name.trim() }.takeUnless { it.isEmpty() }
+        val urls = source.getChapterUrl(manga, chapter)?.let { listOf(it) } ?: listOf()
+
+        val comicInfo = getComicInfo(
+            manga,
+            chapter,
+            urls,
+            categories,
+            source.name,
+            source.lang,
+        )
+
+        // Remove the old file
+        dir.findFile(COMIC_INFO_FILE)?.delete()
+        dir.createFile(COMIC_INFO_FILE)?.writeText(xml.encodeToString(ComicInfo.serializer(), comicInfo))
+    }
 
     /**
      * Completes a download. This method is called in the main thread.

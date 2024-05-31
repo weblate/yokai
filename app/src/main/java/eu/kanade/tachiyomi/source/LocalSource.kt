@@ -282,9 +282,12 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         val chapters = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
             .filter { it.isDirectory || isSupportedFile(it.extension.orEmpty()) }
             .map { chapterFile ->
-                val chapterComicInfo = chapterFile.findFile(COMIC_INFO_FILE)?.let {
-                    decodeComicInfo(it.openInputStream(), xml)
-                }
+                val chapterComicInfo =
+                    if (chapterFile.isDirectory)
+                        chapterFile.findFile(COMIC_INFO_FILE)?.let {
+                            decodeComicInfo(it.openInputStream(), xml)
+                        }
+                    else null
 
                 SChapter.create().apply {
                     url = "${manga.url}/${chapterFile.name}"

@@ -87,6 +87,15 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             return cover
         }
 
+        private fun updateMetadata(chapter: SChapter, manga: SManga, stream: InputStream) {
+            val comicInfo = decodeComicInfo(stream)
+
+            comicInfo.title?.let { chapter.name = it.value }
+            comicInfo.number?.value?.toFloatOrNull()?.let {
+                chapter.chapter_number = it
+            } ?: ChapterRecognition.parseChapterNumber(chapter, manga)
+        }
+
         /**
          * Returns valid cover file inside [parent] directory.
          */
@@ -282,32 +291,17 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         val chapters = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
             .filter { it.isDirectory || isSupportedFile(it.extension.orEmpty()) }
             .map { chapterFile ->
-                val chapterComicInfo =
-                    if (chapterFile.isDirectory)
-                        chapterFile.findFile(COMIC_INFO_FILE)?.let {
-                            decodeComicInfo(it.openInputStream(), xml)
-                        }
-                    else null
-
                 SChapter.create().apply {
                     url = "${manga.url}/${chapterFile.name}"
                     name = if (chapterFile.isDirectory) {
-                        chapterComicInfo?.title?.value ?: chapterFile.name.orEmpty()
+                        chapterFile.name.orEmpty()
                     } else {
                         chapterFile.nameWithoutExtension.orEmpty()
                     }
                     date_upload = chapterFile.lastModified()
 
-                    val format = getFormat(chapterFile)
-                    if (format is Format.Epub) {
-                        EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
-                            epub.fillChapterMetadata(this)
-                        }
-                    }
-
-                    chapterComicInfo?.number?.value?.toFloatOrNull()?.let {
-                        chapter_number = it
-                    } ?: ChapterRecognition.parseChapterNumber(this, manga)
+                    val success = updateMetadata(this, manga, chapterFile)
+                    if (!success) ChapterRecognition.parseChapterNumber(this, manga)
                 }
             }
             .sortedWith { c1, c2 ->
@@ -389,6 +383,44 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         } catch (e: Throwable) {
             Timber.e(e, "Error updating cover for ${manga.title}")
             null
+        }
+    }
+
+    private fun updateMetadata(chapter: SChapter, manga: SManga, chapterFile: UniFile? = null): Boolean {
+        return try {
+            when (val format = if (chapterFile != null) getFormat(chapterFile) else getFormat(chapter)) {
+                is Format.Directory -> {
+                    val entry = format.file.findFile(COMIC_INFO_FILE) ?: return false
+
+                    updateMetadata(chapter, manga, entry.openInputStream())
+                    true
+                }
+                is Format.Epub -> {
+                    EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
+                        epub.fillChapterMetadata(chapter)
+                    }
+                    true
+                }
+                is Format.Rar -> Archive(format.file.openInputStream()).use { archive ->
+                    val entry = archive.fileHeaders
+                        .sortedWith { f1, f2 -> f1.fileName.compareToCaseInsensitiveNaturalOrder(f2.fileName) }
+                        .find { !it.isDirectory && it.fileName == COMIC_INFO_FILE } ?: return false
+
+                    updateMetadata(chapter, manga, archive.getInputStream(entry))
+                    true
+                }
+                is Format.Zip -> format.file.openReadOnlyChannel(context).toZipFile().use { zip ->
+                    val entry = zip.entries.toList()
+                        .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
+                        .find { !it.isDirectory && it.name == COMIC_INFO_FILE } ?: return false
+
+                    updateMetadata(chapter, manga, zip.getInputStream(entry))
+                    true
+                }
+            }
+        } catch (e: Throwable) {
+            Timber.e(e, "Error updating a metadata")
+            false
         }
     }
 

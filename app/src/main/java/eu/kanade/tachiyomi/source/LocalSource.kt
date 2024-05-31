@@ -305,7 +305,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                         }
                     }
 
-                    ChapterRecognition.parseChapterNumber(this, manga)
+                    chapterComicInfo?.number?.value?.toFloatOrNull()?.let {
+                        chapter_number = it
+                    } ?: ChapterRecognition.parseChapterNumber(this, manga)
                 }
             }
             .sortedWith { c1, c2 ->

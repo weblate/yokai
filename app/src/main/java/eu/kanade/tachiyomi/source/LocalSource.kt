@@ -94,6 +94,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             comicInfo.number?.value?.toFloatOrNull()?.let {
                 chapter.chapter_number = it
             } ?: ChapterRecognition.parseChapterNumber(chapter, manga)
+            comicInfo.translator?.let { chapter.scanlator = it.value }
         }
 
         /**

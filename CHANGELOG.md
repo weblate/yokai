@@ -14,6 +14,7 @@
 
 ## Fixes
 - Fixed smart background colour by page failing causing the image to not load
+- Fixed downloaded chapter can't be opened if it's too large
 
 ## Other
 - Re-route nightly to use its own repo, should fix "What's new" page

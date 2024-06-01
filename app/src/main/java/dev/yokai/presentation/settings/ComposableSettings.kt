@@ -24,6 +24,7 @@ interface ComposableSettings {
         SettingsScaffold(
             title = stringResource(getTitleRes()),
             itemsProvider = { getPreferences() },
+            appBarActions = { AppBarAction() },
         )
     }
 }

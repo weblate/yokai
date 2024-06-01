@@ -5,10 +5,9 @@ import android.os.Build
 import android.os.FileUtils
 import android.os.ParcelFileDescriptor
 import com.hippo.unifile.UniFile
-import org.apache.commons.compress.utils.SeekableInMemoryByteChannel
 import java.io.BufferedOutputStream
 import java.io.File
-import java.nio.channels.FileChannel
+import java.nio.channels.SeekableByteChannel
 
 val UniFile.nameWithoutExtension: String?
     get() = name?.substringBeforeLast('.')
@@ -48,8 +47,6 @@ fun UniFile.writeText(string: String, onComplete: () -> Unit = {}) {
     }
 }
 
-fun UniFile.openReadOnlyChannel(context: Context): SeekableInMemoryByteChannel {
-    return ParcelFileDescriptor.AutoCloseInputStream(context.contentResolver.openFileDescriptor(uri, "r")).use {
-        SeekableInMemoryByteChannel(it.readBytes())
-    }
+fun UniFile.openReadOnlyChannel(context: Context): SeekableByteChannel {
+    return ParcelFileDescriptor.AutoCloseInputStream(context.contentResolver.openFileDescriptor(uri, "r")).channel
 }

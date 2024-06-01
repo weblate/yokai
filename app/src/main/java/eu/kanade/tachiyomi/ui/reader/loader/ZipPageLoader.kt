@@ -1,13 +1,11 @@
 package eu.kanade.tachiyomi.ui.reader.loader
 
-import android.os.Build
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.toZipFile
 import java.nio.channels.SeekableByteChannel
-import java.nio.charset.StandardCharsets
 
 /**
  * Loader used to load a chapter from a .zip or .cbz file.

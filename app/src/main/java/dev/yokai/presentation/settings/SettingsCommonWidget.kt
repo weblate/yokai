@@ -2,6 +2,7 @@ package dev.yokai.presentation.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -21,23 +22,26 @@ import dev.yokai.presentation.component.preference.PreferenceItem
 import dev.yokai.presentation.component.preference.widget.PreferenceGroupHeader
 import eu.kanade.tachiyomi.core.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.util.compose.LocalBackPress
 import uy.kohesive.injekt.injectLazy
 
 @Composable
 fun SettingsScaffold(
     title: String,
     appBarType: AppBarType? = null,
-    onBackPress: (() -> Unit)? = null,
+    appBarActions: @Composable RowScope.() -> Unit = {},
     itemsProvider: @Composable () -> List<Preference>,
 ) {
     val preferences: PreferencesHelper by injectLazy()
     val useLargeAppBar by preferences.useLargeToolbar().collectAsState()
     val listState = rememberLazyListState()
+    val onBackPress = LocalBackPress.current
 
     YokaiScaffold(
         onNavigationIconClicked = onBackPress ?: {},
         title = title,
         appBarType = appBarType ?: if (useLargeAppBar) AppBarType.LARGE else AppBarType.SMALL,
+        actions = appBarActions,
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
             state = rememberTopAppBarState(),
             canScroll = { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 },

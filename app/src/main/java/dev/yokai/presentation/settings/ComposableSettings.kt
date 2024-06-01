@@ -8,8 +8,6 @@ import androidx.compose.ui.res.stringResource
 import dev.yokai.presentation.component.preference.Preference
 
 interface ComposableSettings {
-    fun getOnBackPress(): () -> Unit = {}
-
     @Composable
     @ReadOnlyComposable
     @StringRes
@@ -26,7 +24,6 @@ interface ComposableSettings {
         SettingsScaffold(
             title = stringResource(getTitleRes()),
             itemsProvider = { getPreferences() },
-            onBackPress = getOnBackPress(),
         )
     }
 }

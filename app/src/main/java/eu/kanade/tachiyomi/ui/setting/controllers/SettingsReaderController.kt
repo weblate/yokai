@@ -1,6 +1,5 @@
-package eu.kanade.tachiyomi.ui.setting
+package eu.kanade.tachiyomi.ui.setting.controllers
 
-import android.os.Build
 import androidx.preference.PreferenceScreen
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
@@ -14,6 +13,17 @@ import eu.kanade.tachiyomi.ui.reader.settings.ReaderBackgroundColor
 import eu.kanade.tachiyomi.ui.reader.settings.ReaderBottomButton
 import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation
+import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.bindTo
+import eu.kanade.tachiyomi.ui.setting.defaultValue
+import eu.kanade.tachiyomi.ui.setting.infoPreference
+import eu.kanade.tachiyomi.ui.setting.intListPreference
+import eu.kanade.tachiyomi.ui.setting.listPreference
+import eu.kanade.tachiyomi.ui.setting.multiSelectListPreferenceMat
+import eu.kanade.tachiyomi.ui.setting.preferenceCategory
+import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.switchPreference
+import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.isTablet

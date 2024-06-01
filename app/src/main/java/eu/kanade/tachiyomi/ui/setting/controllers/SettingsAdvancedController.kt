@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting
+package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -42,8 +42,22 @@ import eu.kanade.tachiyomi.network.PREF_DOH_QUAD101
 import eu.kanade.tachiyomi.network.PREF_DOH_QUAD9
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.main.MainActivity
+import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.bindTo
 import eu.kanade.tachiyomi.ui.setting.database.ClearDatabaseController
 import eu.kanade.tachiyomi.ui.setting.debug.DebugController
+import eu.kanade.tachiyomi.ui.setting.defaultValue
+import eu.kanade.tachiyomi.ui.setting.editTextPreference
+import eu.kanade.tachiyomi.ui.setting.infoPreference
+import eu.kanade.tachiyomi.ui.setting.intListPreference
+import eu.kanade.tachiyomi.ui.setting.listPreference
+import eu.kanade.tachiyomi.ui.setting.onChange
+import eu.kanade.tachiyomi.ui.setting.onClick
+import eu.kanade.tachiyomi.ui.setting.preference
+import eu.kanade.tachiyomi.ui.setting.preferenceCategory
+import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.switchPreference
+import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.isPackageInstalled

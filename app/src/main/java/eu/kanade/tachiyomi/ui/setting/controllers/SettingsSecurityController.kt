@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting
+package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceScreen
@@ -7,6 +7,16 @@ import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
+import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.bindTo
+import eu.kanade.tachiyomi.ui.setting.defaultValue
+import eu.kanade.tachiyomi.ui.setting.infoPreference
+import eu.kanade.tachiyomi.ui.setting.intListPreference
+import eu.kanade.tachiyomi.ui.setting.listPreference
+import eu.kanade.tachiyomi.ui.setting.onChange
+import eu.kanade.tachiyomi.ui.setting.requireAuthentication
+import eu.kanade.tachiyomi.ui.setting.switchPreference
+import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 
 class SettingsSecurityController : SettingsController() {

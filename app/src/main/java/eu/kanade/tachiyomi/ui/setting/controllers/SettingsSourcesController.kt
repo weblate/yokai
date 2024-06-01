@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting
+package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.graphics.drawable.Drawable
 import android.view.Menu
@@ -16,6 +16,9 @@ import eu.kanade.tachiyomi.source.icon
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.main.MainActivity
+import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.onChange
+import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.LocaleHelper
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener

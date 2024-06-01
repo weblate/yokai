@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting
+package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -9,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.preference.PreferenceScreen
 import com.hippo.unifile.UniFile
@@ -22,6 +21,16 @@ import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.BackupRestoreJob
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.ui.main.MainActivity
+import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.bindTo
+import eu.kanade.tachiyomi.ui.setting.infoPreference
+import eu.kanade.tachiyomi.ui.setting.intListPreference
+import eu.kanade.tachiyomi.ui.setting.onChange
+import eu.kanade.tachiyomi.ui.setting.onClick
+import eu.kanade.tachiyomi.ui.setting.preference
+import eu.kanade.tachiyomi.ui.setting.preferenceCategory
+import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
@@ -30,7 +39,6 @@ import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
-import java.io.File
 
 class SettingsDataController : SettingsController() {
 

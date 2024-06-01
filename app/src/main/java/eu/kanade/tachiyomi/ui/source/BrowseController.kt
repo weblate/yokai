@@ -41,8 +41,8 @@ import eu.kanade.tachiyomi.ui.main.BottomSheetController
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.main.RootSearchInterface
-import eu.kanade.tachiyomi.ui.setting.SettingsBrowseController
-import eu.kanade.tachiyomi.ui.setting.SettingsSourcesController
+import eu.kanade.tachiyomi.ui.setting.controllers.SettingsBrowseController
+import eu.kanade.tachiyomi.ui.setting.controllers.SettingsSourcesController
 import eu.kanade.tachiyomi.ui.source.browse.BrowseSourceController
 import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.util.system.dpToPx

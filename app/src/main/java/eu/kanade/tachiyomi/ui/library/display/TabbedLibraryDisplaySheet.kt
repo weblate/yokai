@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.Controller
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.library.LibraryController
-import eu.kanade.tachiyomi.ui.setting.SettingsLibraryController
+import eu.kanade.tachiyomi.ui.setting.controllers.SettingsLibraryController
 import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.view.compatToolTipText
 import eu.kanade.tachiyomi.util.view.withFadeTransaction

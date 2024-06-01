@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting
+package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.app.ActivityManager
 import android.view.Menu
@@ -12,7 +12,13 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.more.AboutController
+import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.iconRes
+import eu.kanade.tachiyomi.ui.setting.iconTint
+import eu.kanade.tachiyomi.ui.setting.onClick
+import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.search.SettingsSearchController
+import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.fadeTransactionHandler

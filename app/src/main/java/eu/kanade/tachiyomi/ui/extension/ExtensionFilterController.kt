@@ -6,13 +6,13 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.extension.ExtensionManager
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.LocaleHelper
 import uy.kohesive.injekt.injectLazy
 
-class ExtensionFilterController : SettingsController() {
+class ExtensionFilterController : SettingsLegacyController() {
 
     private val extensionManager: ExtensionManager by injectLazy()
 

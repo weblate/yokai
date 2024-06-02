@@ -7,11 +7,13 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceManager
+import eu.kanade.tachiyomi.ui.setting.SettingsComposeController
+import eu.kanade.tachiyomi.ui.setting.SettingsControllerInterface
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsAdvancedController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsAppearanceController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsDataController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsBrowseController
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsDownloadController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsGeneralController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsLibraryController
@@ -29,7 +31,7 @@ object SettingsSearchHelper {
     /**
      * All subclasses of `SettingsController` should be listed here, in order to have their preferences searchable.
      */
-    private val settingControllersList: List<KClass<out SettingsController>> = listOf(
+    private val settingLegacyControllersList: List<KClass<out SettingsLegacyController>> = listOf(
         SettingsAdvancedController::class,
         SettingsDataController::class,
         SettingsBrowseController::class,
@@ -42,6 +44,9 @@ object SettingsSearchHelper {
         SettingsTrackingController::class,
     )
 
+    private val settingComposeControllersList: List<KClass<out SettingsComposeController>> = listOf(
+    )
+
     /**
      * Must be called to populate `prefSearchResultList`
      */
@@ -51,14 +56,14 @@ object SettingsSearchHelper {
         prefSearchResultList.clear()
 
         launchNow {
-            settingControllersList.forEach { kClass ->
+            settingLegacyControllersList.forEach { kClass ->
                 val ctrl = kClass.createInstance()
                 val settingsPrefScreen = ctrl.setupPreferenceScreen(preferenceManager.createPreferenceScreen(context))
                 val prefCount = settingsPrefScreen.preferenceCount
                 for (i in 0 until prefCount) {
                     val rootPref = settingsPrefScreen.getPreference(i)
                     if (rootPref.title == null) continue // no title, not a preference. (note: only info notes appear to not have titles)
-                    getSettingSearchResult(ctrl, rootPref, "${settingsPrefScreen.title}")
+                    getLegacySettingSearchResult(ctrl, rootPref, "${settingsPrefScreen.title}")
                 }
             }
         }
@@ -78,8 +83,8 @@ object SettingsSearchHelper {
      * Extracts the data needed from a `Preference` to create a `SettingsSearchResult`, and then adds it to `prefSearchResultList`
      * Future enhancement: make bold the text matched by the search query.
      */
-    private fun getSettingSearchResult(
-        ctrl: SettingsController,
+    private fun getLegacySettingSearchResult(
+        ctrl: SettingsLegacyController,
         pref: Preference,
         breadcrumbs: String = "",
     ) {
@@ -90,7 +95,7 @@ object SettingsSearchHelper {
 
                 for (x in 0 until pref.preferenceCount) {
                     val subPref = pref.getPreference(x)
-                    getSettingSearchResult(ctrl, subPref, breadcrumbsStr) // recursion
+                    getLegacySettingSearchResult(ctrl, subPref, breadcrumbsStr) // recursion
                 }
             }
             pref is PreferenceCategory -> {
@@ -98,7 +103,7 @@ object SettingsSearchHelper {
 
                 for (x in 0 until pref.preferenceCount) {
                     val subPref = pref.getPreference(x)
-                    getSettingSearchResult(ctrl, subPref, breadcrumbsStr) // recursion
+                    getLegacySettingSearchResult(ctrl, subPref, breadcrumbsStr) // recursion
                 }
             }
             (pref.title != null && pref.isVisible) -> {
@@ -135,6 +140,6 @@ object SettingsSearchHelper {
         val title: String,
         val summary: String,
         val breadcrumb: String,
-        val searchController: SettingsController,
+        val searchController: SettingsControllerInterface,
     )
 }

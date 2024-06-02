@@ -12,7 +12,7 @@ import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.ThemePreference
 import eu.kanade.tachiyomi.ui.setting.defaultValue
 import eu.kanade.tachiyomi.ui.setting.infoPreference
@@ -31,7 +31,7 @@ import eu.kanade.tachiyomi.util.system.systemLangContext
 import java.util.Locale
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
-class SettingsGeneralController : SettingsController() {
+class SettingsGeneralController : SettingsLegacyController() {
 
     private val isUpdaterEnabled = BuildConfig.INCLUDE_UPDATER
 

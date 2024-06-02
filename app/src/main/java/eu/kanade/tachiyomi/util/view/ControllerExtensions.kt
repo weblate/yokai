@@ -62,7 +62,7 @@ import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.main.TabbedInterface
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -693,7 +693,7 @@ fun Controller.setItemAnimatorForAppBar(recycler: RecyclerView) {
 }
 
 val Controller.mainRecyclerView: RecyclerView?
-    get() = (this as? SettingsController)?.listView ?: (this as? BaseLegacyController<*>)?.mainRecycler
+    get() = (this as? SettingsLegacyController)?.listView ?: (this as? BaseLegacyController<*>)?.mainRecycler
 
 fun Controller.moveRecyclerViewUp(allTheWayUp: Boolean = false, scrollUpAnyway: Boolean = false) {
     if (activityBinding?.bigToolbar?.isVisible == false) return

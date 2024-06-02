@@ -5,6 +5,7 @@ import androidx.core.graphics.ColorUtils
 import eu.davidea.viewholders.FlexibleViewHolder
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.SettingsSearchControllerCardBinding
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.util.lang.highlightText
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import kotlin.reflect.full.createInstance
@@ -23,6 +24,8 @@ class SettingsSearchHolder(view: View, val adapter: SettingsSearchAdapter) :
         binding.titleWrapper.setOnClickListener {
             adapter.getItem(bindingAdapterPosition)?.let {
                 val ctrl = it.settingsSearchResult.searchController::class.createInstance()
+                if (ctrl !is SettingsLegacyController) return@let
+
                 ctrl.preferenceKey = it.settingsSearchResult.key
 
                 // must pass a new Controller instance to avoid this error https://github.com/bluelinelabs/Conductor/issues/446

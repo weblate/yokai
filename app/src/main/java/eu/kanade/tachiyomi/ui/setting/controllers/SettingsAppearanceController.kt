@@ -9,7 +9,7 @@ import androidx.core.view.isVisible
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.changesIn
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.ThemePreference
 import eu.kanade.tachiyomi.ui.setting.bindTo
 import eu.kanade.tachiyomi.ui.setting.defaultValue
@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.math.max
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
-class SettingsAppearanceController : SettingsController() {
+class SettingsAppearanceController : SettingsLegacyController() {
 
     var lastThemeXLight: Int? = null
     var lastThemeXDark: Int? = null

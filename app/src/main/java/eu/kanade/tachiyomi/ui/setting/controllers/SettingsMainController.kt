@@ -12,7 +12,7 @@ import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.more.AboutController
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.iconRes
 import eu.kanade.tachiyomi.ui.setting.iconTint
 import eu.kanade.tachiyomi.ui.setting.onClick
@@ -25,7 +25,7 @@ import eu.kanade.tachiyomi.util.view.fadeTransactionHandler
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 
-class SettingsMainController : SettingsController(), FloatingSearchInterface {
+class SettingsMainController : SettingsLegacyController(), FloatingSearchInterface {
 
     init {
         setHasOptionsMenu(true)

@@ -25,7 +25,7 @@ import kotlinx.coroutines.cancel
 import timber.log.Timber
 
 abstract class BaseController(bundle: Bundle? = null) :
-    Controller(bundle), BackHandlerControllerInterface {
+    Controller(bundle), BackHandlerControllerInterface, BaseControllerPreferenceControllerCommonInterface {
 
     lateinit var viewScope: CoroutineScope
     var isDragging = false
@@ -112,8 +112,6 @@ abstract class BaseController(bundle: Bundle? = null) :
         }
     }
 
-    open fun onActionViewExpand(item: MenuItem?) { }
-    open fun onActionViewCollapse(item: MenuItem?) { }
     open fun onSearchActionViewLongClickQuery(): String? = null
 
     fun hideItemsIfExpanded(searchItem: MenuItem?, menu: Menu?, isExpanded: Boolean = false) {
@@ -149,4 +147,9 @@ abstract class BaseController(bundle: Bundle? = null) :
     fun showLegacyAppBar() {
         (activity as? AppCompatActivity)?.findViewById<View>(R.id.app_bar)?.isVisible = true
     }
+}
+
+interface BaseControllerPreferenceControllerCommonInterface {
+    fun onActionViewExpand(item: MenuItem?) { }
+    fun onActionViewCollapse(item: MenuItem?) { }
 }

@@ -12,7 +12,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.SettingsSearchControllerBinding
 import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.main.SearchControllerInterface
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.liftAppbarWith
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
@@ -137,7 +137,7 @@ class SettingsSearchController :
     /**
      * Opens a catalogue with the given search.
      */
-    override fun onTitleClick(ctrl: SettingsController) {
+    override fun onTitleClick(ctrl: SettingsLegacyController) {
         searchView?.query.let {
             query = it.toString()
         }

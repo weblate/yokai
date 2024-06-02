@@ -8,11 +8,8 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.preference.Preference
 import androidx.preference.PreferenceController
 import androidx.preference.PreferenceGroup
@@ -23,21 +20,19 @@ import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.changesIn
-import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
+import eu.kanade.tachiyomi.ui.base.controller.BaseControllerPreferenceControllerCommonInterface
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
-import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.BackHandlerControllerInterface
-import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import kotlinx.coroutines.MainScope
 import uy.kohesive.injekt.injectLazy
-import java.util.Locale
+import java.util.*
 
-abstract class SettingsController : PreferenceController(), BackHandlerControllerInterface {
+abstract class SettingsLegacyController : PreferenceController(), SettingsControllerInterface, BackHandlerControllerInterface, BaseControllerPreferenceControllerCommonInterface {
 
     var preferenceKey: String? = null
     val basePreferences: BasePreferences by injectLazy()
@@ -83,9 +78,6 @@ abstract class SettingsController : PreferenceController(), BackHandlerControlle
 
     abstract fun setupPreferenceScreen(screen: PreferenceScreen): PreferenceScreen
 
-    open fun onActionViewExpand(item: MenuItem?) { }
-    open fun onActionViewCollapse(item: MenuItem?) { }
-
     private fun getThemedContext(): Context {
         val tv = TypedValue()
         activity!!.theme.resolveAttribute(R.attr.preferenceTheme, tv, true)
@@ -103,9 +95,9 @@ abstract class SettingsController : PreferenceController(), BackHandlerControlle
             }
     }
 
-    open fun getTitle(): String? = preferenceScreen?.title?.toString()
+    override fun getTitle(): String? = __getTitle() ?: preferenceScreen?.title?.toString()
 
-    open fun getSearchTitle(): String? {
+    override fun getSearchTitle(): String? {
         return if (this is FloatingSearchInterface) {
             searchTitle(preferenceScreen?.title?.toString()?.lowercase(Locale.ROOT))
         } else {
@@ -113,19 +105,7 @@ abstract class SettingsController : PreferenceController(), BackHandlerControlle
         }
     }
 
-    fun setTitle() {
-        var parentController = parentController
-        while (parentController != null) {
-            if (parentController is BaseLegacyController<*> && parentController.getTitle() != null) {
-                return
-            }
-            parentController = parentController.parentController
-        }
-
-        (activity as? AppCompatActivity)?.title = getTitle()
-        (activity as? MainActivity)?.searchTitle = getSearchTitle()
-        activityBinding?.bigIconLayout?.isVisible = false
-    }
+    fun setTitle() = __setTitle()
 
     override fun onChangeStarted(handler: ControllerChangeHandler, type: ControllerChangeType) {
         if (type.isEnter && isControllerVisible) {

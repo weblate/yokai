@@ -18,7 +18,7 @@ import eu.kanade.tachiyomi.ui.base.controller.FadeChangeHandler
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsReaderController
 import eu.kanade.tachiyomi.ui.source.browse.BrowseSourceController
 import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
@@ -49,7 +49,7 @@ class SearchActivity : MainActivity() {
             }
         }
         (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.setTitle()
-        (router.backstack.lastOrNull()?.controller as? SettingsController)?.setTitle()
+        (router.backstack.lastOrNull()?.controller as? SettingsLegacyController)?.setTitle()
     }
 
     // Override finishAfterTransition since the animation gets weird when launching this from other apps

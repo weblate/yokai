@@ -102,7 +102,7 @@ import eu.kanade.tachiyomi.ui.more.stats.StatsController
 import eu.kanade.tachiyomi.ui.recents.RecentsController
 import eu.kanade.tachiyomi.ui.recents.RecentsViewType
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
-import eu.kanade.tachiyomi.ui.setting.SettingsController
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsMainController
 import eu.kanade.tachiyomi.ui.source.BrowseController
 import eu.kanade.tachiyomi.ui.source.browse.BrowseSourceController
@@ -553,7 +553,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     binding.searchToolbar.menu.forEach { it.isVisible = false }
                     lifecycleScope.launchUI {
                         (controller as? BaseLegacyController<*>)?.onActionViewExpand(item)
-                        (controller as? SettingsController)?.onActionViewExpand(item)
+                        (controller as? SettingsLegacyController)?.onActionViewExpand(item)
                         reEnableBackPressedCallBack()
                     }
                     return true
@@ -566,7 +566,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     setupSearchTBMenu(binding.toolbar.menu, true)
                     lifecycleScope.launchUI {
                         (controller as? BaseLegacyController<*>)?.onActionViewCollapse(item)
-                        (controller as? SettingsController)?.onActionViewCollapse(item)
+                        (controller as? SettingsLegacyController)?.onActionViewCollapse(item)
                         reEnableBackPressedCallBack()
                     }
                     return true
@@ -663,7 +663,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         val navIcon = if (router.backstackSize > 1) backDrawable else null
         binding.toolbar.navigationIcon = navIcon
         (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.setTitle()
-        (router.backstack.lastOrNull()?.controller as? SettingsController)?.setTitle()
+        (router.backstack.lastOrNull()?.controller as? SettingsLegacyController)?.setTitle()
 
         splashScreen?.configure()
 
@@ -727,7 +727,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         get() {
             return try {
                 (router.backstack.lastOrNull()?.controller as? BaseLegacyController<*>)?.getSearchTitle()
-                    ?: (router.backstack.lastOrNull()?.controller as? SettingsController)?.getSearchTitle()
+                    ?: (router.backstack.lastOrNull()?.controller as? SettingsLegacyController)?.getSearchTitle()
             } catch (_: Exception) {
                 binding.searchToolbar.title?.toString()
             }

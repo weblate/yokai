@@ -53,7 +53,7 @@ body:
       label: Yōkai version
       description: You can find your Yōkai version in **More → About**.
       placeholder: |
-        Example: "1.5.8"
+        Example: "1.8.0" or "1.8.0-b5000 (Nightly)" or "Nightly r5000"
     validations:
       required: true
 

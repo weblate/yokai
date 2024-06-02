@@ -1,5 +1,8 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
+import android.content.ComponentName
+import android.content.Intent
+import android.provider.Settings
 import androidx.preference.PreferenceScreen
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
@@ -20,6 +23,8 @@ import eu.kanade.tachiyomi.ui.setting.infoPreference
 import eu.kanade.tachiyomi.ui.setting.intListPreference
 import eu.kanade.tachiyomi.ui.setting.listPreference
 import eu.kanade.tachiyomi.ui.setting.multiSelectListPreferenceMat
+import eu.kanade.tachiyomi.ui.setting.onClick
+import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
 import eu.kanade.tachiyomi.ui.setting.summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
@@ -125,6 +130,19 @@ class SettingsReaderController : SettingsLegacyController() {
 
                 preferences.fullscreen().changesIn(viewScope) {
                     isVisible = DeviceUtil.hasCutout(activity).ordinal >= DeviceUtil.CutoutSupport.MODERN.ordinal && it
+                }
+            }
+            if (DeviceUtil.isVivo && DeviceUtil.hasCutout(activity) == DeviceUtil.CutoutSupport.LEGACY) {
+                preference {
+                    title = context.getString(R.string.pref_legacy_cutout).addBetaTag(context)
+                    summaryRes = R.string.pref_legacy_cutout_info
+
+                    onClick {
+                        val intent = Intent().apply {
+                            setComponent(ComponentName("com.android.settings", "com.vivo.settings.display.FullScreenDisplayActivity"))
+                        }
+                        startActivity(intent)
+                    }
                 }
             }
             listPreference(activity) {

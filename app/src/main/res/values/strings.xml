@@ -520,6 +520,8 @@
     <string name="pad_cutout_areas">Pad cutout areas</string>
     <string name="start_past_cutout">Start past cutout</string>
     <string name="cutout_behavior_only_applies">Cutout area behavior only applies in portrait mode with certain scale types</string>
+    <string name="pref_legacy_cutout">Open legacy cutout settings</string>
+    <string name="pref_legacy_cutout_info">On devices older than Android 9.0, there\'s no way to set cutout other than setting it through to your system settings</string>
     <string name="pref_cutout_short">Show content in cutout area</string>
     <string name="cutout_ignore">Ignore cutout areas</string>
     <string name="page_layout">Page layout</string>

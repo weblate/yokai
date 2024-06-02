@@ -791,7 +791,7 @@ class ReaderViewModel(
         // Build destination file.
         val filename = DiskUtil.buildValidFilename(
             "${manga.title} - ${chapter.preferredChapterName(context, manga, preferences)}".take(225),
-        ) + (downloadPreferences.downloadWithId().get() ? " (${chapter.id})" : "") + " - ${page1.number}-${page2.number}.jpg"
+        ) + (if (downloadPreferences.downloadWithId().get()) " (${chapter.id})" else "") + " - ${page1.number}-${page2.number}.jpg"
 
         val destFile = directory.findFile(filename)!!
         stream.use { input ->

@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 
 import android.content.ComponentName
 import android.content.Intent
-import android.provider.Settings
 import androidx.preference.PreferenceScreen
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour

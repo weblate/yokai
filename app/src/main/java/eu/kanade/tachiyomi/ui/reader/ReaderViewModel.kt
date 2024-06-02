@@ -10,6 +10,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.download.DownloadPreferences
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -90,6 +91,7 @@ class ReaderViewModel(
     private val preferences: PreferencesHelper = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val storageManager: StorageManager = Injekt.get(),
+    private val downloadPreferences: DownloadPreferences = Injekt.get(),
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(State())
@@ -789,7 +791,7 @@ class ReaderViewModel(
         // Build destination file.
         val filename = DiskUtil.buildValidFilename(
             "${manga.title} - ${chapter.preferredChapterName(context, manga, preferences)}".take(225),
-        ) + " - ${page1.number}-${page2.number}.jpg"
+        ) + (downloadPreferences.downloadWithId().get() ? " (${chapter.id})" : "") + " - ${page1.number}-${page2.number}.jpg"
 
         val destFile = directory.findFile(filename)!!
         stream.use { input ->

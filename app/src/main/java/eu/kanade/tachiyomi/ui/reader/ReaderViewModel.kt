@@ -810,16 +810,16 @@ class ReaderViewModel(
         val manga = manga ?: return
         val context = Injekt.get<Application>()
 
-        val notifier = SaveImageNotifier(context.localeContext)
-        notifier.onClear()
-
         // Pictures directory.
-        val baseDir = storageManager.getPagesDirectory()!!
+        val baseDir = storageManager.getPagesDirectory() ?: return
         val destDir = if (preferences.folderPerManga().get()) {
-            baseDir.createDirectory(DiskUtil.buildValidFilename(manga.title))!!
+            baseDir.createDirectory(DiskUtil.buildValidFilename(manga.title))
         } else {
             baseDir
-        }
+        } ?: return
+
+        val notifier = SaveImageNotifier(context.localeContext)
+        notifier.onClear()
 
         // Copy file in background.
         viewModelScope.launchNonCancellable {
@@ -842,16 +842,16 @@ class ReaderViewModel(
             val manga = manga ?: return@launch
             val context = Injekt.get<Application>()
 
-            val notifier = SaveImageNotifier(context.localeContext)
-            notifier.onClear()
-
             // Pictures directory.
-            val baseDir = storageManager.getPagesDirectory()!!
+            val baseDir = storageManager.getPagesDirectory() ?: return@launch
             val destDir = if (preferences.folderPerManga().get()) {
                 baseDir.findFile(DiskUtil.buildValidFilename(manga.title))
             } else {
                 baseDir
-            }!!
+            } ?: return@launch
+
+            val notifier = SaveImageNotifier(context.localeContext)
+            notifier.onClear()
 
             try {
                 val file = saveImages(firstPage, secondPage, isLTR, bg, destDir, manga)

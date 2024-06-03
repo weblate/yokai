@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
     id("com.google.android.gms.oss-licenses-plugin")
+    id("app.cash.sqldelight")
     id("com.google.gms.google-services") apply false
     id("com.google.firebase.crashlytics") apply false
 }
@@ -142,6 +143,16 @@ android {
         jvmTarget = "17"
     }
     namespace = "eu.kanade.tachiyomi"
+
+    sqldelight {
+        databases {
+            create("Database") {
+                packageName.set("tachiyomi.data")
+                dialect(libs.sqldelight.dialects.sql)
+                schemaOutputDirectory.set(project.file("./src/main/sqldelight"))
+            }
+        }
+    }
 }
 
 dependencies {
@@ -208,7 +219,9 @@ dependencies {
     implementation(libs.play.services.gcm)
 
     // Database
+    implementation(libs.bundles.db)
     implementation(libs.sqlite.android)
+    implementation(libs.bundles.sqlite)
     //noinspection UseTomlInstead
     implementation("com.github.inorichi.storio:storio-common:8be19de@aar")
     //noinspection UseTomlInstead

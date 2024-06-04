@@ -34,11 +34,4 @@ interface ExtensionRepoRepository {
     }
     suspend fun replaceRepository(newRepo: ExtensionRepo)
     suspend fun deleteRepository(baseUrl: String)
-    /*
-    fun addRepo(url: String): Result<Nothing>
-
-    fun deleteRepo(repo: String)
-
-    fun getRepoFlow(): Flow<List<String>>
-     */
 }

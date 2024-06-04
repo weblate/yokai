@@ -65,7 +65,10 @@ fun ExtensionRepoScreen(
             ToolTipButton(
                 toolTipLabel = stringResource(R.string.refresh),
                 icon = Icons.Outlined.Refresh,
-                buttonClicked = { viewModel.refreshRepos() },
+                buttonClicked = {
+                    context.toast("Refreshing...")  // TODO: Should be loading animation instead
+                    viewModel.refreshRepos()
+                },
             )
         },
     ) { innerPadding ->

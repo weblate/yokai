@@ -45,6 +45,4 @@ FROM mangas_tmp;
 
 CREATE INDEX mangas_url_index ON mangas(url);
 CREATE INDEX library_favorite_index ON mangas(favorite) WHERE favorite = 1;
-
-DROP TABLE IF EXISTS mangas_tmp;
 --- << Rename hideTitle to hide_title

@@ -100,4 +100,5 @@ DROP TABLE IF EXISTS chapters_tmp;
 DROP TABLE IF EXISTS history_tmp;
 DROP TABLE IF EXISTS mangas_categories_tmp;
 DROP TABLE IF EXISTS manga_sync_tmp;
+DROP TABLE IF EXISTS mangas_tmp;
 --- << Fix migration 17 mistake

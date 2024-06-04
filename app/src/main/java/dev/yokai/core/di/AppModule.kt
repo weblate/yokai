@@ -1,10 +1,8 @@
-package eu.kanade.tachiyomi.di
+package dev.yokai.core.di
 
 import android.app.Application
-import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.sqlite.db.SupportSQLiteOpenHelper
-import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import dev.yokai.data.AndroidDatabaseHandler
@@ -12,7 +10,6 @@ import dev.yokai.data.DatabaseHandler
 import dev.yokai.domain.SplashState
 import dev.yokai.domain.extension.TrustExtension
 import dev.yokai.domain.storage.StorageManager
-import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache

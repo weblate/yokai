@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.di
+package dev.yokai.core.di
 
 import android.app.Application
 import dev.yokai.domain.base.BasePreferences

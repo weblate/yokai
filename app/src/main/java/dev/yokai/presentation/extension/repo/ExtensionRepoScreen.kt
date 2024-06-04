@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExtensionOff
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,9 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.yokai.domain.ComposableAlertDialog
+import dev.yokai.domain.extension.repo.model.ExtensionRepo
 import dev.yokai.presentation.AppBarType
 import dev.yokai.presentation.YokaiScaffold
 import dev.yokai.presentation.component.EmptyScreen
+import dev.yokai.presentation.component.ToolTipButton
 import dev.yokai.presentation.extension.repo.component.ExtensionRepoInput
 import dev.yokai.presentation.extension.repo.component.ExtensionRepoItem
 import eu.kanade.tachiyomi.R
@@ -58,6 +61,13 @@ fun ExtensionRepoScreen(
             state = rememberTopAppBarState(),
             canScroll = { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 },
         ),
+        actions = {
+            ToolTipButton(
+                toolTipLabel = stringResource(R.string.refresh),
+                icon = Icons.Outlined.Refresh,
+                buttonClicked = { viewModel.refreshRepos() },
+            )
+        },
     ) { innerPadding ->
         if (repoState.value is ExtensionRepoState.Loading) return@YokaiScaffold
 
@@ -94,7 +104,7 @@ fun ExtensionRepoScreen(
             repos.forEach { repo ->
                 item {
                     ExtensionRepoItem(
-                        repoUrl = repo,
+                        extensionRepo = repo,
                         onDeleteClick = { repoToDelete ->
                             alertDialog.content = { ExtensionRepoDeletePrompt(repoToDelete, alertDialog, viewModel) }
                         },
@@ -114,8 +124,52 @@ fun ExtensionRepoScreen(
                 context.toast(event.stringRes)
             if (event is ExtensionRepoEvent.Success)
                 inputText = ""
+            if (event is ExtensionRepoEvent.ShowDialog)
+                alertDialog.content = {
+                    if (event.dialog is RepoDialog.Conflict) {
+                        ExtensionRepoReplacePrompt(
+                            oldRepo = event.dialog.oldRepo,
+                            newRepo = event.dialog.newRepo,
+                            onDismissRequest = { alertDialog.content = null },
+                            onMigrate = { viewModel.replaceRepo(event.dialog.newRepo) },
+                        )
+                    }
+                }
         }
     }
+}
+
+@Composable
+fun ExtensionRepoReplacePrompt(
+    oldRepo: ExtensionRepo,
+    newRepo: ExtensionRepo,
+    onDismissRequest: () -> Unit,
+    onMigrate: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onMigrate()
+                    onDismissRequest()
+                },
+            ) {
+                Text(text = stringResource(R.string.action_replace_repo))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(text = stringResource(android.R.string.cancel))
+            }
+        },
+        title = {
+            Text(text = stringResource(R.string.action_replace_repo_title))
+        },
+        text = {
+            Text(text = stringResource(R.string.action_replace_repo_message, newRepo.name, oldRepo.name))
+        },
+    )
 }
 
 @Composable

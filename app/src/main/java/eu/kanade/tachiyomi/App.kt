@@ -91,7 +91,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         Injekt.apply {
             importModule(PreferenceModule(this@App))
             importModule(AppModule(this@App))
-            importModule(DomainModule(this@App))
+            importModule(DomainModule())
         }
 
         setupNotificationChannels()

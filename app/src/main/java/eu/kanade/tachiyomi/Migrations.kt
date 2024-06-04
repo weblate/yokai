@@ -3,23 +3,24 @@ package eu.kanade.tachiyomi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.extension.repo.ExtensionRepoRepository
+import dev.yokai.domain.extension.repo.exception.SaveExtensionRepoException
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import dev.yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
+import eu.kanade.tachiyomi.core.preference.Preference
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
-import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
-import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.data.updater.AppUpdateJob
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
-import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.network.PREF_DOH_CLOUDFLARE
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.library.LibrarySort
@@ -29,8 +30,11 @@ import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import java.io.File
 import kotlin.math.max
 
@@ -306,6 +310,28 @@ object Migrations {
                     )
                 } catch (_: Exception) {
                     readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.DEFAULT)
+                }
+            }
+            if (oldVersion < 130) {
+                val coroutineScope = CoroutineScope(Dispatchers.IO)
+                val extensionRepoRepository: ExtensionRepoRepository by injectLazy()
+                val extensionRepos: Preference<Set<String>> = preferenceStore.getStringSet("extension_repos", emptySet())
+
+                coroutineScope.launchIO {
+                    for ((index, source) in extensionRepos.get().withIndex()) {
+                        try {
+                            extensionRepoRepository.upsertRepository(
+                                source,
+                                "Repo #${index + 1}",
+                                null,
+                                source,
+                                "NOFINGERPRINT-${index + 1}",
+                            )
+                        } catch (e: SaveExtensionRepoException) {
+                            Timber.e(e, "Error Migrating Extension Repo with baseUrl: $source")
+                        }
+                    }
+                    extensionRepos.delete()
                 }
             }
 

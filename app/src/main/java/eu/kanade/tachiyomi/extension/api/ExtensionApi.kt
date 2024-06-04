@@ -1,7 +1,9 @@
 package eu.kanade.tachiyomi.extension.api
 
 import android.content.Context
-import dev.yokai.domain.source.SourcePreferences
+import dev.yokai.domain.extension.repo.interactor.GetExtensionRepo
+import dev.yokai.domain.extension.repo.interactor.UpdateExtensionRepo
+import dev.yokai.domain.extension.repo.model.ExtensionRepo
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.LoadResult
@@ -11,6 +13,8 @@ import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.network.awaitSuccess
 import eu.kanade.tachiyomi.network.parseAs
 import eu.kanade.tachiyomi.util.system.withIOContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import timber.log.Timber
@@ -22,27 +26,22 @@ internal class ExtensionApi {
 
     private val json: Json by injectLazy()
     private val networkService: NetworkHelper by injectLazy()
-    private val sourcePreferences: SourcePreferences by injectLazy()
+    private val getExtensionRepo: GetExtensionRepo by injectLazy()
+    private val updateExtensionRepo: UpdateExtensionRepo by injectLazy()
 
     suspend fun findExtensions(): List<Extension.Available> {
         return withIOContext {
-            val repos = sourcePreferences.extensionRepos().get()
-            if (repos.isEmpty()) {
-                return@withIOContext emptyList()
-            }
-            val extensions = repos.flatMap { getExtensions(it) }
-
-            if (extensions.isEmpty()) {
-                throw Exception()
-            }
-
-            extensions
+            getExtensionRepo.getAll()
+                .map { async { getExtensions(it) } }
+                .awaitAll()
+                .flatten()
         }
     }
 
     private suspend fun getExtensions(
-        repoBaseUrl: String,
+        repo: ExtensionRepo,
     ): List<Extension.Available> {
+        val repoBaseUrl = repo.baseUrl
         return try {
             val response = networkService.client
                 .newCall(GET("$repoBaseUrl/index.min.json"))
@@ -62,6 +61,9 @@ internal class ExtensionApi {
     suspend fun checkForUpdates(context: Context, prefetchedExtensions: List<Extension.Available>? = null): List<Extension.Available> {
         return withIOContext {
             val extensions = prefetchedExtensions ?: findExtensions()
+
+            // Update extension repo details
+            updateExtensionRepo.awaitAll()
 
             val extensionManager: ExtensionManager = Injekt.get()
             val installedExtensions = extensionManager.installedExtensionsFlow.value.ifEmpty {

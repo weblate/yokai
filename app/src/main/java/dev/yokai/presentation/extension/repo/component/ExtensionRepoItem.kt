@@ -5,6 +5,7 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Label
@@ -29,15 +30,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.yokai.domain.extension.repo.model.ExtensionRepo
+import dev.yokai.presentation.component.Gap
+import dev.yokai.presentation.theme.Size
 import eu.kanade.tachiyomi.util.compose.textHint
 
 // TODO: Redesign
 // - Edit
-// - Show display name
 @Composable
 fun ExtensionRepoItem(
-    repoUrl: String,
     modifier: Modifier = Modifier,
+    extensionRepo: ExtensionRepo,
     onDeleteClick: (String) -> Unit = {},
 ) {
     Row(
@@ -50,15 +53,28 @@ fun ExtensionRepoItem(
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground,
         )
-        Text(
-            modifier = Modifier
-                .weight(1.0f)
-                .basicMarquee(),
-            text = repoUrl,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 16.sp,
-        )
-        IconButton(onClick = { onDeleteClick(repoUrl) }) {
+        Column(
+            modifier = modifier.weight(1.0f),
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .basicMarquee(),
+                text = extensionRepo.name,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 16.sp,
+            )
+            Gap(Size.tiny)
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .basicMarquee(),
+                text = extensionRepo.baseUrl,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 16.sp,
+            )
+        }
+        IconButton(onClick = { onDeleteClick(extensionRepo.baseUrl) }) {
             Icon(
                 imageVector = Icons.Filled.Delete,
                 contentDescription = null,
@@ -142,7 +158,7 @@ fun ExtensionRepoItemPreview() {
     val input = "https://raw.githubusercontent.com/null2264/totally-real-extensions/repo/index.min.json"
     Surface {
         Column {
-            ExtensionRepoItem(repoUrl = input)
+            ExtensionRepoItem(extensionRepo = ExtensionRepo("", "", "", "", ""))
             ExtensionRepoInput(inputHint = "Input")
             ExtensionRepoInput(inputHint = "", inputText = input)
             ExtensionRepoInput(inputHint = "", inputText = input, isLoading = true)

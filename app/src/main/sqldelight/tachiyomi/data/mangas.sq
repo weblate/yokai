@@ -16,7 +16,7 @@ CREATE TABLE mangas(
     last_update INTEGER AS Long,
     initialized INTEGER AS Boolean NOT NULL,
     viewer INTEGER NOT NULL,
-    hideTitle INTEGER NOT NULL,
+    hide_title INTEGER NOT NULL,
     chapter_flags INTEGER NOT NULL,
     date_added INTEGER AS Long,
     filtered_scanlators TEXT,

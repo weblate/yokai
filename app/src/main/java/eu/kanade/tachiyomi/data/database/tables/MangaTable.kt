@@ -42,7 +42,7 @@ object MangaTable {
 
     const val COL_CATEGORY = "category"
 
-    const val COL_HIDE_TITLE = "hideTitle"
+    const val COL_HIDE_TITLE = "hide_title"
 
     const val COL_DATE_ADDED = "date_added"
 

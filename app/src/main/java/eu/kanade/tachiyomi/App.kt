@@ -40,6 +40,7 @@ import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import dev.yokai.core.di.AppModule
+import dev.yokai.core.di.DomainModule
 import dev.yokai.core.di.PreferenceModule
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.ui.crash.CrashActivity
@@ -87,8 +88,11 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             if (packageName != process) WebView.setDataDirectorySuffix(process)
         }
 
-        Injekt.importModule(PreferenceModule(this))
-        Injekt.importModule(AppModule(this))
+        Injekt.apply {
+            importModule(PreferenceModule(this@App))
+            importModule(AppModule(this@App))
+            importModule(DomainModule(this@App))
+        }
 
         setupNotificationChannels()
 

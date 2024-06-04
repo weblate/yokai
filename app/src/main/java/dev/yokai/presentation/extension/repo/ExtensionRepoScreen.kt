@@ -31,6 +31,7 @@ import dev.yokai.presentation.component.EmptyScreen
 import dev.yokai.presentation.extension.repo.component.ExtensionRepoItem
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
+import eu.kanade.tachiyomi.util.compose.LocalBackPress
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -38,10 +39,10 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ExtensionRepoScreen(
     title: String,
-    onBackPress: () -> Unit,
     viewModel: ExtensionRepoViewModel = viewModel(),
     repoUrl: String? = null,
 ) {
+    val onBackPress = LocalBackPress.currentOrThrow
     val context = LocalContext.current
     val repoState = viewModel.repoState.collectAsState()
     var inputText by remember { mutableStateOf("") }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import dev.yokai.domain.ComposableAlertDialog
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
+import eu.kanade.tachiyomi.util.compose.LocalBackPress
 
 class ExtensionRepoController() :
     BaseComposeController() {
@@ -17,10 +18,12 @@ class ExtensionRepoController() :
 
     @Composable
     override fun ScreenContent() {
-        CompositionLocalProvider(LocalAlertDialog provides ComposableAlertDialog(null)) {
+        CompositionLocalProvider(
+            LocalAlertDialog provides ComposableAlertDialog(null),
+            LocalBackPress provides router::handleBack,
+        ) {
             ExtensionRepoScreen(
                 title = "Extension Repos",
-                onBackPress = router::handleBack,
                 repoUrl = repoUrl,
             )
         }

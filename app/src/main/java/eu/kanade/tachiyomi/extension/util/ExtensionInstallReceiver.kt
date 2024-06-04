@@ -10,11 +10,14 @@ import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.LoadResult
 import eu.kanade.tachiyomi.util.system.launchNow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * Broadcast receiver that listens for the system's packages installed, updated or removed, and only
@@ -24,6 +27,8 @@ import kotlinx.coroutines.async
  */
 internal class ExtensionInstallReceiver(private val listener: Listener) :
     BroadcastReceiver() {
+
+    val scope = CoroutineScope(SupervisorJob())
 
     /**
      * Registers this broadcast receiver
@@ -54,18 +59,18 @@ internal class ExtensionInstallReceiver(private val listener: Listener) :
 
         when (intent.action) {
             Intent.ACTION_PACKAGE_ADDED, ACTION_EXTENSION_ADDED -> {
-                if (!isReplacing(intent)) {
-                    launchNow {
-                        when (val result = getExtensionFromIntent(context, intent)) {
-                            is LoadResult.Success -> listener.onExtensionInstalled(result.extension)
-                            is LoadResult.Untrusted -> listener.onExtensionUntrusted(result.extension)
-                            else -> {}
-                        }
+                if (isReplacing(intent)) return
+
+                scope.launch {
+                    when (val result = getExtensionFromIntent(context, intent)) {
+                        is LoadResult.Success -> listener.onExtensionInstalled(result.extension)
+                        is LoadResult.Untrusted -> listener.onExtensionUntrusted(result.extension)
+                        else -> {}
                     }
                 }
             }
             Intent.ACTION_PACKAGE_REPLACED, ACTION_EXTENSION_REPLACED -> {
-                launchNow {
+                scope.launch {
                     when (val result = getExtensionFromIntent(context, intent)) {
                         is LoadResult.Success -> listener.onExtensionUpdated(result.extension)
                         is LoadResult.Untrusted -> listener.onExtensionUntrusted(result.extension)
@@ -74,11 +79,11 @@ internal class ExtensionInstallReceiver(private val listener: Listener) :
                 }
             }
             Intent.ACTION_PACKAGE_REMOVED, ACTION_EXTENSION_REMOVED -> {
-                if (!isReplacing(intent)) {
-                    val pkgName = getPackageNameFromIntent(intent)
-                    if (pkgName != null) {
-                        listener.onPackageUninstalled(pkgName)
-                    }
+                if (isReplacing(intent)) return
+
+                val pkgName = getPackageNameFromIntent(intent)
+                if (pkgName != null) {
+                    listener.onPackageUninstalled(pkgName)
                 }
             }
         }

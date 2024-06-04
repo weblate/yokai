@@ -18,7 +18,7 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
-import dev.yokai.domain.extension.TrustExtension
+import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.ChapterCache

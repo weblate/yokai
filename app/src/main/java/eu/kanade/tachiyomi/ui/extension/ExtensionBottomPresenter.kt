@@ -275,6 +275,8 @@ class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>() 
     }
 
     fun trustExtension(pkgName: String, versionCode: Long, signatureHash: String) {
-        extensionManager.trust(pkgName, versionCode, signatureHash)
+        presenterScope.launch {
+            extensionManager.trust(pkgName, versionCode, signatureHash)
+        }
     }
 }

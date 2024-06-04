@@ -2,6 +2,7 @@ package dev.yokai.core.di
 
 import dev.yokai.domain.extension.repo.ExtensionRepoRepository
 import dev.yokai.data.extension.repo.ExtensionRepoRepositoryImpl
+import dev.yokai.domain.extension.interactor.TrustExtension
 import dev.yokai.domain.extension.repo.interactor.CreateExtensionRepo
 import dev.yokai.domain.extension.repo.interactor.DeleteExtensionRepo
 import dev.yokai.domain.extension.repo.interactor.GetExtensionRepo
@@ -23,5 +24,7 @@ class DomainModule : InjektModule {
         addFactory { GetExtensionRepoCount(get()) }
         addFactory { ReplaceExtensionRepo(get()) }
         addFactory { UpdateExtensionRepo(get(), get()) }
+
+        addFactory { TrustExtension(get(), get()) }
     }
 }

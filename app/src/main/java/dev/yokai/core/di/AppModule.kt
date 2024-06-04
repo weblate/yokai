@@ -8,7 +8,7 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import dev.yokai.data.AndroidDatabaseHandler
 import dev.yokai.data.DatabaseHandler
 import dev.yokai.domain.SplashState
-import dev.yokai.domain.extension.TrustExtension
+import dev.yokai.domain.extension.interactor.TrustExtension
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.cache.ChapterCache
@@ -123,8 +123,6 @@ class AppModule(val app: Application) : InjektModule {
         addSingletonFactory { ChapterFilter() }
 
         addSingletonFactory { MangaShortcutManager() }
-
-        addSingletonFactory { TrustExtension() }
 
         addSingletonFactory { AndroidStorageFolderProvider(app) }
         addSingletonFactory { StorageManager(app, get()) }

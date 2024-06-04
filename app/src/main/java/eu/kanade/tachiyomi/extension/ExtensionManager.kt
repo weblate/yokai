@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
 import dev.yokai.domain.base.BasePreferences
-import dev.yokai.domain.extension.TrustExtension
+import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -316,7 +316,7 @@ class ExtensionManager(
      * @param versionCode the version code of the extension
      * @param signatureHash the signature hash of the extension
      */
-    fun trust(pkgName: String, versionCode: Long, signatureHash: String) {
+    suspend fun trust(pkgName: String, versionCode: Long, signatureHash: String) {
         val untrustedPkgName = untrustedExtensionsFlow.value.map { it.pkgName }.toSet()
         if (pkgName !in untrustedPkgName) return
 

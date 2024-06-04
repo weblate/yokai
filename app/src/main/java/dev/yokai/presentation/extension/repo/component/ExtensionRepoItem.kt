@@ -1,5 +1,6 @@
 package dev.yokai.presentation.extension.repo.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eu.kanade.tachiyomi.util.compose.textHint
@@ -78,12 +81,14 @@ fun ExtensionRepoItem(
                 disabledIndicatorColor = Color.Transparent,
             )
             TextField(
-                modifier = Modifier.indicatorLine(
-                    enabled = false,
-                    colors = colors,
-                    interactionSource = interactionSource,
-                    isError = true,
-                ).weight(1.0f),
+                modifier = Modifier
+                    .indicatorLine(
+                        enabled = false,
+                        colors = colors,
+                        interactionSource = interactionSource,
+                        isError = true,
+                    )
+                    .weight(1.0f),
                 value = inputText,
                 onValueChange = onInputChange,
                 enabled = true,
@@ -102,5 +107,13 @@ fun ExtensionRepoItem(
                 )
             }
         }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+fun ExtensionRepoItemPreview() {
+    Surface {
+        ExtensionRepoItem(repoUrl = "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json")
     }
 }

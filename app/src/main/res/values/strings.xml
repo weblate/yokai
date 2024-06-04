@@ -1236,7 +1236,7 @@
     <string name="internal_error">Internal error: %s</string>
     <string name="sfw">SFW</string>
     <string name="nsfw">NSFW</string>
-    <string name="content_type">Content Type</string>
+    <string name="content_type">Content type</string>
 
     <!-- Crash screen -->
     <string name="crash_screen_title">An Unexpected Error Occurred</string>

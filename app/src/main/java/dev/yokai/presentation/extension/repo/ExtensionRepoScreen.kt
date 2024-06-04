@@ -29,6 +29,7 @@ import dev.yokai.presentation.YokaiScaffold
 import dev.yokai.presentation.component.EmptyScreen
 import dev.yokai.presentation.extension.repo.component.ExtensionRepoItem
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
 
@@ -43,7 +44,7 @@ fun ExtensionRepoScreen(
     val repoState = viewModel.repoState.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
-    var repoToDelete by remember { mutableStateOf<String?>(null) }
+    val alertDialog = LocalAlertDialog.current ?: throw RuntimeException("LocalAlertDialog not yet provided")
 
     YokaiScaffold(
         onNavigationIconClicked = onBackPress,
@@ -58,52 +59,8 @@ fun ExtensionRepoScreen(
 
         val repos = (repoState.value as ExtensionRepoState.Success).repos
 
-        if (repoToDelete != null)
-            AlertDialog(
-                containerColor = MaterialTheme.colorScheme.surface,
-                title = {
-                        Text(
-                            text = stringResource(R.string.confirm_delete_repo_title),
-                            fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 24.sp,
-                        )
-                },
-                text = {
-                       Text(
-                           text = stringResource(R.string.confirm_delete_repo, repoToDelete.orEmpty()),
-                           fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                           color = MaterialTheme.colorScheme.onSurfaceVariant,
-                           fontSize = 14.sp,
-                       )
-                },
-                onDismissRequest = { repoToDelete = null },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            repoToDelete?.let {
-                                viewModel.deleteRepo(it)
-                                repoToDelete = null
-                            }
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.delete),
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 14.sp,
-                        )
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { repoToDelete = null }) {
-                        Text(
-                            text = stringResource(R.string.cancel),
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 14.sp,
-                        )
-                    }
-                },
-            )
+        if (alertDialog.content != null)
+            alertDialog.content?.let { it() }
 
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
@@ -135,7 +92,54 @@ fun ExtensionRepoScreen(
                 item {
                     ExtensionRepoItem(
                         repoUrl = repo,
-                        onDeleteClick = { repoToDelete = it },
+                        onDeleteClick = { repoToDelete ->
+                            alertDialog.content =
+                                {
+                                    AlertDialog(
+                                        containerColor = MaterialTheme.colorScheme.surface,
+                                        title = {
+                                            Text(
+                                                text = stringResource(R.string.confirm_delete_repo_title),
+                                                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                fontSize = 24.sp,
+                                            )
+                                        },
+                                        text = {
+                                            Text(
+                                                text = stringResource(R.string.confirm_delete_repo, repoToDelete),
+                                                fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                fontSize = 14.sp,
+                                            )
+                                        },
+                                        onDismissRequest = { alertDialog.content = null },
+                                        confirmButton = {
+                                            TextButton(
+                                                onClick = {
+                                                    viewModel.deleteRepo(repoToDelete)
+                                                    alertDialog.content = null
+                                                }
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.delete),
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    fontSize = 14.sp,
+                                                )
+                                            }
+                                        },
+                                        dismissButton = {
+                                            TextButton(onClick = { alertDialog.content = null }) {
+                                                Text(
+                                                    text = stringResource(R.string.cancel),
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    fontSize = 14.sp,
+                                                )
+                                            }
+                                        },
+                                    )
+                                }
+                        },
                     )
                 }
             }

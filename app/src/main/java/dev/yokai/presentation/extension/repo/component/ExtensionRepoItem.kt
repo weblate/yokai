@@ -3,6 +3,7 @@ package dev.yokai.presentation.extension.repo.component
 import android.content.res.Configuration
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -58,7 +59,9 @@ fun ExtensionRepoItem(
         )
         if (repoUrl != null) {
             Text(
-                modifier = Modifier.weight(1.0f).basicMarquee(),
+                modifier = Modifier
+                    .weight(1.0f)
+                    .basicMarquee(),
                 text = repoUrl,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,
@@ -117,7 +120,12 @@ fun ExtensionRepoItem(
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 fun ExtensionRepoItemPreview() {
+    val input = "https://raw.githubusercontent.com/null2264/totally-real-extensions/repo/index.min.json"
     Surface {
-        ExtensionRepoItem(repoUrl = "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json")
+        Column {
+            ExtensionRepoItem(repoUrl = input)
+            ExtensionRepoItem(inputHint = "Url")
+            ExtensionRepoItem(inputHint = "Url", inputText = input)
+        }
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,84 +36,102 @@ import eu.kanade.tachiyomi.util.compose.textHint
 // - Show display name
 @Composable
 fun ExtensionRepoItem(
+    repoUrl: String,
     modifier: Modifier = Modifier,
-    repoUrl: String? = null,
-    inputText: String = "",
-    onInputChange: (String) -> Unit = {},
-    inputHint: String? = null,
-    onAddClick: (String) -> Unit = {},
     onDeleteClick: (String) -> Unit = {},
 ) {
-    require(repoUrl != null || inputHint != null)
-
-    val interactionSource = remember { MutableInteractionSource() }
-
     Row(
         modifier = modifier.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             modifier = Modifier.padding(horizontal = 8.dp),
-            imageVector = if (repoUrl != null) Icons.AutoMirrored.Outlined.Label else Icons.Filled.Add,
+            imageVector = Icons.AutoMirrored.Outlined.Label,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground,
         )
-        if (repoUrl != null) {
-            Text(
-                modifier = Modifier
-                    .weight(1.0f)
-                    .basicMarquee(),
-                text = repoUrl,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 16.sp,
+        Text(
+            modifier = Modifier
+                .weight(1.0f)
+                .basicMarquee(),
+            text = repoUrl,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 16.sp,
+        )
+        IconButton(onClick = { onDeleteClick(repoUrl) }) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
             )
-            IconButton(onClick = { onDeleteClick(repoUrl) }) {
-                Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
+        }
+    }
+}
+
+@Composable
+fun ExtensionRepoInput(
+    inputHint: String,
+    modifier: Modifier = Modifier,
+    inputText: String = "",
+    onInputChange: (String) -> Unit = {},
+    onAddClick: (String) -> Unit = {},
+    isLoading: Boolean = false,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val colors = TextFieldDefaults.colors().copy(
+        cursorColor = MaterialTheme.colorScheme.secondary,
+        focusedPlaceholderColor = MaterialTheme.colorScheme.textHint,
+        unfocusedPlaceholderColor = MaterialTheme.colorScheme.textHint,
+        errorPlaceholderColor = MaterialTheme.colorScheme.textHint,
+        focusedTextColor = MaterialTheme.colorScheme.onBackground,
+        unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+        errorTextColor = MaterialTheme.colorScheme.onBackground,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        errorIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
+    )
+    Row(
+        modifier = modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            imageVector = Icons.Filled.Add,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground,
+        )
+        TextField(
+            modifier = Modifier
+                .indicatorLine(
+                    enabled = false,
+                    colors = colors,
+                    interactionSource = interactionSource,
+                    isError = true,
                 )
-            }
-        } else {
-            val colors = TextFieldDefaults.colors().copy(
-                cursorColor = MaterialTheme.colorScheme.secondary,
-                focusedPlaceholderColor = MaterialTheme.colorScheme.textHint,
-                unfocusedPlaceholderColor = MaterialTheme.colorScheme.textHint,
-                errorPlaceholderColor = MaterialTheme.colorScheme.textHint,
-                focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-                errorTextColor = MaterialTheme.colorScheme.onBackground,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-            )
-            TextField(
-                modifier = Modifier
-                    .indicatorLine(
-                        enabled = false,
-                        colors = colors,
-                        interactionSource = interactionSource,
-                        isError = true,
-                    )
-                    .weight(1.0f),
-                value = inputText,
-                onValueChange = onInputChange,
-                enabled = true,
-                placeholder = { Text(text = inputHint!!, fontSize = 16.sp) },
-                textStyle = TextStyle(fontSize = 16.sp),
-                colors = colors,
-            )
-            IconButton(
-                onClick = { onAddClick(inputText) },
-                enabled = inputText.isNotEmpty(),
-            ) {
+                .weight(1.0f),
+            value = inputText,
+            onValueChange = onInputChange,
+            enabled = !isLoading,
+            placeholder = { Text(text = inputHint, fontSize = 16.sp) },
+            textStyle = TextStyle(fontSize = 16.sp),
+            colors = colors,
+        )
+        IconButton(
+            onClick = { onAddClick(inputText) },
+            enabled = inputText.isNotEmpty(),
+        ) {
+            if (!isLoading)
                 Icon(
                     imageVector = Icons.Filled.Check,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.secondary,
                 )
-            }
+            else
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                )
         }
     }
 }
@@ -124,8 +143,9 @@ fun ExtensionRepoItemPreview() {
     Surface {
         Column {
             ExtensionRepoItem(repoUrl = input)
-            ExtensionRepoItem(inputHint = "Url")
-            ExtensionRepoItem(inputHint = "Url", inputText = input)
+            ExtensionRepoInput(inputHint = "Input")
+            ExtensionRepoInput(inputHint = "", inputText = input)
+            ExtensionRepoInput(inputHint = "", inputText = input, isLoading = true)
         }
     }
 }

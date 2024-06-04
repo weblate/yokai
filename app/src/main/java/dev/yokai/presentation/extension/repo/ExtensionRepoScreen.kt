@@ -28,6 +28,7 @@ import dev.yokai.domain.ComposableAlertDialog
 import dev.yokai.presentation.AppBarType
 import dev.yokai.presentation.YokaiScaffold
 import dev.yokai.presentation.component.EmptyScreen
+import dev.yokai.presentation.extension.repo.component.ExtensionRepoInput
 import dev.yokai.presentation.extension.repo.component.ExtensionRepoItem
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
@@ -71,7 +72,7 @@ fun ExtensionRepoScreen(
             state = listState,
         ) {
             item {
-                ExtensionRepoItem(
+                ExtensionRepoInput(
                     inputText = inputText,
                     inputHint = stringResource(R.string.label_add_repo),
                     onInputChange = { inputText = it },

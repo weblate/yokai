@@ -1,5 +1,6 @@
 package dev.yokai.presentation.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -67,7 +68,7 @@ fun EmptyScreen(
     actions = actions,
 )
 
-@Preview
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun EmptyScreen(
     modifier: Modifier = Modifier,

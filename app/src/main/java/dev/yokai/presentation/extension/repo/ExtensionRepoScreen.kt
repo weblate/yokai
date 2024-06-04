@@ -24,12 +24,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.yokai.domain.ComposableAlertDialog
 import dev.yokai.presentation.AppBarType
 import dev.yokai.presentation.YokaiScaffold
 import dev.yokai.presentation.component.EmptyScreen
 import dev.yokai.presentation.extension.repo.component.ExtensionRepoItem
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
+import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
 
@@ -44,7 +46,7 @@ fun ExtensionRepoScreen(
     val repoState = viewModel.repoState.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
-    val alertDialog = LocalAlertDialog.current ?: throw RuntimeException("LocalAlertDialog not yet provided")
+    val alertDialog = LocalAlertDialog.currentOrThrow
 
     YokaiScaffold(
         onNavigationIconClicked = onBackPress,
@@ -59,8 +61,7 @@ fun ExtensionRepoScreen(
 
         val repos = (repoState.value as ExtensionRepoState.Success).repos
 
-        if (alertDialog.content != null)
-            alertDialog.content?.let { it() }
+        alertDialog.content?.let { it() }
 
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
@@ -93,52 +94,7 @@ fun ExtensionRepoScreen(
                     ExtensionRepoItem(
                         repoUrl = repo,
                         onDeleteClick = { repoToDelete ->
-                            alertDialog.content =
-                                {
-                                    AlertDialog(
-                                        containerColor = MaterialTheme.colorScheme.surface,
-                                        title = {
-                                            Text(
-                                                text = stringResource(R.string.confirm_delete_repo_title),
-                                                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                fontSize = 24.sp,
-                                            )
-                                        },
-                                        text = {
-                                            Text(
-                                                text = stringResource(R.string.confirm_delete_repo, repoToDelete),
-                                                fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                fontSize = 14.sp,
-                                            )
-                                        },
-                                        onDismissRequest = { alertDialog.content = null },
-                                        confirmButton = {
-                                            TextButton(
-                                                onClick = {
-                                                    viewModel.deleteRepo(repoToDelete)
-                                                    alertDialog.content = null
-                                                }
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.delete),
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    fontSize = 14.sp,
-                                                )
-                                            }
-                                        },
-                                        dismissButton = {
-                                            TextButton(onClick = { alertDialog.content = null }) {
-                                                Text(
-                                                    text = stringResource(R.string.cancel),
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    fontSize = 14.sp,
-                                                )
-                                            }
-                                        },
-                                    )
-                                }
+                            alertDialog.content = { ExtensionRepoDeletePrompt(repoToDelete, alertDialog, viewModel) }
                         },
                     )
                 }
@@ -158,4 +114,51 @@ fun ExtensionRepoScreen(
                 inputText = ""
         }
     }
+}
+
+@Composable
+fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlertDialog, viewModel: ExtensionRepoViewModel) {
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surface,
+        title = {
+            Text(
+                text = stringResource(R.string.confirm_delete_repo_title),
+                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 24.sp,
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.confirm_delete_repo, repoToDelete),
+                fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp,
+            )
+        },
+        onDismissRequest = { alertDialog.content = null },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    viewModel.deleteRepo(repoToDelete)
+                    alertDialog.content = null
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.delete),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 14.sp,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { alertDialog.content = null }) {
+                Text(
+                    text = stringResource(R.string.cancel),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 14.sp,
+                )
+            }
+        },
+    )
 }

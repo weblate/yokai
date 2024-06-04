@@ -1,6 +1,7 @@
 package dev.yokai.presentation.extension.repo.component
 
 import android.content.res.Configuration
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eu.kanade.tachiyomi.util.compose.textHint
 
+// TODO: Redesign
+// - Edit
+// - Show display name
 @Composable
 fun ExtensionRepoItem(
     modifier: Modifier = Modifier,
@@ -54,7 +58,7 @@ fun ExtensionRepoItem(
         )
         if (repoUrl != null) {
             Text(
-                modifier = Modifier.weight(1.0f),
+                modifier = Modifier.weight(1.0f).basicMarquee(),
                 text = repoUrl,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,

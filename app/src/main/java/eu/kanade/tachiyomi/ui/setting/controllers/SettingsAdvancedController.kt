@@ -15,7 +15,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
 import dev.yokai.domain.extension.interactor.TrustExtension
@@ -105,17 +104,9 @@ class SettingsAdvancedController : SettingsLegacyController() {
         titleRes = R.string.advanced
 
         switchPreference {
-            key = "acra.enable"
+            bindTo(basePreferences.crashReport())
             titleRes = R.string.send_crash_report
             summaryRes = R.string.helps_fix_bugs
-            defaultValue = true
-            onChange {
-                try {
-                    Firebase.crashlytics.setCrashlyticsCollectionEnabled(it as Boolean)
-                } catch (_: Exception) {
-                }
-                true
-            }
         }
 
         preference {
@@ -436,13 +427,18 @@ class SettingsAdvancedController : SettingsLegacyController() {
             }
         }
 
-        if (BuildConfig.DEBUG)
-            preference {
-                title = "Crash the app!"
-                onClick {
-                    throw RuntimeException("Fell into the void")
-                }
+        preference {
+            title = "Crash the app!"
+            summary = "To test crashes"
+            onClick {
+                activity!!.materialAlertDialog()
+                    .setTitle(R.string.warning)
+                    .setMessage("I told you this would crash the app, why would you want that?")
+                    .setPositiveButton("Crash it anyway") { _, _ -> throw RuntimeException("Fell into the void") }
+                    .setNegativeButton("Nevermind", null)
+                    .show()
             }
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)

@@ -7,5 +7,8 @@
 
 ## Other
 -->
+## Changes
+- Crash report can now actually be disabled
+
 ## Other
-- Some more NullPointerException prevention that I missed
+- Loading GlobalExceptionHandler before Crashlytics

@@ -243,6 +243,13 @@
             android:exported="true"
             android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
+        <!-- Loading global exception handler before crashlytics (order: 100) -->
+        <provider
+            android:name="eu.kanade.tachiyomi.AppProvider"
+            android:authorities="${applicationId}.yokai"
+            android:exported="false"
+            android:initOrder="101" />
+
         <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing"
             android:value="false" />
         <meta-data android:name="android.webkit.WebView.MetricsOptOut"

@@ -20,4 +20,6 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
     fun displayProfile() = preferenceStore.getString("pref_display_profile_key", "")
 
     fun hasShownOnboarding() = preferenceStore.getBoolean(Preference.appStateKey("onboarding_complete"), false)
+
+    fun crashReport() = preferenceStore.getBoolean("pref_crash_report", true)
 }

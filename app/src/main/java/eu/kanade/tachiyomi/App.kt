@@ -31,6 +31,8 @@ import coil3.request.allowHardware
 import coil3.request.allowRgb565
 import coil3.request.crossfade
 import coil3.util.DebugLogger
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.data.coil.BufferedSourceFetcher
 import eu.kanade.tachiyomi.data.coil.CoilDiskCache
@@ -42,6 +44,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import dev.yokai.core.di.AppModule
 import dev.yokai.core.di.DomainModule
 import dev.yokai.core.di.PreferenceModule
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.ui.crash.CrashActivity
 import eu.kanade.tachiyomi.ui.crash.GlobalExceptionHandler
@@ -66,14 +69,13 @@ import java.security.Security
 open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factory {
 
     val preferences: PreferencesHelper by injectLazy()
+    val basePreferences: BasePreferences by injectLazy()
 
     private val disableIncognitoReceiver = DisableIncognitoReceiver()
 
     @SuppressLint("LaunchActivityFromNotification")
     override fun onCreate() {
         super<Application>.onCreate()
-
-        GlobalExceptionHandler.initialize(applicationContext, CrashActivity::class.java)
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
@@ -93,6 +95,16 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             importModule(AppModule(this@App))
             importModule(DomainModule())
         }
+
+        basePreferences.crashReport().changes()
+            .onEach {
+                try {
+                    Firebase.crashlytics.setCrashlyticsCollectionEnabled(it)
+                } catch (e: Exception) {
+                    // Probably already enabled/disabled
+                }
+            }
+            .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
 
         setupNotificationChannels()
 

@@ -67,9 +67,9 @@ class SettingsDataController : SettingsLegacyController() {
 
             storagePreferences.baseStorageDirectory().changes()
                 .onEach { path ->
-                    summary = UniFile.fromUri(context, path.toUri())!!.let { dir ->
+                    summary = UniFile.fromUri(context, path.toUri())?.let { dir ->
                         dir.filePath ?: context.getString(R.string.invalid_location, dir.uri)
-                    }
+                    } ?: context.getString(R.string.invalid_location_generic)
                 }
                 .launchIn(viewScope)
         }
@@ -105,7 +105,9 @@ class SettingsDataController : SettingsLegacyController() {
                     (activity as? MainActivity)?.getExtensionUpdates(true)
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
                     intent.addCategory(Intent.CATEGORY_OPENABLE)
-                    intent.setDataAndType(storageManager.getBackupsDirectory()!!.uri, "*/*")
+                    storageManager.getBackupsDirectory()?.let {
+                        intent.setDataAndType(it.uri, "*/*")
+                    }
                     val title = resources?.getString(R.string.select_backup_file)
                     val chooser = Intent.createChooser(intent, title)
                     startActivityForResult(chooser, CODE_BACKUP_RESTORE)

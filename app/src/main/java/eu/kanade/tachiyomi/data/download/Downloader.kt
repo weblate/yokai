@@ -366,9 +366,9 @@ class Downloader(
             }
 
             // Delete all temporary (unfinished) files
-            tmpDir.listFiles()
-                ?.filter { it.name!!.endsWith(".tmp") }
-                ?.forEach { it.delete() }
+            tmpDir.listFiles().orEmpty()
+                .filter { it.name.orEmpty().endsWith(".tmp") }
+                .forEach { it.delete() }
 
             download.status = Download.State.DOWNLOADING
 
@@ -433,7 +433,7 @@ class Downloader(
         tmpFile?.delete()
 
         // Try to find the image file
-        val imageFile = tmpDir.listFiles()?.find { it.name!!.startsWith("$filename.") || it.name!!.startsWith("${filename}__001") }
+        val imageFile = tmpDir.listFiles().orEmpty().find { it.name.orEmpty().startsWith("$filename.") || it.name.orEmpty().startsWith("${filename}__001") }
 
         val chapName = download.chapter.preferredChapterName(context, download.manga, preferences)
         try {
@@ -483,14 +483,14 @@ class Downloader(
         page.progress = 0
         return flow {
             val response = source.getImage(page)
-            val file = tmpDir.createFile("$filename.tmp")!!
+            val file = tmpDir.createFile("$filename.tmp")
             try {
-                response.body.source().saveTo(file.openOutputStream())
+                response.body.source().saveTo(file!!.openOutputStream())
                 val extension = getImageExtension(response, file)
                 file.renameTo("$filename.$extension")
             } catch (e: Exception) {
                 response.close()
-                file.delete()
+                file?.delete()
                 throw e
             }
             emit(file)
@@ -549,13 +549,13 @@ class Downloader(
         if (!preferences.splitTallImages().get()) return true
 
         val filename = String.format("%03d", page.number)
-        val imageFile = tmpDir.listFiles()?.find { it.name!!.startsWith(filename) }
+        val imageFile = tmpDir.listFiles()?.find { it.name.orEmpty().startsWith(filename) }
             ?: throw Error(context.getString(R.string.download_notifier_split_page_not_found, page.number))
         val imageFilePath = imageFile.filePath
             ?: throw Error(context.getString(R.string.download_notifier_split_page_not_found, page.number))
 
         // check if the original page was previously split before then skip.
-        if (imageFile.name!!.contains("__")) return true
+        if (imageFile.name.orEmpty().contains("__")) return true
 
         return try {
             ImageUtil.splitTallImage(imageFile, imageFilePath)
@@ -627,7 +627,7 @@ class Downloader(
         dirname: String,
         tmpDir: UniFile,
     ) {
-        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")!!
+        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX") ?: return
         ZipOutputStream(BufferedOutputStream(zip.openOutputStream())).use { zipOut ->
             zipOut.setMethod(ZipEntry.STORED)
 

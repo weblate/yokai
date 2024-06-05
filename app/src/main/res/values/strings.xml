@@ -27,6 +27,7 @@
 
     <string name="no_location_set">No storage location set</string>
     <string name="invalid_location">Invalid location: %s</string>
+    <string name="invalid_location_generic">Invalid location</string>
 
     <!--Models-->
 

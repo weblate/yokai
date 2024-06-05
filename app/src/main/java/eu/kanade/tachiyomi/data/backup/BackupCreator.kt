@@ -101,20 +101,20 @@ class BackupCreator(val context: Context) {
             file = (
                 if (isAutoBackup) {
                     // Get dir of file and create
-                    val dir = storageManager.getAutomaticBackupsDirectory()!!
+                    val dir = storageManager.getAutomaticBackupsDirectory()
 
                     // Delete older backups
                     val numberOfBackups = preferences.numberOfBackups().get()
-                    dir.listFiles { _, filename -> Backup.filenameRegex.matches(filename) }
+                    dir?.listFiles { _, filename -> Backup.filenameRegex.matches(filename) }
                         .orEmpty()
                         .sortedByDescending { it.name }
                         .drop(numberOfBackups - 1)
                         .forEach { it.delete() }
 
                     // Create new file to place backup
-                    dir.createFile(Backup.getBackupFilename())
+                    dir?.createFile(Backup.getBackupFilename())
                 } else {
-                    UniFile.fromUri(context, uri)!!
+                    UniFile.fromUri(context, uri)
                 }
                 )
                 ?: throw Exception("Couldn't create backup file")

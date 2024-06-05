@@ -53,7 +53,7 @@ class DownloadProvider(private val context: Context) {
      */
     internal fun getMangaDir(manga: Manga, source: Source): UniFile {
         try {
-            return downloadsDir!!.createDirectory(getSourceDirName(source))!!
+            return downloadsDir?.createDirectory(getSourceDirName(source))!!
                 .createDirectory(getMangaDirName(manga))!!
         } catch (e: NullPointerException) {
             throw Exception(context.getString(R.string.invalid_download_location))
@@ -66,7 +66,7 @@ class DownloadProvider(private val context: Context) {
      * @param source the source to query.
      */
     fun findSourceDir(source: Source): UniFile? {
-        return downloadsDir!!.findFile(getSourceDirName(source), true)
+        return downloadsDir?.findFile(getSourceDirName(source), true)
     }
 
     /**
@@ -167,7 +167,7 @@ class DownloadProvider(private val context: Context) {
             "${getChapterDirName(it, includeId = downloadPreferences.downloadWithId().get())}.cbz"
         }.toHashSet()
 
-        return mangaDir.listFiles()!!.asList().filter { file ->
+        return mangaDir.listFiles().orEmpty().asList().filter { file ->
             file.name?.let { fileName ->
                 if (fileName.endsWith(Downloader.TMP_DIR_SUFFIX)) {
                     return@filter true

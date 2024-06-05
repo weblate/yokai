@@ -31,13 +31,13 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
     override fun doWork(): Result {
         val storageManager: StorageManager by injectLazy()
         val notifier = BackupNotifier(context.localeContext)
-        val uri = inputData.getString(LOCATION_URI_KEY)?.toUri() ?: storageManager.getAutomaticBackupsDirectory()?.uri!!
+        val uri = inputData.getString(LOCATION_URI_KEY)?.toUri() ?: storageManager.getAutomaticBackupsDirectory()?.uri
         val flags = inputData.getInt(BACKUP_FLAGS_KEY, BackupConst.BACKUP_ALL)
         val isAutoBackup = inputData.getBoolean(IS_AUTO_BACKUP_KEY, true)
 
         notifier.showBackupProgress()
         return try {
-            val location = BackupCreator(context).createBackup(uri, flags, isAutoBackup)
+            val location = BackupCreator(context).createBackup(uri!!, flags, isAutoBackup)
             if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri())!!)
             Result.success()
         } catch (e: Exception) {

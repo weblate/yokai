@@ -7,7 +7,7 @@
 
 ## Other
 -->
-Please backup your data before updating to this version.
+# Please backup your data before updating to this version.
 
 ## Additions
 - Extensions now can be trusted by repo

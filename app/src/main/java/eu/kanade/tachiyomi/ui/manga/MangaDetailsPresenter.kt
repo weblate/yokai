@@ -10,6 +10,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.library.custom.model.CustomMangaInfo
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
@@ -55,6 +56,7 @@ import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
@@ -712,13 +714,13 @@ class MangaDetailsPresenter(
     fun confirmDeletion() {
         launchIO {
             coverCache.deleteFromCache(manga)
-            customMangaManager.saveMangaInfo(CustomMangaManager.ComicList.ComicInfoYokai.create(
-                id = manga.id!!,
+            customMangaManager.saveMangaInfo(CustomMangaInfo(
+                mangaId = manga.id!!,
                 title = null,
                 author = null,
                 artist = null,
                 description = null,
-                genre = null as String?,
+                genre = null,
                 status = null,
             ))
             downloadManager.deleteManga(manga, source)
@@ -801,20 +803,22 @@ class MangaDetailsPresenter(
                 null
             }
             if (seriesType != null) {
-                genre = setSeriesType(seriesType, genre?.joinToString(", "))
+                genre = setSeriesType(seriesType, genre?.joinToString())
                 manga.viewer_flags = -1
                 db.updateViewerFlags(manga).executeAsBlocking()
             }
-            val manga = CustomMangaManager.ComicList.ComicInfoYokai.create(
-                id = manga.id!!,
+            val manga = CustomMangaInfo(
+                mangaId = manga.id!!,
                 title?.trimOrNull(),
                 author?.trimOrNull(),
                 artist?.trimOrNull(),
                 description?.trimOrNull(),
-                genre,
+                genre?.joinToString(),
                 if (status != this.manga.originalStatus) status else null,
             )
-            customMangaManager.saveMangaInfo(manga)
+            launchNow {
+                customMangaManager.saveMangaInfo(manga)
+            }
         }
         if (uri != null) {
             editCoverWithStream(uri)

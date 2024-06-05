@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.backup.models
 
 import dev.yokai.core.metadata.ComicInfo
 import dev.yokai.core.metadata.ComicInfoPublishingStatus
+import dev.yokai.domain.library.custom.model.CustomMangaInfo
 import eu.kanade.tachiyomi.data.database.models.ChapterImpl
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
@@ -85,7 +86,7 @@ data class BackupManga(
         }
     }
 
-    fun getCustomMangaInfo(): CustomMangaManager.ComicList.ComicInfoYokai? {
+    fun getCustomMangaInfo(): CustomMangaInfo? {
         if (customTitle != null ||
             customArtist != null ||
             customAuthor != null ||
@@ -93,13 +94,13 @@ data class BackupManga(
             customGenre != null ||
             customStatus != 0
         ) {
-            return CustomMangaManager.ComicList.ComicInfoYokai.create(
-                id = 0L,
+            return CustomMangaInfo(
+                mangaId= 0L,
                 title = customTitle,
                 author = customAuthor,
                 artist = customArtist,
                 description = customDescription,
-                genre = customGenre?.toTypedArray(),
+                genre = customGenre?.joinToString(),
                 status = customStatus,
             )
         }

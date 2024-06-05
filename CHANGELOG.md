@@ -17,3 +17,4 @@ Please backup your data before updating to this version.
 
 ## Other
 - Migrate to SQLDelight
+- Custom manga info is now stored in the database

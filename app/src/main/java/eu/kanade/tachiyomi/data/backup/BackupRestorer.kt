@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.backup
 
 import android.content.Context
 import android.net.Uri
+import dev.yokai.domain.library.custom.model.CustomMangaInfo
 import dev.yokai.domain.ui.settings.ReaderPreferences
 import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import eu.kanade.tachiyomi.R
@@ -37,6 +38,7 @@ import eu.kanade.tachiyomi.util.BackupUtil
 import eu.kanade.tachiyomi.util.chapter.ChapterUtil
 import eu.kanade.tachiyomi.util.manga.MangaUtil
 import eu.kanade.tachiyomi.util.system.createFileInCacheDir
+import eu.kanade.tachiyomi.util.system.launchNow
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.serialization.protobuf.ProtoBuf
@@ -198,7 +200,7 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
         tracks: List<Track>,
         backupCategories: List<BackupCategory>,
         filteredScanlators: List<String>,
-        customManga: CustomMangaManager.ComicList.ComicInfoYokai?,
+        customManga: CustomMangaInfo?,
     ) {
         val fetchedManga = manga.also {
             it.initialized = it.description != null
@@ -218,7 +220,7 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
         tracks: List<Track>,
         backupCategories: List<BackupCategory>,
         filteredScanlators: List<String>,
-        customManga: CustomMangaManager.ComicList.ComicInfoYokai?,
+        customManga: CustomMangaInfo?,
     ) {
         restoreChapters(backupManga, chapters)
         restoreExtras(backupManga, categories, history, tracks, backupCategories, filteredScanlators, customManga)
@@ -258,14 +260,18 @@ class BackupRestorer(val context: Context, val notifier: BackupNotifier) {
         tracks: List<Track>,
         backupCategories: List<BackupCategory>,
         filteredScanlators: List<String>,
-        customManga: CustomMangaManager.ComicList.ComicInfoYokai?,
+        customManga: CustomMangaInfo?,
     ) {
         restoreCategories(manga, categories, backupCategories)
         restoreHistoryForManga(history)
         restoreTrackForManga(manga, tracks)
         restoreFilteredScanlatorsForManga(manga, filteredScanlators)
-        customManga?.id = manga.id!!
-        customManga?.let { customMangaManager.saveMangaInfo(it) }
+        customManga?.let {
+            it.mangaId = manga.id!!
+            launchNow {
+                customMangaManager.saveMangaInfo(it)
+            }
+        }
     }
 
     /**

@@ -58,7 +58,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
         fun getMangaLang(manga: SManga): String {
             return langMap.getOrPut(manga.url) {
-                val localDetails = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
+                val localDetails = getBaseDirectory()?.findFile(manga.url)?.listFiles().orEmpty()
                     .filter { !it.isDirectory }
                     .firstOrNull { it.name == COMIC_INFO_FILE }
 
@@ -70,8 +70,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
         }
 
-        fun updateCover(manga: SManga, input: InputStream): UniFile {
-            val dir = getBaseDirectory()
+        fun updateCover(manga: SManga, input: InputStream): UniFile? {
+            val dir = getBaseDirectory() ?: return null
             var cover = getCoverFile(dir.findFile(manga.url))
             if (cover == null) {
                 cover = dir.findFile(manga.url)?.createFile(COVER_NAME)!!
@@ -106,9 +106,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
         }
 
-        private fun getBaseDirectory(): UniFile {
+        private fun getBaseDirectory(): UniFile? {
             val storageManager: StorageManager by injectLazy()
-            return storageManager.getLocalSourceDirectory()!!
+            return storageManager.getLocalSourceDirectory()
         }
     }
 
@@ -135,7 +135,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             0L
         }
 
-        var mangaDirs = getBaseDirectory().listFiles().orEmpty()
+        var mangaDirs = getBaseDirectory()?.listFiles().orEmpty()
             .filter { it.isDirectory || !it.name.orEmpty().startsWith('.') }
             .distinctBy { it.name }
             .filter {
@@ -209,7 +209,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
     override suspend fun getMangaDetails(manga: SManga): SManga = withIOContext {
         try {
-            val localMangaDir = getBaseDirectory().findFile(manga.url) ?: throw Exception("${manga.url} is not a valid directory")
+            val localMangaDir = getBaseDirectory()?.findFile(manga.url) ?: throw Exception("${manga.url} is not a valid directory")
             val localMangaFiles = localMangaDir.listFiles().orEmpty().filter { !it.isDirectory }
             val comicInfoFile = localMangaFiles.firstOrNull { it.name.orEmpty() == COMIC_INFO_FILE }
             val legacyJsonFile = localMangaFiles.firstOrNull { it.extension.orEmpty().equals("json", true) }
@@ -254,7 +254,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     fun updateMangaInfo(manga: SManga, lang: String?) {
-        val directory = getBaseDirectory().findFile(manga.url) ?: return
+        val directory = getBaseDirectory()?.findFile(manga.url) ?: return
         if (!directory.exists()) return
 
         lang?.let { langMap[manga.url] = it }
@@ -289,7 +289,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     override suspend fun getChapterList(manga: SManga): List<SChapter> = withIOContext {
-        val chapters = getBaseDirectory().findFile(manga.url)?.listFiles().orEmpty()
+        val chapters = getBaseDirectory()?.findFile(manga.url)?.listFiles().orEmpty()
             .filter { it.isDirectory || isSupportedFile(it.extension.orEmpty()) }
             .map { chapterFile ->
                 SChapter.create().apply {
@@ -325,7 +325,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
         val (mangaDirName, chapterName) = chapter.url.split('/', limit = 2)
         val chapFile = dir
-            .findFile(mangaDirName)
+            ?.findFile(mangaDirName)
             ?.findFile(chapterName)
         if (chapFile == null || !chapFile.exists())
             throw Exception(context.getString(R.string.chapter_not_found))

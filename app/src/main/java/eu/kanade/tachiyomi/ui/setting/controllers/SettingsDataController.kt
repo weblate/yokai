@@ -217,7 +217,12 @@ class SettingsDataController : SettingsLegacyController() {
         backupFlags = flags
 
         val dir = storageManager.getBackupsDirectory()
-        if (!picker && dir != null) {
+        if (dir == null) {
+            activity?.toast(R.string.invalid_location_generic)
+            return
+        }
+
+        if (!picker) {
             doBackup(backupFlags, dir.uri)
             return
         }

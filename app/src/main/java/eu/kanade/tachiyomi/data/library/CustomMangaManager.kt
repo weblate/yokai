@@ -62,6 +62,7 @@ class CustomMangaManager(val context: Context) {
             id to info.toManga()
         }.toMutableMap()
 
+        // TODO: Remove after awhile
         if (comicInfoEdits != null && comicInfoEdits.exists() && comicInfoEdits.isFile) {
             fetchFromComicInfo(comicInfoEdits)
             return
@@ -75,9 +76,15 @@ class CustomMangaManager(val context: Context) {
     }
 
     private suspend fun fetchFromComicInfo(comicInfoFile: UniFile) {
-        val comicInfoEdits = AndroidXmlReader(comicInfoFile.openInputStream(), StandardCharsets.UTF_8.name()).use {
-            xml.decodeFromReader<ComicList>(it)
-        }
+        val comicInfoEdits =
+            try {
+                AndroidXmlReader(comicInfoFile.openInputStream(), StandardCharsets.UTF_8.name()).use {
+                    xml.decodeFromReader<ComicList>(it)
+                }
+            } catch (e: NullPointerException) {
+                // Couldn't load it somehow
+                null
+            } ?: return
 
         if (comicInfoEdits.comics == null) return
 

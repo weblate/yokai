@@ -1,0 +1,23 @@
+CREATE VIEW library_view AS
+SELECT
+    M.*,
+    coalesce(MC.category_id, 0) AS category
+FROM (
+    SELECT
+        MS.*,
+        coalesce(count(*) - sum(read), 0) AS unread,
+        sum(read) AS has_read,
+        sum(bookmark) AS bookmark_count
+    FROM mangas AS MS
+    LEFT JOIN chapters AS C
+    ON C.manga_id = MS._id
+    LEFT JOIN scanlators_view AS filtered_scanlators
+    ON C.manga_id = filtered_scanlators._id
+    AND ifnull(C.scanlator, 'N/A') = ifnull(filtered_scanlators.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+    WHERE MS.favorite = 1
+    AND filtered_scanlators.name IS NULL
+    GROUP BY MS._id
+    ORDER BY MS.title
+) AS M
+LEFT JOIN mangas_categories AS MC
+ON MC.manga_id = M._id;

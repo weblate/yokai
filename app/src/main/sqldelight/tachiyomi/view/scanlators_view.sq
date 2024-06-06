@@ -1,5 +1,5 @@
 CREATE VIEW scanlators_view AS  -- Probably should migrate these to a real table
-WITH RECURSIVE split(seq, _id, name, str) AS (
+WITH split(seq, _id, name, str) AS (
     SELECT 0, M._id, NULL, replace(ifnull(M.filtered_scanlators, ''), ' & ', ',')||',' FROM mangas AS M
     UNION ALL SELECT
         seq+1,

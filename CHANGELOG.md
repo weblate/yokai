@@ -7,8 +7,6 @@
 
 ## Other
 -->
-## Changes
-- Crash report can now actually be disabled
-
-## Other
-- Loading GlobalExceptionHandler before Crashlytics
+## Fixes
+- Fixed crashes caused by invalid ComicInfo XML
+- Fixed crashes caused by the app trying to round NaN value

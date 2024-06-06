@@ -86,10 +86,14 @@ class CrossFadeChangeHandler : AnimatorChangeHandler {
         animatorSet.duration = if (isPush) {
             200
         } else {
-            from?.let {
-                val startX = from.width.toFloat() * 0.2f
-                ((startX - it.x) / startX) * 150f
-            }?.roundToLong() ?: 150
+            try {
+                from?.let {
+                    val startX = from.width.toFloat() * 0.2f
+                    ((startX - it.x) / startX) * 150f
+                }?.roundToLong()
+            } catch (e: IllegalArgumentException) {
+                null
+            } ?: 150
         }
         animatorSet.doOnCancel { to?.x = 0f }
         animatorSet.doOnEnd { to?.x = 0f }

@@ -5,7 +5,6 @@ compose-compiler = "1.5.14"
 [libraries]
 animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
 foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 material3 = { module = "androidx.compose.material3:material3", version = "1.2.1" }
 material-motion = { module = "io.github.fornewid:material-motion-compose-core", version = "1.0.7" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
@@ -14,4 +13,4 @@ ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", versio
 icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 
 [bundles]
-compose = [ "animation", "foundation", "material", "material3", "material-motion", "ui", "ui-tooling-preview", "icons" ]
+compose = [ "animation", "foundation", "material3", "material-motion", "ui", "ui-tooling-preview", "icons" ]

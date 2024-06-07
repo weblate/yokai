@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS library_view;
 CREATE VIEW library_view AS
 SELECT
     M.*,
@@ -34,7 +35,3 @@ LEFT JOIN (SELECT * FROM mangas_categories) AS MC
 ON MC.manga_id = M._id
 WHERE M.favorite = 1
 ORDER BY M.title;
-
-findAll:
-SELECT *
-FROM library_view;

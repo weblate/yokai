@@ -34,14 +34,6 @@ object MangaTable {
 
     const val COL_CHAPTER_FLAGS = "chapter_flags"
 
-    const val COL_UNREAD = "unread"
-
-    const val COL_HAS_READ = "has_read"
-
-    const val COL_BOOKMARK_COUNT = "bookmark_count"
-
-    const val COL_CATEGORY = "category"
-
     const val COL_HIDE_TITLE = "hide_title"
 
     const val COL_DATE_ADDED = "date_added"

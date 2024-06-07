@@ -81,6 +81,5 @@ class LibraryManga : MangaImpl() {
             this.unread = (total - this.read).toInt()
             this.bookmarkCount = bookmarkCount.roundToInt()
         }
-
     }
 }

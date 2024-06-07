@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.database.models
 import android.content.Context
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
+import eu.kanade.tachiyomi.data.database.updateStrategyAdapter
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.SManga
@@ -337,6 +338,47 @@ interface Manga : SManga {
             url = pathUrl
             this.title = title
             this.source = source
+        }
+
+        fun mapper(
+            id: Long,
+            source: Long,
+            url: String,
+            artist: String?,
+            author: String?,
+            description: String?,
+            genre: String?,
+            title: String,
+            status: Long,
+            thumbnailUrl: String?,
+            favorite: Long,
+            lastUpdate: Long?,
+            initialized: Boolean,
+            viewerFlags: Long,
+            hideTitle: Long,
+            chapterFlags: Long,
+            dateAdded: Long?,
+            filteredScanlators: String?,
+            updateStrategy: Long
+        ): Manga = create(source).apply {
+            this.id = id
+            this.url = url
+            this.artist = artist
+            this.author = author
+            this.description = description
+            this.genre = genre
+            this.title = title
+            this.status = status.toInt()
+            this.thumbnail_url = thumbnailUrl
+            this.favorite = favorite > 0
+            this.last_update = lastUpdate ?: 0L
+            this.initialized = initialized
+            this.viewer_flags = viewerFlags.toInt()
+            this.chapter_flags = chapterFlags.toInt()
+            this.hide_title = hideTitle > 0
+            this.date_added = dateAdded ?: 0L
+            this.filtered_scanlators = filteredScanlators
+            this.update_strategy = updateStrategy.toInt().let(updateStrategyAdapter::decode)
         }
     }
 }

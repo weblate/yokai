@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.ui.more.stats.details
 import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
+import dev.yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -27,6 +28,7 @@ import eu.kanade.tachiyomi.util.system.LocaleHelper
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.roundToTwoDecimal
 import eu.kanade.tachiyomi.util.system.withUIContext
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -41,6 +43,7 @@ class StatsDetailsPresenter(
     val trackManager: TrackManager = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
 ) : BaseCoroutinePresenter<StatsDetailsController>() {
+    private val getLibraryManga: GetLibraryManga by injectLazy()
 
     private val context
         get() = view?.view?.context ?: prefs.context
@@ -555,7 +558,7 @@ class StatsDetailsPresenter(
     }
 
     fun getLibrary(): MutableList<LibraryManga> {
-        return db.getLibraryMangas().executeAsBlocking()
+        return runBlocking { getLibraryManga.await() }.toMutableList()
     }
 
     private fun getCategories(): MutableList<Category> {

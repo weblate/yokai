@@ -9,45 +9,6 @@ import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable as MangaCateg
 import eu.kanade.tachiyomi.data.database.tables.MangaTable as Manga
 
 /**
- * Query to get the manga from the library, with their categories and unread count.
- */
-val libraryQuery =
-    """
-    SELECT M.*, COALESCE(MC.${MangaCategory.COL_CATEGORY_ID}, 0) AS ${Manga.COL_CATEGORY}
-    FROM (
-        SELECT ${Manga.TABLE}.*, COALESCE(C.unread, '') AS ${Manga.COL_UNREAD}, COALESCE(R.hasread, '') AS ${Manga.COL_HAS_READ}, COALESCE(B.bookmarkCount, 0) AS ${Manga.COL_BOOKMARK_COUNT}
-        FROM ${Manga.TABLE}
-        LEFT JOIN (
-            SELECT ${Chapter.COL_MANGA_ID}, GROUP_CONCAT(IFNULL(${Chapter.TABLE}.${Chapter.COL_SCANLATOR}, "N/A"), " [.] ") AS unread
-            FROM ${Chapter.TABLE}
-            WHERE ${Chapter.COL_READ} = 0
-            GROUP BY ${Chapter.COL_MANGA_ID}
-        ) AS C
-        ON ${Manga.COL_ID} = C.${Chapter.COL_MANGA_ID}
-        LEFT JOIN (
-            SELECT ${Chapter.COL_MANGA_ID}, GROUP_CONCAT(IFNULL(${Chapter.TABLE}.${Chapter.COL_SCANLATOR}, "N/A"), " [.] ") AS hasread
-            FROM ${Chapter.TABLE}
-            WHERE ${Chapter.COL_READ} = 1
-            GROUP BY ${Chapter.COL_MANGA_ID}
-        ) AS R
-        ON ${Manga.COL_ID} = R.${Chapter.COL_MANGA_ID}
-        LEFT JOIN (
-            SELECT ${Chapter.COL_MANGA_ID}, COUNT(*) AS bookmarkCount
-            FROM ${Chapter.TABLE}
-            WHERE ${Chapter.COL_BOOKMARK} = 1
-            GROUP BY ${Chapter.COL_MANGA_ID}
-        ) AS B
-        ON ${Manga.COL_ID} = B.${Chapter.COL_MANGA_ID}
-        WHERE ${Manga.COL_FAVORITE} = 1
-        GROUP BY ${Manga.COL_ID}
-        ORDER BY ${Manga.COL_TITLE}
-    ) AS M
-    LEFT JOIN (
-        SELECT * FROM ${MangaCategory.TABLE}) AS MC
-        ON MC.${MangaCategory.COL_MANGA_ID} = M.${Manga.COL_ID}
-"""
-
-/**
  * Query to get the recent chapters of manga from the library up to a date.
  */
 fun getRecentsQuery(search: String, offset: Int, isResuming: Boolean) =

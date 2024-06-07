@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.preference.PreferenceScreen
+import dev.yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -28,11 +29,13 @@ import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsLibraryController : SettingsLegacyController() {
 
-    private val db: DatabaseHelper = Injekt.get()
+    private val db: DatabaseHelper by injectLazy()
+    private val getLibraryManga: GetLibraryManga by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = R.string.library
@@ -54,7 +57,7 @@ class SettingsLibraryController : SettingsLegacyController() {
                     it as Boolean
                     if (it) {
                         launchIO {
-                            LibraryPresenter.setSearchSuggestion(preferences, db, Injekt.get())
+                            LibraryPresenter.setSearchSuggestion(preferences, getLibraryManga, Injekt.get())
                         }
                     } else {
                         DelayedLibrarySuggestionsJob.setupTask(context, false)

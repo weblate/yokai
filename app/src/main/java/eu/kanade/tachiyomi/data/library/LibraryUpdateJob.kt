@@ -19,6 +19,7 @@ import androidx.work.WorkerParameters
 import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
+import dev.yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -67,6 +68,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import timber.log.Timber
@@ -89,6 +91,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private val downloadManager: DownloadManager = Injekt.get()
     private val trackManager: TrackManager = Injekt.get()
     private val mangaShortcutManager: MangaShortcutManager = Injekt.get()
+    private val getLibraryManga: GetLibraryManga = Injekt.get()
 
     private var extraDeferredJobs = mutableListOf<Deferred<Any>>()
 
@@ -155,7 +158,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
         val mangaList = (
             if (savedMangasList != null) {
-                val mangas = db.getLibraryMangas().executeAsBlocking().filter {
+                val mangas = getLibraryManga.await().filter {
                     it.id in savedMangasList
                 }.distinctBy { it.id }
                 val categoryId = inputData.getInt(KEY_CATEGORY, -1)
@@ -466,7 +469,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         }
     }
 
-    private fun getMangaToUpdate(): List<LibraryManga> {
+    private suspend fun getMangaToUpdate(): List<LibraryManga> {
         val categoryId = inputData.getInt(KEY_CATEGORY, -1)
         return getMangaToUpdate(categoryId)
     }
@@ -477,8 +480,8 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
      * @param categoryId the category to update
      * @return a list of manga to update
      */
-    private fun getMangaToUpdate(categoryId: Int): List<LibraryManga> {
-        val libraryManga = db.getLibraryMangas().executeAsBlocking()
+    private suspend fun getMangaToUpdate(categoryId: Int): List<LibraryManga> {
+        val libraryManga = getLibraryManga.await()
 
         val listToUpdate = if (categoryId != -1) {
             categoryIds.add(categoryId)
@@ -555,7 +558,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     }
 
     private fun addCategory(categoryId: Int) {
-        val mangas = filterMangaToUpdate(getMangaToUpdate(categoryId)).sortedBy { it.title }
+        val mangas = filterMangaToUpdate(runBlocking { getMangaToUpdate(categoryId) }).sortedBy { it.title }
         categoryIds.add(categoryId)
         addManga(mangas)
     }

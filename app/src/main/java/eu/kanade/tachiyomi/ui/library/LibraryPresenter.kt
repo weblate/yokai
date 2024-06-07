@@ -1,7 +1,10 @@
 package eu.kanade.tachiyomi.ui.library
 
+import dev.yokai.domain.manga.interactor.GetLibraryManga
 import dev.yokai.util.isLewd
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.preference.minusAssign
+import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -14,8 +17,6 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.preference.DelayedLibrarySuggestionsJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.core.preference.minusAssign
-import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.source.SourceManager
@@ -51,9 +52,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import uy.kohesive.injekt.injectLazy
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -70,6 +70,7 @@ class LibraryPresenter(
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val trackManager: TrackManager = Injekt.get(),
 ) : BaseCoroutinePresenter<LibraryController>() {
+    private val getLibraryManga: GetLibraryManga by injectLazy()
 
     private val context = preferences.context
     private val viewContext
@@ -162,7 +163,7 @@ class LibraryPresenter(
         ) {
             // Doing this instead of a job in case the app isn't used often
             presenterScope.launchIO {
-                setSearchSuggestion(preferences, db, sourceManager)
+                setSearchSuggestion(preferences, getLibraryManga, sourceManager)
                 withUIContext { view?.setTitle() }
             }
         }
@@ -713,10 +714,10 @@ class LibraryPresenter(
      *
      * @return an list of all the manga in a itemized form.
      */
-    private fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
+    private suspend fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
         removeArticles = preferences.removeArticles().get()
         val categories = db.getCategories().executeAsBlocking().toMutableList()
-        var libraryManga = db.getLibraryMangas().executeAsBlocking()
+        var libraryManga = getLibraryManga.await()
         val showAll = showAllCategories
         if (groupType > BY_DEFAULT) {
             libraryManga = libraryManga.distinctBy { it.id }
@@ -1381,7 +1382,7 @@ class LibraryPresenter(
 
         suspend fun setSearchSuggestion(
             preferences: PreferencesHelper,
-            db: DatabaseHelper,
+            getLibraryManga: GetLibraryManga,
             sourceManager: SourceManager,
         ) {
             val random: Random = run {
@@ -1398,7 +1399,7 @@ class LibraryPresenter(
                     RecentsPresenter.getRecentManga(true).map { it.first }
                 }
             }
-            val libraryManga by lazy { db.getLibraryMangas().executeAsBlocking() }
+            val libraryManga by lazy { runBlocking { getLibraryManga.await() } }
             preferences.librarySearchSuggestion().set(
                 when (val value = random.nextInt(0, 5)) {
                     randomSource -> {
@@ -1450,8 +1451,9 @@ class LibraryPresenter(
         /** Give library manga to a date added based on min chapter fetch */
         fun updateDB() {
             val db: DatabaseHelper = Injekt.get()
+            val getLibraryManga: GetLibraryManga by injectLazy()
             db.inTransaction {
-                val libraryManga = db.getLibraryMangas().executeAsBlocking()
+                val libraryManga = runBlocking { getLibraryManga.await() }
                 libraryManga.forEach { manga ->
                     if (manga.date_added == 0L) {
                         val chapters = db.getChapters(manga).executeAsBlocking()
@@ -1474,8 +1476,9 @@ class LibraryPresenter(
         fun updateCustoms() {
             val db: DatabaseHelper = Injekt.get()
             val cc: CoverCache = Injekt.get()
+            val getLibraryManga: GetLibraryManga by injectLazy()
             db.inTransaction {
-                val libraryManga = db.getLibraryMangas().executeAsBlocking()
+                val libraryManga = runBlocking { getLibraryManga.await() }
                 libraryManga.forEach { manga ->
                     if (manga.thumbnail_url?.startsWith("custom", ignoreCase = true) == true) {
                         val file = cc.getCoverFile(manga)

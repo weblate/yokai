@@ -5,10 +5,8 @@ import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
 import com.pushtorefresh.storio.sqlite.queries.Query
 import com.pushtorefresh.storio.sqlite.queries.RawQuery
 import eu.kanade.tachiyomi.data.database.DbProvider
-import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.SourceIdMangaCount
-import eu.kanade.tachiyomi.data.database.resolvers.LibraryMangaGetResolver
 import eu.kanade.tachiyomi.data.database.resolvers.MangaDateAddedPutResolver
 import eu.kanade.tachiyomi.data.database.resolvers.MangaFavoritePutResolver
 import eu.kanade.tachiyomi.data.database.resolvers.MangaFilteredScanlatorsPutResolver
@@ -17,9 +15,7 @@ import eu.kanade.tachiyomi.data.database.resolvers.MangaInfoPutResolver
 import eu.kanade.tachiyomi.data.database.resolvers.MangaLastUpdatedPutResolver
 import eu.kanade.tachiyomi.data.database.resolvers.MangaTitlePutResolver
 import eu.kanade.tachiyomi.data.database.resolvers.SourceIdMangaCountGetResolver
-import eu.kanade.tachiyomi.data.database.tables.CategoryTable
 import eu.kanade.tachiyomi.data.database.tables.ChapterTable
-import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable
 import eu.kanade.tachiyomi.data.database.tables.MangaTable
 
 interface MangaQueries : DbProvider {
@@ -31,17 +27,6 @@ interface MangaQueries : DbProvider {
                 .table(MangaTable.TABLE)
                 .build(),
         )
-        .prepare()
-
-    fun getLibraryMangas() = db.get()
-        .listOfObjects(LibraryManga::class.java)
-        .withQuery(
-            RawQuery.builder()
-                .query(libraryQuery)
-                .observesTables(MangaTable.TABLE, ChapterTable.TABLE, MangaCategoryTable.TABLE, CategoryTable.TABLE)
-                .build(),
-        )
-        .withGetResolver(LibraryMangaGetResolver.INSTANCE)
         .prepare()
 
     fun getDuplicateLibraryManga(manga: Manga) = db.get()

@@ -78,10 +78,11 @@ This fork was created for personal usage, the name Yōkai is chosen in theme of 
 
 <details>
     <summary><h3>From Yōkai</h3></summary>
-</details>
-
+    
 * New Theme
 * NSFW/SFW Filter
+
+</details>
 
 </div>
 

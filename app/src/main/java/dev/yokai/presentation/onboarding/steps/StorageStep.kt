@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,21 +18,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.core.net.toUri
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StoragePreferences
 import dev.yokai.presentation.settings.storageLocationText
 import dev.yokai.presentation.theme.Size
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
-import eu.kanade.tachiyomi.core.preference.collectAsState
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
 import kotlinx.coroutines.flow.collectLatest
 import uy.kohesive.injekt.injectLazy
 
@@ -117,7 +114,7 @@ fun storageLocationPicker(
             val flags =
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
-            context.contentResolver.takePersistableUriPermission(uri, flags)
+            context.tryTakePersistableUriPermission(uri, flags)
 
             UniFile.fromUri(context, uri)?.let { storageDirPref.set(it.uri.toString()) }
         }

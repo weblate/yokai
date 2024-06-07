@@ -121,6 +121,7 @@ import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.prepareSideNavContext
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
 import eu.kanade.tachiyomi.util.view.BackHandlerControllerInterface
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.blurBehindWindow
@@ -211,7 +212,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             uri?.let {
                 val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                applicationContext.contentResolver.takePersistableUriPermission(uri, flags)
+                applicationContext.tryTakePersistableUriPermission(uri, flags)
                 basePreferences.displayProfile().set(uri.toString())
             }
         }

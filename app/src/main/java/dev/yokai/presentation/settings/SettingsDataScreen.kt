@@ -32,6 +32,7 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
 import uy.kohesive.injekt.injectLazy
 
 object SettingsDataScreen : ComposableSettings {
@@ -60,7 +61,7 @@ object SettingsDataScreen : ComposableSettings {
                 val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
-                context.contentResolver.takePersistableUriPermission(uri, flags)
+                context.tryTakePersistableUriPermission(uri, flags)
                 UniFile.fromUri(context, uri)?.let {
                     baseStorageDirectory.set(it.uri.toString())
                 }

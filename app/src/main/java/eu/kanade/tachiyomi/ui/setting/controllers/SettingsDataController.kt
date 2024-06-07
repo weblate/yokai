@@ -41,6 +41,7 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -233,7 +234,7 @@ class SettingsDataController : SettingsLegacyController() {
                     val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
-                    activity.contentResolver.takePersistableUriPermission(uri, flags)
+                    activity.tryTakePersistableUriPermission(uri, flags)
                     val file = UniFile.fromUri(activity, uri)!!
                     storagePreferences.baseStorageDirectory().set(file.uri.toString())
                 }
@@ -258,7 +259,7 @@ class SettingsDataController : SettingsLegacyController() {
                 val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
-                activity.contentResolver.takePersistableUriPermission(uri, intentFlags)
+                activity.tryTakePersistableUriPermission(uri, intentFlags)
                 uri
             } else {
                 UniFile.fromUri(activity, uri)?.createFile(Backup.getBackupFilename())?.uri

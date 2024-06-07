@@ -49,7 +49,7 @@ import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.File
-import java.util.Locale
+import java.util.*
 import kotlin.math.max
 
 private const val TABLET_UI_MIN_SCREEN_WIDTH_DP = 720
@@ -482,3 +482,10 @@ val Context.application: App
 
 suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) =
     withContext(NonCancellable, block)
+
+fun Context.tryTakePersistableUriPermission(uri: Uri, flags: Int) = try {
+    contentResolver.takePersistableUriPermission(uri, flags)
+} catch (e: SecurityException) {
+    Timber.e(e)
+    toast(R.string.file_picker_uri_permission_unsupported)
+}

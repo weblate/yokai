@@ -1,4 +1,7 @@
 import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 plugins {
     id("com.android.application")
@@ -26,6 +29,13 @@ fun runCommand(command: String): String {
     return String(byteOut.toByteArray()).trim()
 }
 
+val commitCount by lazy { runCommand("git rev-list --count HEAD") }
+val commitHash by lazy { runCommand("git rev-parse --short HEAD") }
+val buildTime: String by lazy {
+    val df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    LocalDateTime.now(ZoneOffset.UTC).format(df)
+}
+
 val supportedAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 
 android {
@@ -41,9 +51,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 
-        buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
-        buildConfigField("String", "COMMIT_SHA", "\"${getGitSha()}\"")
-        buildConfigField("String", "BUILD_TIME", "\"${getBuildTime()}\"")
+        buildConfigField("String", "COMMIT_COUNT", "\"${commitCount}\"")
+        buildConfigField("String", "COMMIT_SHA", "\"${commitHash}\"")
+        buildConfigField("String", "BUILD_TIME", "\"${buildTime}\"")
         buildConfigField("Boolean", "INCLUDE_UPDATER", "false")
         buildConfigField("Boolean", "BETA", "false")
         buildConfigField("Boolean", "NIGHTLY", "false")
@@ -74,7 +84,7 @@ android {
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debugYokai"
-            versionNameSuffix = "-d${getCommitCount()}"
+            versionNameSuffix = "-d${commitCount}"
         }
         getByName("release") {
             applicationIdSuffix = ".yokai"
@@ -87,7 +97,7 @@ android {
             buildConfigField("boolean", "BETA", "true")
 
             matchingFallbacks.add("release")
-            versionNameSuffix = "-b${getCommitCount()}"
+            versionNameSuffix = "-b${commitCount}"
         }
         create("nightly") {
             initWith(getByName("release"))
@@ -96,7 +106,7 @@ android {
 
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks.add("release")
-            versionNameSuffix = "-b${getCommitCount()}"
+            versionNameSuffix = "-b${commitCount}"
             applicationIdSuffix = ".nightlyYokai"
         }
     }

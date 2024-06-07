@@ -7,6 +7,5 @@
 
 ## Other
 -->
-## Fixes
-- Fixed crashes caused by invalid ComicInfo XML
-- Fixed crashes caused by the app trying to round NaN value
+## Other
+- Migrate `RawQueries#librayQuery` to use SQLDelight (`GetLibraryManga`)

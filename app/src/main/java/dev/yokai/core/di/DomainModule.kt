@@ -15,6 +15,7 @@ import dev.yokai.domain.library.custom.CustomMangaRepository
 import dev.yokai.domain.library.custom.interactor.CreateCustomManga
 import dev.yokai.domain.library.custom.interactor.DeleteCustomManga
 import dev.yokai.domain.library.custom.interactor.GetCustomManga
+import dev.yokai.domain.library.custom.interactor.RelinkCustomManga
 import dev.yokai.domain.manga.MangaRepository
 import dev.yokai.domain.manga.interactor.GetLibraryManga
 import uy.kohesive.injekt.api.InjektModule
@@ -39,6 +40,7 @@ class DomainModule : InjektModule {
         addFactory { CreateCustomManga(get()) }
         addFactory { DeleteCustomManga(get()) }
         addFactory { GetCustomManga(get()) }
+        addFactory { RelinkCustomManga(get()) }
 
         addSingletonFactory<MangaRepository> { MangaRepositoryImpl(get()) }
         addFactory { GetLibraryManga(get()) }

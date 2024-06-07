@@ -32,3 +32,8 @@ WHERE manga_id = :manga_id;
 delete:
 DELETE FROM custom_manga_info
 WHERE manga_id = :manga_id;
+
+relink:
+UPDATE custom_manga_info
+SET manga_id = :new_id
+WHERE manga_id = :old_id;

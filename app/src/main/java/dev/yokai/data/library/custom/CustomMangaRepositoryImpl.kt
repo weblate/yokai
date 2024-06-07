@@ -63,6 +63,9 @@ class CustomMangaRepositoryImpl(private val handler: DatabaseHandler) : CustomMa
             }
         }
 
+    override suspend fun relinkCustomManga(oldId: Long, newId: Long) =
+        handler.await { custom_manga_infoQueries.relink(newId, oldId) }
+
     private fun mapCustomMangaInfo(
         mangaId: Long,
         title: String?,

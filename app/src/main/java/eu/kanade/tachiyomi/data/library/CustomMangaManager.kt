@@ -9,6 +9,7 @@ import dev.yokai.core.metadata.copyFromComicInfo
 import dev.yokai.domain.library.custom.interactor.CreateCustomManga
 import dev.yokai.domain.library.custom.interactor.DeleteCustomManga
 import dev.yokai.domain.library.custom.interactor.GetCustomManga
+import dev.yokai.domain.library.custom.interactor.RelinkCustomManga
 import dev.yokai.domain.library.custom.model.CustomMangaInfo
 import dev.yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -39,6 +40,7 @@ class CustomMangaManager(val context: Context) {
     private val createCustomManga: CreateCustomManga by injectLazy()
     private val deleteCustomManga: DeleteCustomManga by injectLazy()
     private val getCustomManga: GetCustomManga by injectLazy()
+    private val relinkCustomManga: RelinkCustomManga by injectLazy()
 
     init {
         scope.launch {
@@ -112,15 +114,28 @@ class CustomMangaManager(val context: Context) {
         saveCustomInfo { jsonFile.delete() }
     }
 
+    private val CustomMangaInfo.shouldDelete
+        get() = (
+            title == null &&
+            author == null &&
+            artist == null &&
+            description == null &&
+            genre == null &&
+            (status ?: -1) == -1
+        )
+
+    suspend fun updateMangaInfo(oldId: Long?, newId: Long?, manga: CustomMangaInfo) {
+        if (oldId == null || newId == null) return
+        if (manga.shouldDelete) {
+            deleteCustomInfo(manga.mangaId)
+        } else {
+            relinkCustomManga.await(oldId, newId)
+        }
+    }
+
     suspend fun saveMangaInfo(manga: CustomMangaInfo) {
         val mangaId = manga.mangaId
-        if (manga.title == null &&
-            manga.author == null &&
-            manga.artist == null &&
-            manga.description == null &&
-            manga.genre == null &&
-            (manga.status ?: -1) == -1
-        ) {
+        if (manga.shouldDelete) {
             deleteCustomInfo(mangaId)
         } else {
             addCustomInfo(manga)

@@ -28,4 +28,5 @@ interface CustomMangaRepository {
     suspend fun insertBulkCustomManga(mangaList: List<CustomMangaInfo>)
     suspend fun deleteCustomManga(mangaId: Long)
     suspend fun deleteBulkCustomManga(mangaIds: List<Long>)
+    suspend fun relinkCustomManga(oldId: Long, newId: Long)
 }

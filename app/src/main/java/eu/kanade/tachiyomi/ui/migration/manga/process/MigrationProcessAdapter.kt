@@ -231,7 +231,7 @@ class MigrationProcessAdapter(
                 customMangaManager.getManga(prevManga)?.let { customManga ->
                     customManga.id = manga.id!!
                     launchNow {
-                        customMangaManager.saveMangaInfo(customManga.getMangaInfo())
+                        customMangaManager.updateMangaInfo(prevManga.id, manga.id, customManga.getMangaInfo())
                     }
                 }
             }

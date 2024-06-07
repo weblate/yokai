@@ -78,7 +78,7 @@ class LibraryManga : MangaImpl() {
             this.filtered_scanlators = filteredScanlators
             this.update_strategy = updateStrategy.toInt().let(updateStrategyAdapter::decode)
             this.read = readCount.roundToInt()
-            this.unread = (total - this.read).toInt()
+            this.unread = maxOf((total - readCount).roundToInt(), 0)
             this.bookmarkCount = bookmarkCount.roundToInt()
         }
     }

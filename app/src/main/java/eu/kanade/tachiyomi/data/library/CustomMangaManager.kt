@@ -15,6 +15,7 @@ import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -33,7 +34,6 @@ class CustomMangaManager(val context: Context) {
 
     private val externalDir = UniFile.fromFile(context.getExternalFilesDir(null))
 
-    private var removedCustomManga = mutableListOf<Long>()
     private var customMangaMap = mutableMapOf<Long, Manga>()
 
     private val createCustomManga: CreateCustomManga by injectLazy()
@@ -42,6 +42,12 @@ class CustomMangaManager(val context: Context) {
 
     init {
         scope.launch {
+            getCustomManga.subscribeAll().collectLatest {
+                customMangaMap = it.associate { info ->
+                    val id = info.mangaId
+                    id to info.toManga()
+                }.toMutableMap()
+            }
             fetchCustomData()
         }
     }
@@ -55,12 +61,6 @@ class CustomMangaManager(val context: Context) {
     private suspend fun fetchCustomData() {
         val comicInfoEdits = externalDir?.findFile(COMIC_INFO_EDITS_FILE)
         val editJson = externalDir?.findFile(EDIT_JSON_FILE)
-
-        val dbMangaInfo = getCustomManga.getAll()
-        customMangaMap = dbMangaInfo.associate { info ->
-            val id = info.mangaId
-            id to info.toManga()
-        }.toMutableMap()
 
         // TODO: Remove after awhile
         if (comicInfoEdits != null && comicInfoEdits.exists() && comicInfoEdits.isFile) {
@@ -113,7 +113,7 @@ class CustomMangaManager(val context: Context) {
     }
 
     suspend fun saveMangaInfo(manga: CustomMangaInfo) {
-        val mangaId = manga.mangaId ?: return
+        val mangaId = manga.mangaId
         if (manga.title == null &&
             manga.author == null &&
             manga.artist == null &&
@@ -121,20 +121,23 @@ class CustomMangaManager(val context: Context) {
             manga.genre == null &&
             (manga.status ?: -1) == -1
         ) {
-            customMangaMap[mangaId]?.let {
-                removedCustomManga.add(mangaId)
-                customMangaMap.remove(mangaId)
-            }
+            deleteCustomInfo(mangaId)
         } else {
-            customMangaMap[mangaId] = manga.toManga()
+            addCustomInfo(manga)
         }
-        saveCustomInfo()
+    }
+
+    private suspend fun deleteCustomInfo(mangaId: Long, onComplete: () -> Unit = {}) {
+        deleteCustomManga.await(mangaId)
+        onComplete()
+    }
+
+    private suspend fun addCustomInfo(manga: CustomMangaInfo, onComplete: () -> Unit = {}) {
+        createCustomManga.await(manga)
+        onComplete()
     }
 
     private suspend fun saveCustomInfo(onComplete: () -> Unit = {}) {
-        deleteCustomManga.bulk(removedCustomManga)
-        removedCustomManga = mutableListOf()
-
         val edits = customMangaMap.values.map { it.getMangaInfo() }
         if (edits.isNotEmpty()) {
             createCustomManga.bulk(edits)

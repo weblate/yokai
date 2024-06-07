@@ -9,7 +9,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StorageManager
@@ -20,6 +22,8 @@ import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.BackupRestoreJob
 import eu.kanade.tachiyomi.data.backup.models.Backup
+import eu.kanade.tachiyomi.data.cache.ChapterCache
+import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.bindTo
@@ -33,9 +37,11 @@ import eu.kanade.tachiyomi.ui.setting.summaryRes
 import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.disableItems
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
@@ -49,10 +55,14 @@ class SettingsDataController : SettingsLegacyController() {
     internal val storagePreferences: StoragePreferences by injectLazy()
     internal val storageManager: StorageManager by injectLazy()
 
+    private val coverCache: CoverCache by injectLazy()
+    private val chapterCache: ChapterCache by injectLazy()
+
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = R.string.data_and_storage
 
         preference {
+            key = "pref_storage_location"
             bindTo(storagePreferences.baseStorageDirectory())
             titleRes = R.string.storage_location
 
@@ -150,6 +160,50 @@ class SettingsDataController : SettingsLegacyController() {
         }
 
         infoPreference(R.string.backup_info)
+
+        preferenceCategory {
+            titleRes = R.string.storage_usage
+
+            preference {
+                key = CLEAR_CACHE_KEY
+                titleRes = R.string.clear_chapter_cache
+                summary = context.getString(R.string.used_, chapterCache.readableSize)
+
+                onClick { clearChapterCache() }
+            }
+
+            preference {
+                key = "clear_cached_not_library"
+                titleRes = R.string.clear_cached_covers_non_library
+                summary = context.getString(
+                    R.string.delete_all_covers__not_in_library_used_,
+                    coverCache.getOnlineCoverCacheSize(),
+                )
+
+                onClick {
+                    context.toast(R.string.starting_cleanup)
+                    (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
+                        coverCache.deleteAllCachedCovers()
+                    }
+                }
+            }
+
+            preference {
+                key = "clean_cached_covers"
+                titleRes = R.string.clean_up_cached_covers
+                summary = context.getString(
+                    R.string.delete_old_covers_in_library_used_,
+                    coverCache.getChapterCacheSize(),
+                )
+
+                onClick {
+                    context.toast(R.string.starting_cleanup)
+                    (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
+                        coverCache.deleteOldCovers()
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -331,7 +385,39 @@ class SettingsDataController : SettingsLegacyController() {
                 .show()
         }
     }
+
+    private fun clearChapterCache() {
+        if (activity == null) return
+        viewScope.launchIO {
+            val files = chapterCache.cacheDir.listFiles() ?: return@launchIO
+            var deletedFiles = 0
+            try {
+                files.forEach { file ->
+                    if (chapterCache.removeFileFromCache(file.name)) {
+                        deletedFiles++
+                    }
+                }
+                withUIContext {
+                    activity?.toast(
+                        resources?.getQuantityString(
+                            R.plurals.cache_cleared,
+                            deletedFiles,
+                            deletedFiles,
+                        ),
+                    )
+                    findPreference(CLEAR_CACHE_KEY)?.summary =
+                        resources?.getString(R.string.used_, chapterCache.readableSize)
+                }
+            } catch (_: Exception) {
+                withUIContext {
+                    activity?.toast(R.string.cache_delete_error)
+                }
+            }
+        }
+    }
 }
+
+private const val CLEAR_CACHE_KEY = "pref_clear_cache_key"
 
 private const val CODE_DATA_DIR = 104
 private const val CODE_BACKUP_CREATE = 504

@@ -14,8 +14,6 @@ import eu.kanade.tachiyomi.ui.setting.defaultValue
 import eu.kanade.tachiyomi.ui.setting.infoPreference
 import eu.kanade.tachiyomi.ui.setting.intListPreference
 import eu.kanade.tachiyomi.ui.setting.multiSelectListPreferenceMat
-import eu.kanade.tachiyomi.ui.setting.onClick
-import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
 import eu.kanade.tachiyomi.ui.setting.summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
@@ -34,12 +32,6 @@ class SettingsDownloadController : SettingsLegacyController() {
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = R.string.downloads
 
-        preference {
-            titleRes = R.string.download_location
-            onClick { navigateTo(SettingsDataController()) }
-
-            summary = "Moved to Data and Storage!"
-        }
         switchPreference {
             key = Keys.downloadOnlyOverWifi
             titleRes = R.string.only_download_over_wifi

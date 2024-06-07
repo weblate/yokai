@@ -799,6 +799,7 @@
     <!-- Storage -->
     <string name="data_and_storage">Data and storage</string>
     <string name="storage_location">Storage location</string>
+    <string name="storage_usage">Storage usage</string>
 
     <!-- Backup -->
     <string name="backup">Backup</string>

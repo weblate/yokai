@@ -14,14 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
-import com.google.firebase.crashlytics.ktx.crashlytics
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
 import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.cache.ChapterCache
-import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
@@ -66,7 +63,6 @@ import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.setDefaultSettings
 import eu.kanade.tachiyomi.util.system.toast
-import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.CoroutineStart
@@ -87,11 +83,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
     private val network: NetworkHelper by injectLazy()
 
-    private val chapterCache: ChapterCache by injectLazy()
-
     private val db: DatabaseHelper by injectLazy()
-
-    private val coverCache: CoverCache by injectLazy()
 
     private val downloadManager: DownloadManager by injectLazy()
 
@@ -190,13 +182,6 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
         preferenceCategory {
             titleRes = R.string.data_management
-            preference {
-                key = CLEAR_CACHE_KEY
-                titleRes = R.string.clear_chapter_cache
-                summary = context.getString(R.string.used_, chapterCache.readableSize)
-
-                onClick { clearChapterCache() }
-            }
 
             preference {
                 titleRes = R.string.force_download_cache_refresh
@@ -204,36 +189,6 @@ class SettingsAdvancedController : SettingsLegacyController() {
                 onClick { downloadManager.refreshCache() }
             }
 
-            preference {
-                key = "clean_cached_covers"
-                titleRes = R.string.clean_up_cached_covers
-                summary = context.getString(
-                    R.string.delete_old_covers_in_library_used_,
-                    coverCache.getChapterCacheSize(),
-                )
-
-                onClick {
-                    context.toast(R.string.starting_cleanup)
-                    (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
-                        coverCache.deleteOldCovers()
-                    }
-                }
-            }
-            preference {
-                key = "clear_cached_not_library"
-                titleRes = R.string.clear_cached_covers_non_library
-                summary = context.getString(
-                    R.string.delete_all_covers__not_in_library_used_,
-                    coverCache.getOnlineCoverCacheSize(),
-                )
-
-                onClick {
-                    context.toast(R.string.starting_cleanup)
-                    (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
-                        coverCache.deleteAllCachedCovers()
-                    }
-                }
-            }
             preference {
                 key = "clean_downloaded_chapters"
                 titleRes = R.string.clean_up_downloaded_chapters
@@ -487,36 +442,6 @@ class SettingsAdvancedController : SettingsLegacyController() {
         }
     }
 
-    private fun clearChapterCache() {
-        if (activity == null) return
-        viewScope.launchIO {
-            val files = chapterCache.cacheDir.listFiles() ?: return@launchIO
-            var deletedFiles = 0
-            try {
-                files.forEach { file ->
-                    if (chapterCache.removeFileFromCache(file.name)) {
-                        deletedFiles++
-                    }
-                }
-                withUIContext {
-                    activity?.toast(
-                        resources?.getQuantityString(
-                            R.plurals.cache_cleared,
-                            deletedFiles,
-                            deletedFiles,
-                        ),
-                    )
-                    findPreference(CLEAR_CACHE_KEY)?.summary =
-                        resources?.getString(R.string.used_, chapterCache.readableSize)
-                }
-            } catch (_: Exception) {
-                withUIContext {
-                    activity?.toast(R.string.cache_delete_error)
-                }
-            }
-        }
-    }
-
     private fun clearWebViewData() {
         if (activity == null) return
         try {
@@ -536,8 +461,6 @@ class SettingsAdvancedController : SettingsLegacyController() {
     }
 
     private companion object {
-        const val CLEAR_CACHE_KEY = "pref_clear_cache_key"
-
         private var job: Job? = null
     }
 }

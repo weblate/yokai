@@ -229,7 +229,6 @@ class MigrationProcessAdapter(
                     coverCache.setCustomCoverToCache(manga, coverCache.getCustomCoverFile(prevManga).inputStream())
                 }
                 customMangaManager.getManga(prevManga)?.let { customManga ->
-                    customManga.id = manga.id!!
                     launchNow {
                         customMangaManager.updateMangaInfo(prevManga.id, manga.id, customManga.getMangaInfo())
                     }

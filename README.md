@@ -8,9 +8,6 @@
 
 </div>
 
-> [!NOTE]
-> I'm currently busy with irl stuff, so the development will slow down significantly, I'll try to work on the app whenever possible.
-
 <div align="center">
 
 A free and open source manga reader
@@ -29,13 +26,14 @@ A free and open source manga reader
 
 ## About Fork
 
-This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR.
+This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR. Updates are sporadic, sometime fast, sometime slow.
 
 ## Features
 
 <div align="left">
 
-### Features of Tachiyomi include
+<details open="">
+    <summary><h3>From upstream (Tachiyomi/Mihon)</h3></summary>
 
 * Local reading of downloaded content.
 * A configurable reader with multiple viewers, reading directions and other settings.
@@ -51,7 +49,10 @@ This fork was created for personal usage, the name Yōkai is chosen in theme of 
 * Schedule updating your library for new chapters.
 * Create backups locally to read offline or to your desired cloud service.
 
-### Plus some new features in this fork and J2K such as
+</details>
+
+<details>
+    <summary><h3>From J2K</h3></summary>
 
 * UI redesign.
 * New Manga details screens, themed by their manga covers.
@@ -72,6 +73,15 @@ This fork was created for personal usage, the name Yōkai is chosen in theme of 
 * View all chapters right in the reader.
 * A lot more Material Design You additions.
 * Android 12 features such as automatic extension and app updates.
+
+</details>
+
+<details>
+    <summary><h3>From Yōkai</h3></summary>
+</details>
+
+* New Theme
+* NSFW/SFW Filter
 
 </div>
 

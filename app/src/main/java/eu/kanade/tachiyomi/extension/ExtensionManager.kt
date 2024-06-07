@@ -308,6 +308,14 @@ class ExtensionManager(
         installer.uninstallApk(pkgName)
     }
 
+    suspend fun refreshTrust() {
+        val nowTrustedExtensions = untrustedExtensionsFlow.value
+            .filter { trustExtension.isTrustedByRepo(listOf(it.signatureHash)) }
+        _untrustedExtensionsFlow.value -= nowTrustedExtensions
+
+        registerNewTrusted(nowTrustedExtensions)
+    }
+
     /**
      * Adds the given extension to the list of trusted extensions. It also loads in background the
      * now trusted extensions.
@@ -326,6 +334,10 @@ class ExtensionManager(
             .filter { it.pkgName == pkgName && it.versionCode == versionCode }
         _untrustedExtensionsFlow.value -= nowTrustedExtensions
 
+        registerNewTrusted(nowTrustedExtensions)
+    }
+
+    private suspend fun registerNewTrusted(nowTrustedExtensions: List<Extension.Untrusted>) {
         launchNow {
             nowTrustedExtensions
                 .map { extension ->

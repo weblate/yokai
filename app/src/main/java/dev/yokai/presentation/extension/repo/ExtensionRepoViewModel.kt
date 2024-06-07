@@ -13,6 +13,7 @@ import dev.yokai.domain.extension.repo.interactor.ReplaceExtensionRepo
 import dev.yokai.domain.extension.repo.interactor.UpdateExtensionRepo
 import dev.yokai.domain.extension.repo.model.ExtensionRepo
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,8 @@ import uy.kohesive.injekt.injectLazy
 
 class ExtensionRepoViewModel :
     ViewModel() {
+
+    private val extensionManager: ExtensionManager by injectLazy()
 
     private val getExtensionRepo: GetExtensionRepo by injectLazy()
     private val createExtensionRepo: CreateExtensionRepo by injectLazy()
@@ -41,6 +44,7 @@ class ExtensionRepoViewModel :
         viewModelScope.launchIO {
             getExtensionRepo.subscribeAll().collectLatest { repos ->
                 mutableRepoState.update { ExtensionRepoState.Success(repos = repos.toImmutableList()) }
+                extensionManager.refreshTrust()
             }
         }
     }

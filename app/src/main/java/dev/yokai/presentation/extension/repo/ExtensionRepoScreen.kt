@@ -48,7 +48,7 @@ fun ExtensionRepoScreen(
 ) {
     val onBackPress = LocalBackPress.currentOrThrow
     val context = LocalContext.current
-    val repoState = viewModel.repoState.collectAsState()
+    val repoState by viewModel.repoState.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val alertDialog = LocalAlertDialog.currentOrThrow
@@ -72,9 +72,9 @@ fun ExtensionRepoScreen(
             )
         },
     ) { innerPadding ->
-        if (repoState.value is ExtensionRepoState.Loading) return@YokaiScaffold
+        if (repoState is ExtensionRepoState.Loading) return@YokaiScaffold
 
-        val repos = (repoState.value as ExtensionRepoState.Success).repos
+        val repos = (repoState as ExtensionRepoState.Success).repos
 
         alertDialog.content?.let { it() }
 

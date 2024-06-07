@@ -14,6 +14,9 @@
 ## Fixes
 - Fix potential crashes for some custom Android rom
 - Allow MultipartBody.Builder for extensions
+- Refresh extension repo now actually refresh extension(s) trust status
+- Custom manga info now relink properly upon migration
+- Fixed extension repo list did not update when a repo is added via deep link
 
 ## Other
-- Migrate `RawQueries#librayQuery` to use SQLDelight (`GetLibraryManga`)
+- Migrate `RawQueries#librayQuery` to use SQLDelight (`GetLibraryManga`), should improve stability

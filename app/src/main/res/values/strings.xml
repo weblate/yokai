@@ -311,6 +311,9 @@
     <string name="only_downloaded">Only downloaded</string>
     <string name="unread_or_downloaded">Unread or downloaded</string>
     <string name="clear_history">Clear history</string>
+    <string name="recents_long_tap_default">Show download queue</string>
+    <string name="recents_long_tap_last_read">Open last read chapter</string>
+    <string name="recents_long_tap">Long tap Recents behaviour</string>
 
     <!-- Browse -->
     <string name="search_filters">Search filters</string>
@@ -331,6 +334,9 @@
     <string name="last_used">Last used</string>
     <string name="local_source_help_guide">Local source guide</string>
     <string name="check_site_in_web">Check website in WebView</string>
+    <string name="browse_long_tap_default">Open extensions / migration menu</string>
+    <string name="browse_long_tap_search">Open global search</string>
+    <string name="browse_long_tap">Long tap Browse behaviour</string>
 
     <!-- Other Screens -->
 
@@ -990,6 +996,7 @@
     <string name="downloading_">Downloading: %1$s</string>
     <string name="cancel_all">Cancel all</string>
     <string name="move_series_to_top">Move series to top</string>
+    <string name="move_series_to_bottom">Move series to bottom</string>
     <string name="downloads_swipe_tutorial">Downloads can be cancelled by swiping them away\nSwipe this tip to dismiss it</string>
     <string name="cancel_all_for_series">Cancel all for this series</string>
     <string name="downloaded">Downloaded</string>

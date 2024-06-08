@@ -9,11 +9,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceScreen
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.ThemePreference
+import eu.kanade.tachiyomi.ui.setting.bindTo
 import eu.kanade.tachiyomi.ui.setting.defaultValue
 import eu.kanade.tachiyomi.ui.setting.infoPreference
 import eu.kanade.tachiyomi.ui.setting.intListPreference
@@ -228,6 +230,28 @@ class SettingsGeneralController : SettingsLegacyController() {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                     infoPreference(R.string.language_requires_app_restart)
                 }
+            }
+        }
+
+        preferenceCategory {
+            titleRes = R.string.navigation
+
+            listPreference(activity) {
+                bindTo(basePreferences.longTapRecentsNavBehaviour())
+                titleRes = R.string.recents_long_tap
+
+                val values = BasePreferences.LongTapRecents.entries.toList()
+                entriesRes = values.map { it.titleResId }.toTypedArray()
+                entryValues = values.map { it.name }.toTypedArray().toList()
+            }
+
+            listPreference(activity) {
+                bindTo(basePreferences.longTapBrowseNavBehaviour())
+                titleRes = R.string.browse_long_tap
+
+                val values = BasePreferences.LongTapBrowse.entries.toList()
+                entriesRes = values.map { it.titleResId }.toTypedArray()
+                entryValues = values.map { it.name }.toTypedArray().toList()
             }
         }
     }

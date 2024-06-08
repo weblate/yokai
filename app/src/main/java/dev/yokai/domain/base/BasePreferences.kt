@@ -22,4 +22,18 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
     fun hasShownOnboarding() = preferenceStore.getBoolean(Preference.appStateKey("onboarding_complete"), false)
 
     fun crashReport() = preferenceStore.getBoolean("pref_crash_report", true)
+
+    fun longTapBrowseNavBehaviour() = preferenceStore.getEnum("pref_browser_long_tap", LongTapBrowse.DEFAULT)
+
+    enum class LongTapBrowse(@StringRes val titleResId: Int) {
+        DEFAULT(R.string.browse_long_tap_default),
+        SEARCH(R.string.browse_long_tap_search),
+    }
+
+    fun longTapRecentsNavBehaviour() = preferenceStore.getEnum("pref_recents_long_tap", LongTapRecents.DEFAULT)
+
+    enum class LongTapRecents(@StringRes val titleResId: Int) {
+        DEFAULT(R.string.recents_long_tap_default),
+        LAST_READ(R.string.recents_long_tap_last_read)
+    }
 }

@@ -23,6 +23,7 @@ import eu.kanade.tachiyomi.ui.main.SearchControllerInterface
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
 import eu.kanade.tachiyomi.ui.source.browse.BrowseSourceController
 import eu.kanade.tachiyomi.util.addOrRemoveToFavorites
+import eu.kanade.tachiyomi.util.system.extensionIntentForText
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.isControllerVisible
@@ -163,7 +164,15 @@ open class GlobalSearchController(
         activityBinding?.searchToolbar?.searchItem?.expandActionView()
         activityBinding?.searchToolbar?.searchView?.setQuery(presenter.query, false)
 
+        if (presenter.query.isBlank()) {
+            activityBinding?.searchToolbar?.searchView?.requestFocus()
+        }
+
         setOnQueryTextChangeListener(activityBinding?.searchToolbar?.searchView, onlyOnSubmit = true, hideKbOnSubmit = true) {
+            // try to handle the query as a manga URL
+            applicationContext?.extensionIntentForText(it ?: "")?.let {
+                startActivity(it)
+            }
             presenter.search(it ?: "")
             setTitle() // Update toolbar title
             true
@@ -177,7 +186,9 @@ open class GlobalSearchController(
             val searchItem = activityBinding?.searchToolbar?.searchItem ?: return
             searchItem.expandActionView()
             searchView.setQuery(presenter.query, false)
-            searchView.clearFocus()
+            if (presenter.query.isNotBlank()) {
+                searchView.clearFocus()
+            }
         }
         if (type == ControllerChangeType.POP_ENTER && lastPosition > -1) {
             val holder = binding.recycler.findViewHolderForAdapterPosition(lastPosition) as? GlobalSearchHolder
@@ -220,6 +231,11 @@ open class GlobalSearchController(
         if (extensionFilter != null) {
             customTitle = view.context?.getString(R.string.loading)
             setTitle()
+        }
+
+        // try to handle the query as a manga URL
+        applicationContext?.extensionIntentForText(presenter.query)?.let {
+            startActivity(it)
         }
     }
 

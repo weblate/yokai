@@ -1,0 +1,50 @@
+name: Build PR
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: Build app
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Android SDK
+        run: |
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;29.0.3"
+
+      - name: Setup Gradle
+        uses: null2264/actions/gradle-setup@c63d62af63686cb442114b979d4bedb96a514881
+        with:
+          java: 17
+          distro: adopt
+
+      - name: Copy CI gradle.properties
+        run: |
+          mkdir -p ~/.gradle
+          cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Build and run tests
+        if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
+        run: ./gradlew assembleDevDebug testDevDebugUnitTest
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          include_passed: true
+          detailed_summary: true
+          report_paths: '**/build/test-results/test*/TEST-*.xml'
+
+      - name: Upload APK to artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: app/build/outputs/apk/dev/debug/*.apk

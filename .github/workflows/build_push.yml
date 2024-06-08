@@ -1,4 +1,4 @@
-name: CI
+name: Build release
 on:
   push:
     branches:
@@ -99,8 +99,8 @@ jobs:
           report_paths: '**/build/test-results/test*/TEST-*.xml'
 
       - name: Sign APK
-        if: env.VERSION_TAG != ''
         uses: null2264/actions/android-signer@c63d62af63686cb442114b979d4bedb96a514881
+        if: env.VERSION_TAG != ''
         with:
           releaseDir: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
@@ -108,6 +108,12 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           summarise: true
+
+      - name: Upload APK to artifact
+        uses: actions/upload-artifact@v4
+        if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
+        with:
+          path: app/build/outputs/apk/standard/debug/*.apk
 
       - name: Clean up build artifacts
         if: env.VERSION_TAG != ''
@@ -213,9 +219,3 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.NIGHTLY_PAT }}
-
-      # - name: Delete Old Nightly
-      #   if: startsWith(env.VERSION_TAG, 'r') && env.PREV_TAG != ''
-      #   run: gh release delete ${{ env.PREV_TAG }} --cleanup-tag
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

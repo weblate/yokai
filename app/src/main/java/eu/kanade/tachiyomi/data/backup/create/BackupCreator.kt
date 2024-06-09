@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.data.backup
+package eu.kanade.tachiyomi.data.backup.create
 
 import android.content.Context
 import android.net.Uri
@@ -24,6 +24,7 @@ import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_SOURCE_PREFS
 import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_SOURCE_PREFS_MASK
 import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_TRACK
 import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_TRACK_MASK
+import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.backup.models.BackupCategory
 import eu.kanade.tachiyomi.data.backup.models.BackupChapter

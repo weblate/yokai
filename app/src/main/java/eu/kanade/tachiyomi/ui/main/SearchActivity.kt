@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
+import dev.yokai.domain.chapter.interactor.GetChapters
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -25,10 +26,13 @@ import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.util.chapter.ChapterSort
 import eu.kanade.tachiyomi.util.system.extensionIntentForText
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 
 class SearchActivity : MainActivity() {
+    private val getChapters: GetChapters by injectLazy()
 
     private var backToMain = false
 
@@ -151,8 +155,8 @@ class SearchActivity : MainActivity() {
                     val mangaId = extras.getLong(MangaDetailsController.MANGA_EXTRA)
                     if (mangaId != 0L) {
                         val db = Injekt.get<DatabaseHelper>()
-                        val chapters = db.getChapters(mangaId).executeAsBlocking()
                         db.getManga(mangaId).executeAsBlocking()?.let { manga ->
+                            val chapters = runBlocking { getChapters.await(manga) }
                             val nextUnreadChapter = ChapterSort(manga).getNextUnreadChapter(chapters, false)
                             if (nextUnreadChapter != null) {
                                 val activity =

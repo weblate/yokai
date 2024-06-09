@@ -1136,7 +1136,7 @@ class LibraryPresenter(
 
     /** Returns first unread chapter of a manga */
     fun getFirstUnread(manga: Manga): Chapter? {
-        val chapters = db.getChapters(manga).executeAsBlocking()
+        val chapters = runBlocking { getChapters.await(manga) }
         return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
     }
 
@@ -1298,7 +1298,7 @@ class LibraryPresenter(
         presenterScope.launch {
             withContext(Dispatchers.IO) {
                 mangaList.forEach { list ->
-                    val chapters = runBlocking { getChapters.await(list.id!!, true) }.filter { !it.read }
+                    val chapters = runBlocking { getChapters.await(list) }.filter { !it.read }
                     downloadManager.downloadChapters(list, chapters)
                 }
             }

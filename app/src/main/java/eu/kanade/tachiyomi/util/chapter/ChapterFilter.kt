@@ -19,7 +19,7 @@ class ChapterFilter(val preferences: PreferencesHelper = Injekt.get(), val downl
         val notBookmarkEnabled = manga.bookmarkedFilter(preferences) == Manga.CHAPTER_SHOW_NOT_BOOKMARKED
 
         // if none of the filters are enabled skip the filtering of them
-        val filteredChapters = chapters.filterChaptersByScanlators(manga)
+        val filteredChapters = chapters
         return if (readEnabled || unreadEnabled || downloadEnabled || notDownloadEnabled || bookmarkEnabled || notBookmarkEnabled) {
             filteredChapters.filter {
                 if (readEnabled && it.read.not() ||
@@ -40,7 +40,7 @@ class ChapterFilter(val preferences: PreferencesHelper = Injekt.get(), val downl
 
     /** filter chapters for the reader */
     fun <T : Chapter> filterChaptersForReader(chapters: List<T>, manga: Manga, selectedChapter: T? = null): List<T> {
-        var filteredChapters = chapters.filterChaptersByScanlators(manga)
+        var filteredChapters = chapters
         // if filter prefs aren't enabled don't even filter
         if (!preferences.skipRead() && !preferences.skipFiltered() && !preferences.skipDupe().get()) {
             return filteredChapters
@@ -84,6 +84,7 @@ class ChapterFilter(val preferences: PreferencesHelper = Injekt.get(), val downl
 
     companion object {
         /** filters chapters for scanlators */
+        @Deprecated("Filter it from SQL instead if possible")
         fun <T : Chapter> List<T>.filterChaptersByScanlators(manga: Manga): List<T> {
             return manga.filtered_scanlators?.let { filteredScanlatorString ->
                 val filteredScanlators = ChapterUtil.getScanlators(filteredScanlatorString)

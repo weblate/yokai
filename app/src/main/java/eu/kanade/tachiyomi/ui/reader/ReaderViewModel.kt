@@ -10,6 +10,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.chapter.interactor.GetChapters
 import dev.yokai.domain.download.DownloadPreferences
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
@@ -75,6 +76,7 @@ import rx.schedulers.Schedulers
 import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import java.io.File
 import java.util.Date
 import java.util.concurrent.CancellationException
@@ -93,6 +95,7 @@ class ReaderViewModel(
     private val storageManager: StorageManager = Injekt.get(),
     private val downloadPreferences: DownloadPreferences = Injekt.get(),
 ) : ViewModel() {
+    private val getChapters: GetChapters by injectLazy()
 
     private val mutableState = MutableStateFlow(State())
     val state = mutableState.asStateFlow()
@@ -142,7 +145,7 @@ class ReaderViewModel(
      */
     private val chapterList by lazy {
         val manga = manga!!
-        val dbChapters = db.getChapters(manga).executeAsBlocking()
+        val dbChapters = runBlocking { getChapters.await(manga) }
 
         val selectedChapter = dbChapters.find { it.id == chapterId }
             ?: error("Requested chapter of id $chapterId not found in chapter list")
@@ -260,7 +263,7 @@ class ReaderViewModel(
         val manga = manga ?: return emptyList()
         chapterItems = withContext(Dispatchers.IO) {
             val chapterSort = ChapterSort(manga, chapterFilter, preferences)
-            val dbChapters = db.getChapters(manga).executeAsBlocking()
+            val dbChapters = runBlocking { getChapters.await(manga) }
             chapterSort.getChaptersSorted(
                 dbChapters,
                 filterForReader = true,

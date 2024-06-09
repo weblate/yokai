@@ -25,6 +25,7 @@ class MangaDetailsAdapter(
         get() = preferences.shownChapterSwipeTutorial()
 
     var items: List<ChapterItem> = emptyList()
+        private set
 
     val delegate: MangaDetailsInterface = controller
     val presenter = controller.presenter
@@ -54,10 +55,7 @@ class MangaDetailsAdapter(
             updateDataSet(items)
         } else {
             updateDataSet(
-                items.filter {
-                    it.name.contains(s, true) ||
-                        it.scanlator?.contains(s, true) == true
-                },
+                items.filter { it.name.contains(s, true) },
             )
         }
     }

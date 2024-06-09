@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.recents
 
+import dev.yokai.domain.chapter.interactor.GetChapters
 import dev.yokai.domain.recents.RecentsPreferences
 import dev.yokai.domain.ui.UiPreferences
 import eu.kanade.tachiyomi.R
@@ -32,9 +33,11 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -52,6 +55,7 @@ class RecentsPresenter(
     val db: DatabaseHelper = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
 ) : BaseCoroutinePresenter<RecentsController>(), DownloadQueue.DownloadListener {
+    private val getChapters: GetChapters by injectLazy()
 
     private var recentsJob: Job? = null
     var recentItems = listOf<RecentMangaItem>()
@@ -452,14 +456,13 @@ class RecentsPresenter(
     }
 
     private fun getNextChapter(manga: Manga): Chapter? {
-        val chapters = db.getChapters(manga).executeAsBlocking()
+        val chapters = runBlocking { getChapters.await(manga) }
         return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
     }
 
     private fun getFirstUpdatedChapter(manga: Manga, chapter: Chapter): Chapter? {
-        val chapters = db.getChapters(manga).executeAsBlocking()
+        val chapters = runBlocking { getChapters.await(manga) }
         return chapters
-            .filterChaptersByScanlators(manga)
             .sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
                 !it.read && abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)
             }

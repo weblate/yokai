@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.util.chapter
 
+import dev.yokai.domain.chapter.interactor.GetChapters
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -8,8 +9,8 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.util.chapter.ChapterFilter.Companion.filterChaptersByScanlators
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import kotlinx.coroutines.runBlocking
+import uy.kohesive.injekt.injectLazy
 import java.util.Date
 import java.util.TreeSet
 
@@ -32,9 +33,10 @@ fun syncChaptersWithSource(
         throw Exception("No chapters found")
     }
 
-    val downloadManager: DownloadManager = Injekt.get()
+    val downloadManager: DownloadManager by injectLazy()
+    val getChapters: GetChapters by injectLazy()
     // Chapters from db.
-    val dbChapters = db.getChapters(manga).executeAsBlocking()
+    val dbChapters = runBlocking { getChapters.await(manga, false) }
 
     val sourceChapters = rawSourceChapters
         .distinctBy { it.url }
@@ -159,7 +161,7 @@ fun syncChaptersWithSource(
         db.fixChaptersSourceOrder(sourceChapters).executeAsBlocking()
 
         // Set this manga as updated since chapters were changed
-        val newestChapterDate = db.getChapters(manga).executeAsBlocking()
+        val newestChapterDate = runBlocking { getChapters.await(manga, false) }
             .maxOfOrNull { it.date_upload } ?: 0L
         if (newestChapterDate == 0L) {
             if (toAdd.isNotEmpty()) {

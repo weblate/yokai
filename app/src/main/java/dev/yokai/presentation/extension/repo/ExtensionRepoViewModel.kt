@@ -4,8 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.yokai.domain.extension.repo.ExtensionRepoRepository
-import dev.yokai.domain.Result
 import dev.yokai.domain.extension.repo.interactor.CreateExtensionRepo
 import dev.yokai.domain.extension.repo.interactor.DeleteExtensionRepo
 import dev.yokai.domain.extension.repo.interactor.GetExtensionRepo
@@ -15,12 +13,13 @@ import dev.yokai.domain.extension.repo.model.ExtensionRepo
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.util.system.launchIO
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
-import okhttp3.internal.toImmutableList
 import uy.kohesive.injekt.injectLazy
 
 class ExtensionRepoViewModel :
@@ -106,7 +105,7 @@ sealed class ExtensionRepoState {
 
     @Immutable
     data class Success(
-        val repos: List<ExtensionRepo>,
+        val repos: ImmutableList<ExtensionRepo>,
     ) : ExtensionRepoState() {
 
         val isEmpty: Boolean

@@ -12,7 +12,7 @@ import eu.kanade.tachiyomi.data.track.mangaupdates.dto.copyTo
 import eu.kanade.tachiyomi.data.track.mangaupdates.dto.toTrackSearch
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
-import okhttp3.internal.toImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 class MangaUpdates(private val context: Context, id: Int) : TrackService(id) {
 

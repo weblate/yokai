@@ -293,6 +293,8 @@ dependencies {
     // Android Chart
     implementation(libs.mpandroidchart)
 
+    implementation(kotlinx.immutable)
+
     // Tests
     testImplementation(libs.bundles.test)
     testRuntimeOnly(libs.bundles.test.runtime)

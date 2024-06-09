@@ -36,3 +36,5 @@
 
 ## Other
 - Migrate some StorIO queries to SQLDelight, should improve stability
+- Migrate from Timber to Kermit
+- Update okhttp monorepo to v5.0.0-alpha.14

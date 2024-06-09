@@ -1,0 +1,69 @@
+package eu.kanade.tachiyomi.data.backup.create.creators
+
+import eu.kanade.tachiyomi.core.preference.Preference
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_APP_PREFS
+import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_APP_PREFS_MASK
+import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_SOURCE_PREFS
+import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_SOURCE_PREFS_MASK
+import eu.kanade.tachiyomi.data.backup.models.BackupPreference
+import eu.kanade.tachiyomi.data.backup.models.BackupSourcePreferences
+import eu.kanade.tachiyomi.data.backup.models.BooleanPreferenceValue
+import eu.kanade.tachiyomi.data.backup.models.FloatPreferenceValue
+import eu.kanade.tachiyomi.data.backup.models.IntPreferenceValue
+import eu.kanade.tachiyomi.data.backup.models.LongPreferenceValue
+import eu.kanade.tachiyomi.data.backup.models.StringPreferenceValue
+import eu.kanade.tachiyomi.data.backup.models.StringSetPreferenceValue
+import eu.kanade.tachiyomi.source.ConfigurableSource
+import eu.kanade.tachiyomi.source.SourceManager
+import eu.kanade.tachiyomi.source.preferenceKey
+import eu.kanade.tachiyomi.source.sourcePreferences
+import eu.kanade.tachiyomi.ui.library.LibrarySort
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
+
+class PreferenceBackupCreator(
+    private val sourceManager: SourceManager = Injekt.get(),
+    private val preferenceStore: PreferenceStore = Injekt.get(),
+) {
+    fun backupAppPreferences(flags: Int): List<BackupPreference> {
+        if (flags and BACKUP_APP_PREFS_MASK != BACKUP_APP_PREFS) return emptyList()
+        return preferenceStore.getAll().toBackupPreferences()
+    }
+
+    fun backupSourcePreferences(flags: Int): List<BackupSourcePreferences> {
+        if (flags and BACKUP_SOURCE_PREFS_MASK != BACKUP_SOURCE_PREFS) return emptyList()
+        return sourceManager.getOnlineSources()
+            .filterIsInstance<ConfigurableSource>()
+            .map {
+                BackupSourcePreferences(
+                    it.preferenceKey(),
+                    it.sourcePreferences().all.toBackupPreferences(),
+                )
+            }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun Map<String, *>.toBackupPreferences(): List<BackupPreference> {
+        return this.filterKeys { !Preference.isPrivate(it) }
+            .mapNotNull { (key, value) ->
+                // j2k fork differences
+                if (key == "library_sorting_mode" && value is Int) {
+                    val stringValue = (LibrarySort.valueOf(value) ?: LibrarySort.Title).serialize()
+                    return@mapNotNull BackupPreference(key, StringPreferenceValue(stringValue))
+                }
+                // end j2k fork differences
+                when (value) {
+                    is Int -> BackupPreference(key, IntPreferenceValue(value))
+                    is Long -> BackupPreference(key, LongPreferenceValue(value))
+                    is Float -> BackupPreference(key, FloatPreferenceValue(value))
+                    is String -> BackupPreference(key, StringPreferenceValue(value))
+                    is Boolean -> BackupPreference(key, BooleanPreferenceValue(value))
+                    is Set<*> -> (value as? Set<String>)?.let {
+                        BackupPreference(key, StringSetPreferenceValue(it))
+                    }
+                    else -> null
+                }
+            }
+    }
+}

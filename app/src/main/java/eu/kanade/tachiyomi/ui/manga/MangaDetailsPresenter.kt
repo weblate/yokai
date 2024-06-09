@@ -10,6 +10,8 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.chapter.interactor.GetAvailableScanlators
+import dev.yokai.domain.chapter.interactor.GetChapters
 import dev.yokai.domain.library.custom.model.CustomMangaInfo
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.BuildConfig
@@ -88,6 +90,8 @@ class MangaDetailsPresenter(
     chapterFilter: ChapterFilter = Injekt.get(),
     internal val storageManager: StorageManager = Injekt.get(),
 ) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
+    private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
+    private val getChapters: GetChapters by injectLazy()
 
     private val customMangaManager: CustomMangaManager by injectLazy()
     private val mangaShortcutManager: MangaShortcutManager by injectLazy()
@@ -118,6 +122,7 @@ class MangaDetailsPresenter(
     val headerItem by lazy { MangaHeaderItem(manga, view?.fromCatalogue == true) }
     var tabletChapterHeaderItem: MangaHeaderItem? = null
     var allChapterScanlators: Set<String> = emptySet()
+
     fun onFirstLoad() {
         val controller = view ?: return
         headerItem.isTablet = controller.isTablet
@@ -170,13 +175,18 @@ class MangaDetailsPresenter(
     }
 
     private suspend fun getChapters() {
-        val chapters = db.getChapters(manga).executeOnIO().map { it.toModel() }
+        val chapters = getChapters.await(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
 
         // Find downloaded chapters
         setDownloadedChapters(chapters)
-        allChapterScanlators = chapters.flatMap { ChapterUtil.getScanlators(it.chapter.scanlator) }.toSet()
+        allChapterScanlators =
+            if (!isScanlatorFiltered()) {
+                chapters.flatMap { ChapterUtil.getScanlators(it.chapter.scanlator) }
+            } else {
+                getAvailableScanlators.await(manga.id!!)
+            }.toSet()
         // Store the last emission
-        allChapters = chapters
+        allChapters = if (!isScanlatorFiltered()) chapters else getChapters.await(manga.id!!, false).map { it.toModel() }
         this.chapters = applyChapterFilters(chapters)
     }
 
@@ -283,7 +293,7 @@ class MangaDetailsPresenter(
     fun hasDownloads(): Boolean = allChapters.any { it.isDownloaded }
 
     fun getUnreadChaptersSorted() =
-        allChapters.filter { !it.read && it.status == Download.State.NOT_DOWNLOADED }.distinctBy { it.name }
+        chapters.filter { !it.read && it.status == Download.State.NOT_DOWNLOADED }.distinctBy { it.name }
             .sortedWith(chapterSort.sortComparator(true))
 
     fun startDownloadingNow(chapter: Chapter) {
@@ -664,6 +674,8 @@ class MangaDetailsPresenter(
         }
     }
 
+    private fun isScanlatorFiltered() = manga.filtered_scanlators?.isNotEmpty() == true
+
     fun currentFilters(): String {
         val filtersId = mutableListOf<Int?>()
         filtersId.add(if (manga.readFilter(preferences) == Manga.CHAPTER_SHOW_READ) R.string.read else null)
@@ -672,7 +684,7 @@ class MangaDetailsPresenter(
         filtersId.add(if (manga.downloadedFilter(preferences) == Manga.CHAPTER_SHOW_NOT_DOWNLOADED) R.string.not_downloaded else null)
         filtersId.add(if (manga.bookmarkedFilter(preferences) == Manga.CHAPTER_SHOW_BOOKMARKED) R.string.bookmarked else null)
         filtersId.add(if (manga.bookmarkedFilter(preferences) == Manga.CHAPTER_SHOW_NOT_BOOKMARKED) R.string.not_bookmarked else null)
-        filtersId.add(if (manga.filtered_scanlators?.isNotEmpty() == true) R.string.scanlators else null)
+        filtersId.add(if (isScanlatorFiltered()) R.string.scanlators else null)
         return filtersId.filterNotNull()
             .joinToString(", ") { view?.view?.context?.getString(it) ?: "" }
     }

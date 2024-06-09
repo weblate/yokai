@@ -37,6 +37,36 @@ interface Chapter : SChapter, Serializable {
                 }
             }
         }
+
+        fun mapper(
+            id: Long,
+            mangaId: Long,
+            url: String,
+            name: String,
+            scanlator: String?,
+            read: Boolean,
+            bookmark: Boolean,
+            lastPageRead: Long,
+            pagesLeft: Long,
+            chapterNumber: Double,
+            sourceOrder: Long,
+            dateFetch: Long,
+            dateUpload: Long,
+        ): Chapter = create().apply {
+            this.id = id
+            this.manga_id = mangaId
+            this.url = url
+            this.name = name
+            this.scanlator = scanlator
+            this.read = read
+            this.bookmark = bookmark
+            this.last_page_read = lastPageRead.toInt()
+            this.pages_left = pagesLeft.toInt()
+            this.chapter_number = chapterNumber.toFloat()
+            this.source_order = sourceOrder.toInt()
+            this.date_fetch = dateFetch
+            this.date_upload = dateUpload
+        }
     }
 
     fun copyFrom(other: Chapter) {

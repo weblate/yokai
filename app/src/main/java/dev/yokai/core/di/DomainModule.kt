@@ -1,9 +1,13 @@
 package dev.yokai.core.di
 
+import dev.yokai.data.chapter.ChapterRepositoryImpl
 import dev.yokai.domain.extension.repo.ExtensionRepoRepository
 import dev.yokai.data.extension.repo.ExtensionRepoRepositoryImpl
 import dev.yokai.data.library.custom.CustomMangaRepositoryImpl
 import dev.yokai.data.manga.MangaRepositoryImpl
+import dev.yokai.domain.chapter.ChapterRepository
+import dev.yokai.domain.chapter.interactor.GetAvailableScanlators
+import dev.yokai.domain.chapter.interactor.GetChapters
 import dev.yokai.domain.extension.interactor.TrustExtension
 import dev.yokai.domain.extension.repo.interactor.CreateExtensionRepo
 import dev.yokai.domain.extension.repo.interactor.DeleteExtensionRepo
@@ -44,5 +48,9 @@ class DomainModule : InjektModule {
 
         addSingletonFactory<MangaRepository> { MangaRepositoryImpl(get()) }
         addFactory { GetLibraryManga(get()) }
+
+        addSingletonFactory<ChapterRepository> { ChapterRepositoryImpl(get()) }
+        addFactory { GetAvailableScanlators(get()) }
+        addFactory { GetChapters(get()) }
     }
 }

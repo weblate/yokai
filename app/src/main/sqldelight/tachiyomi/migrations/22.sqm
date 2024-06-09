@@ -1,3 +1,18 @@
+CREATE VIEW scanlators_view AS
+SELECT S.* FROM (
+    WITH RECURSIVE split(seq, _id, name, str) AS (  -- Probably should migrate this to its own table someday
+        SELECT 0, mangas._id, NULL, replace(ifnull(mangas.filtered_scanlators, ''), ' & ', '[.]')||'[.]' FROM mangas WHERE mangas._id
+        UNION ALL SELECT
+            seq+1,
+            _id,
+            substr(str, 0, instr(str, '[.]')),
+            substr(str, instr(str, '[.]')+3)
+        FROM split WHERE str != ''
+    )
+    SELECT _id AS manga_id, name FROM split WHERE split.seq != 0 ORDER BY split.seq ASC
+) AS S;
+
+DROP VIEW IF EXISTS library_view;
 CREATE VIEW library_view AS
 SELECT
     M.*,
@@ -15,7 +30,7 @@ LEFT JOIN (
     FROM chapters
     LEFT JOIN scanlators_view AS filtered_scanlators
     ON chapters.manga_id = filtered_scanlators.manga_id
-    AND ifnull(chapters.scanlator, 'N/A') = ifnull(filtered_scanlators.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+    AND ifnull(chapters.scanlator, 'N/A') = ifnull(filtered_scanlators.name, '/<INVALID>/')
     WHERE filtered_scanlators.name IS NULL
     GROUP BY chapters.manga_id
 ) AS C
@@ -24,7 +39,3 @@ LEFT JOIN (SELECT * FROM mangas_categories) AS MC
 ON MC.manga_id = M._id
 WHERE M.favorite = 1
 ORDER BY M.title;
-
-findAll:
-SELECT *
-FROM library_view;

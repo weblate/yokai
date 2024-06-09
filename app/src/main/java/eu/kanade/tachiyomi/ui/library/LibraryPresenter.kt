@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.library
 
+import dev.yokai.domain.chapter.interactor.GetChapters
 import dev.yokai.domain.manga.interactor.GetLibraryManga
 import dev.yokai.util.isLewd
 import eu.kanade.tachiyomi.R
@@ -74,6 +75,8 @@ class LibraryPresenter(
     private val trackManager: TrackManager = Injekt.get(),
 ) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
     private val getLibraryManga: GetLibraryManga by injectLazy()
+
+    private val getChapters: GetChapters by injectLazy()
 
     private val context = preferences.context
     private val viewContext
@@ -1295,7 +1298,7 @@ class LibraryPresenter(
         presenterScope.launch {
             withContext(Dispatchers.IO) {
                 mangaList.forEach { list ->
-                    val chapters = db.getChapters(list).executeAsBlocking().filter { !it.read }
+                    val chapters = runBlocking { getChapters.await(list.id!!, true) }.filter { !it.read }
                     downloadManager.downloadChapters(list, chapters)
                 }
             }

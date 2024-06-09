@@ -1,6 +1,4 @@
 import kotlin.Boolean;
-import kotlin.Float;
-import kotlin.Long;
 
 CREATE TABLE chapters(
     _id INTEGER NOT NULL PRIMARY KEY,
@@ -12,13 +10,29 @@ CREATE TABLE chapters(
     bookmark INTEGER AS Boolean  NOT NULL,
     last_page_read INTEGER NOT NULL,
     pages_left INTEGER NOT NULL,
-    chapter_number REAL AS Float NOT NULL,
+    chapter_number REAL NOT NULL,
     source_order INTEGER NOT NULL,
-    date_fetch INTEGER AS Long NOT NULL,
-    date_upload INTEGER AS Long NOT NULL,
+    date_fetch INTEGER NOT NULL,
+    date_upload INTEGER NOT NULL,
     FOREIGN KEY(manga_id) REFERENCES mangas (_id)
     ON DELETE CASCADE
 );
 
 CREATE INDEX chapters_manga_id_index ON chapters(manga_id);
 CREATE INDEX chapters_unread_by_manga_index ON chapters(manga_id, read) WHERE read = 0;
+
+getChaptersByMangaId:
+SELECT C.*
+FROM chapters AS C
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE C.manga_id = :manga_id
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+);
+
+getScanlatorsByMangaId:
+SELECT scanlator
+FROM chapters
+WHERE manga_id = :mangaId;

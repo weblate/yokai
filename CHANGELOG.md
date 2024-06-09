@@ -35,4 +35,4 @@
 - Fixed extensions not retaining their repo url
 
 ## Other
-- Migrate `RawQueries#librayQuery` to use SQLDelight (`GetLibraryManga`), should improve stability
+- Migrate some StorIO queries to SQLDelight, should improve stability

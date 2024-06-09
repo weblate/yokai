@@ -177,8 +177,13 @@ open class WebViewActivity : BaseWebViewActivity() {
 
     private fun clearCookies() {
         val url = binding.webview.url ?: return
-        val cleared = network.cookieJar.remove(url.toHttpUrl())
-        toast("Cleared $cleared cookies for: $url")
+        try {
+            val cleared = network.cookieJar.remove(url.toHttpUrl())
+            toast("Cleared $cleared cookies for: $url")
+        } catch (e: IllegalArgumentException) {
+            Logger.w(e) { "Somehow getting non http url: $url" }
+            toast("Unable to clear cookies for: $url (Invalid url)")
+        }
     }
 
     private fun openUrlInApp() {

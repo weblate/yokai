@@ -9,7 +9,6 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.util.chapter.ChapterFilter.Companion.filterChaptersByScanlators
-import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
 import java.util.Date
 import java.util.TreeSet
@@ -23,7 +22,7 @@ import java.util.TreeSet
  * @param source the source of the chapters.
  * @return a pair of new insertions and deletions.
  */
-fun syncChaptersWithSource(
+suspend fun syncChaptersWithSource(
     db: DatabaseHelper,
     rawSourceChapters: List<SChapter>,
     manga: Manga,
@@ -36,7 +35,7 @@ fun syncChaptersWithSource(
     val downloadManager: DownloadManager by injectLazy()
     val getChapters: GetChapters by injectLazy()
     // Chapters from db.
-    val dbChapters = runBlocking { getChapters.await(manga, false) }
+    val dbChapters = getChapters.await(manga, false)
 
     val sourceChapters = rawSourceChapters
         .distinctBy { it.url }
@@ -161,7 +160,7 @@ fun syncChaptersWithSource(
         db.fixChaptersSourceOrder(sourceChapters).executeAsBlocking()
 
         // Set this manga as updated since chapters were changed
-        val newestChapterDate = runBlocking { getChapters.await(manga, false) }
+        val newestChapterDate = getChapters.await(manga, false)
             .maxOfOrNull { it.date_upload } ?: 0L
         if (newestChapterDate == 0L) {
             if (toAdd.isNotEmpty()) {

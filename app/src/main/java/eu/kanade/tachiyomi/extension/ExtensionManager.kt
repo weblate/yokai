@@ -213,8 +213,12 @@ class ExtensionManager(
                         repoUrl = availableExt.repoUrl,
                     )
                     hasUpdateCount++
-                    changed = true
+                } else {
+                    mutInstalledExtensions[index] = installedExt.copy(
+                        repoUrl = availableExt.repoUrl,
+                    )
                 }
+                changed = true
             }
         }
         if (changed) {

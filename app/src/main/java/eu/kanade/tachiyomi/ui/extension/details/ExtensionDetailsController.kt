@@ -154,6 +154,12 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
         inflater.inflate(R.menu.extension_details, menu)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item = menu.findItem(R.id.action_open_repo)
+        item.isVisible = presenter.extension?.repoUrl != null
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_open_repo -> openRepo()
@@ -163,7 +169,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
     }
 
     private fun openRepo() {
-        val url = getUrl(presenter.extension?.repoUrl)
+        val url = getUrl(presenter.extension?.repoUrl) ?: return
         openInBrowser(url)
     }
 

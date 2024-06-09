@@ -23,6 +23,7 @@
 - Improve download queue (AshbornXS)
   - Download badge now show download queue count
   - Add option to move series to bottom
+- Only show "open repo url" button when repo url is not empty
 
 ## Fixes
 - Fix potential crashes for some custom Android rom
@@ -31,6 +32,7 @@
 - Custom manga info now relink properly upon migration
 - Fixed extension repo list did not update when a repo is added via deep link
 - Fixed download unread trying to download filtered (by scanlator) chapters
+- Fixed extensions not retaining their repo url
 
 ## Other
 - Migrate `RawQueries#librayQuery` to use SQLDelight (`GetLibraryManga`), should improve stability

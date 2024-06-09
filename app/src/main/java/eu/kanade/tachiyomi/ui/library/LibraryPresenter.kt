@@ -1298,7 +1298,7 @@ class LibraryPresenter(
         presenterScope.launch {
             withContext(Dispatchers.IO) {
                 mangaList.forEach { list ->
-                    val chapters = runBlocking { getChapters.await(list) }.filter { !it.read }
+                    val chapters = getChapters.await(list).filter { !it.read }
                     downloadManager.downloadChapters(list, chapters)
                 }
             }

@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -455,13 +454,13 @@ class RecentsPresenter(
         return Triple(sortedChapters, firstChapter, extraCount)
     }
 
-    private fun getNextChapter(manga: Manga): Chapter? {
-        val chapters = runBlocking { getChapters.await(manga) }
+    private suspend fun getNextChapter(manga: Manga): Chapter? {
+        val chapters = getChapters.await(manga)
         return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
     }
 
-    private fun getFirstUpdatedChapter(manga: Manga, chapter: Chapter): Chapter? {
-        val chapters = runBlocking { getChapters.await(manga) }
+    private suspend fun getFirstUpdatedChapter(manga: Manga, chapter: Chapter): Chapter? {
+        val chapters = getChapters.await(manga)
         return chapters
             .sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
                 !it.read && abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)

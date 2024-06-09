@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.preference.PreferenceScreen
+import co.touchlab.kermit.Logger
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
@@ -38,12 +39,10 @@ import io.noties.markwon.Markwon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
 class AboutController : SettingsLegacyController() {
 
@@ -142,7 +141,7 @@ class AboutController : SettingsLegacyController() {
             } catch (error: Exception) {
                 withContext(Dispatchers.Main) {
                     activity.toast(error.message)
-                    Timber.e(error)
+                    Logger.e(error) { "Couldn't check new update" }
                 }
             }
             when (result) {

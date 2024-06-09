@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
-import timber.log.Timber
+import co.touchlab.kermit.Logger
 
 object WebViewUtil {
     const val MINIMUM_WEBVIEW_VERSION = 114
@@ -17,7 +17,7 @@ object WebViewUtil {
             // is not installed
             CookieManager.getInstance()
         } catch (e: Throwable) {
-            Timber.e(e)
+            Logger.e(e)
             return false
         }
 

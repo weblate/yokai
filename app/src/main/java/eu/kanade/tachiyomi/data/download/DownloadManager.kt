@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
+import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.R
@@ -16,7 +17,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 
 /**
@@ -327,7 +327,7 @@ class DownloadManager(val context: Context) {
                 mangaFolder.delete()
                 cache.removeManga(manga)
             } else {
-                Timber.e("Cache and download folder doesn't match for %s", manga.title)
+                Logger.e { "Cache and download folder doesn't match for ${manga.title}" }
             }
         }
         return cleaned
@@ -395,7 +395,7 @@ class DownloadManager(val context: Context) {
             cache.removeChapters(listOf(oldChapter), manga)
             cache.addChapter(newName, manga)
         } else {
-            Timber.e("Could not rename downloaded chapter: ${oldNames.joinToString()}")
+            Logger.e { "Could not rename downloaded chapter: ${oldNames.joinToString()}" }
         }
     }
 

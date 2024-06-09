@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import co.touchlab.kermit.Logger
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
@@ -30,8 +31,7 @@ import eu.kanade.tachiyomi.ui.more.stats.details.StatsDetailsPresenter.Stats
 import eu.kanade.tachiyomi.ui.more.stats.details.StatsDetailsPresenter.StatsSort
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isLandscape
-import timber.log.Timber
-import java.util.Calendar
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
@@ -231,7 +231,7 @@ class StatsDetailsChartLayout @JvmOverloads constructor(
                     invalidate()
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                Logger.e(e) { "Failed setup pie chart" }
             }
         }
     }
@@ -325,7 +325,7 @@ class StatsDetailsChartLayout @JvmOverloads constructor(
                     listener?.getHighlight()?.let { highlightValue(it) }
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                Logger.e(e) { "Failed setup bar chart" }
             }
         }
     }
@@ -392,7 +392,7 @@ class StatsDetailsChartLayout @JvmOverloads constructor(
                     invalidate()
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                Logger.e(e) { "Failed setup line chart" }
             }
         }
     }

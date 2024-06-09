@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
+import co.touchlab.kermit.Logger
 import dalvik.system.PathClassLoader
 import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
@@ -21,7 +22,6 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.File
 import java.nio.file.Files
@@ -67,18 +67,18 @@ internal object ExtensionLoader {
             if (PackageInfoCompat.getLongVersionCode(extension) <
                 PackageInfoCompat.getLongVersionCode(currentExtension)
             ) {
-                Timber.e("Installed extension version is higher. Downgrading is not allowed.")
+                Logger.e { "Installed extension version is higher. Downgrading is not allowed." }
                 return false
             }
 
             val extensionSignatures = getSignatures(extension)
             if (extensionSignatures.isNullOrEmpty()) {
-                Timber.e("Extension to be installed is not signed.")
+                Logger.e { "Extension to be installed is not signed." }
                 return false
             }
 
             if (!extensionSignatures.containsAll(getSignatures(currentExtension)!!)) {
-                Timber.e("Installed extension signature is not matched.")
+                Logger.e { "Installed extension signature is not matched." }
                 return false
             }
         }
@@ -93,7 +93,7 @@ internal object ExtensionLoader {
             }
             true
         } catch (e: Exception) {
-            Timber.e("Failed to copy extension file.")
+            Logger.e { "Failed to copy extension file." }
             target.delete()
             false
         }
@@ -177,7 +177,7 @@ internal object ExtensionLoader {
     suspend fun loadExtensionFromPkgName(context: Context, pkgName: String): LoadResult {
         val extensionPackage = getExtensionInfoFromPkgName(context, pkgName)
         if (extensionPackage == null) {
-            Timber.e("Extension package is not found ($pkgName)")
+            Logger.e { "Extension package is not found ($pkgName)" }
             return LoadResult.Error
         }
         return loadExtension(context, extensionPackage)
@@ -285,22 +285,22 @@ internal object ExtensionLoader {
         val versionCode = PackageInfoCompat.getLongVersionCode(pkgInfo)
 
         if (versionName.isNullOrEmpty()) {
-            Timber.w("Missing versionName for extension $extName")
+            Logger.w { "Missing versionName for extension $extName" }
             return LoadResult.Error
         }
 
         // Validate lib version
         val libVersion = versionName.substringBeforeLast('.').toDoubleOrNull()
         if (libVersion == null || libVersion < LIB_VERSION_MIN || libVersion > LIB_VERSION_MAX) {
-            Timber.w(
-                "Lib version is $libVersion, while only versions $LIB_VERSION_MIN to $LIB_VERSION_MAX are allowed",
-            )
+            Logger.w {
+                "Lib version is $libVersion, while only versions $LIB_VERSION_MIN to $LIB_VERSION_MAX are allowed"
+            }
             return LoadResult.Error
         }
 
         val signatures = getSignatures(pkgInfo)
         if (signatures.isNullOrEmpty()) {
-            Timber.w("Package $pkgName isn't signed")
+            Logger.w { "Package $pkgName isn't signed" }
             return LoadResult.Error
         } else if (!trustExtension.isTrusted(pkgInfo, signatures)) {
             val extension = Extension.Untrusted(
@@ -311,13 +311,13 @@ internal object ExtensionLoader {
                 libVersion,
                 signatures.last(),
             )
-            Timber.w("Extension $pkgName isn't trusted")
+            Logger.w { "Extension $pkgName isn't trusted" }
             return LoadResult.Untrusted(extension)
         }
 
         val isNsfw = appInfo.metaData.getInt(METADATA_NSFW) == 1
         if (!loadNsfwSource && isNsfw) {
-            Timber.w("NSFW extension $pkgName not allowed")
+            Logger.w { "NSFW extension $pkgName not allowed" }
             return LoadResult.Error
         }
 
@@ -344,7 +344,7 @@ internal object ExtensionLoader {
                         else -> throw Exception("Unknown source class type! ${obj.javaClass}")
                     }
                 } catch (e: Throwable) {
-                    Timber.e(e, "Extension load error: $extName.")
+                    Logger.e(e) { "Extension load error: $extName." }
                     return LoadResult.Error
                 }
             }

@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.track.komga
 
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
@@ -13,7 +14,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 
 const val READLIST_API = "/api/v1/readlists"
@@ -72,7 +72,7 @@ class KomgaApi(private val client: OkHttpClient) {
                     last_chapter_read = progress.lastReadContinuousNumberSort
                 }
             } catch (e: Exception) {
-                Timber.w(e, "Could not get item: $url")
+                Logger.w(e) { "Could not get item: $url" }
                 throw e
             }
         }

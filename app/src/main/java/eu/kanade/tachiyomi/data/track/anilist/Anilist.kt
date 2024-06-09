@@ -3,14 +3,14 @@ package eu.kanade.tachiyomi.data.track.anilist
 import android.content.Context
 import android.graphics.Color
 import androidx.annotation.StringRes
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
-import kotlinx.serialization.decodeFromString
+import eu.kanade.tachiyomi.util.system.e
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 
 class Anilist(private val context: Context, id: Int) : TrackService(id) {
@@ -210,7 +210,7 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
             saveCredentials(username.toString(), oauth.access_token)
             true
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             logout()
             false
         }
@@ -222,7 +222,7 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
             scorePreference.set(scoreType)
             true to null
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             false to e
         }
     }
@@ -241,7 +241,7 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
         return try {
             json.decodeFromString<OAuth>(trackPreferences.trackToken(this).get())
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             null
         }
     }

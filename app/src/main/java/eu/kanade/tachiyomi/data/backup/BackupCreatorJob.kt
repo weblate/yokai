@@ -12,14 +12,14 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StorageManager
-import dev.yokai.domain.storage.StoragePreferences
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notificationManager
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -41,7 +41,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
             if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri())!!)
             Result.success()
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             if (!isAutoBackup) notifier.showBackupError(e.message)
             Result.failure()
         } finally {

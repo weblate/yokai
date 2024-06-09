@@ -9,11 +9,12 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.util.system.e
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.concurrent.TimeUnit
@@ -51,7 +52,7 @@ class DelayedTrackingUpdateJob(context: Context, workerParams: WorkerParameters)
                             service.update(track, true)
                             db.insertTrack(track).executeAsBlocking()
                         } catch (e: Exception) {
-                            Timber.e(e)
+                            Logger.e(e)
                         }
                     }
                 }

@@ -248,7 +248,7 @@ dependencies {
     implementation(libs.bundles.coil)
 
     // Logging
-    implementation(libs.timber)
+    implementation(libs.kermit)
 
     // Sort
     implementation(libs.java.nat.sort)

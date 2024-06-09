@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.ui.base.controller
 
 import android.app.Activity
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,11 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import co.touchlab.kermit.Logger
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.view.BackHandlerControllerInterface
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.isControllerVisible
@@ -22,7 +21,6 @@ import eu.kanade.tachiyomi.util.view.removeQueryListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import timber.log.Timber
 
 abstract class BaseController(bundle: Bundle? = null) :
     Controller(bundle), BackHandlerControllerInterface, BaseControllerPreferenceControllerCommonInterface {
@@ -39,20 +37,20 @@ abstract class BaseController(bundle: Bundle? = null) :
 
                 override fun preCreateView(controller: Controller) {
                     viewScope = MainScope()
-                    Timber.d("Create view for ${controller.instance()}")
+                    Logger.d { "Create view for ${controller.instance()}" }
                 }
 
                 override fun preAttach(controller: Controller, view: View) {
-                    Timber.d("Attach view for ${controller.instance()}")
+                    Logger.d { "Attach view for ${controller.instance()}" }
                 }
 
                 override fun preDetach(controller: Controller, view: View) {
-                    Timber.d("Detach view for ${controller.instance()}")
+                    Logger.d { "Detach view for ${controller.instance()}" }
                 }
 
                 override fun preDestroyView(controller: Controller, view: View) {
                     viewScope.cancel()
-                    Timber.d("Destroy view for ${controller.instance()}")
+                    Logger.d { "Destroy view for ${controller.instance()}" }
                 }
             },
         )

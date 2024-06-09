@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.track.kavita
 
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.network.GET
@@ -12,7 +13,6 @@ import okhttp3.Dns
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.IOException
 import java.net.SocketTimeoutException
@@ -46,11 +46,11 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
                 when (it.code) {
                     200 -> return with(json) { it.parseAs<AuthenticationDto>().token }
                     401 -> {
-                        Timber.w("Unauthorized / api key not valid: Cleaned api URL: $apiUrl, Api key is empty: ${apiKey.isEmpty()}")
+                        Logger.w { "Unauthorized / api key not valid: Cleaned api URL: $apiUrl, Api key is empty: ${apiKey.isEmpty()}" }
                         throw IOException("Unauthorized / api key not valid")
                     }
                     500 -> {
-                        Timber.w("Error fetching JWT token. Cleaned api URL: $apiUrl, Api key is empty: ${apiKey.isEmpty()}")
+                        Logger.w { "Error fetching JWT token. Cleaned api URL: $apiUrl, Api key is empty: ${apiKey.isEmpty()}" }
                         throw IOException("Error fetching JWT token")
                     }
                     else -> {}
@@ -58,14 +58,14 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
             }
             // Not sure which one to catch
         } catch (e: SocketTimeoutException) {
-            Timber.w(
-                "Could not fetch JWT token. Probably due to connectivity issue or the url '$apiUrl' is not available, skipping",
-            )
+            Logger.w {
+                "Could not fetch JWT token. Probably due to connectivity issue or the url '$apiUrl' is not available, skipping"
+            }
             return null
         } catch (e: Exception) {
-            Timber.e(
-                "Unhandled exception fetching JWT token for url: '$apiUrl'",
-            )
+            Logger.e {
+                "Unhandled exception fetching JWT token for url: '$apiUrl'"
+            }
             throw IOException(e)
         }
 
@@ -106,7 +106,7 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
 
             return if (maxChapterNumber > volumeNumber) maxChapterNumber else volumeNumber
         } catch (e: Exception) {
-            Timber.w(e, "Exception fetching Total Chapters. Request:$requestUrl")
+            Logger.w(e) { "Exception fetching Total Chapters. Request:$requestUrl" }
             throw e
         }
     }
@@ -126,7 +126,7 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
                 }
             }
         } catch (e: Exception) {
-            Timber.w(e, "Exception getting latest chapter read. Could not get itemRequest: $requestUrl")
+            Logger.w(e) { "Exception getting latest chapter read. Could not get itemRequest: $requestUrl" }
             throw e
         }
         return 0F
@@ -155,7 +155,7 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
                 last_chapter_read = getLatestChapterRead(url)
             }
         } catch (e: Exception) {
-            Timber.w(e, "Could not get item: $url")
+            Logger.w(e) { "Could not get item: $url" }
             throw e
         }
     }

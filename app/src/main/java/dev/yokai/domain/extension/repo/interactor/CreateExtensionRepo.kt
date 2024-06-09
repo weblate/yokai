@@ -1,12 +1,12 @@
 package dev.yokai.domain.extension.repo.interactor
 
+import co.touchlab.kermit.Logger
 import dev.yokai.domain.extension.repo.ExtensionRepoRepository
 import dev.yokai.domain.extension.repo.exception.SaveExtensionRepoException
 import dev.yokai.domain.extension.repo.model.ExtensionRepo
 import dev.yokai.domain.extension.repo.service.ExtensionRepoService
 import eu.kanade.tachiyomi.network.NetworkHelper
 import okhttp3.OkHttpClient
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 
 class CreateExtensionRepo(
@@ -41,7 +41,7 @@ class CreateExtensionRepo(
             )
             Result.Success
         } catch (e: SaveExtensionRepoException) {
-            Timber.e(e, "SQL Conflict attempting to add new repository ${repo.baseUrl}")
+            Logger.e(e) { "SQL Conflict attempting to add new repository ${repo.baseUrl}" }
             return handleInsertionError(repo)
         }
     }

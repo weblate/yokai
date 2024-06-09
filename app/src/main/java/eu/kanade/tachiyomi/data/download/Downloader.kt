@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.download
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import com.jakewharton.rxrelay.PublishRelay
 import dev.yokai.core.metadata.COMIC_INFO_FILE
@@ -27,6 +28,7 @@ import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.storage.DiskUtil.NOMEDIA_FILE
 import eu.kanade.tachiyomi.util.storage.saveTo
 import eu.kanade.tachiyomi.util.system.ImageUtil
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.withIOContext
@@ -49,7 +51,6 @@ import rx.Observable
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.BufferedOutputStream
 import java.io.File
@@ -250,7 +251,7 @@ class Downloader(
                     completeDownload(it)
                 },
                 { error ->
-                    Timber.e(error)
+                    Logger.e(error)
                     notifier.onError(error.message)
                     stop()
                 },
@@ -401,7 +402,7 @@ class Downloader(
         } catch (error: Throwable) {
             if (error is CancellationException) throw error
             // If the page list threw, it will resume here
-            Timber.e(error)
+            Logger.e(error)
             download.status = Download.State.ERROR
             notifier.onError(error.message, chapName, download.manga.title)
         }
@@ -560,7 +561,7 @@ class Downloader(
         return try {
             ImageUtil.splitTallImage(imageFile, imageFilePath)
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             false
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
+import co.touchlab.kermit.Logger
 import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -16,6 +17,7 @@ import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.ui.extension.ExtensionIntallInfo
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchNow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -23,10 +25,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.parcelize.Parcelize
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Locale
+import java.util.*
 
 /**
  * The manager of extensions installed as another apk which extend the available sources. It handles
@@ -133,7 +134,7 @@ class ExtensionManager(
         val extensions: List<Extension.Available> = try {
             api.findExtensions()
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             emptyList()
         }
 

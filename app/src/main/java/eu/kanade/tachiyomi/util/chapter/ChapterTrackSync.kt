@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.util.chapter
 
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Track
@@ -7,11 +8,12 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.DelayedTrackingUpdateJob
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackService
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.w
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -41,7 +43,7 @@ fun syncChaptersWithTrackServiceTwoWay(db: DatabaseHelper, chapters: List<Chapte
             service.update(remoteTrack)
             db.insertTrack(remoteTrack).executeAsBlocking()
         } catch (e: Throwable) {
-            Timber.w(e)
+            Logger.w(e)
         }
     }
 }
@@ -100,7 +102,7 @@ suspend fun updateTrackChapterRead(
                     service.update(track, true)
                     db.insertTrack(track).executeAsBlocking()
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    Logger.e(e)
                     failures.add(service to e.localizedMessage)
                     if (retryWhenOnline) {
                         delayTrackingUpdate(preferences, mangaId, newChapterRead, track)

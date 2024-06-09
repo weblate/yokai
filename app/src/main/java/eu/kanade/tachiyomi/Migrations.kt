@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi
 
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import co.touchlab.kermit.Logger
 import dev.yokai.domain.base.BasePreferences
 import dev.yokai.domain.extension.repo.ExtensionRepoRepository
 import dev.yokai.domain.extension.repo.exception.SaveExtensionRepoException
@@ -31,7 +32,6 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -328,7 +328,7 @@ object Migrations {
                                 "NOFINGERPRINT-${index + 1}",
                             )
                         } catch (e: SaveExtensionRepoException) {
-                            Timber.e(e, "Error Migrating Extension Repo with baseUrl: $source")
+                            Logger.e(e) { "Error Migrating Extension Repo with baseUrl: $source" }
                         }
                     }
                     extensionRepos.delete()

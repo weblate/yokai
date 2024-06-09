@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.extension.api
 
 import android.content.Context
+import co.touchlab.kermit.Logger
 import dev.yokai.domain.extension.repo.interactor.GetExtensionRepo
 import dev.yokai.domain.extension.repo.interactor.UpdateExtensionRepo
 import dev.yokai.domain.extension.repo.model.ExtensionRepo
@@ -17,7 +18,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -53,7 +53,7 @@ internal class ExtensionApi {
                     .toExtensions(repoBaseUrl)
             }
         } catch (e: Throwable) {
-            Timber.e(e, "Failed to get extensions from $repoBaseUrl")
+            Logger.e(e) { "Failed to get extensions from $repoBaseUrl" }
             emptyList()
         }
     }

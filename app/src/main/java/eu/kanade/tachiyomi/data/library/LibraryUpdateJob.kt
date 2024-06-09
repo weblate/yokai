@@ -16,6 +16,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import androidx.work.WorkerParameters
+import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -51,6 +52,7 @@ import eu.kanade.tachiyomi.util.manga.MangaShortcutManager
 import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
 import eu.kanade.tachiyomi.util.storage.getUriCompat
 import eu.kanade.tachiyomi.util.system.createFileInCacheDir
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.isConnectedToWifi
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.tryToSetForeground
@@ -71,12 +73,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.Date
+import java.util.*
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -179,7 +180,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     finishUpdates(true)
                     Result.success()
                 } else {
-                    Timber.e(e)
+                    Logger.e(e)
                     Result.failure()
                 }
             } finally {
@@ -220,7 +221,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     try {
                         requestSemaphore.withPermit { updateMangaInSource(source) }
                     } catch (e: Exception) {
-                        Timber.e(e)
+                        Logger.e(e)
                         false
                     }
                 }
@@ -257,7 +258,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                         val networkManga = try {
                             source.getMangaDetails(manga.copy())
                         } catch (e: java.lang.Exception) {
-                            Timber.e(e)
+                            Logger.e(e)
                             null
                         }
                         if (networkManga != null) {
@@ -314,7 +315,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                             syncChaptersWithTrackServiceTwoWay(db, db.getChapters(manga).executeAsBlocking(), track, service)
                         }
                     } catch (e: Exception) {
-                        Timber.e(e)
+                        Logger.e(e)
                     }
                 }
             }
@@ -433,7 +434,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         } catch (e: Exception) {
             if (e !is CancellationException) {
                 failedUpdates[manga] = e.message
-                Timber.e("Failed updating: ${manga.title}: $e")
+                Logger.e { "Failed updating: ${manga.title}: $e" }
             }
             return@coroutineScope false
         }

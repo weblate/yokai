@@ -3,12 +3,11 @@ package eu.kanade.tachiyomi.ui.reader
 import android.app.Application
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Environment
 import androidx.annotation.ColorInt
-import androidx.core.net.toFile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.chapter.interactor.GetChapters
 import dev.yokai.domain.download.DownloadPreferences
@@ -49,6 +48,7 @@ import eu.kanade.tachiyomi.util.chapter.updateTrackChapterRead
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellable
@@ -73,12 +73,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import rx.Completable
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import java.io.File
-import java.util.Date
+import java.util.*
 import java.util.concurrent.CancellationException
 
 /**
@@ -364,7 +362,7 @@ class ReaderViewModel(
     private suspend fun loadNewChapter(chapter: ReaderChapter) {
         val loader = loader ?: return
 
-        Timber.d("Loading ${chapter.chapter.url}")
+        Logger.d { "Loading ${chapter.chapter.url}" }
 
         withIOContext {
             try {
@@ -373,7 +371,7 @@ class ReaderViewModel(
                 if (e is CancellationException) {
                     throw e
                 }
-                Timber.e(e)
+                Logger.e(e)
             }
         }
     }
@@ -414,7 +412,7 @@ class ReaderViewModel(
     suspend fun loadChapter(chapter: ReaderChapter): Int? {
         val loader = loader ?: return -1
 
-        Timber.d("Loading adjacent ${chapter.chapter.url}")
+        Logger.d { "Loading adjacent ${chapter.chapter.url}" }
         var lastPage: Int? = if (chapter.chapter.pages_left <= 1) 0 else chapter.chapter.last_page_read
         mutableState.update { it.copy(isLoadingAdjacentChapter = true) }
         try {
@@ -425,7 +423,7 @@ class ReaderViewModel(
             if (e is CancellationException) {
                 throw e
             }
-            Timber.e(e)
+            Logger.e(e)
             lastPage = null
         } finally {
             mutableState.update { it.copy(isLoadingAdjacentChapter = false) }
@@ -455,7 +453,7 @@ class ReaderViewModel(
             return
         }
 
-        Timber.d("Preloading ${chapter.chapter.url}")
+        Logger.d { "Preloading ${chapter.chapter.url}" }
 
         val loader = loader ?: return
         withIOContext {
@@ -504,7 +502,7 @@ class ReaderViewModel(
         }
 
         if (selectedChapter != currentChapters.currChapter) {
-            Timber.d("Setting ${selectedChapter.chapter.url} as active")
+            Logger.d { "Setting ${selectedChapter.chapter.url} as active" }
             saveReadingProgress(currentChapters.currChapter)
             setReadStartTime()
             scope.launch { loadNewChapter(selectedChapter) }
@@ -730,7 +728,7 @@ class ReaderViewModel(
         this.manga?.orientationType = rotationType
         db.updateViewerFlags(manga).executeAsBlocking()
 
-        Timber.i("Manga orientation is ${manga.orientationType}")
+        Logger.i { "Manga orientation is ${manga.orientationType}" }
 
         viewModelScope.launchIO {
             db.updateViewerFlags(manga).executeAsBlocking()

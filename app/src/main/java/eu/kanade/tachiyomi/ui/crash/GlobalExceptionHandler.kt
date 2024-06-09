@@ -2,6 +2,8 @@ package eu.kanade.tachiyomi.ui.crash
 
 import android.content.Context
 import android.content.Intent
+import co.touchlab.kermit.Logger
+import eu.kanade.tachiyomi.util.system.e
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -9,7 +11,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 import kotlin.system.exitProcess
 
 class GlobalExceptionHandler private constructor(
@@ -31,7 +32,7 @@ class GlobalExceptionHandler private constructor(
 
     override fun uncaughtException(thread: Thread, exception: Throwable) {
         try {
-            Timber.e(exception)
+            Logger.e(exception)
             launchActivity(applicationContext, activityToBeLaunched, exception)
             exitProcess(0)
         } catch (_: Exception) {
@@ -71,7 +72,7 @@ class GlobalExceptionHandler private constructor(
             return try {
                 Json.decodeFromString(ThrowableSerializer, intent.getStringExtra(INTENT_EXTRA)!!)
             } catch (e: Exception) {
-                Timber.e(e, "Wasn't able to retrieve throwable from intent")
+                Logger.e(e) { "Wasn't able to retrieve throwable from intent" }
                 null
             }
         }

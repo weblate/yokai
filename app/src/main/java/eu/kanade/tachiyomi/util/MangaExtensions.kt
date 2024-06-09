@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import co.touchlab.kermit.Logger
 import com.bluelinelabs.conductor.Controller
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -36,11 +37,9 @@ import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 fun Manga.isLocal() = source == LocalSource.ID
 
@@ -413,7 +412,7 @@ fun Manga.autoAddTrack(db: DatabaseHelper, onMangaMoved: () -> Unit) {
                         }
                     }
                 } catch (e: Exception) {
-                    Timber.w(e, "Could not match manga: ${this@autoAddTrack.title} with service $service")
+                    Logger.w(e) { "Could not match manga: ${this@autoAddTrack.title} with service $service" }
                 }
             }
         }

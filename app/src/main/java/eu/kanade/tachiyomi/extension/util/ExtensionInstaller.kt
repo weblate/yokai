@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import co.touchlab.kermit.Logger
 import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
@@ -42,7 +43,6 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -156,7 +156,7 @@ internal class ExtensionInstaller(private val context: Context) {
                 }
                 .flowOn(Dispatchers.IO)
                 .catch { e ->
-                    Timber.e(e)
+                    Logger.e(e)
                     emit(InstallStep.Error to null)
                 }
                 .onCompletion {
@@ -246,7 +246,7 @@ internal class ExtensionInstaller(private val context: Context) {
                 }
             }
             .catch {
-                Timber.e(it)
+                Logger.e(it)
             }
             .onCompletion {
                 deleteDownload(pkgName)
@@ -319,7 +319,7 @@ internal class ExtensionInstaller(private val context: Context) {
                 setInstallationResult(pkgName, false)
             }
         } catch (e: Exception) {
-            Timber.e(e, "Failed to read downloaded extension file.")
+            Logger.e(e) { "Failed to read downloaded extension file." }
             setInstallationResult(pkgName, false)
         }
 
@@ -454,7 +454,7 @@ internal class ExtensionInstaller(private val context: Context) {
             if (uri != null && pkgName != null) {
                 emitToFlow(pkgName, ExtensionIntallInfo(InstallStep.Loading, null))
             } else if (pkgName != null) {
-                Timber.e("Couldn't locate downloaded APK")
+                Logger.e { "Couldn't locate downloaded APK" }
                 emitToFlow(pkgName, ExtensionIntallInfo(InstallStep.Error, null))
                 return
             }

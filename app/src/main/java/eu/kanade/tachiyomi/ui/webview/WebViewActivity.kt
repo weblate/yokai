@@ -11,6 +11,7 @@ import android.webkit.WebView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.core.graphics.ColorUtils
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.SourceManager
@@ -21,7 +22,6 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 
 open class WebViewActivity : BaseWebViewActivity() {
@@ -70,7 +70,7 @@ open class WebViewActivity : BaseWebViewActivity() {
                 try {
                     headers = source.headers.toMultimap().mapValues { it.value.getOrNull(0) ?: "" }
                 } catch (e: Exception) {
-                    Timber.e(e, "Failed to build headers")
+                    Logger.e(e) { "Failed to build headers" }
                 }
             }
 

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.extension.util.ExtensionInstaller.Companion.EXTRA_DOWNLOAD_ID
 import eu.kanade.tachiyomi.util.system.getUriSize
@@ -18,11 +19,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
 import rikka.sui.Sui
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.BufferedReader
 import java.io.InputStream
-import java.util.Collections
+import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 class ShizukuInstaller(private val context: Context, val finishedQueue: (ShizukuInstaller) -> Unit) {
@@ -43,7 +43,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
     private val queue = Collections.synchronizedList(mutableListOf<Entry>())
 
     private val shizukuDeadListener = Shizuku.OnBinderDeadListener {
-        Timber.d("Shizuku was killed prematurely")
+        Logger.d { "Shizuku was killed prematurely" }
         finishedQueue(this)
     }
 
@@ -110,7 +110,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
                     continueQueue(true)
                 }
             } catch (e: Exception) {
-                Timber.e(e, "Failed to install extension ${entry.downloadId} ${entry.uri}")
+                Logger.e(e) { "Failed to install extension ${entry.downloadId} ${entry.uri}" }
                 if (sessionId != null) {
                     exec("pm install-abandon $sessionId")
                 }

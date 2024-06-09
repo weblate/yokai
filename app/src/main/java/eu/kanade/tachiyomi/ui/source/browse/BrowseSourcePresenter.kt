@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.source.browse
 
+import co.touchlab.kermit.Logger
 import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -27,6 +28,7 @@ import eu.kanade.tachiyomi.ui.source.filter.TextItem
 import eu.kanade.tachiyomi.ui.source.filter.TextSectionItem
 import eu.kanade.tachiyomi.ui.source.filter.TriStateItem
 import eu.kanade.tachiyomi.ui.source.filter.TriStateSectionItem
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Job
@@ -36,7 +38,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -185,7 +186,7 @@ open class BrowseSourcePresenter(
                     this@BrowseSourcePresenter.items.addAll(items)
                     withUIContext { view?.onAddPage(page, items) }
                 } catch (error: Exception) {
-                    Timber.e(error)
+                    Logger.e(error)
                 }
             }.collect()
         }
@@ -256,7 +257,7 @@ open class BrowseSourcePresenter(
                 .onEach {
                     withUIContext { view?.onMangaInitialized(it) }
                 }
-                .catch { e -> Timber.e(e) }
+                .catch { e -> Logger.e(e) }
                 .collect()
         }
     }
@@ -274,7 +275,7 @@ open class BrowseSourcePresenter(
             manga.initialized = true
             db.insertManga(manga).executeAsBlocking()
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
         }
         return manga
     }

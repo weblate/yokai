@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import co.touchlab.kermit.Logger
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -27,7 +28,6 @@ import eu.kanade.tachiyomi.util.system.roundToTwoDecimal
 import eu.kanade.tachiyomi.util.view.compatToolTipText
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 class StatsController : BaseLegacyController<StatsControllerBinding>() {
@@ -130,7 +130,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
                 invalidate()
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e) { "Failed to show chart" }
         }
     }
 
@@ -179,7 +179,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e) { "Failed to show chart" }
         }
     }
 

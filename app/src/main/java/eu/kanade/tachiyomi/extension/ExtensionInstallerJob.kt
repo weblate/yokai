@@ -13,6 +13,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -35,10 +36,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.lang.ref.WeakReference
@@ -88,7 +87,7 @@ class ExtensionInstallerJob(val context: Context, workerParams: WorkerParameters
         val infos = try {
             Json.decodeFromString<Array<ExtensionManager.ExtensionInfo>>(json)
         } catch (e: Exception) {
-            Timber.e(e, "Cannot decode string")
+            Logger.e(e) { "Cannot decode string" }
             null
         } ?: return Result.failure()
         val list = infos.filter {

@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.source
 
 import android.content.Context
 import androidx.core.net.toFile
+import co.touchlab.kermit.Logger
 import com.github.junrar.Archive
 import com.hippo.unifile.UniFile
 import dev.yokai.core.metadata.COMIC_INFO_FILE
@@ -19,6 +20,7 @@ import eu.kanade.tachiyomi.util.chapter.ChapterRecognition
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import eu.kanade.tachiyomi.util.storage.EpubFile
 import eu.kanade.tachiyomi.util.system.ImageUtil
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.extension
 import eu.kanade.tachiyomi.util.system.nameWithoutExtension
 import eu.kanade.tachiyomi.util.system.openReadOnlyChannel
@@ -32,7 +34,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import nl.adaptivity.xmlutil.AndroidXmlReader
 import nl.adaptivity.xmlutil.serialization.XML
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -194,7 +195,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                                 val dest = updateCover(chapter, manga)
                                 thumbnail_url = dest?.filePath
                             } catch (e: Exception) {
-                                Timber.e(e)
+                                Logger.e(e)
                             }
                         }
                     }
@@ -226,7 +227,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 return@withIOContext rt
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
         }
 
         return@withIOContext manga
@@ -382,7 +383,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 }
             }
         } catch (e: Throwable) {
-            Timber.e(e, "Error updating cover for ${manga.title}")
+            Logger.e(e) { "Error updating cover for ${manga.title}" }
             null
         }
     }
@@ -420,7 +421,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 }
             }
         } catch (e: Throwable) {
-            Timber.e(e, "Error updating a metadata")
+            Logger.e(e) { "Error updating a metadata" }
             false
         }
     }

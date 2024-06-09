@@ -20,12 +20,13 @@ import androidx.preference.PreferenceManager
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
 import androidx.recyclerview.widget.ConcatAdapter
+import co.touchlab.kermit.Logger
 import com.google.android.material.snackbar.Snackbar
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.preference.SharedPreferencesDataStore
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
+import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.data.preference.SharedPreferencesDataStore
 import eu.kanade.tachiyomi.databinding.ExtensionDetailControllerBinding
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.network.NetworkHelper
@@ -51,7 +52,6 @@ import eu.kanade.tachiyomi.widget.preference.MultiListMatPreference
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -191,7 +191,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
             network.cookieJar.remove(it.toHttpUrl())
         }
 
-        Timber.d("Cleared $cleared cookies for: ${urls.joinToString()}")
+        Logger.d { "Cleared $cleared cookies for: ${urls.joinToString()}" }
         val context = view?.context ?: return
         binding.coordinator.snack(context.getString(R.string.cookies_cleared))
     }

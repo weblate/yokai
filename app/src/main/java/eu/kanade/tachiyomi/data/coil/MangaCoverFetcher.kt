@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.coil
 
 import android.webkit.MimeTypeMap
 import androidx.core.net.toUri
+import co.touchlab.kermit.Logger
 import coil3.Extras
 import coil3.ImageLoader
 import coil3.decode.DataSource
@@ -34,7 +35,6 @@ import okio.Source
 import okio.buffer
 import okio.sink
 import okio.source
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.File
 import java.net.HttpURLConnection
@@ -200,7 +200,7 @@ class MangaCoverFetcher(
             }
             cacheFile.takeIf { it.exists() }
         } catch (e: Exception) {
-            Timber.e(e, "Failed to write snapshot data to cover cache ${cacheFile.name}")
+            Logger.e(e) { "Failed to write snapshot data to cover cache ${cacheFile.name}" }
             null
         }
     }
@@ -213,7 +213,7 @@ class MangaCoverFetcher(
             }
             cacheFile.takeIf { it.exists() }
         } catch (e: Exception) {
-            Timber.e(e, "Failed to write response data to cover cache ${cacheFile.name}")
+            Logger.e(e) { "Failed to write response data to cover cache ${cacheFile.name}" }
             null
         }
     }

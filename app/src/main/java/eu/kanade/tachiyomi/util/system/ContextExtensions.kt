@@ -36,6 +36,7 @@ import androidx.core.net.toUri
 import androidx.work.CoroutineWorker
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.R
@@ -45,7 +46,6 @@ import eu.kanade.tachiyomi.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.File
@@ -453,7 +453,7 @@ suspend fun CoroutineWorker.tryToSetForeground() {
     try {
         setForeground(getForegroundInfo())
     } catch (e: IllegalStateException) {
-        Timber.e(e, "Not allowed to set foreground job")
+        Logger.e(e) { "Not allowed to set foreground job" }
     }
 }
 
@@ -486,6 +486,6 @@ suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T)
 fun Context.tryTakePersistableUriPermission(uri: Uri, flags: Int) = try {
     contentResolver.takePersistableUriPermission(uri, flags)
 } catch (e: SecurityException) {
-    Timber.e(e)
+    Logger.e(e)
     toast(R.string.file_picker_uri_permission_unsupported)
 }

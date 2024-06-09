@@ -23,13 +23,13 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.core.graphics.scale
+import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
 import okio.Buffer
 import okio.BufferedSource
 import tachiyomi.decoder.Format
 import tachiyomi.decoder.ImageDecoder
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -553,7 +553,7 @@ object ImageUtil {
         }
 
         if (bitmapRegionDecoder == null) {
-            Timber.d("Failed to create new instance of BitmapRegionDecoder")
+            Logger.d { "Failed to create new instance of BitmapRegionDecoder" }
             return false
         }
 
@@ -573,9 +573,9 @@ object ImageUtil {
                     splitBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                     splitBitmap.recycle()
                 }
-                Timber.d(
-                    "Success: Split #${splitData.index + 1} with topOffset=${splitData.topOffset} height=${splitData.splitHeight} bottomOffset=${splitData.bottomOffset}",
-                )
+                Logger.d {
+                    "Success: Split #${splitData.index + 1} with topOffset=${splitData.topOffset} height=${splitData.splitHeight} bottomOffset=${splitData.bottomOffset}"
+                }
             }
             imageFile.delete()
             true
@@ -584,7 +584,7 @@ object ImageUtil {
             splitDataList
                 .map { splitImagePath(imageFilePath, it.index) }
                 .forEach { File(it).delete() }
-            Timber.e(e)
+            Logger.e(e)
             false
         } finally {
             bitmapRegionDecoder.recycle()
@@ -605,9 +605,9 @@ object ImageUtil {
             val partCount = (imageHeight - 1) / optimalImageHeight + 1
             val optimalSplitHeight = imageHeight / partCount
 
-            Timber.d(
-                "Splitting image with height of $imageHeight into $partCount part with estimated ${optimalSplitHeight}px height per split",
-            )
+            Logger.d {
+                "Splitting image with height of $imageHeight into $partCount part with estimated ${optimalSplitHeight}px height per split"
+            }
 
             return mutableListOf<SplitData>().apply {
                 val range = 0 until partCount

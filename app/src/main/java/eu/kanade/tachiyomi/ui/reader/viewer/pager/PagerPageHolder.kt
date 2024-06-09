@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import co.touchlab.kermit.Logger
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -50,7 +51,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.Buffer
 import okio.BufferedSource
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.io.InputStream
 import kotlin.math.min
@@ -508,7 +508,7 @@ class PagerPageHolder(
                                     try {
                                         setBG(actualSource.peek().inputStream())
                                     } catch (e: Exception) {
-                                        Timber.e(e.localizedMessage)
+                                        Logger.e { e.localizedMessage }
                                         ColorDrawable(Color.WHITE)
                                     }
                                 setImage(actualSource, false, imageConfig)
@@ -642,7 +642,7 @@ class PagerPageHolder(
             val imageBitmap = try {
                 BitmapFactory.decodeStream(imageSource.inputStream())
             } catch (e: Exception) {
-                Timber.e("Cannot split page ${e.message}")
+                Logger.e { "Cannot split page ${e.message}" }
                 return imageSource
             }
             val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
@@ -663,7 +663,7 @@ class PagerPageHolder(
                 } catch (e: Exception) {
                     page.longPage = true
                     splitDoublePages()
-                    Timber.e("Cannot split page ${e.message}")
+                    Logger.e { "Cannot split page ${e.message}" }
                     return imageSource
                 }
                 val height = imageBitmap.height
@@ -696,7 +696,7 @@ class PagerPageHolder(
             closeSources(imageSource2)
             page.fullPage = true
             splitDoublePages()
-            Timber.e("Cannot combine pages ${e.message}")
+            Logger.e { "Cannot combine pages ${e.message}" }
             return supportHingeIfThere(imageSource)
         }
         scope.launchUI { progressBar.setProgress(96) }
@@ -780,7 +780,7 @@ class PagerPageHolder(
             extraPage?.fullPage = true
             page.isolatedPage = true
             splitDoublePages()
-            Timber.e("Cannot combine pages ${e.message}")
+            Logger.e { "Cannot combine pages ${e.message}" }
             return supportHingeIfThere(imageSource)
         }
         scope.launchUI { progressBar.setProgress(97) }

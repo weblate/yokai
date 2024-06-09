@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.cache
 
 import android.content.Context
 import android.text.format.Formatter
+import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.memory.MemoryCache
 import eu.kanade.tachiyomi.R
@@ -9,13 +10,13 @@ import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.util.storage.DiskUtil
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.File
@@ -141,7 +142,7 @@ class CoverCache(val context: Context) {
                         }
                     }
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    Logger.e(e)
                 }
                 lastClean = System.currentTimeMillis()
             }

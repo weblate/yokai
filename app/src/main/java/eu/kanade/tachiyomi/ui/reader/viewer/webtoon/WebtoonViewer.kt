@@ -11,6 +11,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.WebtoonLayoutManager
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
@@ -20,7 +21,6 @@ import eu.kanade.tachiyomi.ui.reader.viewer.BaseViewer
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import kotlin.math.max
 import kotlin.math.min
@@ -186,15 +186,15 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
         activity.onPageSelected(page, false)
 
         val pages = page.chapter.pages ?: return
-        Timber.d("onReaderPageSelected: ${page.number}/${pages.size}")
+        Logger.d { "onReaderPageSelected: ${page.number}/${pages.size}" }
         // Preload next chapter once we're within the last 5 pages of the current chapter
         val inPreloadRange = pages.size - page.number < 5
         if (inPreloadRange && allowPreload && page.chapter == adapter.currentChapter) {
-            Timber.d("Request preload next chapter because we're at page ${page.number} of ${pages.size}")
+            Logger.d { "Request preload next chapter because we're at page ${page.number} of ${pages.size}" }
             val nextItem = adapter.items.getOrNull(adapter.items.size - 1)
             val transitionChapter = (nextItem as? ChapterTransition.Next)?.to ?: (nextItem as?ReaderPage)?.chapter
             if (transitionChapter != null) {
-                Timber.d("Requesting to preload chapter ${transitionChapter.chapter.chapter_number}")
+                Logger.d { "Requesting to preload chapter ${transitionChapter.chapter.chapter_number}" }
                 activity.requestPreloadChapter(transitionChapter)
             }
         }
@@ -205,10 +205,10 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
      * preload of the destination chapter of the transition.
      */
     private fun onTransitionSelected(transition: ChapterTransition) {
-        Timber.d("onTransitionSelected: $transition")
+        Logger.d { "onTransitionSelected: $transition" }
         val toChapter = transition.to
         if (toChapter != null) {
-            Timber.d("Request preload destination chapter because we're on the transition")
+            Logger.d { "Request preload destination chapter because we're on the transition" }
             activity.requestPreloadChapter(toChapter)
         }
     }
@@ -217,12 +217,12 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
      * Tells this viewer to set the given [chapters] as active.
      */
     override fun setChapters(chapters: ViewerChapters) {
-        Timber.d("setChapters")
+        Logger.d { "setChapters" }
         val forceTransition = config.alwaysShowChapterTransition || currentPage is ChapterTransition
         adapter.setChapters(chapters, forceTransition)
 
         if (recycler.isGone) {
-            Timber.d("Recycler first layout")
+            Logger.d { "Recycler first layout" }
             val pages = chapters.currChapter.pages ?: return
             moveToPage(pages[min(chapters.currChapter.requestedPage, pages.lastIndex)])
             recycler.isVisible = true
@@ -233,7 +233,7 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
      * Tells this viewer to move to the given [page].
      */
     override fun moveToPage(page: ReaderPage, animated: Boolean) {
-        Timber.d("moveToPage")
+        Logger.d { "moveToPage" }
         val position = adapter.items.indexOf(page)
         if (position != -1) {
             recycler.scrollToPosition(position)
@@ -241,7 +241,7 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
                 onScrolled(position)
             }
         } else {
-            Timber.d("Page $page not found in adapter")
+            Logger.d { "Page $page not found in adapter" }
         }
     }
 

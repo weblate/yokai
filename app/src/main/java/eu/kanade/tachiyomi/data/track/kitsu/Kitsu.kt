@@ -3,15 +3,15 @@ package eu.kanade.tachiyomi.data.track.kitsu
 import android.content.Context
 import android.graphics.Color
 import androidx.annotation.StringRes
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
-import kotlinx.serialization.decodeFromString
+import eu.kanade.tachiyomi.util.system.e
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 import java.text.DecimalFormat
 
@@ -139,7 +139,7 @@ class Kitsu(private val context: Context, id: Int) : TrackService(id) {
             saveCredentials(username, userId)
             true
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             false
         }
     }

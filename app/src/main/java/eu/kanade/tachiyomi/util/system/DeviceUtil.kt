@@ -8,9 +8,7 @@ import android.view.Display
 import android.view.Window
 import androidx.core.content.getSystemService
 import androidx.core.view.WindowInsetsCompat
-import timber.log.Timber
-import java.lang.reflect.InvocationTargetException
-
+import co.touchlab.kermit.Logger
 
 
 object DeviceUtil {
@@ -80,7 +78,7 @@ object DeviceUtil {
                 .getDeclaredMethod("get", String::class.java)
                 .invoke(null, key) as String
         } catch (e: Exception) {
-            Timber.w(e, "Unable to use SystemProperties.get")
+            Logger.w(e) { "Unable to use SystemProperties.get" }
             null
         }
     }

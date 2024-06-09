@@ -1,9 +1,9 @@
 package eu.kanade.tachiyomi.ui.reader.model
 
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.ui.reader.loader.PageLoader
 import kotlinx.coroutines.flow.MutableStateFlow
-import timber.log.Timber
 
 data class ReaderChapter(val chapter: Chapter) {
 
@@ -31,7 +31,7 @@ data class ReaderChapter(val chapter: Chapter) {
         references--
         if (references == 0) {
             if (pageLoader != null) {
-                Timber.d("Recycling chapter ${chapter.name}")
+                Logger.d { "Recycling chapter ${chapter.name}" }
             }
             pageLoader?.recycle()
             pageLoader = null

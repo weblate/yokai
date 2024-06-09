@@ -1,12 +1,13 @@
 package dev.yokai.data.library.custom
 
 import android.database.sqlite.SQLiteException
+import co.touchlab.kermit.Logger
 import dev.yokai.data.DatabaseHandler
 import dev.yokai.domain.library.custom.CustomMangaRepository
 import dev.yokai.domain.library.custom.exception.SaveCustomMangaException
 import dev.yokai.domain.library.custom.model.CustomMangaInfo
+import eu.kanade.tachiyomi.util.system.e
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 
 class CustomMangaRepositoryImpl(private val handler: DatabaseHandler) : CustomMangaRepository {
     override fun subscribeAll(): Flow<List<CustomMangaInfo>> =
@@ -27,7 +28,7 @@ class CustomMangaRepositoryImpl(private val handler: DatabaseHandler) : CustomMa
         try {
             handler.await { custom_manga_infoQueries.insert(mangaId, title, author, artist, description, genre, status?.toLong()) }
         } catch (exc: SQLiteException) {
-            Timber.e(exc)
+            Logger.e(exc)
             throw SaveCustomMangaException(exc)
         }
     }
@@ -48,7 +49,7 @@ class CustomMangaRepositoryImpl(private val handler: DatabaseHandler) : CustomMa
                 }
             }
         } catch (exc: SQLiteException) {
-            Timber.e(exc)
+            Logger.e(exc)
             throw SaveCustomMangaException(exc)
         }
     }

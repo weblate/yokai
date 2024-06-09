@@ -9,10 +9,11 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.notification.Notifications
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.notificationManager
 import kotlinx.coroutines.coroutineScope
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class AppUpdateJob(private val context: Context, workerParams: WorkerParameters) :
@@ -23,7 +24,7 @@ class AppUpdateJob(private val context: Context, workerParams: WorkerParameters)
             AppUpdateChecker().checkForUpdate(context)
             Result.success()
         } catch (e: Exception) {
-            Timber.e(e)
+            Logger.e(e)
             Result.failure()
         }
     }

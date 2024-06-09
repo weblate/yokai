@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.track.mangaupdates
 
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.mangaupdates.dto.Context
 import eu.kanade.tachiyomi.data.track.mangaupdates.dto.ListItem
@@ -11,6 +12,7 @@ import eu.kanade.tachiyomi.network.POST
 import eu.kanade.tachiyomi.network.PUT
 import eu.kanade.tachiyomi.network.awaitSuccess
 import eu.kanade.tachiyomi.network.parseAs
+import eu.kanade.tachiyomi.util.system.e
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
@@ -25,7 +27,6 @@ import kotlinx.serialization.json.putJsonObject
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
-import timber.log.Timber
 import uy.kohesive.injekt.injectLazy
 
 class MangaUpdatesApi(
@@ -193,7 +194,7 @@ class MangaUpdatesApi(
                     try {
                         json.decodeFromJsonElement<Context>(obj["context"]!!)
                     } catch (e: Exception) {
-                        Timber.e(e)
+                        Logger.e(e)
                         null
                     }
                 }

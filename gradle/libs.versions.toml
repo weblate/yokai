@@ -4,7 +4,7 @@ coil3 = "3.0.0-alpha06"
 flexible-adapter = "c8013533"
 fast_adapter = "5.6.0"
 nucleus = "3.0.0"
-okhttp = "5.0.0-alpha.11"
+okhttp = "5.0.0-alpha.14"
 shizuku = "12.1.0"
 sqlite = "2.4.0"
 sqldelight = "2.0.2"
@@ -59,7 +59,7 @@ okio = { module = "com.squareup.okio:okio", version = "3.8.0" }
 okhttp-brotli = { module = "com.squareup.okhttp3:okhttp-brotli", version.ref = "okhttp" }
 okhttp-dnsoverhttps = { module = "com.squareup.okhttp3:okhttp-dnsoverhttps", version.ref = "okhttp" }
 okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
-okhttp = { module = "com.squareup.okhttp3:okhttp", version = "5.0.0-alpha.11" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 play-services-gcm = { module = "com.google.android.gms:play-services-gcm", version = "17.0.0" }
 play-services-oss-licenses = { module = "com.google.android.gms:play-services-oss-licenses", version = "17.0.1" }
 photoview = { module = "com.github.chrisbanes:PhotoView", version = "2.3.0" }

@@ -33,6 +33,7 @@
 - Fixed extension repo list did not update when a repo is added via deep link
 - Fixed download unread trying to download filtered (by scanlator) chapters
 - Fixed extensions not retaining their repo url
+- Fixed more NullPointerException crashes
 
 ## Other
 - Migrate some StorIO queries to SQLDelight, should improve stability

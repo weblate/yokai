@@ -24,4 +24,11 @@ fun <T : Parcelable?> Intent.getSparseParcelableArrayCompat(name: String, clazz:
 
 @Suppress("DEPRECATION")
 fun <T : Parcelable?> Bundle.getSparseParcelableArrayCompat(name: String, clazz: Class<T>) =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) getSparseParcelableArray(name, clazz) else getSparseParcelableArray<T>(name)
+    try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) getSparseParcelableArray(
+            name,
+            clazz
+        ) else getSparseParcelableArray<T>(name)
+    } catch (npe: NullPointerException) {
+        null
+    }

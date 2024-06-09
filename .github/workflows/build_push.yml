@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - master
-      - dev/**
-      - fix/**
   workflow_dispatch:
     inputs:
       version:
@@ -86,11 +84,6 @@ jobs:
         if: startsWith(env.VERSION_TAG, 'r')
         run: ./gradlew assembleStandardNightly testStandardNightlyUnitTest
 
-      # DEBUG
-      - name: Build and run tests
-        if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
-        run: ./gradlew assembleStandardDebug testStandardDebugUnitTest
-
       - name: Publish test report
         uses: mikepenz/action-junit-report@v4
         if: success() || failure()
@@ -109,12 +102,6 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           summarise: true
-
-      - name: Upload APK to artifact
-        uses: actions/upload-artifact@v4
-        if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
-        with:
-          path: app/build/outputs/apk/standard/debug/*.apk
 
       - name: Clean up build artifacts
         if: env.VERSION_TAG != ''

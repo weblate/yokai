@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.util.chapter
 
-import dev.yokai.domain.chapter.interactor.GetChapters
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -9,9 +8,9 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.util.chapter.ChapterFilter.Companion.filterChaptersByScanlators
+import eu.kanade.tachiyomi.util.system.executeOnIO
 import uy.kohesive.injekt.injectLazy
-import java.util.Date
-import java.util.TreeSet
+import java.util.*
 
 /**
  * Helper method for syncing the list of chapters from the source with the ones from the database.
@@ -33,9 +32,8 @@ suspend fun syncChaptersWithSource(
     }
 
     val downloadManager: DownloadManager by injectLazy()
-    val getChapters: GetChapters by injectLazy()
     // Chapters from db.
-    val dbChapters = getChapters.await(manga, false)
+    val dbChapters = db.getChapters(manga).executeOnIO()
 
     val sourceChapters = rawSourceChapters
         .distinctBy { it.url }
@@ -160,7 +158,7 @@ suspend fun syncChaptersWithSource(
         db.fixChaptersSourceOrder(sourceChapters).executeAsBlocking()
 
         // Set this manga as updated since chapters were changed
-        val newestChapterDate = getChapters.await(manga, false)
+        val newestChapterDate = db.getChapters(manga).executeOnIO()
             .maxOfOrNull { it.date_upload } ?: 0L
         if (newestChapterDate == 0L) {
             if (toAdd.isNotEmpty()) {

@@ -30,6 +30,7 @@
 - Refresh extension repo now actually refresh extension(s) trust status
 - Custom manga info now relink properly upon migration
 - Fixed extension repo list did not update when a repo is added via deep link
+- Fixed download unread trying to download filtered (by scanlator) chapters
 
 ## Other
 - Migrate `RawQueries#librayQuery` to use SQLDelight (`GetLibraryManga`), should improve stability

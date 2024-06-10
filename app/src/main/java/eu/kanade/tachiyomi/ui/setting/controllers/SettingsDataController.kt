@@ -303,7 +303,7 @@ class SettingsDataController : SettingsLegacyController() {
             .setTitle(R.string.what_should_backup)
             .setMultiChoiceItems(
                 options.toTypedArray(),
-                options.map { true }.toBooleanArray(),
+                BackupOptions().asBooleanArray(),
             ) { dialog, position, _ ->
                 if (position == 0) {
                     val listView = (dialog as AlertDialog).listView

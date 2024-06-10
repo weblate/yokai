@@ -12,6 +12,7 @@ data class BackupOptions(
     val sourcePrefs: Boolean = true,
     val customInfo: Boolean = true,
     val readManga: Boolean = true,
+    val includePrivate: Boolean = false,
 ) {
     fun asBooleanArray() = booleanArrayOf(
         libraryEntries,
@@ -23,6 +24,7 @@ data class BackupOptions(
         sourcePrefs,
         customInfo,
         readManga,
+        includePrivate,
     )
 
     companion object {
@@ -36,6 +38,7 @@ data class BackupOptions(
             R.string.source_settings,
             R.string.custom_manga_info,
             R.string.all_read_manga,
+            R.string.backup_private_pref,
         )
 
         fun fromBooleanArray(array: BooleanArray): BackupOptions = BackupOptions(
@@ -48,6 +51,7 @@ data class BackupOptions(
             array[6],
             array[7],
             array[8],
+            array[9],
         )
     }
 }

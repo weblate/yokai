@@ -64,11 +64,11 @@ class BackupCreator(
                 sourcesBackupCreator.backupExtensionInfo(databaseManga),
 
                 if (options.appPrefs)
-                    preferenceBackupCreator.backupAppPreferences(false)
+                    preferenceBackupCreator.backupAppPreferences(options.includePrivate)
                 else emptyList(),
 
                 if (options.sourcePrefs)
-                    preferenceBackupCreator.backupSourcePreferences(false)
+                    preferenceBackupCreator.backupSourcePreferences(options.includePrivate)
                 else emptyList(),
             )
         }

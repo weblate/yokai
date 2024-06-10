@@ -35,6 +35,7 @@
 - Fixed download unread trying to download filtered (by scanlator) chapters
 - Fixed extensions not retaining their repo url
 - Fixed more NullPointerException crashes
+- Fixed split layout caused non-split images to not load
 
 ## Other
 - Migrate some StorIO queries to SQLDelight, should improve stability

@@ -50,7 +50,7 @@ fun SettingsScaffold(
         actions = appBarActions,
         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
             state = rememberTopAppBarState(),
-            canScroll = { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 },
+            canScroll = { listState.canScrollForward || listState.canScrollBackward },
         ),
     ) { innerPadding ->
         alertDialog.content?.let { it() }

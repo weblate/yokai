@@ -43,3 +43,4 @@
 - Refactor backup code
   - Migrate backup flags to not use bitwise
   - Split it to several smaller classes
+- Update androidx.compose.material3:material3 to v1.3.0-beta02

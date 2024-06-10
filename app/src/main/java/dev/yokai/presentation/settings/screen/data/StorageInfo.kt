@@ -4,7 +4,6 @@ import android.text.format.Formatter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.yokai.presentation.core.util.secondaryItemAlpha
 import dev.yokai.presentation.theme.Size
+import dev.yokai.presentation.theme.header
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import java.io.File
@@ -54,21 +53,20 @@ private fun StorageInfo(
     ) {
         Text(
             text = file.absolutePath,
-            style = MaterialTheme.typography.headlineMedium,
-        )
-
-        LinearProgressIndicator(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
-                .fillMaxWidth()
-                .height(12.dp),
-            progress = { (1 - (available / total.toFloat())) },
+            style = MaterialTheme.typography.header,
         )
 
         Text(
             text = stringResource(R.string.available_disk_space_info, availableText, totalText),
             modifier = Modifier.secondaryItemAlpha(),
             style = MaterialTheme.typography.bodySmall,
+        )
+
+        LinearProgressIndicator(
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.small)
+                .fillMaxWidth(),
+            progress = { (1 - (available / total.toFloat())) },
         )
     }
 }

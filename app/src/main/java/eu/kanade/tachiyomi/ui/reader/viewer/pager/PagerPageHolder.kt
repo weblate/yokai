@@ -640,7 +640,7 @@ class PagerPageHolder(
         }
         if (page.longPage == true && viewer.config.splitPages) {
             val imageBitmap = try {
-                BitmapFactory.decodeStream(imageSource.inputStream())
+                BitmapFactory.decodeStream(imageSource.peek().inputStream())
             } catch (e: Exception) {
                 Logger.e { "Cannot split page ${e.message}" }
                 return imageSource
@@ -659,7 +659,7 @@ class PagerPageHolder(
         if (imageSource2 == null) {
             if (viewer.config.splitPages && page.longPage == null) {
                 val imageBitmap = try {
-                    BitmapFactory.decodeStream(imageSource.inputStream())
+                    BitmapFactory.decodeStream(imageSource.peek().inputStream())
                 } catch (e: Exception) {
                     page.longPage = true
                     splitDoublePages()
@@ -691,7 +691,7 @@ class PagerPageHolder(
         }
         if (page.fullPage == true) return supportHingeIfThere(imageSource)
         val imageBitmap = try {
-            BitmapFactory.decodeStream(imageSource.inputStream())
+            BitmapFactory.decodeStream(imageSource.peek().inputStream())
         } catch (e: Exception) {
             closeSources(imageSource2)
             page.fullPage = true
@@ -739,7 +739,7 @@ class PagerPageHolder(
         if (page.index <= 2 && page.isEndPage == null && page.fullPage == null) {
             page.endPageConfidence = imageBitmap.isPagePadded(rightSide = !isLTR)
             if (extraPage?.index == 1 && extraPage?.isEndPage == null) {
-                earlyImageBitmap2 = setExtraPageBitmap(imageSource2.inputStream(), isLTR)
+                earlyImageBitmap2 = setExtraPageBitmap(imageSource2.peek().inputStream(), isLTR)
             }
             if (page.index == 1 && page.isEndPage == true && viewer.config.shiftDoublePage &&
                 (isFirstPageNotEnd || isThirdPageNotEnd)
@@ -774,7 +774,7 @@ class PagerPageHolder(
         }
 
         val imageBitmap2 = earlyImageBitmap2 ?: try {
-            BitmapFactory.decodeStream(imageSource2.inputStream())
+            BitmapFactory.decodeStream(imageSource2.peek().inputStream())
         } catch (e: Exception) {
             closeSources(imageSource2)
             extraPage?.fullPage = true
@@ -847,7 +847,7 @@ class PagerPageHolder(
     private suspend fun supportHingeIfThere(imageSource: BufferedSource): BufferedSource {
         if (viewer.config.hingeGapSize > 0 && !ImageUtil.isAnimatedAndSupported(imageSource)) {
             val imageBitmap = try {
-                BitmapFactory.decodeStream(imageSource.inputStream())
+                BitmapFactory.decodeStream(imageSource.peek().inputStream())
             } catch (e: Exception) {
                 val wasNotFullPage = page.fullPage != true
                 page.fullPage = true

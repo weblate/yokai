@@ -846,7 +846,7 @@
         <item quantity="other">Done in %1$s with %2$s errors</item>
     </plurals>
     <string name="not_logged_into_">Not logged into %1$s</string>
-    <string name="backup_private_pref">Include sensitivve settings (e.g. tracker login tokens)</string>
+    <string name="backup_private_pref">Include sensitive settings (e.g. tracker login tokens)</string>
 
     <!-- Advanced section -->
     <string name="clear_chapter_cache">Clear chapter cache</string>

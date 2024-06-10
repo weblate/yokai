@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
 
+@Deprecated("Migrating to compose")
 class SettingsDataLegacyController : SettingsLegacyController() {
 
     /**

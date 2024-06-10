@@ -1,11 +1,13 @@
 package eu.kanade.tachiyomi.data.backup.create
 
+import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
+import kotlinx.collections.immutable.persistentListOf
 
 data class BackupOptions(
     val libraryEntries: Boolean = true,
-    val category: Boolean = true,
-    val chapter: Boolean = true,
+    val categories: Boolean = true,
+    val chapters: Boolean = true,
     val tracking: Boolean = true,
     val history: Boolean = true,
     val appPrefs: Boolean = true,
@@ -16,8 +18,8 @@ data class BackupOptions(
 ) {
     fun asBooleanArray() = booleanArrayOf(
         libraryEntries,
-        category,
-        chapter,
+        categories,
+        chapters,
         tracking,
         history,
         appPrefs,
@@ -28,7 +30,7 @@ data class BackupOptions(
     )
 
     companion object {
-        fun getOptions() = arrayOf(
+        fun getOptions() = persistentListOf(
             R.string.library_entries,
             R.string.categories,
             R.string.chapters,
@@ -39,6 +41,65 @@ data class BackupOptions(
             R.string.custom_manga_info,
             R.string.all_read_manga,
             R.string.backup_private_pref,
+        )
+
+        fun getEntries() = persistentListOf(
+            Entry(
+                label = R.string.library_entries,
+                getter = BackupOptions::libraryEntries,
+                setter = { options, enabled -> options.copy(libraryEntries = enabled) },
+            ),
+            Entry(
+                label = R.string.categories,
+                getter = BackupOptions::categories,
+                setter = { options, enabled -> options.copy(categories = enabled) },
+                enabled = { it.libraryEntries },
+            ),
+            Entry(
+                label = R.string.chapters,
+                getter = BackupOptions::chapters,
+                setter = { options, enabled -> options.copy(chapters = enabled) },
+                enabled = { it.libraryEntries },
+            ),
+            Entry(
+                label = R.string.tracking,
+                getter = BackupOptions::tracking,
+                setter = { options, enabled -> options.copy(tracking = enabled) },
+                enabled = { it.libraryEntries },
+            ),
+            Entry(
+                label = R.string.history,
+                getter = BackupOptions::history,
+                setter = { options, enabled -> options.copy(history = enabled) },
+                enabled = { it.libraryEntries },
+            ),
+            Entry(
+                label = R.string.custom_manga_info,
+                getter = BackupOptions::customInfo,
+                setter = { options, enabled -> options.copy(customInfo = enabled) },
+                enabled = { it.libraryEntries },
+            ),
+            Entry(
+                label = R.string.all_read_manga,
+                getter = BackupOptions::readManga,
+                setter = { options, enabled -> options.copy(readManga = enabled) },
+                enabled = { it.libraryEntries },
+            ),
+            Entry(
+                label = R.string.app_settings,
+                getter = BackupOptions::appPrefs,
+                setter = { options, enabled -> options.copy(appPrefs = enabled) },
+            ),
+            Entry(
+                label = R.string.source_settings,
+                getter = BackupOptions::sourcePrefs,
+                setter = { options, enabled -> options.copy(sourcePrefs = enabled) },
+            ),
+            Entry(
+                label = R.string.backup_private_pref,
+                getter = BackupOptions::includePrivate,
+                setter = { options, enabled -> options.copy(includePrivate = enabled) },
+            ),
         )
 
         fun fromBooleanArray(array: BooleanArray): BackupOptions = BackupOptions(
@@ -54,4 +115,11 @@ data class BackupOptions(
             array[9],
         )
     }
+
+    data class Entry(
+        @StringRes val label: Int,
+        val getter: (BackupOptions) -> Boolean,
+        val setter: (BackupOptions, Boolean) -> BackupOptions,
+        val enabled: (BackupOptions) -> Boolean = { true },
+    )
 }

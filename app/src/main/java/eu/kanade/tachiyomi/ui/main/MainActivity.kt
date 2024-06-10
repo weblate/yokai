@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.main
 
-import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -10,7 +9,6 @@ import android.app.assist.AssistContent
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
@@ -39,7 +37,6 @@ import androidx.appcompat.view.menu.MenuItemImpl
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
-import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
@@ -111,6 +108,7 @@ import eu.kanade.tachiyomi.ui.source.browse.BrowseSourceController
 import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.manga.MangaShortcutManager
+import eu.kanade.tachiyomi.util.showNotificationPermissionPrompt
 import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.e
@@ -1016,17 +1014,12 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
-    fun showNotificationPermissionPrompt(showAnyway: Boolean = false) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
-        val notificationPermission = Manifest.permission.POST_NOTIFICATIONS
-        val hasPermission = ActivityCompat.checkSelfPermission(this, notificationPermission)
-        if (hasPermission != PackageManager.PERMISSION_GRANTED &&
-            (!preferences.hasShownNotifPermission().get() || showAnyway)
-        ) {
-            preferences.hasShownNotifPermission().set(true)
-            requestNotificationPermissionLauncher.launch((notificationPermission))
-        }
-    }
+    fun showNotificationPermissionPrompt(showAnyway: Boolean = false) =
+        this.showNotificationPermissionPrompt(
+            requestNotificationPermissionLauncher,
+            showAnyway,
+            preferences,
+        )
 
     fun showColourProfilePicker() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return

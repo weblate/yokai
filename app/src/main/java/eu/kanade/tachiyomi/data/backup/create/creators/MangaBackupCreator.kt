@@ -33,7 +33,7 @@ class MangaBackupCreator(
         val mangaObject = BackupManga.copyFrom(manga, if (options.customInfo) customMangaManager else null)
 
         // Check if user wants chapter information in backup
-        if (options.chapter) {
+        if (options.chapters) {
             // Backup all the chapters
             val chapters = db.getChapters(manga).executeAsBlocking()
             if (chapters.isNotEmpty()) {
@@ -42,7 +42,7 @@ class MangaBackupCreator(
         }
 
         // Check if user wants category information in backup
-        if (options.category) {
+        if (options.categories) {
             // Backup categories for this manga
             val categoriesForManga = db.getCategoriesForManga(manga).executeAsBlocking()
             if (categoriesForManga.isNotEmpty()) {

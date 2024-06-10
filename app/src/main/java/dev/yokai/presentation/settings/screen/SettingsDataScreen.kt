@@ -28,12 +28,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.storage.StorageManager
 import dev.yokai.domain.storage.StoragePreferences
 import dev.yokai.presentation.component.preference.Preference
 import dev.yokai.presentation.component.preference.storageLocationText
 import dev.yokai.presentation.component.preference.widget.BasePreferenceWidget
 import dev.yokai.presentation.component.preference.widget.PrefsHorizontalPadding
 import dev.yokai.presentation.settings.ComposableSettings
+import dev.yokai.presentation.settings.screen.data.CreateBackup
 import dev.yokai.presentation.settings.screen.data.RestoreBackup
 import dev.yokai.presentation.settings.screen.data.StorageInfo
 import eu.kanade.tachiyomi.R
@@ -118,6 +120,7 @@ object SettingsDataScreen : ComposableSettings {
         val context = LocalContext.current
         val alertDialog = LocalAlertDialog.currentOrThrow
         val extensionManager = remember { Injekt.get<ExtensionManager>() }
+        val storageManager = remember { Injekt.get<StorageManager>() }
 
         val chooseBackup = rememberLauncherForActivityResult(
             object : ActivityResultContracts.GetContent() {
@@ -129,7 +132,7 @@ object SettingsDataScreen : ComposableSettings {
             },
         ) {
             if (it == null) {
-                context.toast(R.string.invalid_location_generic)
+                context.toast(R.string.backup_restore_invalid_uri)
                 return@rememberLauncherForActivityResult
             }
 
@@ -174,7 +177,19 @@ object SettingsDataScreen : ComposableSettings {
                                                 context.toast(R.string.restore_miui_warning, Toast.LENGTH_LONG)
                                             }
 
-                                            context.toast("Not yet available")
+                                            val dir = storageManager.getBackupsDirectory()
+                                            if (dir == null) {
+                                                context.toast(R.string.invalid_location_generic)
+                                                return@SegmentedButton
+                                            }
+
+                                            alertDialog.content = {
+                                                CreateBackup(
+                                                    context = context,
+                                                    uri = dir.uri,
+                                                    onDismissRequest = { alertDialog.content = null },
+                                                )
+                                            }
                                         } else {
                                             context.toast(R.string.backup_in_progress)
                                         }

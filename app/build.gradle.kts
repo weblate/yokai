@@ -148,6 +148,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "17"
@@ -294,6 +295,8 @@ dependencies {
     implementation(libs.mpandroidchart)
 
     implementation(kotlinx.immutable)
+
+    "coreLibraryDesugaring"(libs.desugar)
 
     // Tests
     testImplementation(libs.bundles.test)

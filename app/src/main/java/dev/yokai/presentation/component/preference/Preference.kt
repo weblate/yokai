@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.ImmutableMap
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.track.TrackService
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import eu.kanade.tachiyomi.core.preference.Preference as PreferenceData
 
 sealed class Preference {

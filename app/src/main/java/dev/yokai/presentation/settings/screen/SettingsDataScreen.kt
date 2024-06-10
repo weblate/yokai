@@ -1,4 +1,4 @@
-package dev.yokai.presentation.settings
+package dev.yokai.presentation.settings.screen
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -16,20 +16,37 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.google.common.collect.ImmutableList
+import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StoragePreferences
 import dev.yokai.presentation.component.preference.Preference
 import dev.yokai.presentation.component.preference.storageLocationText
 import dev.yokai.presentation.component.preference.widget.BasePreferenceWidget
 import dev.yokai.presentation.component.preference.widget.PrefsHorizontalPadding
+import dev.yokai.presentation.settings.ComposableSettings
+import dev.yokai.presentation.settings.screen.data.StorageInfo
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
+import eu.kanade.tachiyomi.data.cache.ChapterCache
+import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.util.system.e
+import eu.kanade.tachiyomi.util.system.launchNonCancellable
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
+import eu.kanade.tachiyomi.util.system.withUIContext
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 
 object SettingsDataScreen : ComposableSettings {
@@ -41,9 +58,10 @@ object SettingsDataScreen : ComposableSettings {
         val storagePreferences: StoragePreferences by injectLazy()
         val preferences: PreferencesHelper by injectLazy()
 
-        return ImmutableList.of(
+        return persistentListOf(
             getStorageLocationPreference(storagePreferences = storagePreferences),
             getBackupAndRestoreGroup(preferences = preferences),
+            getDataGroup(),
         )
     }
 
@@ -86,9 +104,11 @@ object SettingsDataScreen : ComposableSettings {
 
     @Composable
     private fun getBackupAndRestoreGroup(preferences: PreferencesHelper): Preference.PreferenceGroup {
+        val context = LocalContext.current
+
         return Preference.PreferenceGroup(
             title = stringResource(R.string.backup_and_restore),
-            preferenceItems = ImmutableList.of(
+            preferenceItems = persistentListOf(
                 Preference.PreferenceItem.CustomPreference(
                     title = stringResource(R.string.backup_and_restore),
                 ) {
@@ -120,6 +140,87 @@ object SettingsDataScreen : ComposableSettings {
                         },
                     )
                 },
+
+                // Automatic backups
+                Preference.PreferenceItem.ListPreference(
+                    pref = preferences.backupInterval(),
+                    title = stringResource(R.string.backup_frequency),
+                    entries = persistentMapOf(
+                        0 to stringResource(R.string.manual),
+                        6 to stringResource(R.string.every_6_hours),
+                        12 to stringResource(R.string.every_12_hours),
+                        24 to stringResource(R.string.daily),
+                        48 to stringResource(R.string.every_2_days),
+                        168 to stringResource(R.string.weekly),
+                    ),
+                    onValueChanged = {
+                        BackupCreatorJob.setupTask(context, it)
+                        true
+                    },
+                ),
+                Preference.PreferenceItem.InfoPreference(
+                    stringResource(R.string.backup_info)
+                    /*+ "\n\n" + stringResource(R.string.last_auto_backup_info, relativeTimeSpanString(lastAutoBackup))*/,
+                ),
+            ),
+        )
+    }
+
+    @Composable
+    private fun getDataGroup(): Preference.PreferenceGroup {
+        val context = LocalContext.current
+        val scope = rememberCoroutineScope()
+        // TODO
+        // val libraryPreferences = remember { Injekt.get<LibraryPreferences>() }
+
+        val coverCache = remember { Injekt.get<CoverCache>() }
+        val chapterCache = remember { Injekt.get<ChapterCache>() }
+        var cacheReadableSizeSema by remember { mutableIntStateOf(0) }
+        val cacheReadableSize = remember(cacheReadableSizeSema) { chapterCache.readableSize }
+
+        return Preference.PreferenceGroup(
+            title = stringResource(R.string.storage_usage),
+            preferenceItems = persistentListOf(
+                Preference.PreferenceItem.CustomPreference(
+                    title = stringResource(R.string.storage_usage),
+                ) {
+                    BasePreferenceWidget(
+                        subcomponent = {
+                            StorageInfo(
+                                modifier = Modifier.padding(horizontal = PrefsHorizontalPadding),
+                            )
+                        },
+                    )
+                },
+
+                Preference.PreferenceItem.TextPreference(
+                    title = stringResource(R.string.clear_chapter_cache),
+                    subtitle = stringResource(R.string.used_, cacheReadableSize),
+                    onClick = {
+                        scope.launchNonCancellable {
+                            try {
+                                val deletedFiles = chapterCache.clear()
+                                withUIContext {
+                                    context.toast(context.resources?.getQuantityString(
+                                        R.plurals.cache_cleared,
+                                        deletedFiles,
+                                        deletedFiles,
+                                    ))
+                                    cacheReadableSizeSema++
+                                }
+                            } catch (e: Throwable) {
+                                Logger.e(e)
+                                withUIContext { context.toast(R.string.cache_delete_error) }
+                            }
+                        }
+                    },
+                ),
+                /*
+                Preference.PreferenceItem.SwitchPreference(
+                    pref = libraryPreferences.autoClearChapterCache(),
+                    title = stringResource(MR.strings.pref_auto_clear_chapter_cache),
+                ),
+                 */
             ),
         )
     }

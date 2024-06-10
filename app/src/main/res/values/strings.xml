@@ -806,6 +806,7 @@
     <string name="data_and_storage">Data and storage</string>
     <string name="storage_location">Storage location</string>
     <string name="storage_usage">Storage usage</string>
+    <string name="available_disk_space_info">Available: %1$s / Total: %2$s</string>
 
     <!-- Backup -->
     <string name="backup">Backup</string>
@@ -847,6 +848,7 @@
     </plurals>
     <string name="not_logged_into_">Not logged into %1$s</string>
     <string name="backup_private_pref">Include sensitive settings (e.g. tracker login tokens)</string>
+    <string name="last_auto_backup_info">Last automatically backed up: %s</string>
 
     <!-- Advanced section -->
     <string name="clear_chapter_cache">Clear chapter cache</string>
@@ -1195,6 +1197,7 @@
     <string name="recently_installed">Recently installed</string>
     <string name="language">Language</string>
     <string name="never">Never</string>
+    <string name="just_now">Just now</string>
     <string name="newest">Newest</string>
     <string name="next">Next</string>
     <string name="no_animation">No animation</string>

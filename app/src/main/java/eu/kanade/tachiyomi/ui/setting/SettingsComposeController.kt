@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 
 abstract class SettingsComposeController: BaseComposeController(), SettingsControllerInterface {
     override fun getTitle(): String? = __getTitle()
+    override fun getSearchTitle(): String? = __getTitle()
 
     fun setTitle() = __setTitle()
 

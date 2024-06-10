@@ -37,6 +37,10 @@ inline fun PreferenceManager.newScreen(block: (@DSL PreferenceScreen).() -> Unit
     return createPreferenceScreen(context).also { it.block() }
 }
 
+inline fun PreferenceGroup.preferenceLongClickable(block: (@DSL LongClickablePreference).() -> Unit): Preference {
+    return initThenAdd(LongClickablePreference(context), block)
+}
+
 inline fun PreferenceGroup.preference(block: (@DSL Preference).() -> Unit): Preference {
     return initThenAdd(Preference(context), block)
 }
@@ -147,6 +151,10 @@ inline fun <P : Preference> PreferenceGroup.addThenInit(p: P, block: P.() -> Uni
     }
 }
 
+inline fun LongClickablePreference.onLongClick(crossinline block: () -> Unit) {
+    onPreferenceLongClickListener = { block(); true }
+}
+
 inline fun Preference.onClick(crossinline block: () -> Unit) {
     setOnPreferenceClickListener { block(); true }
 }
@@ -248,3 +256,4 @@ var Preference.summaryRes: Int
 var Preference.iconTint: Int
     get() = 0 // set only
     set(value) { icon?.setTint(value) }
+

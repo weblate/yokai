@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,9 @@ import dev.yokai.presentation.component.preference.widget.PreferenceGroupHeader
 import eu.kanade.tachiyomi.core.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import kotlinx.coroutines.delay
 import uy.kohesive.injekt.injectLazy
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun SettingsScaffold(
@@ -62,12 +65,23 @@ fun PreferenceScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
+    val highlightKey = ComposableSettings.highlightKey
+    if (highlightKey != null) {
+        LaunchedEffect(Unit) {
+            val i = items.findHighlightedIndex(highlightKey)
+            if (i >= 0) {
+                delay(0.5.seconds)
+                listState.animateScrollToItem(i)
+            }
+            ComposableSettings.highlightKey = null
+        }
+    }
+
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
         state = listState
     ) {
-        val highlightKey = null as String?  // TODO
         items.fastForEachIndexed { i, preference ->
             when (preference) {
                 is Preference.PreferenceGroup -> {
@@ -93,4 +107,18 @@ fun PreferenceScreen(
             }
         }
     }
+}
+
+private fun List<Preference>.findHighlightedIndex(highlightKey: String): Int {
+    return flatMap {
+        if (it is Preference.PreferenceGroup) {
+            buildList<String?> {
+                add(null) // Header
+                addAll(it.preferenceItems.map { groupItem -> groupItem.title })
+                add(null) // Spacer
+            }
+        } else {
+            listOf(it.title)
+        }
+    }.indexOfFirst { it == highlightKey }
 }

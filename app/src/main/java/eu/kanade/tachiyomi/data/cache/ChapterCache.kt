@@ -14,7 +14,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.Response
@@ -225,6 +224,17 @@ class ChapterCache(private val context: Context) {
             response.body.close()
             editor?.abortUnlessCommitted()
         }
+    }
+
+    fun clear(): Int {
+        val files = cacheDir.listFiles() ?: return 0
+        var deletedFiles = 0
+        files.forEach { file ->
+            if (removeFileFromCache(file.name)) {
+                deletedFiles++
+            }
+        }
+        return deletedFiles
     }
 
     private fun getKey(chapter: Chapter): String {

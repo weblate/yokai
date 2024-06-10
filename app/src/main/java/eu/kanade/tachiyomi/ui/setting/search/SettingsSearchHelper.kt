@@ -9,17 +9,17 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceManager
 import eu.kanade.tachiyomi.ui.setting.SettingsComposeController
 import eu.kanade.tachiyomi.ui.setting.SettingsControllerInterface
+import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsAdvancedController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsAppearanceController
-import eu.kanade.tachiyomi.ui.setting.controllers.SettingsDataController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsBrowseController
-import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsDownloadController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsGeneralController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsLibraryController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsReaderController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsSecurityController
 import eu.kanade.tachiyomi.ui.setting.controllers.SettingsTrackingController
+import eu.kanade.tachiyomi.ui.setting.controllers.legacy.SettingsDataLegacyController
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.system.launchNow
 import kotlin.reflect.KClass
@@ -31,9 +31,10 @@ object SettingsSearchHelper {
     /**
      * All subclasses of `SettingsController` should be listed here, in order to have their preferences searchable.
      */
-    private val settingLegacyControllersList: List<KClass<out SettingsLegacyController>> = listOf(
+    private val settingControllersList: List<KClass<out SettingsControllerInterface>> = listOf(
         SettingsAdvancedController::class,
-        SettingsDataController::class,
+        SettingsDataLegacyController::class,
+        // SettingsDataController::class,  // compose
         SettingsBrowseController::class,
         SettingsDownloadController::class,
         SettingsGeneralController::class,
@@ -42,9 +43,6 @@ object SettingsSearchHelper {
         SettingsLibraryController::class,
         SettingsReaderController::class,
         SettingsTrackingController::class,
-    )
-
-    private val settingComposeControllersList: List<KClass<out SettingsComposeController>> = listOf(
     )
 
     /**
@@ -56,14 +54,22 @@ object SettingsSearchHelper {
         prefSearchResultList.clear()
 
         launchNow {
-            settingLegacyControllersList.forEach { kClass ->
-                val ctrl = kClass.createInstance()
-                val settingsPrefScreen = ctrl.setupPreferenceScreen(preferenceManager.createPreferenceScreen(context))
-                val prefCount = settingsPrefScreen.preferenceCount
-                for (i in 0 until prefCount) {
-                    val rootPref = settingsPrefScreen.getPreference(i)
-                    if (rootPref.title == null) continue // no title, not a preference. (note: only info notes appear to not have titles)
-                    getLegacySettingSearchResult(ctrl, rootPref, "${settingsPrefScreen.title}")
+            settingControllersList.forEach { kClass ->
+                when (val ctrl = kClass.createInstance()) {
+                    is SettingsLegacyController -> {
+                        val settingsPrefScreen =
+                            ctrl.setupPreferenceScreen(preferenceManager.createPreferenceScreen(context))
+                        val prefCount = settingsPrefScreen.preferenceCount
+                        for (i in 0 until prefCount) {
+                            val rootPref = settingsPrefScreen.getPreference(i)
+                            if (rootPref.title == null) continue // no title, not a preference. (note: only info notes appear to not have titles)
+                            getLegacySettingSearchResult(ctrl, rootPref, "${settingsPrefScreen.title}")
+                        }
+                    }
+                    is SettingsComposeController -> {
+                        // TODO: Impossible to achieve, require search to be composable
+                        // ctrl.getComposableSettings().getPreferences()
+                    }
                 }
             }
         }

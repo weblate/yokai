@@ -11,6 +11,7 @@
 - Added option to change long tap browse and recents nav behaviour
   - Added browse long tap behaviour to open global search (AshbornXS)
   - Added recents long tap behaviour to open last read chapter (AshbornXS)
+- Added option to backup sensitive settings (such as tracker login tokens)
 
 ## Changes
 - Remove download location redirection from `Settings > Downloads`

@@ -13,7 +13,12 @@ import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.util.system.toast
 
 @Composable
-fun RestoreBackup(context: Context, uri: Uri, pair: Pair<Results?, Exception?>) {
+fun RestoreBackup(
+    context: Context,
+    uri: Uri,
+    pair: Pair<Results?, Exception?>,
+    onDismissRequest: () -> Unit,
+) {
     val (results, e) = pair
     if (results != null) {
         var message = stringResource(R.string.restore_content_full)
@@ -33,19 +38,20 @@ fun RestoreBackup(context: Context, uri: Uri, pair: Pair<Results?, Exception?>) 
         }
 
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = onDismissRequest,
             confirmButton = {
                 TextButton(
                     onClick = {
                         context.toast(R.string.restoring_backup)
                         BackupRestoreJob.start(context, uri)
+                        onDismissRequest()
                     },
                 ) {
                     Text(text = stringResource(R.string.restore))
                 }
             },
             dismissButton = {
-                TextButton(onClick = {}) {
+                TextButton(onClick = onDismissRequest) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
             },
@@ -54,9 +60,9 @@ fun RestoreBackup(context: Context, uri: Uri, pair: Pair<Results?, Exception?>) 
         )
     } else {
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = onDismissRequest,
             confirmButton = {
-                TextButton(onClick = {}) {
+                TextButton(onClick = onDismissRequest) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
             },
@@ -67,9 +73,12 @@ fun RestoreBackup(context: Context, uri: Uri, pair: Pair<Results?, Exception?>) 
 }
 
 @Composable
-private fun CreateBackup(context: Context) {
+private fun CreateBackup(
+    context: Context,
+    onDismissRequest: () -> Unit,
+) {
     AlertDialog(
-        onDismissRequest = {},
+        onDismissRequest = onDismissRequest,
         confirmButton = {},
     )
 }

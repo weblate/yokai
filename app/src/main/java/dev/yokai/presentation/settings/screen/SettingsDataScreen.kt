@@ -140,7 +140,14 @@ object SettingsDataScreen : ComposableSettings {
             }
 
             alertDialog.content = {
-                RestoreBackup(context = context, uri = it, pair = results)
+                RestoreBackup(
+                    context = context,
+                    uri = it,
+                    pair = results,
+                    onDismissRequest = {
+                        alertDialog.content = null
+                    }
+                )
             }
         }
 

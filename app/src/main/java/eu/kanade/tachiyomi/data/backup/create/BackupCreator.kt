@@ -6,8 +6,6 @@ import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_READ_MANGA
-import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_READ_MANGA_MASK
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.creators.CategoriesBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.MangaBackupCreator
@@ -46,25 +44,32 @@ class BackupCreator(
      * @param uri path of Uri
      * @param isAutoBackup backup called from scheduled backup job
      */
-    fun createBackup(uri: Uri, flags: Int, isAutoBackup: Boolean): String {
+    @Suppress("RedundantSuspendModifier")
+    suspend fun createBackup(uri: Uri, options: BackupOptions, isAutoBackup: Boolean): String {
         // Create root object
         var backup: Backup? = null
 
         db.inTransaction {
             val databaseManga = db.getFavoriteMangas().executeAsBlocking() +
-                if (flags and BACKUP_READ_MANGA_MASK == BACKUP_READ_MANGA) {
+                if (options.readManga) {
                     db.getReadNotInLibraryMangas().executeAsBlocking()
                 } else {
                     emptyList()
                 }
 
             backup = Backup(
-                mangaBackupCreator.backupMangas(databaseManga, flags),
+                mangaBackupCreator.backupMangas(databaseManga, options),
                 categoriesBackupCreator.backupCategories(),
                 emptyList(),
                 sourcesBackupCreator.backupExtensionInfo(databaseManga),
-                preferenceBackupCreator.backupAppPreferences(flags),
-                preferenceBackupCreator.backupSourcePreferences(flags),
+
+                if (options.appPrefs)
+                    preferenceBackupCreator.backupAppPreferences(false)
+                else emptyList(),
+
+                if (options.sourcePrefs)
+                    preferenceBackupCreator.backupSourcePreferences(false)
+                else emptyList(),
             )
         }
 

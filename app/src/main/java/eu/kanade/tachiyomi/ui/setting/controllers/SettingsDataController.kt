@@ -17,9 +17,9 @@ import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StorageManager
 import dev.yokai.domain.storage.StoragePreferences
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.backup.BackupConst
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
+import eu.kanade.tachiyomi.data.backup.create.BackupOptions
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.cache.ChapterCache
@@ -52,7 +52,7 @@ class SettingsDataController : SettingsLegacyController() {
     /**
      * Flags containing information of what to backup.
      */
-    private var backupFlags = 0
+    private var backupFlags: BackupOptions = BackupOptions()
     internal val storagePreferences: StoragePreferences by injectLazy()
     internal val storageManager: StorageManager by injectLazy()
 
@@ -251,7 +251,7 @@ class SettingsDataController : SettingsLegacyController() {
         }
     }
 
-    private fun doBackup(flags: Int, uri: Uri, requirePersist: Boolean = false) {
+    private fun doBackup(options: BackupOptions, uri: Uri, requirePersist: Boolean = false) {
         val activity = activity ?: return
 
         val actualUri =
@@ -265,11 +265,11 @@ class SettingsDataController : SettingsLegacyController() {
                 UniFile.fromUri(activity, uri)?.createFile(Backup.getBackupFilename())?.uri
             } ?: return
         activity.toast(R.string.creating_backup)
-        BackupCreatorJob.startNow(activity, actualUri, flags)
+        BackupCreatorJob.startNow(activity, actualUri, options)
     }
 
-    fun createBackup(flags: Int, picker: Boolean = false) {
-        backupFlags = flags
+    private fun createBackup(options: BackupOptions, picker: Boolean = false) {
+        backupFlags = options
 
         val dir = storageManager.getBackupsDirectory()
         if (dir == null) {
@@ -297,18 +297,7 @@ class SettingsDataController : SettingsLegacyController() {
 
     private fun showBackupCreateDialog() {
         val activity = activity ?: return
-        val options = arrayOf(
-            R.string.library_entries,
-            R.string.categories,
-            R.string.chapters,
-            R.string.tracking,
-            R.string.history,
-            R.string.app_settings,
-            R.string.source_settings,
-            R.string.custom_manga_info,
-            R.string.all_read_manga,
-        )
-            .map { activity.getString(it) }
+        val options = BackupOptions.getOptions().map { activity.getString(it) }
 
         activity.materialAlertDialog()
             .setTitle(R.string.what_should_backup)
@@ -323,22 +312,12 @@ class SettingsDataController : SettingsLegacyController() {
             }
             .setPositiveButton(R.string.create) { dialog, _ ->
                 val listView = (dialog as AlertDialog).listView
-                var flags = 0
-                for (i in 1 until listView.count) {
-                    if (listView.isItemChecked(i)) {
-                        when (i) {
-                            1 -> flags = flags or BackupConst.BACKUP_CATEGORY
-                            2 -> flags = flags or BackupConst.BACKUP_CHAPTER
-                            3 -> flags = flags or BackupConst.BACKUP_TRACK
-                            4 -> flags = flags or BackupConst.BACKUP_HISTORY
-                            5 -> flags = flags or BackupConst.BACKUP_APP_PREFS
-                            6 -> flags = flags or BackupConst.BACKUP_SOURCE_PREFS
-                            7 -> flags = flags or BackupConst.BACKUP_CUSTOM_INFO
-                            8 -> flags = flags or BackupConst.BACKUP_READ_MANGA
-                        }
-                    }
+                val booleanArrayList = arrayListOf(true)
+                // TODO: Allow library_entries to be disabled
+                for (i in 1 until listView.count) {  // skip 0, since 0 is always enabled
+                    booleanArrayList.add(listView.isItemChecked(i))
                 }
-                createBackup(flags)
+                createBackup(BackupOptions.fromBooleanArray(booleanArrayList.toBooleanArray()))
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show().apply {

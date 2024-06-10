@@ -3,19 +3,18 @@ package eu.kanade.tachiyomi.data.backup.create
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
+import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StorageManager
-import eu.kanade.tachiyomi.data.backup.BackupConst
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -28,18 +27,19 @@ import uy.kohesive.injekt.injectLazy
 import java.util.concurrent.*
 
 class BackupCreatorJob(private val context: Context, workerParams: WorkerParameters) :
-    Worker(context, workerParams) {
+    CoroutineWorker(context, workerParams) {
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         val storageManager: StorageManager by injectLazy()
         val notifier = BackupNotifier(context.localeContext)
         val uri = inputData.getString(LOCATION_URI_KEY)?.toUri() ?: storageManager.getAutomaticBackupsDirectory()?.uri
-        val flags = inputData.getInt(BACKUP_FLAGS_KEY, BackupConst.BACKUP_ALL)
+        val options = inputData.getBooleanArray(BACKUP_FLAGS_KEY)?.let { BackupOptions.fromBooleanArray(it) }
+            ?: BackupOptions()
         val isAutoBackup = inputData.getBoolean(IS_AUTO_BACKUP_KEY, true)
 
         notifier.showBackupProgress()
         return try {
-            val location = BackupCreator(context).createBackup(uri!!, flags, isAutoBackup)
+            val location = BackupCreator(context).createBackup(uri!!, options, isAutoBackup)
             if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri())!!)
             Result.success()
         } catch (e: Exception) {
@@ -78,11 +78,11 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
             }
         }
 
-        fun startNow(context: Context, uri: Uri, flags: Int) {
+        fun startNow(context: Context, uri: Uri, options: BackupOptions) {
             val inputData = workDataOf(
                 IS_AUTO_BACKUP_KEY to false,
                 LOCATION_URI_KEY to uri.toString(),
-                BACKUP_FLAGS_KEY to flags,
+                BACKUP_FLAGS_KEY to options.asBooleanArray(),
             )
             val request = OneTimeWorkRequestBuilder<BackupCreatorJob>()
                 .addTag(TAG_MANUAL)

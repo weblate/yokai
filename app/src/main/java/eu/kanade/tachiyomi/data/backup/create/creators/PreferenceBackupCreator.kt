@@ -2,10 +2,6 @@ package eu.kanade.tachiyomi.data.backup.create.creators
 
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
-import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_APP_PREFS
-import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_APP_PREFS_MASK
-import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_SOURCE_PREFS
-import eu.kanade.tachiyomi.data.backup.BackupConst.BACKUP_SOURCE_PREFS_MASK
 import eu.kanade.tachiyomi.data.backup.models.BackupPreference
 import eu.kanade.tachiyomi.data.backup.models.BackupSourcePreferences
 import eu.kanade.tachiyomi.data.backup.models.BooleanPreferenceValue
@@ -26,26 +22,26 @@ class PreferenceBackupCreator(
     private val sourceManager: SourceManager = Injekt.get(),
     private val preferenceStore: PreferenceStore = Injekt.get(),
 ) {
-    fun backupAppPreferences(flags: Int): List<BackupPreference> {
-        if (flags and BACKUP_APP_PREFS_MASK != BACKUP_APP_PREFS) return emptyList()
+    fun backupAppPreferences(includePrivate: Boolean): List<BackupPreference> {
         return preferenceStore.getAll().toBackupPreferences()
+            .withPrivatePreferences(includePrivate)
     }
 
-    fun backupSourcePreferences(flags: Int): List<BackupSourcePreferences> {
-        if (flags and BACKUP_SOURCE_PREFS_MASK != BACKUP_SOURCE_PREFS) return emptyList()
+    fun backupSourcePreferences(includePrivate: Boolean): List<BackupSourcePreferences> {
         return sourceManager.getOnlineSources()
             .filterIsInstance<ConfigurableSource>()
             .map {
                 BackupSourcePreferences(
                     it.preferenceKey(),
-                    it.sourcePreferences().all.toBackupPreferences(),
+                    it.sourcePreferences().all.toBackupPreferences()
+                        .withPrivatePreferences(includePrivate),
                 )
             }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun Map<String, *>.toBackupPreferences(): List<BackupPreference> {
-        return this.filterKeys { !Preference.isPrivate(it) }
+        return this.filterKeys { !Preference.isAppState(it) }
             .mapNotNull { (key, value) ->
                 // j2k fork differences
                 if (key == "library_sorting_mode" && value is Int) {
@@ -66,4 +62,11 @@ class PreferenceBackupCreator(
                 }
             }
     }
+
+    private fun List<BackupPreference>.withPrivatePreferences(include: Boolean) =
+        if (include) {
+            this
+        } else {
+            this.filter { !Preference.isPrivate(it.key) }
+        }
 }

@@ -48,7 +48,7 @@ fun SettingsScaffold(
         title = title,
         appBarType = appBarType ?: if (useLargeAppBar) AppBarType.LARGE else AppBarType.SMALL,
         actions = appBarActions,
-        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
+        scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
             state = rememberTopAppBarState(),
             canScroll = { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 },
         ),

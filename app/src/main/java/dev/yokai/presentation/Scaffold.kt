@@ -108,7 +108,7 @@ fun YokaiScaffold(
 fun getTopAppBarColor(title: String): Color {
     return when (title.isEmpty()) {
         true -> Color.Transparent
-        false -> MaterialTheme.colorScheme.surface.copy(alpha = .7f)
+        false -> MaterialTheme.colorScheme.surface
     }
 }
 

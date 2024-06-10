@@ -16,20 +16,17 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.net.toUri
 import com.google.common.collect.ImmutableList
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StoragePreferences
 import dev.yokai.presentation.component.preference.Preference
+import dev.yokai.presentation.component.preference.storageLocationText
 import dev.yokai.presentation.component.preference.widget.BasePreferenceWidget
 import dev.yokai.presentation.component.preference.widget.PrefsHorizontalPadding
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.core.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
@@ -126,21 +123,4 @@ object SettingsDataScreen : ComposableSettings {
             ),
         )
     }
-}
-
-@Composable
-fun storageLocationText(
-    storageDirPref: eu.kanade.tachiyomi.core.preference.Preference<String>,
-): String {
-    val context = LocalContext.current
-    val storageDir by storageDirPref.collectAsState()
-
-    if (storageDir == storageDirPref.defaultValue()) {
-        return stringResource(R.string.no_location_set)
-    }
-
-    return remember(storageDir) {
-        val file = UniFile.fromUri(context, storageDir.toUri())
-        file?.filePath
-    } ?: stringResource(R.string.invalid_location, storageDir)
 }

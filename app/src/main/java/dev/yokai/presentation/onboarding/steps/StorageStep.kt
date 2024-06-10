@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StoragePreferences
-import dev.yokai.presentation.settings.storageLocationText
+import dev.yokai.presentation.component.preference.storageLocationText
 import dev.yokai.presentation.theme.Size
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference

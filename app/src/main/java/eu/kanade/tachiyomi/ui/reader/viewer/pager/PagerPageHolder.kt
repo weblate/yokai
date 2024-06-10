@@ -508,7 +508,7 @@ class PagerPageHolder(
                                     try {
                                         setBG(actualSource.peek().inputStream())
                                     } catch (e: Exception) {
-                                        Logger.e { e.localizedMessage }
+                                        Logger.e(e) { e.localizedMessage?.toString() ?: "" }
                                         ColorDrawable(Color.WHITE)
                                     }
                                 setImage(actualSource, false, imageConfig)

@@ -1,11 +1,11 @@
 <!-- Formatting
-## Additions
+## Additions  ?? New features
 
-## Changes
+## Changes  ?? Behaviour changes
 
-## Fixes
+## Fixes  ?? Bugfixes
 
-## Other
+## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Additions
 - Added option to change long tap browse and recents nav behaviour
@@ -39,3 +39,5 @@
 - Migrate some StorIO queries to SQLDelight, should improve stability
 - Migrate from Timber to Kermit
 - Update okhttp monorepo to v5.0.0-alpha.14
+- Migrate backup flags to not use bitwise
+- Refactor

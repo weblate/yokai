@@ -23,7 +23,9 @@ import dev.yokai.presentation.component.preference.PreferenceItem
 import dev.yokai.presentation.component.preference.widget.PreferenceGroupHeader
 import eu.kanade.tachiyomi.core.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import kotlinx.coroutines.delay
 import uy.kohesive.injekt.injectLazy
 import kotlin.time.Duration.Companion.seconds
@@ -38,10 +40,11 @@ fun SettingsScaffold(
     val preferences: PreferencesHelper by injectLazy()
     val useLargeAppBar by preferences.useLargeToolbar().collectAsState()
     val listState = rememberLazyListState()
-    val onBackPress = LocalBackPress.current
+    val onBackPress = LocalBackPress.currentOrThrow
+    val alertDialog = LocalAlertDialog.currentOrThrow
 
     YokaiScaffold(
-        onNavigationIconClicked = onBackPress ?: {},
+        onNavigationIconClicked = onBackPress,
         title = title,
         appBarType = appBarType ?: if (useLargeAppBar) AppBarType.LARGE else AppBarType.SMALL,
         actions = appBarActions,
@@ -50,6 +53,8 @@ fun SettingsScaffold(
             canScroll = { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0 },
         ),
     ) { innerPadding ->
+        alertDialog.content?.let { it() }
+
         PreferenceScreen(
             items = itemsProvider(),
             listState = listState,

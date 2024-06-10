@@ -89,7 +89,6 @@ import eu.kanade.tachiyomi.data.updater.AppUpdateResult
 import eu.kanade.tachiyomi.data.updater.RELEASE_URL
 import eu.kanade.tachiyomi.databinding.MainActivityBinding
 import eu.kanade.tachiyomi.extension.ExtensionManager
-import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.base.MaterialMenuSheet
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
@@ -144,13 +143,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToLong
@@ -706,7 +702,9 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
         splashScreen?.configure()
 
-        getExtensionUpdates(true)
+        lifecycleScope.launchIO {
+            extensionManager.getExtensionUpdates(true)
+        }
 
         preferences.extensionUpdatesCount()
             .changesIn(lifecycleScope) {
@@ -941,7 +939,9 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     override fun onResume() {
         super.onResume()
         checkForAppUpdates()
-        getExtensionUpdates(false)
+        lifecycleScope.launchIO {
+            extensionManager.getExtensionUpdates(false)
+        }
         setExtensionsBadge()
         DownloadJob.callListeners(downloadManager = downloadManager)
         showDLQueueTutorial()
@@ -1011,25 +1011,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     }
                 } catch (error: Exception) {
                     Logger.e(error)
-                }
-            }
-        }
-    }
-
-    fun getExtensionUpdates(force: Boolean) {
-        if ((force && extensionManager.availableExtensionsFlow.value.isEmpty()) ||
-            Date().time >= preferences.lastExtCheck().get() + TimeUnit.HOURS.toMillis(6)
-        ) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    extensionManager.findAvailableExtensions()
-                    val pendingUpdates = ExtensionApi().checkForUpdates(
-                        this@MainActivity,
-                        extensionManager.availableExtensionsFlow.value.takeIf { it.isNotEmpty() },
-                    )
-                    preferences.extensionUpdatesCount().set(pendingUpdates.size)
-                    preferences.lastExtCheck().set(Date().time)
-                } catch (_: Exception) {
                 }
             }
         }

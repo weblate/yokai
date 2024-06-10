@@ -1,8 +1,10 @@
 package dev.yokai.presentation.settings.screen
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,12 +34,19 @@ import dev.yokai.presentation.component.preference.storageLocationText
 import dev.yokai.presentation.component.preference.widget.BasePreferenceWidget
 import dev.yokai.presentation.component.preference.widget.PrefsHorizontalPadding
 import dev.yokai.presentation.settings.ComposableSettings
+import dev.yokai.presentation.settings.screen.data.RestoreBackup
 import dev.yokai.presentation.settings.screen.data.StorageInfo
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
+import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.extension.ExtensionManager
+import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
+import eu.kanade.tachiyomi.util.compose.currentOrThrow
+import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchNonCancellable
 import eu.kanade.tachiyomi.util.system.toast
@@ -45,6 +54,7 @@ import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -104,7 +114,35 @@ object SettingsDataScreen : ComposableSettings {
 
     @Composable
     private fun getBackupAndRestoreGroup(preferences: PreferencesHelper): Preference.PreferenceGroup {
+        val scope = rememberCoroutineScope()
         val context = LocalContext.current
+        val alertDialog = LocalAlertDialog.currentOrThrow
+        val extensionManager = remember { Injekt.get<ExtensionManager>() }
+
+        val chooseBackup = rememberLauncherForActivityResult(
+            object : ActivityResultContracts.GetContent() {
+                override fun createIntent(context: Context, input: String): Intent {
+                    val intent = super.createIntent(context, input)
+                    intent.addCategory(Intent.CATEGORY_OPENABLE)
+                    return Intent.createChooser(intent, context.getString(R.string.select_backup_file))
+                }
+            },
+        ) {
+            if (it == null) {
+                context.toast(R.string.invalid_location_generic)
+                return@rememberLauncherForActivityResult
+            }
+
+            val results = try {
+                Pair(BackupFileValidator().validate(context, it), null)
+            } catch (e: Exception) {
+                Pair(null, e)
+            }
+
+            alertDialog.content = {
+                RestoreBackup(context = context, uri = it, pair = results)
+            }
+        }
 
         return Preference.PreferenceGroup(
             title = stringResource(R.string.backup_and_restore),
@@ -123,7 +161,17 @@ object SettingsDataScreen : ComposableSettings {
                                 SegmentedButton(
                                     modifier = Modifier.fillMaxHeight(),
                                     checked = false,
-                                    onCheckedChange = {},
+                                    onCheckedChange = {
+                                        if (!BackupRestoreJob.isRunning(context)) {
+                                            if (DeviceUtil.isMiui && DeviceUtil.isMiuiOptimizationDisabled()) {
+                                                context.toast(R.string.restore_miui_warning, Toast.LENGTH_LONG)
+                                            }
+
+                                            context.toast("Not yet available")
+                                        } else {
+                                            context.toast(R.string.backup_in_progress)
+                                        }
+                                    },
                                     shape = SegmentedButtonDefaults.itemShape(0, 2),
                                 ) {
                                     Text(stringResource(R.string.create_backup))
@@ -131,7 +179,18 @@ object SettingsDataScreen : ComposableSettings {
                                 SegmentedButton(
                                     modifier = Modifier.fillMaxHeight(),
                                     checked = false,
-                                    onCheckedChange = {},
+                                    onCheckedChange = {
+                                        if (!BackupRestoreJob.isRunning(context)) {
+                                            if (DeviceUtil.isMiui && DeviceUtil.isMiuiOptimizationDisabled()) {
+                                                context.toast(R.string.restore_miui_warning, Toast.LENGTH_LONG)
+                                            }
+
+                                            scope.launch { extensionManager.getExtensionUpdates(true) }
+                                            chooseBackup.launch("*/*")
+                                        } else {
+                                            context.toast(R.string.restore_in_progress)
+                                        }
+                                    },
                                     shape = SegmentedButtonDefaults.itemShape(1, 2),
                                 ) {
                                     Text(stringResource(R.string.restore_backup))

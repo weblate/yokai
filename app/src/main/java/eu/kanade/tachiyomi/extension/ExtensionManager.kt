@@ -19,6 +19,7 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.ui.extension.ExtensionIntallInfo
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchNow
+import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +29,7 @@ import kotlinx.parcelize.Parcelize
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.*
+import java.util.concurrent.*
 
 /**
  * The manager of extensions installed as another apk which extend the available sources. It handles
@@ -125,6 +127,25 @@ class ExtensionManager(
 
     fun isInstalledByApp(extension: Extension.Available): Boolean {
         return ExtensionLoader.isExtensionInstalledByApp(context, extension.pkgName)
+    }
+
+    suspend fun getExtensionUpdates(force: Boolean) {
+        if ((force && availableExtensionsFlow.value.isEmpty()) ||
+            Date().time >= preferences.lastExtCheck().get() + TimeUnit.HOURS.toMillis(6)
+        ) {
+            withIOContext {
+                try {
+                    findAvailableExtensions()
+                    val pendingUpdates = ExtensionApi().checkForUpdates(
+                        context,
+                        availableExtensionsFlow.value.takeIf { it.isNotEmpty() },
+                    )
+                    preferences.extensionUpdatesCount().set(pendingUpdates.size)
+                    preferences.lastExtCheck().set(Date().time)
+                } catch (_: Exception) {
+                }
+            }
+        }
     }
 
     /**

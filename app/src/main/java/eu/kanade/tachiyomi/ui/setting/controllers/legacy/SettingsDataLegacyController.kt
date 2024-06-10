@@ -24,6 +24,7 @@ import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache
+import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.bindTo
@@ -55,6 +56,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
     private var backupFlags: BackupOptions = BackupOptions()
     internal val storagePreferences: StoragePreferences by injectLazy()
     internal val storageManager: StorageManager by injectLazy()
+    internal val extensionManager: ExtensionManager by injectLazy()
 
     private val coverCache: CoverCache by injectLazy()
     private val chapterCache: ChapterCache by injectLazy()
@@ -113,7 +115,9 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                 }
 
                 if (!BackupRestoreJob.isRunning(context)) {
-                    (activity as? MainActivity)?.getExtensionUpdates(true)
+                    (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
+                        extensionManager.getExtensionUpdates(true)
+                    }
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
                     intent.addCategory(Intent.CATEGORY_OPENABLE)
                     storageManager.getBackupsDirectory()?.let {

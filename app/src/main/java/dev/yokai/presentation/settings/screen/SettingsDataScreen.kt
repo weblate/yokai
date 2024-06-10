@@ -274,6 +274,32 @@ object SettingsDataScreen : ComposableSettings {
                         }
                     },
                 ),
+                Preference.PreferenceItem.TextPreference(
+                    title = stringResource(R.string.clear_cached_covers_non_library),
+                    subtitle = stringResource(
+                        R.string.delete_all_covers__not_in_library_used_,
+                        coverCache.getOnlineCoverCacheSize(),
+                    ),
+                    onClick = {
+                        context.toast(R.string.starting_cleanup)
+                        scope.launchNonCancellable {
+                            coverCache.deleteAllCachedCovers()
+                        }
+                    }
+                ),
+                Preference.PreferenceItem.TextPreference(
+                    title = stringResource(R.string.clean_up_cached_covers),
+                    subtitle = stringResource(
+                        R.string.delete_old_covers_in_library_used_,
+                        coverCache.getChapterCacheSize(),
+                    ),
+                    onClick = {
+                        context.toast(R.string.starting_cleanup)
+                        scope.launchNonCancellable {
+                            coverCache.deleteOldCovers()
+                        }
+                    }
+                ),
                 /*
                 Preference.PreferenceItem.SwitchPreference(
                     pref = libraryPreferences.autoClearChapterCache(),

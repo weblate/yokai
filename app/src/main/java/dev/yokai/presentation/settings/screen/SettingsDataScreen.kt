@@ -131,10 +131,7 @@ object SettingsDataScreen : ComposableSettings {
                 }
             },
         ) {
-            if (it == null) {
-                context.toast(R.string.backup_restore_invalid_uri)
-                return@rememberLauncherForActivityResult
-            }
+            if (it == null) return@rememberLauncherForActivityResult
 
             val results = try {
                 Pair(BackupFileValidator().validate(context, it), null)

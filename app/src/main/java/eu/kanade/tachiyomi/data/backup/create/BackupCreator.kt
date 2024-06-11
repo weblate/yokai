@@ -59,17 +59,11 @@ class BackupCreator(
 
             backup = Backup(
                 mangaBackupCreator.backupMangas(databaseManga, options),
-                categoriesBackupCreator.backupCategories(),
+                categoriesBackupCreator.backupCategories(options),
                 emptyList(),
-                sourcesBackupCreator.backupExtensionInfo(databaseManga),
-
-                if (options.appPrefs)
-                    preferenceBackupCreator.backupAppPreferences(options.includePrivate)
-                else emptyList(),
-
-                if (options.sourcePrefs)
-                    preferenceBackupCreator.backupSourcePreferences(options.includePrivate)
-                else emptyList(),
+                sourcesBackupCreator.backupExtensionInfo(databaseManga, options),
+                preferenceBackupCreator.backupAppPreferences(options),
+                preferenceBackupCreator.backupSourcePreferences(options),
             )
         }
 

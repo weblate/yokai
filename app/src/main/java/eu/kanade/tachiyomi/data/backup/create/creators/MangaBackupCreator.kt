@@ -16,6 +16,8 @@ class MangaBackupCreator(
     private val customMangaManager: CustomMangaManager = Injekt.get(),
 ) {
     fun backupMangas(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
+        if (!options.libraryEntries) return emptyList()
+
         return mangas.map {
             backupManga(it, options)
         }

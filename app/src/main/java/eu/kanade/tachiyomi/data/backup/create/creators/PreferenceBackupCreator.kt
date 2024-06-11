@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.backup.create.creators
 
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.data.backup.create.BackupOptions
 import eu.kanade.tachiyomi.data.backup.models.BackupPreference
 import eu.kanade.tachiyomi.data.backup.models.BackupSourcePreferences
 import eu.kanade.tachiyomi.data.backup.models.BooleanPreferenceValue
@@ -22,19 +23,21 @@ class PreferenceBackupCreator(
     private val sourceManager: SourceManager = Injekt.get(),
     private val preferenceStore: PreferenceStore = Injekt.get(),
 ) {
-    fun backupAppPreferences(includePrivate: Boolean): List<BackupPreference> {
+    fun backupAppPreferences(options: BackupOptions): List<BackupPreference> {
+        if (!options.appPrefs) return emptyList()
         return preferenceStore.getAll().toBackupPreferences()
-            .withPrivatePreferences(includePrivate)
+            .withPrivatePreferences(options.includePrivate)
     }
 
-    fun backupSourcePreferences(includePrivate: Boolean): List<BackupSourcePreferences> {
+    fun backupSourcePreferences(options: BackupOptions): List<BackupSourcePreferences> {
+        if (!options.sourcePrefs) return emptyList()
         return sourceManager.getOnlineSources()
             .filterIsInstance<ConfigurableSource>()
             .map {
                 BackupSourcePreferences(
                     it.preferenceKey(),
                     it.sourcePreferences().all.toBackupPreferences()
-                        .withPrivatePreferences(includePrivate),
+                        .withPrivatePreferences(options.includePrivate),
                 )
             }
     }

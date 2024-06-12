@@ -33,13 +33,11 @@ import eu.kanade.tachiyomi.util.system.ImageUtil.isPagePadded
 import eu.kanade.tachiyomi.util.system.ThemeUtil
 import eu.kanade.tachiyomi.util.system.bottomCutoutInset
 import eu.kanade.tachiyomi.util.system.dpToPx
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.topCutoutInset
-import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.isVisibleOnScreen
@@ -50,13 +48,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import okio.Buffer
 import okio.BufferedSource
 import uy.kohesive.injekt.injectLazy
 import java.io.InputStream
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * View of the ViewPager that contains a page of a chapter.
@@ -90,11 +88,40 @@ class PagerPageHolder(
     private var loadJob: Job? = null
 
     /**
+     * Job for status changes of the page.
+     */
+    private var statusJob: Job? = null
+
+    /**
+     * Job for progress changes of the page.
+     */
+    private var progressJob: Job? = null
+
+    /**
      * Job for loading the page.
      */
     private var extraLoadJob: Job? = null
 
+    /**
+     * Job for status changes of the page.
+     */
+    private var extraStatusJob: Job? = null
+
+    /**
+     * Job for progress changes of the page.
+     */
+    private var extraProgressJob: Job? = null
+
+    /**
+     * Job used to read the header of the image. This is needed in order to instantiate
+     * the appropriate image view depending if the image is animated (GIF).
+     */
+    private var readImageHeaderJob: Job? = null
+
     private var status = Page.State.READY
+    private var extraStatus = Page.State.READY
+    private var progress: Int = 0
+    private var extraProgress: Int = 0
 
     private var scope = MainScope()
 
@@ -105,8 +132,7 @@ class PagerPageHolder(
                 marginStart = ((context.resources.displayMetrics.widthPixels) / 2 + viewer.config.hingeGapSize) / 2
             }
         }
-        loadJob = scope.launch { loadPageAndProcessStatus(1) }
-        extraLoadJob = scope.launch { loadPageAndProcessStatus(2) }
+        launchLoadJob()
         setBackgroundColor(
             when (val theme = viewer.config.readerTheme) {
                 ReaderBackgroundColor.SMART_THEME.prefValue -> Color.TRANSPARENT
@@ -163,13 +189,62 @@ class PagerPageHolder(
      */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-
-        loadJob?.cancel()
-        loadJob = null
-        extraLoadJob?.cancel()
-        extraLoadJob = null
-
+        cancelProgressJob(1)
+        cancelLoadJob(1)
+        cancelProgressJob(2)
+        cancelLoadJob(2)
+        cancelReadImageHeader()
         (pageView as? SubsamplingScaleImageView)?.setOnImageEventListener(null)
+    }
+
+    /**
+     * Starts loading the page and processing changes to the page's status.
+     *
+     * @see processStatus
+     */
+    private fun launchLoadJob() {
+        loadJob?.cancel()
+        statusJob?.cancel()
+
+        val loader = page.chapter.pageLoader ?: return
+        loadJob = scope.launch {
+            loader.loadPage(page)
+        }
+        statusJob = scope.launch {
+            page.statusFlow.collectLatest { processStatus(it) }
+        }
+        val extraPage = extraPage ?: return
+        extraLoadJob = scope.launch {
+            loader.loadPage(extraPage)
+        }
+        extraStatusJob = scope.launch {
+            extraPage.statusFlow.collectLatest { processStatus2(it) }
+        }
+    }
+
+    private fun launchProgressJob() {
+        progressJob?.cancel()
+        progressJob = scope.launch {
+            page.progressFlow.collectLatest { value ->
+                progress = value
+                if (extraPage == null) {
+                    progressBar.setProgress(progress)
+                } else {
+                    progressBar.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
+                }
+            }
+        }
+    }
+
+    private fun launchProgressJob2() {
+        val extraPage = extraPage ?: return
+        extraProgressJob?.cancel()
+        extraProgressJob = scope.launch {
+            extraPage.progressFlow.collectLatest { value ->
+                extraProgress = value
+                progressBar.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
+            }
+        }
     }
 
     fun onPageSelected(forward: Boolean?) {
@@ -282,29 +357,90 @@ class PagerPageHolder(
         }
     }
 
-    private suspend fun loadPageAndProcessStatus(index: Int) {
-        val page = (if (index == 1) page else extraPage) ?: return
-
-        val loader = page.chapter.pageLoader ?: return
-        supervisorScope {
-            launchIO {
-                loader.loadPage(page)
+    /**
+     * Called when the status of the page changes.
+     *
+     * @param status the new status of the page.
+     */
+    private fun processStatus(status: Page.State) {
+        when (status) {
+            Page.State.QUEUE -> setQueued()
+            Page.State.LOAD_PAGE -> setLoading()
+            Page.State.DOWNLOAD_IMAGE -> {
+                launchProgressJob()
+                setDownloading()
             }
-            page.statusFlow.collectLatest {
-                when (status) {
-                    Page.State.QUEUE -> setQueued()
-                    Page.State.LOAD_PAGE -> setLoading()
-                    Page.State.DOWNLOAD_IMAGE -> {
-                        setDownloading()
-                        page.progressFlow.collectLatest { value ->
-                            progressBar.setProgress(value)
-                        }
-                    }
-                    Page.State.READY -> setImage()
-                    Page.State.ERROR -> setError()
+            Page.State.READY -> {
+                if (extraStatus == Page.State.READY || extraPage == null) {
+                    setImage()
                 }
+                cancelProgressJob(1)
+            }
+            Page.State.ERROR -> {
+                setError()
+                cancelProgressJob(1)
             }
         }
+    }
+
+    /**
+     * Called when the status of the page changes.
+     *
+     * @param status the new status of the page.
+     */
+    private fun processStatus2(status: Page.State) {
+        when (status) {
+            Page.State.QUEUE -> setQueued()
+            Page.State.LOAD_PAGE -> setLoading()
+            Page.State.DOWNLOAD_IMAGE -> {
+                launchProgressJob2()
+                setDownloading()
+            }
+            Page.State.READY -> {
+                if (this.status == Page.State.READY) {
+                    setImage()
+                }
+                cancelProgressJob(2)
+            }
+            Page.State.ERROR -> {
+                setError()
+                cancelProgressJob(2)
+            }
+        }
+    }
+
+    /**
+     * Cancels loading the page and processing changes to the page's status.
+     */
+    private fun cancelLoadJob(page: Int) {
+        if (page == 1) {
+            loadJob?.cancel()
+            loadJob = null
+            statusJob?.cancel()
+            statusJob = null
+        } else {
+            extraLoadJob?.cancel()
+            extraLoadJob = null
+            extraStatusJob?.cancel()
+            extraStatusJob = null
+        }
+    }
+
+    private fun cancelProgressJob(page: Int) {
+        (if (page == 1) progressJob else extraProgressJob)?.cancel()
+        if (page == 1) {
+            progressJob = null
+        } else {
+            extraProgressJob = null
+        }
+    }
+
+    /**
+     * Unsubscribes from the read image header subscription.
+     */
+    private fun cancelReadImageHeader() {
+        readImageHeaderJob?.cancel()
+        readImageHeaderJob = null
     }
 
     /**
@@ -334,71 +470,68 @@ class PagerPageHolder(
     /**
      * Called when the page is ready.
      */
-    private suspend fun setImage() {
+    private fun setImage() {
         progressBar.isVisible = true
         if (extraPage == null) {
-            progressBar.setProgress(0)
+            progressBar.completeAndFadeOut()
         } else {
             progressBar.setProgress(95)
         }
         errorLayout?.isVisible = false
 
-        val streamFn = page.stream ?: return
-        val streamFn2 = extraPage?.stream
+        cancelReadImageHeader()
 
-        try {
-            val (source, isAnimated, _bg) = withIOContext {
-                streamFn().buffered(16).use { source1 ->
-                    if (extraPage != null) {
-                        streamFn2?.invoke()
-                            ?.buffered(16)
-                    } else {
-                        null
-                    }.use { source2 ->
-                        val actualSource = this@PagerPageHolder.mergeOrSplitPages(
-                            Buffer().readFrom(source1),
-                            source2?.let { Buffer().readFrom(it) },
-                        )
+        readImageHeaderJob = scope.launchIO {
+            val streamFn = page.stream ?: return@launchIO
+            val streamFn2 = extraPage?.stream
 
-                        val isAnimated = ImageUtil.isAnimatedAndSupported(actualSource)
-                        val bgColor = ReaderBackgroundColor.fromPreference(viewer.config.readerTheme)
-                        val bgType = getBGType(viewer.config.readerTheme, context)
-                        val background = if (bgColor.isSmartColor) {
-                            if (!isAnimated) {
-                                if (page.bg != null && page.bgType == bgType) page.bg
-                                else {
+            var actualSource: BufferedSource? = null
+            try {
+                val source1 = streamFn().buffered(16).use { Buffer().readFrom(it) }
+                val source2 = streamFn2?.invoke()?.buffered(16)?.use { Buffer().readFrom(it) }
+
+                actualSource = this@PagerPageHolder.mergeOrSplitPages(source1, source2)
+                val isAnimated = ImageUtil.isAnimatedAndSupported(source1) ||
+                    (source2?.let { ImageUtil.isAnimatedAndSupported(source2) } ?: false)
+                withUIContext {
+                    val bgColor = ReaderBackgroundColor.fromPreference(viewer.config.readerTheme)
+                    if (!isAnimated) {
+                        if (bgColor.isSmartColor) {
+                            val bgType = getBGType(viewer.config.readerTheme, context)
+                            if (page.bg != null && page.bgType == bgType) {
+                                setImage(actualSource, false, imageConfig)
+                                pageView?.background = page.bg
+                            }
+                            // if the user switches to automatic when pages are already cached, the bg needs to be loaded
+                            else {
+                                val background =
                                     try {
                                         setBG(actualSource.peek().inputStream())
                                     } catch (e: Exception) {
                                         Logger.e(e) { e.localizedMessage?.toString() ?: "" }
                                         ColorDrawable(Color.WHITE)
                                     }
-                                }
-                            } else {
-                                page.bg
+                                setImage(actualSource, false, imageConfig)
+
+                                pageView?.background = background
+                                page.bg = pageView?.background
+                                page.bgType = bgType
                             }
                         } else {
-                            null
+                            setImage(actualSource, false, imageConfig)
                         }
-
-                        Triple(actualSource, isAnimated, Pair(background, bgType))
+                    } else {
+                        setImage(actualSource, true, imageConfig)
+                        if (bgColor.isSmartColor && page.bg != null) {
+                            pageView?.background = page.bg
+                        }
                     }
                 }
-            }
-
-            withUIContext {
-                val (bg, bgType) = _bg
-                if (bg != null) {
-                    pageView?.background = bg
-                    page.bg = pageView?.background
-                    if (!isAnimated) page.bgType = bgType
+            } catch (_: Exception) {
+                try {
+                    actualSource?.let { closeSources(it) }
+                } catch (_: Exception) {
                 }
-                setImage(source, isAnimated, imageConfig)
-            }
-        } catch (e: Exception) {
-            Logger.e(e)
-            withUIContext {
-                setError()
             }
         }
     }

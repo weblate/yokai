@@ -337,7 +337,7 @@ class PagerPageHolder(
     private suspend fun setImage() {
         progressBar.isVisible = true
         if (extraPage == null) {
-            progressBar.completeAndFadeOut()
+            progressBar.setProgress(0)
         } else {
             progressBar.setProgress(95)
         }
@@ -388,10 +388,10 @@ class PagerPageHolder(
 
             withUIContext {
                 val (bg, bgType) = _bg
-                if (bg != null) pageView?.background = bg
-                if (!isAnimated) {
-                    if (page.bg == null) page.bg = pageView?.background
-                    if (page.bgType != bgType) page.bgType = bgType
+                if (bg != null) {
+                    pageView?.background = bg
+                    page.bg = pageView?.background
+                    if (!isAnimated) page.bgType = bgType
                 }
                 setImage(source, isAnimated, imageConfig)
             }

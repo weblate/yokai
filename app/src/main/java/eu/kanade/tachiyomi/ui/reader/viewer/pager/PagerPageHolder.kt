@@ -363,18 +363,20 @@ class PagerPageHolder(
                         val isAnimated = ImageUtil.isAnimatedAndSupported(actualSource)
                         val bgColor = ReaderBackgroundColor.fromPreference(viewer.config.readerTheme)
                         val bgType = getBGType(viewer.config.readerTheme, context)
-                        val background = if (!isAnimated && bgColor.isSmartColor) {
-                            if (page.bg != null && page.bgType == bgType) page.bg
-                            else {
-                                try {
-                                    setBG(actualSource.peek().inputStream())
-                                } catch (e: Exception) {
-                                    Logger.e(e) { e.localizedMessage?.toString() ?: "" }
-                                    ColorDrawable(Color.WHITE)
+                        val background = if (bgColor.isSmartColor) {
+                            if (!isAnimated) {
+                                if (page.bg != null && page.bgType == bgType) page.bg
+                                else {
+                                    try {
+                                        setBG(actualSource.peek().inputStream())
+                                    } catch (e: Exception) {
+                                        Logger.e(e) { e.localizedMessage?.toString() ?: "" }
+                                        ColorDrawable(Color.WHITE)
+                                    }
                                 }
+                            } else {
+                                page.bg
                             }
-                        } else if (bgColor.isSmartColor && page.bg != null) {
-                            page.bg
                         } else {
                             null
                         }
@@ -387,9 +389,9 @@ class PagerPageHolder(
             withUIContext {
                 val (bg, bgType) = _bg
                 if (bg != null) pageView?.background = bg
-                if (!isAnimated && page.bg == null && page.bgType != bgType) {
-                    page.bg = pageView?.background
-                    page.bgType = bgType
+                if (!isAnimated) {
+                    if (page.bg == null) page.bg = pageView?.background
+                    if (page.bgType != bgType) page.bgType = bgType
                 }
                 setImage(source, isAnimated, imageConfig)
             }

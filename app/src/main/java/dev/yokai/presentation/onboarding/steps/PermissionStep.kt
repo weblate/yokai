@@ -24,16 +24,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.getSystemService
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.yokai.presentation.component.Gap
 import dev.yokai.presentation.theme.Size
 import eu.kanade.tachiyomi.R
@@ -41,6 +40,8 @@ import eu.kanade.tachiyomi.R
 internal class PermissionStep : OnboardingStep {
 
     private var installGranted by mutableStateOf(false)
+    private var notificationGranted by mutableStateOf(false)
+    private var batteryGranted by mutableStateOf(false)
 
     override val isComplete: Boolean
         get() = installGranted
@@ -50,28 +51,9 @@ internal class PermissionStep : OnboardingStep {
         val context = LocalContext.current
         val lifecycleOwner = LocalLifecycleOwner.current
 
-        var notificationGranted by remember {
-            mutableStateOf(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
-                        PackageManager.PERMISSION_GRANTED
-                } else {
-                    true
-                }
-            )
-        }
-
-        var batteryGranted by remember {
-            mutableStateOf(
-                context
-                    .getSystemService<PowerManager>()!!
-                    .isIgnoringBatteryOptimizations(context.packageName)
-            )
-        }
-
         DisposableEffect(lifecycleOwner.lifecycle) {
-            val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_RESUME) {
+            val observer = object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
                     installGranted =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             context.packageManager.canRequestPackageInstalls()
@@ -82,15 +64,20 @@ internal class PermissionStep : OnboardingStep {
                                 Settings.Secure.INSTALL_NON_MARKET_APPS
                             ) != 0
                         }
-                    batteryGranted =
-                        context
-                            .getSystemService<PowerManager>()!!
-                            .isIgnoringBatteryOptimizations(context.packageName)
+                    notificationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
+                            PackageManager.PERMISSION_GRANTED
+                    } else {
+                        true
+                    }
+                    batteryGranted = context.getSystemService<PowerManager>()!!
+                        .isIgnoringBatteryOptimizations(context.packageName)
                 }
             }
-
             lifecycleOwner.lifecycle.addObserver(observer)
-            onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
         }
 
         Column(
@@ -123,7 +110,7 @@ internal class PermissionStep : OnboardingStep {
                 val permissionRequester =
                     rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.RequestPermission(),
-                        onResult = { bool -> notificationGranted = bool },
+                        onResult = { /* No-op, handled on resume */ },
                     )
                 PermissionItem(
                     title = stringResource(R.string.onboarding_permission_notifications),

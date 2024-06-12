@@ -7,6 +7,11 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
+## Changes
+- Add more info to WorkerInfo page
+  - Added "next scheduled run"
+  - Added attempt count
+
 ## Other
 - Some code refactors
 - Update firebase bom to v33.1.0

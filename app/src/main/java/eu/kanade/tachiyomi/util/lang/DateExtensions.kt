@@ -1,7 +1,16 @@
 package eu.kanade.tachiyomi.util.lang
 
 import java.text.DateFormat
-import java.util.Date
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
+
+fun LocalDateTime.toDateTimeTimestampString(dateTimeFormatter: DateTimeFormatter): String {
+    val date = dateTimeFormatter.format(this)
+    val time = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(this)
+    return "$date $time"
+}
 
 fun Date.toTimestampString(dateFormatter: DateFormat): String {
     val date = dateFormatter.format(this)

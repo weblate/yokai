@@ -6,11 +6,17 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
+import eu.kanade.tachiyomi.util.lang.toDateTimeTimestampString
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class WorkerInfoPresenter : BaseCoroutinePresenter<WorkerInfoController>() {
     private val workManager by lazy { WorkManager.getInstance(Injekt.get<Application>()) }
@@ -57,6 +63,15 @@ class WorkerInfoPresenter : BaseCoroutinePresenter<WorkerInfoController>() {
                     appendLine(" - $it")
                 }
                 appendLine("State: ${workInfo.state}")
+                if (workInfo.state == WorkInfo.State.ENQUEUED) {
+                    val timestamp = LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(workInfo.nextScheduleTimeMillis),
+                        ZoneId.systemDefault(),
+                    )
+                        .toDateTimeTimestampString(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+                    appendLine("Next scheduled run: $timestamp",)
+                    appendLine("Attempt #${workInfo.runAttemptCount + 1}")
+                }
                 appendLine()
             }
         }

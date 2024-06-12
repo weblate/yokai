@@ -6,9 +6,9 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
 
-fun LocalDateTime.toDateTimeTimestampString(dateTimeFormatter: DateTimeFormatter): String {
+fun LocalDateTime.toDateTimestampString(dateTimeFormatter: DateTimeFormatter): String {
     val date = dateTimeFormatter.format(this)
-    val time = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(this)
+    val time = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(this)
     return "$date $time"
 }
 

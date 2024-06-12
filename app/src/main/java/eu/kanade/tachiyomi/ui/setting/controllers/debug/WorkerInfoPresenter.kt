@@ -6,7 +6,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
-import eu.kanade.tachiyomi.util.lang.toDateTimeTimestampString
+import eu.kanade.tachiyomi.util.lang.toDateTimestampString
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -68,8 +68,8 @@ class WorkerInfoPresenter : BaseCoroutinePresenter<WorkerInfoController>() {
                         Instant.ofEpochMilli(workInfo.nextScheduleTimeMillis),
                         ZoneId.systemDefault(),
                     )
-                        .toDateTimeTimestampString(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-                    appendLine("Next scheduled run: $timestamp",)
+                        .toDateTimestampString(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+                    appendLine("Next scheduled run: $timestamp")
                     appendLine("Attempt #${workInfo.runAttemptCount + 1}")
                 }
                 appendLine()

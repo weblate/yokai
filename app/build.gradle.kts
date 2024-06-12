@@ -249,7 +249,7 @@ dependencies {
     implementation(libs.bundles.coil)
 
     // Logging
-    implementation(libs.kermit)
+    implementation(libs.bundles.logging)
 
     // Sort
     implementation(libs.java.nat.sort)

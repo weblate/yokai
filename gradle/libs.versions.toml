@@ -9,6 +9,7 @@ shizuku = "12.1.0"
 sqlite = "2.4.0"
 sqldelight = "2.0.2"
 junit = "5.8.2"
+kermit = "2.0.3"
 
 [libraries]
 accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version = "0.30.1" }
@@ -28,19 +29,22 @@ directionalviewpager = { module = "com.github.tachiyomiorg:DirectionalViewPager"
 disklrucache = { module = "com.jakewharton:disklrucache", version = "2.0.2" }
 fastadapter-extensions-binding = { module = "com.mikepenz:fastadapter-extensions-binding", version.ref = "fast_adapter" }
 fastadapter = { module = "com.mikepenz:fastadapter", version.ref = "fast_adapter" }
-firebase = { module = "com.google.firebase:firebase-bom", version = "33.0.0" }
+firebase = { module = "com.google.firebase:firebase-bom", version = "33.1.0" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "3.0.1" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
 flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter", version.ref = "flexible-adapter" }
-google-services = { module = "com.google.gms:google-services", version = "4.4.1" }
+google-services = { module = "com.google.gms:google-services", version = "4.4.2" }
 gradle = { module = "com.android.tools.build:gradle", version = "8.2.0" }
 guava = { module = "com.google.guava:guava", version = "31.1-android" }
 image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "e08e9be535" }
 injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65b0440" }
-kermit = { module = "co.touchlab:kermit", version = "2.0.3" }
+
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
+
 material = { module = "com.google.android.material:material", version = "1.12.0" }
 material-design-dimens = { module = "com.dmitrymalkovich.android:material-design-dimens", version = "1.4" }
 markwon = { module = "io.noties.markwon:core", version = "4.6.2" }
@@ -56,13 +60,13 @@ junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
 junrar = { module = "com.github.junrar:junrar", version = "7.5.5" }
 loading-button = { module = "br.com.simplepass:loading-button-android", version = "2.2.0" }
 mockk = { module = "io.mockk:mockk", version = "1.13.11" }
-okio = { module = "com.squareup.okio:okio", version = "3.8.0" }
+okio = { module = "com.squareup.okio:okio", version = "3.9.0" }
 okhttp-brotli = { module = "com.squareup.okhttp3:okhttp-brotli", version.ref = "okhttp" }
 okhttp-dnsoverhttps = { module = "com.squareup.okhttp3:okhttp-dnsoverhttps", version.ref = "okhttp" }
 okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 play-services-gcm = { module = "com.google.android.gms:play-services-gcm", version = "17.0.0" }
-play-services-oss-licenses = { module = "com.google.android.gms:play-services-oss-licenses", version = "17.0.1" }
+play-services-oss-licenses = { module = "com.google.android.gms:play-services-oss-licenses", version = "17.1.0" }
 photoview = { module = "com.github.chrisbanes:PhotoView", version = "2.3.0" }
 quickjs-android = { module = "app.cash.quickjs:quickjs-android", version = "0.9.2" }
 rxrelay = { module = "com.jakewharton.rxrelay:rxrelay", version = "1.2.0" }
@@ -97,6 +101,7 @@ gradle-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
 archive = [ "common-compress", "junrar" ]
 db = [ "sqldelight-android-driver", "sqldelight-android-paging", "sqldelight-coroutines" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
+logging = [ "kermit", "kermit-crashlytics" ]
 sqlite = [ "sqlite-framework", "sqlite-ktx" ]
 test = [ "junit-api", "mockk" ]
 test-android = [ "junit-android" ]

@@ -22,6 +22,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.multidex.MultiDex
+import co.touchlab.kermit.ExperimentalKermitApi
+import co.touchlab.kermit.Logger
+import co.touchlab.kermit.crashlytics.CrashlyticsLogWriter
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -70,9 +73,12 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
     private val disableIncognitoReceiver = DisableIncognitoReceiver()
 
+    @OptIn(ExperimentalKermitApi::class)
     @SuppressLint("LaunchActivityFromNotification")
     override fun onCreate() {
         super<Application>.onCreate()
+
+        if (!BuildConfig.DEBUG) Logger.addLogWriter(CrashlyticsLogWriter())
 
         // TLS 1.3 support for Android 10 and below
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {

@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.cache
 
 import android.content.Context
 import android.text.format.Formatter
+import co.touchlab.kermit.Logger
 import com.jakewharton.disklrucache.DiskLruCache
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -106,19 +107,20 @@ class ChapterCache(private val context: Context) {
      * @param file name of file "md5.0".
      * @return status of deletion for the file.
      */
-    fun removeFileFromCache(file: String): Boolean {
+    private fun removeFileFromCache(file: String): Boolean {
         // Make sure we don't delete the journal file (keeps track of cache).
         if (file == "journal" || file.startsWith("journal.")) {
             return false
         }
 
-        try {
+        return try {
             // Remove the extension from the file to get the key of the cache
             val key = file.substringBeforeLast(".")
             // Remove file from cache.
-            return diskCache.remove(key)
+            diskCache.remove(key)
         } catch (e: Exception) {
-            return false
+            Logger.w(e) { "Failed to remove file from cache" }
+            false
         }
     }
 
@@ -166,6 +168,7 @@ class ChapterCache(private val context: Context) {
             editor.commit()
             editor.abortUnlessCommitted()
         } catch (e: Exception) {
+            Logger.w(e) { "Failed to put page list to cache" }
             // Ignore.
         } finally {
             editor?.abortUnlessCommitted()

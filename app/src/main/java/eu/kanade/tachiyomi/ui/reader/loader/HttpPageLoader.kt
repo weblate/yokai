@@ -19,8 +19,8 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.suspendCancellableCoroutine
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.concurrent.PriorityBlockingQueue
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.*
+import java.util.concurrent.atomic.*
 import kotlin.math.min
 
 /**
@@ -65,8 +65,7 @@ class HttpPageLoader(
         queue.clear()
 
         // Cache current page list progress for online chapters to allow a faster reopen
-        val pages = chapter.pages
-        if (pages != null) {
+        chapter.pages?.let { pages ->
             launchIO {
                 try {
                     // Convert to pages without reader information
@@ -103,32 +102,30 @@ class HttpPageLoader(
     /**
      * Loads a page through the queue. Handles re-enqueueing pages if they were evicted from the cache.
      */
-    override suspend fun loadPage(page: ReaderPage) {
-        withIOContext {
-            val imageUrl = page.imageUrl
+    override suspend fun loadPage(page: ReaderPage) = withIOContext {
+        val imageUrl = page.imageUrl
 
-            // Check if the image has been deleted
-            if (page.status == Page.State.READY && imageUrl != null && !chapterCache.isImageInCache(imageUrl)) {
-                page.status = Page.State.QUEUE
-            }
+        // Check if the image has been deleted
+        if (page.status == Page.State.READY && imageUrl != null && !chapterCache.isImageInCache(imageUrl)) {
+            page.status = Page.State.QUEUE
+        }
 
-            // Automatically retry failed pages when subscribed to this page
-            if (page.status == Page.State.ERROR) {
-                page.status = Page.State.QUEUE
-            }
+        // Automatically retry failed pages when subscribed to this page
+        if (page.status == Page.State.ERROR) {
+            page.status = Page.State.QUEUE
+        }
 
-            val queuedPages = mutableListOf<PriorityPage>()
-            if (page.status == Page.State.QUEUE) {
-                queuedPages += PriorityPage(page, 1).also { queue.offer(it) }
-            }
-            queuedPages += preloadNextPages(page, preloadSize)
+        val queuedPages = mutableListOf<PriorityPage>()
+        if (page.status == Page.State.QUEUE) {
+            queuedPages += PriorityPage(page, 1).also { queue.offer(it) }
+        }
+        queuedPages += preloadNextPages(page, preloadSize)
 
-            suspendCancellableCoroutine<Nothing> { continuation ->
-                continuation.invokeOnCancellation {
-                    queuedPages.forEach {
-                        if (it.page.status == Page.State.QUEUE) {
-                            queue.remove(it)
-                        }
+        suspendCancellableCoroutine<Nothing> { continuation ->
+            continuation.invokeOnCancellation {
+                queuedPages.forEach {
+                    if (it.page.status == Page.State.QUEUE) {
+                        queue.remove(it)
                     }
                 }
             }

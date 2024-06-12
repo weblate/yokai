@@ -38,6 +38,7 @@ import dev.yokai.presentation.settings.ComposableSettings
 import dev.yokai.presentation.settings.screen.data.CreateBackup
 import dev.yokai.presentation.settings.screen.data.RestoreBackup
 import dev.yokai.presentation.settings.screen.data.StorageInfo
+import dev.yokai.presentation.settings.screen.data.storageLocationPicker
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
@@ -75,25 +76,6 @@ object SettingsDataScreen : ComposableSettings {
             getBackupAndRestoreGroup(preferences = preferences),
             getDataGroup(),
         )
-    }
-
-    @Composable
-    private fun storageLocationPicker(
-        baseStorageDirectory: eu.kanade.tachiyomi.core.preference.Preference<String>,
-    ): ManagedActivityResultLauncher<Uri?, Uri?> {
-        val context = LocalContext.current
-
-        return rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocumentTree()) { uri ->
-            if (uri != null) {
-                val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-
-                context.tryTakePersistableUriPermission(uri, flags)
-                UniFile.fromUri(context, uri)?.let {
-                    baseStorageDirectory.set(it.uri.toString())
-                }
-            }
-        }
     }
 
     @Composable

@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import com.hippo.unifile.UniFile
 import dev.yokai.domain.storage.StoragePreferences
 import dev.yokai.presentation.component.preference.storageLocationText
+import dev.yokai.presentation.settings.screen.data.storageLocationPicker
 import dev.yokai.presentation.theme.Size
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
@@ -97,26 +98,6 @@ internal class StorageStep : OnboardingStep {
             storagePref.baseStorageDirectory().changes().collectLatest {
                 _isComplete = storagePref.baseStorageDirectory().isSet()
             }
-        }
-    }
-}
-
-@Composable
-fun storageLocationPicker(
-    storageDirPref: Preference<String>,
-): ManagedActivityResultLauncher<Uri?, Uri?> {
-    val context = LocalContext.current
-
-    return rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocumentTree(),
-    ) { uri ->
-        if (uri != null) {
-            val flags =
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-
-            context.tryTakePersistableUriPermission(uri, flags)
-
-            UniFile.fromUri(context, uri)?.let { storageDirPref.set(it.uri.toString()) }
         }
     }
 }

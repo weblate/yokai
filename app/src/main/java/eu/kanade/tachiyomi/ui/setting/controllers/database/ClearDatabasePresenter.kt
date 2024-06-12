@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting.database
+package eu.kanade.tachiyomi.ui.setting.controllers.database
 
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.source.SourceManager

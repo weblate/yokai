@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting.search
+package eu.kanade.tachiyomi.ui.setting.controllers.search
 
 import android.annotation.SuppressLint
 import android.content.Context

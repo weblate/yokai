@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting.debug
+package eu.kanade.tachiyomi.ui.setting.controllers.debug
 
 import android.view.LayoutInflater
 import android.view.Menu

@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting.database
+package eu.kanade.tachiyomi.ui.setting.controllers.database
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

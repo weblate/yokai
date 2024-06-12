@@ -41,8 +41,8 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.bindTo
-import eu.kanade.tachiyomi.ui.setting.database.ClearDatabaseController
-import eu.kanade.tachiyomi.ui.setting.debug.DebugController
+import eu.kanade.tachiyomi.ui.setting.controllers.database.ClearDatabaseController
+import eu.kanade.tachiyomi.ui.setting.controllers.debug.DebugController
 import eu.kanade.tachiyomi.ui.setting.defaultValue
 import eu.kanade.tachiyomi.ui.setting.editTextPreference
 import eu.kanade.tachiyomi.ui.setting.infoPreference

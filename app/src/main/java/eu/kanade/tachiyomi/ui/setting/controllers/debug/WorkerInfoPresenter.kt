@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.setting.debug
+package eu.kanade.tachiyomi.ui.setting.controllers.debug
 
 import android.app.Application
 import androidx.lifecycle.asFlow

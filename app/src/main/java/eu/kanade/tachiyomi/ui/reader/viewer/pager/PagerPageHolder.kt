@@ -48,13 +48,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import okio.Buffer
 import okio.BufferedSource
 import uy.kohesive.injekt.injectLazy
 import java.io.InputStream
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 /**
  * View of the ViewPager that contains a page of a chapter.
@@ -132,7 +132,8 @@ class PagerPageHolder(
                 marginStart = ((context.resources.displayMetrics.widthPixels) / 2 + viewer.config.hingeGapSize) / 2
             }
         }
-        launchLoadJob()
+        loadJob = scope.launch { loadPageAndProcessStatus(1) }
+        extraLoadJob = scope.launch { loadPageAndProcessStatus(2) }
         setBackgroundColor(
             when (val theme = viewer.config.readerTheme) {
                 ReaderBackgroundColor.SMART_THEME.prefValue -> Color.TRANSPARENT
@@ -189,62 +190,13 @@ class PagerPageHolder(
      */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        cancelProgressJob(1)
-        cancelLoadJob(1)
-        cancelProgressJob(2)
-        cancelLoadJob(2)
+        loadJob?.cancel()
+        loadJob = null
+        extraLoadJob?.cancel()
+        extraLoadJob = null
+
         cancelReadImageHeader()
         (pageView as? SubsamplingScaleImageView)?.setOnImageEventListener(null)
-    }
-
-    /**
-     * Starts loading the page and processing changes to the page's status.
-     *
-     * @see processStatus
-     */
-    private fun launchLoadJob() {
-        loadJob?.cancel()
-        statusJob?.cancel()
-
-        val loader = page.chapter.pageLoader ?: return
-        loadJob = scope.launch {
-            loader.loadPage(page)
-        }
-        statusJob = scope.launch {
-            page.statusFlow.collectLatest { processStatus(it) }
-        }
-        val extraPage = extraPage ?: return
-        extraLoadJob = scope.launch {
-            loader.loadPage(extraPage)
-        }
-        extraStatusJob = scope.launch {
-            extraPage.statusFlow.collectLatest { processStatus2(it) }
-        }
-    }
-
-    private fun launchProgressJob() {
-        progressJob?.cancel()
-        progressJob = scope.launch {
-            page.progressFlow.collectLatest { value ->
-                progress = value
-                if (extraPage == null) {
-                    progressBar.setProgress(progress)
-                } else {
-                    progressBar.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
-                }
-            }
-        }
-    }
-
-    private fun launchProgressJob2() {
-        val extraPage = extraPage ?: return
-        extraProgressJob?.cancel()
-        extraProgressJob = scope.launch {
-            extraPage.progressFlow.collectLatest { value ->
-                extraProgress = value
-                progressBar.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
-            }
-        }
     }
 
     fun onPageSelected(forward: Boolean?) {
@@ -357,81 +309,28 @@ class PagerPageHolder(
         }
     }
 
-    /**
-     * Called when the status of the page changes.
-     *
-     * @param status the new status of the page.
-     */
-    private fun processStatus(status: Page.State) {
-        when (status) {
-            Page.State.QUEUE -> setQueued()
-            Page.State.LOAD_PAGE -> setLoading()
-            Page.State.DOWNLOAD_IMAGE -> {
-                launchProgressJob()
-                setDownloading()
+    private suspend fun loadPageAndProcessStatus(index: Int) {
+        val page = (if (index == 1) page else extraPage) ?: return
+
+        val loader = page.chapter.pageLoader ?: return
+        supervisorScope {
+            launchIO {
+                loader.loadPage(page)
             }
-            Page.State.READY -> {
-                if (extraStatus == Page.State.READY || extraPage == null) {
-                    setImage()
+            page.statusFlow.collectLatest {
+                when (status) {
+                    Page.State.QUEUE -> setQueued()
+                    Page.State.LOAD_PAGE -> setLoading()
+                    Page.State.DOWNLOAD_IMAGE -> {
+                        setDownloading()
+                        page.progressFlow.collectLatest { value ->
+                            progressBar.setProgress(value)
+                        }
+                    }
+                    Page.State.READY -> setImage()
+                    Page.State.ERROR -> setError()
                 }
-                cancelProgressJob(1)
             }
-            Page.State.ERROR -> {
-                setError()
-                cancelProgressJob(1)
-            }
-        }
-    }
-
-    /**
-     * Called when the status of the page changes.
-     *
-     * @param status the new status of the page.
-     */
-    private fun processStatus2(status: Page.State) {
-        when (status) {
-            Page.State.QUEUE -> setQueued()
-            Page.State.LOAD_PAGE -> setLoading()
-            Page.State.DOWNLOAD_IMAGE -> {
-                launchProgressJob2()
-                setDownloading()
-            }
-            Page.State.READY -> {
-                if (this.status == Page.State.READY) {
-                    setImage()
-                }
-                cancelProgressJob(2)
-            }
-            Page.State.ERROR -> {
-                setError()
-                cancelProgressJob(2)
-            }
-        }
-    }
-
-    /**
-     * Cancels loading the page and processing changes to the page's status.
-     */
-    private fun cancelLoadJob(page: Int) {
-        if (page == 1) {
-            loadJob?.cancel()
-            loadJob = null
-            statusJob?.cancel()
-            statusJob = null
-        } else {
-            extraLoadJob?.cancel()
-            extraLoadJob = null
-            extraStatusJob?.cancel()
-            extraStatusJob = null
-        }
-    }
-
-    private fun cancelProgressJob(page: Int) {
-        (if (page == 1) progressJob else extraProgressJob)?.cancel()
-        if (page == 1) {
-            progressJob = null
-        } else {
-            extraProgressJob = null
         }
     }
 

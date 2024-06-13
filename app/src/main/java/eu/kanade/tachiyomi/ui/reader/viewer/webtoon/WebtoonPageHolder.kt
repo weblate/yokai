@@ -1,15 +1,15 @@
 package eu.kanade.tachiyomi.ui.reader.viewer.webtoon
 
-import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Color
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import androidx.core.view.updatePaddingRelative
 import co.touchlab.kermit.Logger
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -199,7 +199,7 @@ class WebtoonPageHolder(
      */
     private fun setQueued() {
         progressContainer.isVisible = true
-        progressBar.isVisible = true
+        progressBar.show()
         removeErrorLayout()
     }
 
@@ -208,7 +208,7 @@ class WebtoonPageHolder(
      */
     private fun setLoading() {
         progressContainer.isVisible = true
-        progressBar.isVisible = true
+        progressBar.show()
         removeErrorLayout()
     }
 
@@ -217,7 +217,7 @@ class WebtoonPageHolder(
      */
     private fun setDownloading() {
         progressContainer.isVisible = true
-        progressBar.isVisible = true
+        progressBar.show()
         removeErrorLayout()
     }
 
@@ -226,7 +226,7 @@ class WebtoonPageHolder(
      */
     private suspend fun setImage() {
         progressContainer.isVisible = true
-        progressBar.isVisible = true
+        progressBar.show()
         progressBar.completeAndFadeOut()
         removeErrorLayout()
 
@@ -297,16 +297,13 @@ class WebtoonPageHolder(
     /**
      * Creates a new progress bar.
      */
-    @SuppressLint("PrivateResource")
     private fun createProgressBar(): ReaderProgressBar {
         progressContainer = FrameLayout(context)
         frame.addView(progressContainer, MATCH_PARENT, parentHeight)
 
         val progress = ReaderProgressBar(context).apply {
-            val size = 48.dpToPx
-            layoutParams = FrameLayout.LayoutParams(size, size).apply {
-                gravity = Gravity.CENTER_HORIZONTAL
-                setMargins(0, parentHeight / 4, 0, 0)
+            updateLayoutParams<FrameLayout.LayoutParams> {
+                updateMargins(top = parentHeight / 4)
             }
         }
         progressContainer.addView(progress)

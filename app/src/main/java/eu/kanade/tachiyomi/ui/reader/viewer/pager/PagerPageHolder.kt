@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.ui.reader.viewer.pager
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -11,13 +10,11 @@ import android.graphics.RectF
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import co.touchlab.kermit.Logger
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.ReaderErrorBinding
 import eu.kanade.tachiyomi.source.model.Page
@@ -32,8 +29,6 @@ import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil.isPagePadded
 import eu.kanade.tachiyomi.util.system.ThemeUtil
 import eu.kanade.tachiyomi.util.system.bottomCutoutInset
-import eu.kanade.tachiyomi.util.system.dpToPx
-import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
@@ -75,7 +70,7 @@ class PagerPageHolder(
     /**
      * Loading progress bar to indicate the current progress.
      */
-    private val progressBar = createProgressBar()
+    private val progressBar = ReaderProgressBar(context)
 
     /**
      * Error layout to show when the image fails to load.
@@ -139,15 +134,7 @@ class PagerPageHolder(
                 else -> ThemeUtil.readerBackgroundColor(theme)
             },
         )
-        progressBar.foregroundTintList = ColorStateList.valueOf(
-            context.getResourceColor(
-                if (isInvertedFromTheme()) {
-                    R.attr.colorPrimaryInverse
-                } else {
-                    R.attr.colorPrimary
-                },
-            ),
-        )
+        progressBar.setInvertMode(isInvertedFromTheme())
     }
 
     override fun onImageLoaded() {
@@ -447,7 +434,7 @@ class PagerPageHolder(
      * Called when the page is queued.
      */
     private fun setQueued() {
-        progressBar.isVisible = true
+        progressBar.show()
         errorLayout?.isVisible = false
     }
 
@@ -455,7 +442,7 @@ class PagerPageHolder(
      * Called when the page is loading.
      */
     private fun setLoading() {
-        progressBar.isVisible = true
+        progressBar.show()
         errorLayout?.isVisible = false
     }
 
@@ -463,7 +450,7 @@ class PagerPageHolder(
      * Called when the page is downloading.
      */
     private fun setDownloading() {
-        progressBar.isVisible = true
+        progressBar.show()
         errorLayout?.isVisible = false
     }
 
@@ -471,7 +458,7 @@ class PagerPageHolder(
      * Called when the page is ready.
      */
     private fun setImage() {
-        progressBar.isVisible = true
+        progressBar.show()
         if (extraPage == null) {
             progressBar.completeAndFadeOut()
         } else {
@@ -572,7 +559,7 @@ class PagerPageHolder(
      * Called when the page has an error.
      */
     private fun setError() {
-        progressBar.isVisible = false
+        progressBar.hide()
         showErrorLayout(false)
     }
 
@@ -580,27 +567,15 @@ class PagerPageHolder(
      * Called when the image is decoded and going to be displayed.
      */
     private fun onImageDecoded() {
-        progressBar.isVisible = false
+        progressBar.hide()
     }
 
     /**
      * Called when an image fails to decode.
      */
     private fun onImageDecodeError() {
-        progressBar.isVisible = false
+        progressBar.hide()
         showErrorLayout(true)
-    }
-
-    /**
-     * Creates a new progress bar.
-     */
-    private fun createProgressBar(): ReaderProgressBar {
-        return ReaderProgressBar(context, null).apply {
-            val size = 48.dpToPx
-            layoutParams = LayoutParams(size, size).apply {
-                gravity = Gravity.CENTER
-            }
-        }
     }
 
     private fun isInvertedFromTheme(): Boolean {

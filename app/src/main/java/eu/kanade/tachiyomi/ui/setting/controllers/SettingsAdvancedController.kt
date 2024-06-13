@@ -29,6 +29,7 @@ import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.extension.ShizukuInstaller
 import eu.kanade.tachiyomi.network.NetworkHelper
+import eu.kanade.tachiyomi.network.NetworkPreferences
 import eu.kanade.tachiyomi.network.PREF_DOH_360
 import eu.kanade.tachiyomi.network.PREF_DOH_ADGUARD
 import eu.kanade.tachiyomi.network.PREF_DOH_ALIDNS
@@ -83,6 +84,7 @@ import java.io.File
 class SettingsAdvancedController : SettingsLegacyController() {
 
     private val network: NetworkHelper by injectLazy()
+    private val networkPreferences: NetworkPreferences by injectLazy()
 
     private val db: DatabaseHelper by injectLazy()
 
@@ -278,7 +280,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                 }
             }
             editTextPreference(activity) {
-                bindTo(preferences.defaultUserAgent())
+                bindTo(networkPreferences.defaultUserAgent())
                 titleRes = R.string.user_agent_string
 
                 onChange {

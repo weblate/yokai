@@ -4,6 +4,7 @@
 -keep,allowoptimization class eu.kanade.** { public protected *; }
 -keep,allowoptimization class tachiyomi.** { public protected *; }
 -keep,allowoptimization class dev.yokai.** { public protected *; }
+-keep,allowoptimization class yokai.** { public protected *; }
 
 # Keep common dependencies used in extensions
 -keep class androidx.preference.** { public protected *; }

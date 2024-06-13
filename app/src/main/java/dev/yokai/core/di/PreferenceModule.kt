@@ -13,6 +13,7 @@ import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackPreferences
+import eu.kanade.tachiyomi.network.NetworkPreferences
 import uy.kohesive.injekt.api.InjektModule
 import uy.kohesive.injekt.api.InjektRegistrar
 import uy.kohesive.injekt.api.addSingletonFactory
@@ -35,6 +36,8 @@ class PreferenceModule(val application: Application) : InjektModule {
         addSingletonFactory { RecentsPreferences(get()) }
 
         addSingletonFactory { DownloadPreferences(get()) }
+
+        addSingletonFactory { NetworkPreferences(get()) }
 
         addSingletonFactory {
             PreferencesHelper(

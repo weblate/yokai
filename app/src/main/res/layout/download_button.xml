@@ -15,28 +15,36 @@
         android:layout_gravity="center"
         android:contentDescription="@string/download"
         android:src="@drawable/border_circle"
-        android:padding="3dp"/>
+        android:padding="3dp"
+        tools:visibility="visible" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/download_progress_indeterminate"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:visibility="gone"
         android:layout_gravity="center"
+        android:paddingBottom="0.5dp"
         android:indeterminate="true"
-        android:indeterminateTint="@color/material_on_surface_disabled"/>
+        android:indeterminateTint="@color/material_on_surface_disabled"
+        app:indicatorColor="?attr/colorSecondary"
+        app:indicatorSize="24dp"
+        app:trackThickness="2dp"
+        tools:visibility="gone" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/download_progress"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:visibility="gone"
-        tools:visibility="visible"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/circle_progress"
         android:layout_gravity="center"
         android:progressTint="@color/download"
-        android:progressBackgroundTint="@color/material_on_surface_disabled"/>
+        android:paddingBottom="0.5dp"
+        android:progressBackgroundTint="@color/material_on_surface_disabled"
+        app:indicatorColor="@color/download"
+        app:indicatorSize="24dp"
+        app:trackThickness="2dp"
+        tools:visibility="visible" />
 
 
     <ImageView

@@ -50,7 +50,9 @@ fun CombinedCircularProgressIndicator(
     ) { indeterminate ->
         if (indeterminate) {
             // Indeterminate
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                color = if (isInverted()) MaterialTheme.colorScheme.inversePrimary else MaterialTheme.colorScheme.primary,
+            )
         } else {
             // Determinate
             val infiniteTransition = rememberInfiniteTransition(label = "infiniteRotation")
@@ -71,7 +73,7 @@ fun CombinedCircularProgressIndicator(
             CircularProgressIndicator(
                 progress = { animatedProgress },
                 modifier = Modifier.rotate(rotation),
-                color = if (isInverted()) MaterialTheme.colorScheme.inversePrimary else MaterialTheme.colorScheme.primary
+                color = if (isInverted()) MaterialTheme.colorScheme.inversePrimary else MaterialTheme.colorScheme.primary,
             )
         }
     }

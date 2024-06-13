@@ -30,9 +30,9 @@ import eu.kanade.tachiyomi.util.system.ImageUtil.isPagePadded
 import eu.kanade.tachiyomi.util.system.ThemeUtil
 import eu.kanade.tachiyomi.util.system.bottomCutoutInset
 import eu.kanade.tachiyomi.util.system.isInNightMode
-import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.topCutoutInset
+import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.isVisibleOnScreen
@@ -107,12 +107,6 @@ class PagerPageHolder(
      */
     private var extraProgressJob: Job? = null
 
-    /**
-     * Job used to read the header of the image. This is needed in order to instantiate
-     * the appropriate image view depending if the image is animated (GIF).
-     */
-    private var readImageHeaderJob: Job? = null
-
     private var status = Page.State.READY
     private var extraStatus = Page.State.READY
     private var progress: Int = 0
@@ -180,7 +174,6 @@ class PagerPageHolder(
         cancelLoadJob(1)
         cancelProgressJob(2)
         cancelLoadJob(2)
-        cancelReadImageHeader()
         (pageView as? SubsamplingScaleImageView)?.setOnImageEventListener(null)
     }
 
@@ -349,7 +342,7 @@ class PagerPageHolder(
      *
      * @param status the new status of the page.
      */
-    private fun processStatus(status: Page.State) {
+    private suspend fun processStatus(status: Page.State) {
         when (status) {
             Page.State.QUEUE -> setQueued()
             Page.State.LOAD_PAGE -> setLoading()
@@ -375,7 +368,7 @@ class PagerPageHolder(
      *
      * @param status the new status of the page.
      */
-    private fun processStatus2(status: Page.State) {
+    private suspend fun processStatus2(status: Page.State) {
         when (status) {
             Page.State.QUEUE -> setQueued()
             Page.State.LOAD_PAGE -> setLoading()
@@ -423,14 +416,6 @@ class PagerPageHolder(
     }
 
     /**
-     * Unsubscribes from the read image header subscription.
-     */
-    private fun cancelReadImageHeader() {
-        readImageHeaderJob?.cancel()
-        readImageHeaderJob = null
-    }
-
-    /**
      * Called when the page is queued.
      */
     private fun setQueued() {
@@ -457,7 +442,7 @@ class PagerPageHolder(
     /**
      * Called when the page is ready.
      */
-    private fun setImage() {
+    private suspend fun setImage() {
         progressIndicator.show()
         if (extraPage == null) {
             progressIndicator.completeAndFadeOut()
@@ -466,60 +451,65 @@ class PagerPageHolder(
         }
         errorLayout?.isVisible = false
 
-        cancelReadImageHeader()
+        val streamFn = page.stream ?: return
+        val streamFn2 = extraPage?.stream
 
-        readImageHeaderJob = scope.launchIO {
-            val streamFn = page.stream ?: return@launchIO
-            val streamFn2 = extraPage?.stream
-
-            var actualSource: BufferedSource? = null
-            try {
-                val source1 = streamFn().buffered(16).use { Buffer().readFrom(it) }
-                val source2 = streamFn2?.invoke()?.buffered(16)?.use { Buffer().readFrom(it) }
-
-                actualSource = this@PagerPageHolder.mergeOrSplitPages(source1, source2)
-                val isAnimated = ImageUtil.isAnimatedAndSupported(source1) ||
-                    (source2?.let { ImageUtil.isAnimatedAndSupported(source2) } ?: false)
-                withUIContext {
-                    val bgColor = ReaderBackgroundColor.fromPreference(viewer.config.readerTheme)
-                    if (!isAnimated) {
-                        if (bgColor.isSmartColor) {
-                            val bgType = getBGType(viewer.config.readerTheme, context)
-                            if (page.bg != null && page.bgType == bgType) {
-                                setImage(actualSource, false, imageConfig)
-                                pageView?.background = page.bg
-                            }
-                            // if the user switches to automatic when pages are already cached, the bg needs to be loaded
-                            else {
-                                val background =
-                                    try {
-                                        setBG(actualSource.peek().inputStream())
-                                    } catch (e: Exception) {
-                                        Logger.e(e) { e.localizedMessage?.toString() ?: "" }
-                                        ColorDrawable(Color.WHITE)
-                                    }
-                                setImage(actualSource, false, imageConfig)
-
-                                pageView?.background = background
-                                page.bg = pageView?.background
-                                page.bgType = bgType
-                            }
-                        } else {
-                            setImage(actualSource, false, imageConfig)
-                        }
+        try {
+            val (source, isAnimated) = withIOContext {
+                streamFn().buffered(16).use { source1 ->
+                    if (extraPage != null) {
+                        streamFn2?.invoke()
+                            ?.buffered(16)
                     } else {
-                        setImage(actualSource, true, imageConfig)
-                        if (bgColor.isSmartColor && page.bg != null) {
-                            pageView?.background = page.bg
-                        }
+                        null
+                    }.use { source2 ->
+                        val actualSource = this@PagerPageHolder.mergeOrSplitPages(
+                            Buffer().readFrom(source1),
+                            source2?.let { Buffer().readFrom(it) },
+                        )
+
+                        val isAnimated = ImageUtil.isAnimatedAndSupported(actualSource)
+                        Pair(actualSource, isAnimated)
                     }
                 }
-            } catch (_: Exception) {
-                try {
-                    actualSource?.let { closeSources(it) }
-                } catch (_: Exception) {
+            }
+
+            withUIContext {
+                val bgColor = ReaderBackgroundColor.fromPreference(viewer.config.readerTheme)
+                if (!isAnimated) {
+                    if (bgColor.isSmartColor) {
+                        val bgType = getBGType(viewer.config.readerTheme, context)
+                        if (page.bg != null && page.bgType == bgType) {
+                            setImage(source, false, imageConfig)
+                            pageView?.background = page.bg
+                        }
+                        // if the user switches to automatic when pages are already cached, the bg needs to be loaded
+                        else {
+                            val background =
+                                try {
+                                    setBG(source.peek().inputStream())
+                                } catch (e: Exception) {
+                                    Logger.e(e) { e.localizedMessage?.toString() ?: "" }
+                                    ColorDrawable(Color.WHITE)
+                                }
+                            setImage(source, false, imageConfig)
+
+                            pageView?.background = background
+                            page.bg = pageView?.background
+                            page.bgType = bgType
+                        }
+                    } else {
+                        setImage(source, false, imageConfig)
+                    }
+                } else {
+                    setImage(source, true, imageConfig)
+                    if (bgColor.isSmartColor && page.bg != null) {
+                        pageView?.background = page.bg
+                    }
                 }
             }
+        } catch (e: Exception) {
+            Logger.e(e) { "Failed to set reader page image" }
         }
     }
 

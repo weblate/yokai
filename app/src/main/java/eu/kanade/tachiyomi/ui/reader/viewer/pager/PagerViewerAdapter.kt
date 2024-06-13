@@ -193,24 +193,20 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                 }
             }
             if (viewer.config.splitPages) {
-                var itemIndex = 0
-                val pagedItems = subItems.toMutableList()
-                while (itemIndex < pagedItems.size) {
-                    val page = pagedItems[itemIndex] as? ReaderPage
-                    if (page == null) {
-                        itemIndex++
-                        continue
-                    }
+                val pagedItems = mutableListOf<Any>()
+                subItems.forEach {
+                    val page = it as? ReaderPage ?: return@forEach
+
                     if (page.longPage == true) {
                         page.firstHalf = true
-                        // Add a second halved page after each full page.
-                        pagedItems[itemIndex] = InsertPage(page).apply { firstHalf = true }
-                        val secondHalf = InsertPage(page)
-                        pagedItems.add(itemIndex + 1, secondHalf)
-                        itemIndex++
+                        pagedItems.add(InsertPage(page).apply { firstHalf = true })
+                        pagedItems.add(InsertPage(page))
+                        return@forEach
                     }
-                    itemIndex++
+
+                    pagedItems.add(page)
                 }
+
                 this.joinedItems = pagedItems.map {
                     Pair<Any, Any?>(
                         it,
@@ -274,7 +270,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                         )
                         // Add a shifted page to the first place there isnt a full page
                         (fullPageBeforeIndex until items.size).forEach {
-                            if (items[it]?.fullPage != true) {
+                            if (items[it]?.fullPage == false) {
                                 items[it]?.shiftedPage = true
                                 return@loop
                             }

@@ -25,7 +25,7 @@ import dev.yokai.presentation.theme.YokaiTheme
  * the feedback to the user that the application isn't 'stuck', and by making it determinate the
  * user also approximately knows how much the operation will take.
  */
-class ReaderProgressBar @JvmOverloads constructor(
+class ReaderProgressIndicator @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,

@@ -22,7 +22,7 @@ import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.settings.ReaderBackgroundColor
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderErrorView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
-import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressBar
+import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig.ZoomType
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
@@ -70,7 +70,7 @@ class PagerPageHolder(
     /**
      * Loading progress bar to indicate the current progress.
      */
-    private val progressBar = ReaderProgressBar(context)
+    private val progressIndicator = ReaderProgressIndicator(context)
 
     /**
      * Error layout to show when the image fails to load.
@@ -121,9 +121,9 @@ class PagerPageHolder(
     private var scope = MainScope()
 
     init {
-        addView(progressBar)
+        addView(progressIndicator)
         if (viewer.config.hingeGapSize > 0) {
-            progressBar.updateLayoutParams<MarginLayoutParams> {
+            progressIndicator.updateLayoutParams<MarginLayoutParams> {
                 marginStart = ((context.resources.displayMetrics.widthPixels) / 2 + viewer.config.hingeGapSize) / 2
             }
         }
@@ -134,7 +134,7 @@ class PagerPageHolder(
                 else -> ThemeUtil.readerBackgroundColor(theme)
             },
         )
-        progressBar.setInvertMode(isInvertedFromTheme())
+        progressIndicator.setInvertMode(isInvertedFromTheme())
     }
 
     override fun onImageLoaded() {
@@ -215,9 +215,9 @@ class PagerPageHolder(
             page.progressFlow.collectLatest { value ->
                 progress = value
                 if (extraPage == null) {
-                    progressBar.setProgress(progress)
+                    progressIndicator.setProgress(progress)
                 } else {
-                    progressBar.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
+                    progressIndicator.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
                 }
             }
         }
@@ -229,7 +229,7 @@ class PagerPageHolder(
         extraProgressJob = scope.launch {
             extraPage.progressFlow.collectLatest { value ->
                 extraProgress = value
-                progressBar.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
+                progressIndicator.setProgress(((progress + extraProgress) / 2 * 0.95f).roundToInt())
             }
         }
     }
@@ -434,7 +434,7 @@ class PagerPageHolder(
      * Called when the page is queued.
      */
     private fun setQueued() {
-        progressBar.show()
+        progressIndicator.show()
         errorLayout?.isVisible = false
     }
 
@@ -442,7 +442,7 @@ class PagerPageHolder(
      * Called when the page is loading.
      */
     private fun setLoading() {
-        progressBar.show()
+        progressIndicator.show()
         errorLayout?.isVisible = false
     }
 
@@ -450,7 +450,7 @@ class PagerPageHolder(
      * Called when the page is downloading.
      */
     private fun setDownloading() {
-        progressBar.show()
+        progressIndicator.show()
         errorLayout?.isVisible = false
     }
 
@@ -458,11 +458,11 @@ class PagerPageHolder(
      * Called when the page is ready.
      */
     private fun setImage() {
-        progressBar.show()
+        progressIndicator.show()
         if (extraPage == null) {
-            progressBar.completeAndFadeOut()
+            progressIndicator.completeAndFadeOut()
         } else {
-            progressBar.setProgress(95)
+            progressIndicator.setProgress(95)
         }
         errorLayout?.isVisible = false
 
@@ -559,7 +559,7 @@ class PagerPageHolder(
      * Called when the page has an error.
      */
     private fun setError() {
-        progressBar.hide()
+        progressIndicator.hide()
         showErrorLayout(false)
     }
 
@@ -567,14 +567,14 @@ class PagerPageHolder(
      * Called when the image is decoded and going to be displayed.
      */
     private fun onImageDecoded() {
-        progressBar.hide()
+        progressIndicator.hide()
     }
 
     /**
      * Called when an image fails to decode.
      */
     private fun onImageDecodeError() {
-        progressBar.hide()
+        progressIndicator.hide()
         showErrorLayout(true)
     }
 
@@ -610,7 +610,7 @@ class PagerPageHolder(
                     splitDoublePages()
                 }
             }
-            scope.launchUI { progressBar.completeAndFadeOut() }
+            scope.launchUI { progressIndicator.completeAndFadeOut() }
             return imageSource
         }
         if (page.longPage == true && viewer.config.splitPages) {
@@ -624,9 +624,9 @@ class PagerPageHolder(
             return ImageUtil.splitBitmap(imageBitmap, (page.firstHalf == false).xor(!isLTR)) {
                 scope.launchUI {
                     if (it == 100) {
-                        progressBar.completeAndFadeOut()
+                        progressIndicator.completeAndFadeOut()
                     } else {
-                        progressBar.setProgress(it)
+                        progressIndicator.setProgress(it)
                     }
                 }
             }
@@ -651,9 +651,9 @@ class PagerPageHolder(
                     return ImageUtil.splitBitmap(imageBitmap, !isLTR) {
                         scope.launchUI {
                             if (it == 100) {
-                                progressBar.completeAndFadeOut()
+                                progressIndicator.completeAndFadeOut()
                             } else {
-                                progressBar.setProgress(it)
+                                progressIndicator.setProgress(it)
                             }
                         }
                     }
@@ -674,7 +674,7 @@ class PagerPageHolder(
             Logger.e { "Cannot combine pages ${e.message}" }
             return supportHingeIfThere(imageSource)
         }
-        scope.launchUI { progressBar.setProgress(96) }
+        scope.launchUI { progressIndicator.setProgress(96) }
         val height = imageBitmap.height
         val width = imageBitmap.width
 
@@ -758,7 +758,7 @@ class PagerPageHolder(
             Logger.e { "Cannot combine pages ${e.message}" }
             return supportHingeIfThere(imageSource)
         }
-        scope.launchUI { progressBar.setProgress(97) }
+        scope.launchUI { progressIndicator.setProgress(97) }
         val height2 = imageBitmap2.height
         val width2 = imageBitmap2.width
 
@@ -798,9 +798,9 @@ class PagerPageHolder(
         return ImageUtil.mergeBitmaps(imageBitmap, imageBitmap2, isLTR, bg, viewer.config.hingeGapSize, context) {
             scope.launchUI {
                 if (it == 100) {
-                    progressBar.completeAndFadeOut()
+                    progressIndicator.completeAndFadeOut()
                 } else {
-                    progressBar.setProgress(it)
+                    progressIndicator.setProgress(it)
                 }
             }
         }

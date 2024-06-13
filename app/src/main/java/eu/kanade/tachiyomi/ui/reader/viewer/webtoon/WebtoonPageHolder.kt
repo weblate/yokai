@@ -18,7 +18,7 @@ import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderErrorView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
-import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressBar
+import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.e
@@ -48,7 +48,7 @@ class WebtoonPageHolder(
     /**
      * Loading progress bar to indicate the current progress.
      */
-    private val progressBar = createProgressBar()
+    private val progressIndicator = createProgressIndicator()
 
     /**
      * Progress bar container. Needed to keep a minimum height size of the holder, otherwise the
@@ -122,7 +122,7 @@ class WebtoonPageHolder(
 
         removeErrorLayout()
         frame.recycle()
-        progressBar.setProgress(0)
+        progressIndicator.setProgress(0)
     }
 
     /**
@@ -152,7 +152,7 @@ class WebtoonPageHolder(
 
         val page = page ?: return
         progressJob = scope.launch {
-            page.progressFlow.collectLatest { value -> progressBar.setProgress(value) }
+            page.progressFlow.collectLatest { value -> progressIndicator.setProgress(value) }
         }
     }
 
@@ -199,7 +199,7 @@ class WebtoonPageHolder(
      */
     private fun setQueued() {
         progressContainer.isVisible = true
-        progressBar.show()
+        progressIndicator.show()
         removeErrorLayout()
     }
 
@@ -208,7 +208,7 @@ class WebtoonPageHolder(
      */
     private fun setLoading() {
         progressContainer.isVisible = true
-        progressBar.show()
+        progressIndicator.show()
         removeErrorLayout()
     }
 
@@ -217,7 +217,7 @@ class WebtoonPageHolder(
      */
     private fun setDownloading() {
         progressContainer.isVisible = true
-        progressBar.show()
+        progressIndicator.show()
         removeErrorLayout()
     }
 
@@ -226,8 +226,8 @@ class WebtoonPageHolder(
      */
     private suspend fun setImage() {
         progressContainer.isVisible = true
-        progressBar.show()
-        progressBar.completeAndFadeOut()
+        progressIndicator.show()
+        progressIndicator.completeAndFadeOut()
         removeErrorLayout()
 
         val streamFn = page?.stream ?: return
@@ -297,11 +297,11 @@ class WebtoonPageHolder(
     /**
      * Creates a new progress bar.
      */
-    private fun createProgressBar(): ReaderProgressBar {
+    private fun createProgressIndicator(): ReaderProgressIndicator {
         progressContainer = FrameLayout(context)
         frame.addView(progressContainer, MATCH_PARENT, parentHeight)
 
-        val progress = ReaderProgressBar(context).apply {
+        val progress = ReaderProgressIndicator(context).apply {
             updateLayoutParams<FrameLayout.LayoutParams> {
                 updateMargins(top = parentHeight / 4)
             }

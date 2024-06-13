@@ -5,11 +5,13 @@ import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
+import androidx.glance.appwidget.CircularProgressIndicator
+import dev.yokai.presentation.theme.YokaiTheme
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
@@ -103,7 +105,11 @@ class WebtoonTransitionHolder(
      * Sets the loading state on the pages container.
      */
     private fun setLoading() {
-        val progress = ProgressBar(context, null, android.R.attr.progressBarStyle)
+        val progress = ComposeView(context).apply {
+            setContent {
+                YokaiTheme { CircularProgressIndicator() }
+            }
+        }
 
         val textView = AppCompatTextView(context).apply {
             wrapContent()

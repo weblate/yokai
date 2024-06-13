@@ -16,6 +16,7 @@ import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.InsertPage
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
+import eu.kanade.tachiyomi.ui.reader.model.ReaderItem
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
 import eu.kanade.tachiyomi.ui.reader.viewer.BaseViewer
@@ -53,7 +54,7 @@ abstract class PagerViewer(val activity: ReaderActivity) : BaseViewer {
     /**
      * Currently active item. It can be a chapter page or a chapter transition.
      */
-    private var currentPage: Any? = null
+    private var currentPage: ReaderItem? = null
 
     /**
      * Viewer chapters to set when the pager enters idle mode. Otherwise, if the view was settling
@@ -281,7 +282,7 @@ abstract class PagerViewer(val activity: ReaderActivity) : BaseViewer {
         }
     }
 
-    private fun getItem(position: Int, currentChapter: ReaderChapter?): Pair<Any, Any?>? {
+    private fun getItem(position: Int, currentChapter: ReaderChapter?): Pair<ReaderItem, ReaderItem?>? {
         return adapter.joinedItems.firstOrNull {
             val readerPage = it.first as? ReaderPage ?: return@firstOrNull false
             readerPage.index == position && readerPage.chapter.chapter.id == currentChapter?.chapter?.id
@@ -502,7 +503,7 @@ abstract class PagerViewer(val activity: ReaderActivity) : BaseViewer {
         return false
     }
 
-    fun hideMenuIfVisible(item: Any) {
+    fun hideMenuIfVisible(item: Pair<ReaderItem, ReaderItem?>) {
         val currentItem = adapter.joinedItems.getOrNull(pager.currentItem)
         if (item == currentItem && isIdle) {
             activity.hideMenu()

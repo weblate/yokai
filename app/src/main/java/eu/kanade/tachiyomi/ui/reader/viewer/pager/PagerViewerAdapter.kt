@@ -6,6 +6,7 @@ import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.InsertPage
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
+import eu.kanade.tachiyomi.ui.reader.model.ReaderItem
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
 import eu.kanade.tachiyomi.ui.reader.viewer.hasMissingChapters
@@ -22,11 +23,11 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
     /**
      * Paired list of currently set items.
      */
-    var joinedItems: MutableList<Pair<Any, Any?>> = mutableListOf()
+    var joinedItems: MutableList<Pair<ReaderItem, ReaderItem?>> = mutableListOf()
         private set
 
     /** Single list of items */
-    private var subItems: MutableList<Any> = mutableListOf()
+    private var subItems: MutableList<ReaderItem> = mutableListOf()
 
     var nextTransition: ChapterTransition.Next? = null
         private set
@@ -47,7 +48,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
      * has R2L direction.
      */
     fun setChapters(chapters: ViewerChapters, forceTransition: Boolean) {
-        val newItems = mutableListOf<Any>()
+        val newItems = mutableListOf<ReaderItem>()
 
         // Force chapter transition page if there are missing chapters
         val prevHasMissingChapters = hasMissingChapters(chapters.currChapter, chapters.prevChapter)
@@ -132,7 +133,6 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
         return when (item) {
             is ReaderPage -> PagerPageHolder(viewer, item, item2 as? ReaderPage)
             is ChapterTransition -> PagerTransitionHolder(viewer, item)
-            else -> throw NotImplementedError("Holder for ${item.javaClass} not implemented")
         }
     }
 
@@ -193,7 +193,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                 }
             }
             if (viewer.config.splitPages) {
-                val pagedItems = mutableListOf<Any>()
+                val pagedItems = mutableListOf<ReaderItem>()
                 subItems.forEach {
                     val page = it as? ReaderPage ?: return@forEach
 
@@ -208,20 +208,21 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                 }
 
                 this.joinedItems = pagedItems.map {
-                    Pair<Any, Any?>(
+                    Pair<ReaderItem, ReaderItem?>(
                         it,
-                        if ((it as? ReaderPage)?.fullPage == true) (it as? ReaderPage)?.firstHalf else null,
+                        // I don't even know what this is... but I'm guessing he try to check if "firstHalf" is not null
+                        if ((it as? ReaderPage)?.fullPage == true && it.firstHalf != null) it else null,
                     )
                 }.toMutableList()
             } else {
-                this.joinedItems = subItems.map { Pair<Any, Any?>(it, null) }.toMutableList()
+                this.joinedItems = subItems.map { Pair<ReaderItem, ReaderItem?>(it, null) }.toMutableList()
             }
             if (viewer is R2LPagerViewer) {
                 joinedItems.reverse()
             }
         } else {
             val pagedItems = mutableListOf<MutableList<ReaderPage?>>()
-            val otherItems = mutableListOf<Any>()
+            val otherItems = mutableListOf<ReaderItem>()
             pagedItems.add(mutableListOf())
             // Step 1: segment the pages and transition pages
             subItems.forEach {
@@ -238,7 +239,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                 }
             }
             var pagedIndex = 0
-            val subJoinedItems = mutableListOf<Pair<Any, Any?>>()
+            val subJoinedItems = mutableListOf<Pair<ReaderItem, ReaderItem?>>()
             // Step 2: run through each set of pages
             pagedItems.forEach { items ->
 

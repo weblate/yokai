@@ -19,3 +19,4 @@
 - Update dependency com.google.android.gms:play-services-oss-licenses to v17.1.0
 - Update dependency com.google.gms:google-services to v4.4.2
 - Add crashlytics integration for Kermit
+- Replace ProgressBar with ProgressIndicator

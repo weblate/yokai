@@ -9,9 +9,9 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.updatePaddingRelative
-import androidx.glance.appwidget.CircularProgressIndicator
 import dev.yokai.presentation.theme.YokaiTheme
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition

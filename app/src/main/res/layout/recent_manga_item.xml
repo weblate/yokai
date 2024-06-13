@@ -152,9 +152,8 @@
                 app:layout_constraintBottom_toTopOf="@id/bottom_line"
                 app:layout_constraintTop_toBottomOf="@id/body" />
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progress"
-                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
                 android:layout_height="3dp"
                 android:layout_gravity="bottom"

@@ -6,9 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="8dp">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar"
+        android:indeterminate="true"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center"/>

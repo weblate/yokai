@@ -61,9 +61,11 @@
             android:src="@drawable/ic_bookmark_border_24dp"
             app:tint="@color/material_on_background_disabled" />
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress"
-            style="?android:attr/progressBarStyleSmall"
+            app:indicatorSize="16dp"
+            app:trackThickness="3dp"
+            android:indeterminate="true"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"

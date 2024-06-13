@@ -28,8 +28,9 @@
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress"
+        android:indeterminate="true"
         android:layout_width="75dp"
         android:layout_height="75dp"
         app:layout_constraintTop_toTopOf="parent"

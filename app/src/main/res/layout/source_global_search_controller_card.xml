@@ -90,12 +90,14 @@
         app:layout_constraintTop_toBottomOf="@id/title_wrapper"
         app:layout_constraintVertical_bias="1.0">
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress"
-            style="?android:attr/progressBarStyleSmall"
+            android:indeterminate="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            app:indicatorSize="16dp"
+            app:trackThickness="3dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"

@@ -69,9 +69,8 @@
             android:layout_height="match_parent"
             android:nestedScrollingEnabled="true">
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:progressBackgroundTint="?attr/colorSurface"

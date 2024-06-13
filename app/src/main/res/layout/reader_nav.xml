@@ -17,13 +17,15 @@
     android:layoutDirection="ltr"
     android:orientation="horizontal">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/left_progress"
-        style="?android:attr/progressBarStyleSmall"
+        app:indicatorSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/reader_seekbar"
+        app:trackThickness="3dp"
+        android:indeterminate="true"
         android:visibility="gone"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -103,13 +105,15 @@
         app:tint="?actionBarTintColor"
         app:srcCompat="@drawable/ic_skip_next_24" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/right_progress"
-        style="?android:attr/progressBarStyleSmall"
+        app:indicatorSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/reader_seekbar"
+        app:trackThickness="3dp"
+        android:indeterminate="true"
         android:visibility="gone"
         android:layout_width="40dp"
         android:layout_height="40dp"

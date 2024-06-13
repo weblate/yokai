@@ -124,9 +124,11 @@
                 android:textSize="13sp"
                 tools:text="Sample name" />
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress"
-                style="?android:attr/progressBarStyleSmall"
+                app:indicatorSize="16dp"
+                app:trackThickness="3dp"
+                android:indeterminate="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -37,8 +37,9 @@
                 android:contentDescription="@string/tracking"
                 tools:src="@drawable/ic_tracker_mal" />
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress"
+                android:indeterminate="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

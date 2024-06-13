@@ -14,12 +14,13 @@
         android:layout_height="match_parent"
         android:descendantFocusability="blocksDescendants" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/please_wait"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="center"
         android:visibility="gone"
+        android:indeterminate="true"
         tools:visibility="visible" />
 
     <eu.kanade.tachiyomi.ui.reader.PageIndicatorTextView

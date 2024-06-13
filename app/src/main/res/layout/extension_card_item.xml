@@ -11,10 +11,9 @@
         android:layout_height="64dp"
         android:background="@drawable/list_item_selector">
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/install_progress"
             android:layout_width="0dp"
-            style="?android:attr/progressBarStyleHorizontal"
             android:progressBackgroundTint="?attr/background"
             android:progressTint="?attr/colorSecondary"
             android:layout_height="2dp"

@@ -22,9 +22,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.multidex.MultiDex
-import co.touchlab.kermit.ExperimentalKermitApi
 import co.touchlab.kermit.Logger
-import co.touchlab.kermit.crashlytics.CrashlyticsLogWriter
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -36,6 +34,7 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import dev.yokai.core.CrashlyticsLogWriter
 import dev.yokai.core.di.AppModule
 import dev.yokai.core.di.DomainModule
 import dev.yokai.core.di.PreferenceModule
@@ -73,7 +72,6 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
     private val disableIncognitoReceiver = DisableIncognitoReceiver()
 
-    @OptIn(ExperimentalKermitApi::class)
     @SuppressLint("LaunchActivityFromNotification")
     override fun onCreate() {
         super<Application>.onCreate()

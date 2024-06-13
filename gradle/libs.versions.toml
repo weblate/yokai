@@ -43,7 +43,6 @@ image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "e
 injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65b0440" }
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
-kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
 
 material = { module = "com.google.android.material:material", version = "1.12.0" }
 material-design-dimens = { module = "com.dmitrymalkovich.android:material-design-dimens", version = "1.4" }
@@ -101,7 +100,7 @@ gradle-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
 archive = [ "common-compress", "junrar" ]
 db = [ "sqldelight-android-driver", "sqldelight-android-paging", "sqldelight-coroutines" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
-logging = [ "kermit", "kermit-crashlytics" ]
+logging = [ "kermit" ]
 sqlite = [ "sqlite-framework", "sqlite-ktx" ]
 test = [ "junit-api", "mockk" ]
 test-android = [ "junit-android" ]

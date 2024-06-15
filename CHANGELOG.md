@@ -12,6 +12,10 @@
   - Added "next scheduled run"
   - Added attempt count
 
+## Fixes
+- Fixed auto backup, auto extension update, and app update checker stop working
+  if it crash/failed
+
 ## Other
 - Some code refactors
 - Update firebase bom to v33.1.0

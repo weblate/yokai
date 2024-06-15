@@ -106,7 +106,7 @@ android {
 
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks.add("release")
-            versionNameSuffix = "-b${commitCount}"
+            versionNameSuffix = "-r${commitCount}"
             applicationIdSuffix = ".nightlyYokai"
         }
     }

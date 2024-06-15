@@ -30,6 +30,7 @@ import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.util.system.connectivityManager
+import eu.kanade.tachiyomi.util.system.jobIsRunning
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notification
 import eu.kanade.tachiyomi.util.system.toInt
@@ -38,7 +39,7 @@ import rikka.shizuku.Shizuku
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
@@ -179,6 +180,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
         fun setupTask(context: Context, forceAutoUpdateJob: Boolean? = null) {
             val preferences = Injekt.get<PreferencesHelper>()
             val autoUpdateJob = forceAutoUpdateJob ?: preferences.automaticExtUpdates().get()
+            WorkManager.getInstance(context).jobIsRunning(TAG)
             if (autoUpdateJob) {
                 val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)

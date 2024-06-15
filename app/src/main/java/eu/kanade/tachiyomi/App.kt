@@ -38,8 +38,12 @@ import dev.yokai.core.CrashlyticsLogWriter
 import dev.yokai.core.di.AppModule
 import dev.yokai.core.di.DomainModule
 import dev.yokai.core.di.PreferenceModule
+import dev.yokai.core.migration.Migrator
+import dev.yokai.core.migration.migrations.migrations
 import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
+import eu.kanade.tachiyomi.core.preference.Preference
+import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.coil.BufferedSourceFetcher
 import eu.kanade.tachiyomi.data.coil.CoilDiskCache
 import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
@@ -154,6 +158,34 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
                 }
             }
             .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
+
+        initializeMigrator()
+    }
+
+    private fun initializeMigrator() {
+        val preferenceStore = Injekt.get<PreferenceStore>()
+
+        val preference = preferenceStore.getInt(
+            Preference.appStateKey("last_version_code"),
+            0,
+        )
+        // TODO: Remove later
+        val old = preferenceStore.getInt("last_version_code", -1)
+        if (old.get() >= preference.get()) {
+            preference.set(old.get())
+            old.delete()
+        }
+
+        Logger.i { "Migration from ${preference.get()} to ${BuildConfig.VERSION_CODE}" }
+        Migrator.initialize(
+            old = preference.get(),
+            new = BuildConfig.VERSION_CODE,
+            migrations = migrations,
+            onMigrationComplete = {
+                Logger.i { "Updating last version to ${BuildConfig.VERSION_CODE}" }
+                preference.set(BuildConfig.VERSION_CODE)
+            },
+        )
     }
 
     override fun onPause(owner: LifecycleOwner) {

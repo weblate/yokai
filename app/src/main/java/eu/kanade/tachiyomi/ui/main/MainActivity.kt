@@ -67,11 +67,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Ints.max
+import dev.yokai.core.migration.Migrator
 import dev.yokai.domain.base.BasePreferences
 import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import dev.yokai.presentation.onboarding.OnboardingController
 import eu.kanade.tachiyomi.BuildConfig
-import eu.kanade.tachiyomi.Migrations
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadJob
@@ -142,9 +142,22 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.distinct
+import kotlin.collections.filterNotNull
+import kotlin.collections.firstOrNull
+import kotlin.collections.forEach
+import kotlin.collections.forEachIndexed
+import kotlin.collections.lastOrNull
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.maxByOrNull
+import kotlin.collections.orEmpty
+import kotlin.collections.plus
+import kotlin.collections.set
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToLong
@@ -442,8 +455,10 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             // Reset Incognito Mode on relaunch
             preferences.incognitoMode().set(false)
 
+            val didMigration = Migrator.awaitAndRelease()
+
             // Show changelog if needed
-            if (Migrations.upgrade(preferences, Injekt.get(), lifecycleScope)) {
+            if (didMigration) {
                 if (!BuildConfig.DEBUG) {
                     content.post {
                         whatsNewSheet().show()

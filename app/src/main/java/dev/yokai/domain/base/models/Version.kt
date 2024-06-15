@@ -18,16 +18,19 @@ data class Version(
             throw IllegalArgumentException("Can't compare two different version type")
         }
 
-        return when {
-            major > other.major ||
-            minor > other.minor ||
-            patch > other.patch ||
-            hotfix > other.hotfix ||
-            build > other.build ||
-            stage.weight > other.stage.weight
-                -> 1
-            else -> 0
-        }
+        // On nightly we only care about build number
+        if (type == Type.NIGHTLY) return build.compareTo(other.build)
+
+        var rt = (major.compareTo(other.major) +
+            minor.compareTo(other.minor) +
+            patch.compareTo(other.patch) +
+            hotfix.compareTo(other.hotfix)).compareTo(0)
+        // if semver is equals, check version stage (release (3) > beta (2) > alpha (1))
+        if (rt == 0) rt = stage.weight.compareTo(other.stage.weight)
+        // if stage is also equals, we compare build number
+        if (rt == 0) rt = build.compareTo(other.build)
+
+        return rt
     }
 
     override fun toString(): String {

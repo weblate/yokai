@@ -44,6 +44,7 @@ class AppUpdateCheckerTest {
     @Test
     fun `Check new beta version`() {
         assertFalse(isNewVersion("1.2.3-b1", "1.2.3-b2"))
+        assertFalse(isNewVersion("1.2.2-b3", "1.2.3-b2"))
         assertTrue(isNewVersion("1.2.3-b3", "1.2.3-b2"))
         assertTrue(isNewVersion("1.2.4-b1", "1.2.3-b1"))
     }
@@ -52,12 +53,19 @@ class AppUpdateCheckerTest {
     fun `Beta should get Prod build`() {
         assertTrue(isNewVersion("1.2.4", "1.2.3-b2"))
         assertTrue(isNewVersion("1.2.3", "1.2.3-b2"))
+        assertFalse(isNewVersion("1.2.2", "1.2.3-b2"))
     }
 
     @Test
     fun `Prod should get latest Prod build`() {
+        assertFalse(isNewVersion("1.2.1", "1.2.2"))
+        assertFalse(isNewVersion("1.2.2.1", "1.2.3"))
+        assertFalse(isNewVersion("1.2.3", "1.2.3.1"))
+        assertFalse(isNewVersion("1.2.3.1", "1.2.3.2"))
+
         assertTrue(isNewVersion("1.2.4", "1.2.3"))
         assertTrue(isNewVersion("1.2.4.1", "1.2.4"))
+        assertTrue(isNewVersion("1.2.4.2", "1.2.4.1"))
     }
 
     @Test
@@ -73,6 +81,7 @@ class AppUpdateCheckerTest {
     @Test
     fun `Latest version check`() {
         assertFalse(isNewVersion("1.2.3", "1.2.3"))
+        assertFalse(isNewVersion("1.2.3.1", "1.2.3.1"))
         assertFalse(isNewVersion("1.2.3-r1", "1.2.3-r1"))
 
         assertFalse(isNewVersion("1.2.3-r1", "1.2.3-r1"))

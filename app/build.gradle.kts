@@ -302,6 +302,7 @@ dependencies {
     testImplementation(libs.bundles.test)
     testRuntimeOnly(libs.bundles.test.runtime)
     androidTestImplementation(libs.bundles.test.android)
+    testImplementation(kotlinx.coroutines.test)
 }
 
 tasks {

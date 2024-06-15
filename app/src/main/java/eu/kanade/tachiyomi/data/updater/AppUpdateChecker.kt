@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.updater
 import android.content.Context
 import android.os.Build
 import androidx.annotation.VisibleForTesting
+import dev.yokai.domain.base.models.Version
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.GET
@@ -14,8 +15,8 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Date
-import java.util.concurrent.TimeUnit
+import java.util.*
+import java.util.concurrent.*
 
 class AppUpdateChecker(
     private val json: Json = Injekt.get(),
@@ -87,45 +88,12 @@ class AppUpdateChecker(
     }
 
     @VisibleForTesting
-    fun isNewVersion(versionTag: String, currentVersion: String = BuildConfig.VERSION_NAME, isNightly: Boolean = BuildConfig.NIGHTLY): Boolean {
-        // Removes prefixes like "r" or "v"
-        val newVersion = versionTag.replace("[^\\d.-]".toRegex(), "")
-        val oldVersion = currentVersion.replace("[^\\d.-]".toRegex(), "")
-        val newPreReleaseVer = newVersion.split("-")
-        val oldPreReleaseVer = oldVersion.split("-")
-        val newSemVer = newPreReleaseVer.first().split(".").map { it.toInt() }
-        val isNewVersionNightly = newSemVer.size == 1 || (newPreReleaseVer.size > 1 && newPreReleaseVer[1].startsWith("r"))
-        val oldSemVer = oldPreReleaseVer.first().split(".").map { it.toInt() }
-
-        oldSemVer.mapIndexed { index, i ->
-            if (!isNewVersionNightly && !isNightly && newSemVer.getOrElse(index) { i } > i) {
-                return true
-            } else if (newSemVer.getOrElse(index) { i } < i) {
-                return false
-            }
-        }
-        // For cases of extreme patch versions (new: 1.2.3.1 vs old: 1.2.3, return true)
-        return if (newSemVer.size > oldSemVer.size && !isNewVersionNightly && !isNightly) {
-            true
-        } else if (newSemVer.size < oldSemVer.size && !isNewVersionNightly) {
+    fun isNewVersion(newVersion: String, currentVersion: String = BuildConfig.VERSION_NAME): Boolean =
+        try {
+            Version.parse(newVersion) > Version.parse(currentVersion)
+        } catch (e: IllegalArgumentException) {
             false
-        } else {
-            // If the version numbers match, check the beta versions
-            val newPreVersion =
-                newPreReleaseVer.getOrNull(if (newPreReleaseVer.size > 1) 1 else 0)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
-            val oldPreVersion =
-                oldPreReleaseVer.getOrNull(1)?.replace("[^\\d.-]".toRegex(), "")?.toIntOrNull()
-            when {
-                // For prod, don't bother with betas (current: 1.2.3 vs new: 1.2.3-b1)
-                oldPreVersion == null && !isNightly -> false
-                // For betas, always use prod builds (current: 1.2.3-b1 vs new: 1.2.3)
-                // For nightly, don't use prod builds
-                newPreVersion == null -> !isNightly
-                // For nightly, higher beta ver is newer (current: 1.2.3-b1 vs new: 1.2.3-b2 or r2)
-                else -> (oldPreVersion ?: 0) < newPreVersion
-            }
         }
-    }
 }
 
 val RELEASE_TAG: String by lazy {

@@ -4,7 +4,8 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.NetworkHelper
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -22,55 +23,63 @@ class AppUpdateCheckerTest {
 
     @Test
     fun `Check new nightly version (Tachi format)`() {
-        assertTrue(isNewVersion("1.2.3-r2", "1.2.3-r1", true))  // tachi format
-        assertTrue(isNewVersion("1.2.4-r1", "1.2.3", true))  // Unlikely to happened, but we should try anyway
+        assertTrue(isNewVersion("1.2.3-r2", "1.2.3-r1"))  // tachi format
+        assertFalse(isNewVersion("1.2.4-r1", "1.2.3"))  // Unlikely to happened, but we should try anyway
     }
 
     @Test
     fun `Check new nightly version (Yokai format)`() {
-        assertTrue(isNewVersion("r2", "1.2.3-r1", true))  // yokai format
+        assertTrue(isNewVersion("r2", "1.2.3-r1"))  // yokai format
+        assertFalse(isNewVersion("r1", "1.2.3"))  // Unlikely to happened, but we should try anyway
     }
 
     @Test
     fun `Nightly shouldn't get Prod build`() {
-        assertFalse(isNewVersion("1.2.3", "1.2.3-r2", true))
-        assertFalse(isNewVersion("1.2.4", "1.2.3-r2", true))
-        assertFalse(isNewVersion("1.2.4", "1.2.3", true))
-        assertFalse(isNewVersion("1.2.4.1", "1.2.4-r2", true))
+        assertFalse(isNewVersion("1.2.3", "1.2.3-r2"))
+        assertFalse(isNewVersion("1.2.4", "1.2.3-r2"))
+        assertFalse(isNewVersion("1.2.4", "1.2.3-r0"))
+        assertFalse(isNewVersion("1.2.4.1", "1.2.4-r2"))
+    }
+
+    @Test
+    fun `Check new beta version`() {
+        assertFalse(isNewVersion("1.2.3-b1", "1.2.3-b2"))
+        assertTrue(isNewVersion("1.2.3-b3", "1.2.3-b2"))
+        assertTrue(isNewVersion("1.2.4-b1", "1.2.3-b1"))
     }
 
     @Test
     fun `Beta should get Prod build`() {
-        assertTrue(isNewVersion("1.2.4", "1.2.3-r2", false))
-        assertTrue(isNewVersion("1.2.3", "1.2.3-r2", false))
+        assertTrue(isNewVersion("1.2.4", "1.2.3-b2"))
+        assertTrue(isNewVersion("1.2.3", "1.2.3-b2"))
     }
 
     @Test
     fun `Prod should get latest Prod build`() {
-        assertTrue(isNewVersion("1.2.4", "1.2.3", false))
-        assertTrue(isNewVersion("1.2.4.1", "1.2.4", false))
+        assertTrue(isNewVersion("1.2.4", "1.2.3"))
+        assertTrue(isNewVersion("1.2.4.1", "1.2.4"))
     }
 
     @Test
     fun `Prod should get latest Prod build (Check for Betas)`() {
-        assertTrue(isNewVersion("1.2.4-r1", "1.2.3", false))
+        assertTrue(isNewVersion("1.2.4-b1", "1.2.3"))
     }
 
     @Test
     fun `Prod shouldn't get nightly build (Check for Betas)`() {
-        assertFalse(isNewVersion("r1", "1.2.3", false))
+        assertFalse(isNewVersion("r1", "1.2.3"))
     }
 
     @Test
     fun `Latest version check`() {
-        assertFalse(isNewVersion("1.2.3", "1.2.3", false))
-        assertFalse(isNewVersion("1.2.3-r1", "1.2.3-r1", false))
+        assertFalse(isNewVersion("1.2.3", "1.2.3"))
+        assertFalse(isNewVersion("1.2.3-r1", "1.2.3-r1"))
 
-        assertFalse(isNewVersion("1.2.3-r1", "1.2.3-r1", true))
-        assertFalse(isNewVersion("r1", "1.2.4-r1", true))
+        assertFalse(isNewVersion("1.2.3-r1", "1.2.3-r1"))
+        assertFalse(isNewVersion("r1", "1.2.4-r1"))
     }
 
-    private fun isNewVersion(newVersion: String, currentVersion: String, isNightly: Boolean): Boolean {
-        return appUpdateChecker.isNewVersion(newVersion, currentVersion, isNightly)
+    private fun isNewVersion(newVersion: String, currentVersion: String): Boolean {
+        return appUpdateChecker.isNewVersion(newVersion, currentVersion)
     }
 }

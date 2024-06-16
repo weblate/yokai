@@ -5,11 +5,13 @@ import androidx.core.content.ContextCompat
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dev.yokai.data.AndroidDatabaseHandler
 import dev.yokai.data.DatabaseHandler
 import dev.yokai.domain.SplashState
-import dev.yokai.domain.extension.interactor.TrustExtension
 import dev.yokai.domain.storage.StorageManager
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -89,7 +91,23 @@ class AppModule(val app: Application) : InjektModule {
 
         addSingletonFactory { CoverCache(app) }
 
-        addSingletonFactory { NetworkHelper(app) }
+        addSingletonFactory {
+            NetworkHelper(
+                app,
+                get(),
+            ) { builder ->
+                if (BuildConfig.DEBUG) {
+                    builder.addInterceptor(
+                        ChuckerInterceptor.Builder(app)
+                            .collector(ChuckerCollector(app))
+                            .maxContentLength(250000L)
+                            .redactHeaders(emptySet())
+                            .alwaysReadResponseBody(false)
+                            .build(),
+                    )
+                }
+            }
+        }
 
         addSingletonFactory { JavaScriptEngine(app) }
 

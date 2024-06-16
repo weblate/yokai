@@ -27,5 +27,13 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "Yokai"
 include(":app")
+include(":core")
+include(":domain")
+include(":i18n")
+include(":presentation-core")
+include(":presentation-widget")
+include(":source-api")

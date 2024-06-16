@@ -17,14 +17,11 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.TypedValue
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
@@ -53,26 +50,6 @@ import java.util.*
 import kotlin.math.max
 
 private const val TABLET_UI_MIN_SCREEN_WIDTH_DP = 720
-
-/**
- * Display a toast in this context.
- *
- * @param resource the text resource.
- * @param duration the duration of the toast. Defaults to short.
- */
-fun Context.toast(@StringRes resource: Int, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, resource, duration).show()
-}
-
-/**
- * Display a toast in this context.
- *
- * @param text the text to display.
- * @param duration the duration of the toast. Defaults to short.
- */
-fun Context.toast(text: String?, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, text.orEmpty(), duration).show()
-}
 
 /**
  * Helper method to create a notification.
@@ -124,30 +101,6 @@ fun Context.contextCompatColor(@ColorRes resource: Int): Int {
 fun Context.contextCompatDrawable(@DrawableRes resource: Int): Drawable? {
     return ContextCompat.getDrawable(this, resource)
 }
-
-/**
- * Converts to dp.
- */
-val Int.pxToDp: Int
-    get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-
-val Float.pxToDp: Float
-    get() = (this / Resources.getSystem().displayMetrics.density)
-
-/**
- * Converts to px.
- */
-val Int.dpToPx: Int
-    get() = this.toFloat().dpToPx.toInt()
-
-val Int.spToPx: Int
-    get() = this.toFloat().spToPx.toInt()
-
-val Float.spToPx: Float
-    get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this, Resources.getSystem().displayMetrics)
-
-val Float.dpToPx: Float
-    get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, Resources.getSystem().displayMetrics)
 
 /** Converts to px and takes into account LTR/RTL layout */
 fun Float.dpToPxEnd(resources: Resources): Float {

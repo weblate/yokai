@@ -20,7 +20,7 @@ import dev.yokai.presentation.component.preference.widget.SliderPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.SwitchPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.TextPreferenceWidget
 import dev.yokai.presentation.component.preference.widget.TrackingPreferenceWidget
-import eu.kanade.tachiyomi.core.preference.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt

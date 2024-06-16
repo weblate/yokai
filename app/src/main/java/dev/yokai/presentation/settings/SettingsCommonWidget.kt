@@ -21,7 +21,7 @@ import dev.yokai.presentation.component.Gap
 import dev.yokai.presentation.component.preference.Preference
 import dev.yokai.presentation.component.preference.PreferenceItem
 import dev.yokai.presentation.component.preference.widget.PreferenceGroupHeader
-import eu.kanade.tachiyomi.core.preference.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress

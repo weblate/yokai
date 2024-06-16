@@ -22,14 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import com.google.android.material.color.DynamicColors
 import dev.yokai.presentation.component.ThemeItem
 import dev.yokai.presentation.theme.Size
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.core.preference.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.Themes
 import eu.kanade.tachiyomi.util.system.appDelegateNightMode

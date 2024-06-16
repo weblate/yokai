@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.core.preference.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 
 @Composable
 fun storageLocationText(

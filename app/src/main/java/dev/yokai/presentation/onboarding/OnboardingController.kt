@@ -4,7 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import dev.yokai.domain.base.BasePreferences
-import eu.kanade.tachiyomi.core.preference.collectAsState
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import uy.kohesive.injekt.injectLazy
 

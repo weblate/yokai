@@ -4,6 +4,7 @@ import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.view.View
 import eu.kanade.tachiyomi.databinding.MigrationSourceItemBinding
 import eu.kanade.tachiyomi.source.icon
+import eu.kanade.tachiyomi.source.nameBasedOnEnabledLanguages
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 

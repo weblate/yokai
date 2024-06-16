@@ -23,12 +23,6 @@ kotlin {
 
 android {
     namespace = "yokai.i18n"
-
-    sourceSets {
-        named("main") {
-            res.srcDir("src/commonMain/moko-resources")
-        }
-    }
 }
 
 multiplatformResources {

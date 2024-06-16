@@ -15,7 +15,6 @@ import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.ui.extension.ExtensionIntallInfo
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CoroutineScope
@@ -155,7 +154,7 @@ class ExtensionManager(
         val extensions: List<Extension.Available> = try {
             api.findExtensions()
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Failed to find available extensions" }
             emptyList()
         }
 

@@ -1,4 +1,4 @@
-package yokai.presentation.widget.components
+package eu.kanade.tachiyomi.appwidget.components
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable

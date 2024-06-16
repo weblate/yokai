@@ -1,4 +1,4 @@
-package yokai.presentation.widget
+package eu.kanade.tachiyomi.appwidget
 
 import android.app.Application
 import android.content.Context

@@ -1,4 +1,4 @@
-package yokai.presentation.widget.util
+package eu.kanade.tachiyomi.appwidget.util
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable

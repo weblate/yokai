@@ -1,7 +1,8 @@
-package yokai.presentation.widget
+package eu.kanade.tachiyomi.appwidget
 
 import android.content.Context
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import eu.kanade.tachiyomi.appwidget.UpdatesGridGlanceWidget
 
 class TachiyomiWidgetManager {
 

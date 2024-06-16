@@ -1,4 +1,4 @@
-package yokai.presentation.widget.components
+package eu.kanade.tachiyomi.appwidget.components
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -17,17 +17,16 @@ import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.appwidget.ContainerModifier
 import eu.kanade.tachiyomi.appwidget.util.calculateRowAndColumnCount
 import eu.kanade.tachiyomi.appwidget.util.stringResource
-import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.main.SearchActivity
 
 @Composable
 fun UpdatesWidget(data: List<Pair<Long, Bitmap?>>?) {
     val (rowCount, columnCount) = LocalSize.current.calculateRowAndColumnCount()
-    val mainIntent = Intent(LocalContext.current, MainActivity::class.java).setAction(MainActivity.SHORTCUT_RECENTS)
+    val clazz = Class.forName("eu.kanade.tachiyomi.ui.main.MainActivity")
+    val mainIntent = Intent(LocalContext.current, clazz).setAction("eu.kanade.tachiyomi.SHOW_RECENTS")
         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
     Column(
         modifier = ContainerModifier.clickable(actionStartActivity(mainIntent)),

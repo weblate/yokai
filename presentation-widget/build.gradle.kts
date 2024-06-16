@@ -21,9 +21,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":domain"))
-    implementation(project(":presentation-core"))
+    implementation(projects.core)
+    implementation(projects.domain)
+    implementation(projects.presentationCore)
 
     implementation(androidx.glance.appwidget)
 

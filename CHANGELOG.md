@@ -18,11 +18,13 @@
 
 ## Other
 - Some code refactors
+  - Simplify some messy code
+  - Rewrite version checker
+  - Rewrite Migrator
+  - Split the project into several modules
 - Update firebase bom to v33.1.0
 - Update dependency co.touchlab:kermit-crashlytics to v3.9.0
 - Update dependency com.google.android.gms:play-services-oss-licenses to v17.1.0
 - Update dependency com.google.gms:google-services to v4.4.2
 - Add crashlytics integration for Kermit
 - Replace ProgressBar with ProgressIndicator from Material3 to improve UI consistency
-- Rewrite version checker
-- Rewrite Migrator

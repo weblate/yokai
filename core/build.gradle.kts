@@ -21,8 +21,7 @@ kotlin {
                 api(libs.okhttp.brotli)
                 api(libs.okio)
 
-                api(androidx.core)
-                api(androidx.annotation)
+                api(androidx.preference)
                 api(libs.rxjava)
                 api(project.dependencies.enforcedPlatform(kotlinx.coroutines.bom))
                 api(kotlinx.coroutines.core)

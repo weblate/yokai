@@ -2,8 +2,6 @@ package eu.kanade.tachiyomi.core.preference
 
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
@@ -154,7 +152,6 @@ sealed class AndroidPreference<T>(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     class StringSetPrimitive(
         preferences: SharedPreferences,
         keyFlow: Flow<String?>,

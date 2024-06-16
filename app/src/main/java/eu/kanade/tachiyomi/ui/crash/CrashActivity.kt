@@ -17,6 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import dev.yokai.presentation.onboarding.InfoScreen
+import dev.yokai.presentation.theme.Size
+import dev.yokai.presentation.theme.YokaiTheme
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.main.MainActivity
@@ -24,9 +27,6 @@ import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.system.setThemeByPref
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
-import yokai.presentation.onboarding.InfoScreen
-import yokai.presentation.theme.Size
-import yokai.presentation.theme.YokaiTheme
 
 class CrashActivity : AppCompatActivity() {
     internal val preferences: PreferencesHelper by injectLazy()

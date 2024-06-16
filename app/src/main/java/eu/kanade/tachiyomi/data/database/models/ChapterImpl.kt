@@ -1,18 +1,5 @@
 package eu.kanade.tachiyomi.data.database.models
 
-import eu.kanade.tachiyomi.source.model.SChapter
-
-fun SChapter.toChapter(): ChapterImpl {
-    return ChapterImpl().apply {
-        name = this@SChapter.name
-        url = this@SChapter.url
-        date_upload = this@SChapter.date_upload
-        chapter_number = this@SChapter.chapter_number
-        scanlator = this@SChapter.scanlator
-    }
-}
-
-
 class ChapterImpl : Chapter {
 
     override var id: Long? = null

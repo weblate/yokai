@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.ui.library
 import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.View
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
@@ -17,8 +18,7 @@ import eu.kanade.tachiyomi.util.system.timeSpanFromNow
 import eu.kanade.tachiyomi.util.system.withDefContext
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.ui.UiPreferences
-import java.util.*
+import java.util.Locale
 
 /**
  * Adapter storing a list of manga in a certain category.

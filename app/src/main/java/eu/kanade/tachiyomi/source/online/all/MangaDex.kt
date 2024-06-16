@@ -4,7 +4,6 @@ import android.net.Uri
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.database.models.toChapter
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.await
@@ -20,7 +19,7 @@ import okhttp3.CacheControl
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import java.util.*
+import java.util.Locale
 
 class MangaDex : DelegatedHttpSource() {
 

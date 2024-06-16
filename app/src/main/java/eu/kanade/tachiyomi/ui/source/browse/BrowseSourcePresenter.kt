@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.ui.source.browse
 
 import co.touchlab.kermit.Logger
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -39,7 +40,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import yokai.domain.ui.UiPreferences
 
 /**
  * Presenter of [BrowseSourceController].

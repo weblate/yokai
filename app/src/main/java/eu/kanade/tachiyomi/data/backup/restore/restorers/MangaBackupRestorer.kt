@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.backup.restore.restorers
 
+import dev.yokai.domain.library.custom.model.CustomMangaInfo
 import eu.kanade.tachiyomi.data.backup.models.BackupCategory
 import eu.kanade.tachiyomi.data.backup.models.BackupHistory
 import eu.kanade.tachiyomi.data.backup.models.BackupManga
@@ -17,7 +18,6 @@ import eu.kanade.tachiyomi.util.manga.MangaUtil
 import eu.kanade.tachiyomi.util.system.launchNow
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import yokai.domain.library.custom.model.CustomMangaInfo
 import kotlin.math.max
 
 class MangaBackupRestorer(

@@ -39,9 +39,14 @@ val buildTime: String by lazy {
 val supportedAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 
 android {
+    compileSdk = AndroidConfig.compileSdk
+    ndkVersion = AndroidConfig.ndk
+
     defaultConfig {
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
         applicationId = "eu.kanade.tachiyomi"
-        versionCode = 137
+        versionCode = 136
         versionName = "1.8.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
@@ -140,6 +145,14 @@ android {
         kotlinCompilerExtensionVersion = compose.versions.compose.compiler.get()
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     namespace = "eu.kanade.tachiyomi"
 
     sqldelight {
@@ -154,10 +167,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
-    implementation(projects.i18n)
-    implementation(projects.sourceApi)
-
     // Compose
     implementation(compose.bundles.compose)
     debugImplementation(compose.ui.tooling)
@@ -271,8 +280,8 @@ dependencies {
 
     implementation(kotlin("stdlib", org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION))
 
-    implementation(platform(kotlinx.coroutines.bom))
-    implementation(kotlinx.bundles.coroutines)
+    implementation(kotlinx.coroutines.core)
+    implementation(kotlinx.coroutines.android)
 
     // Text distance
     implementation(libs.java.string.similarity)
@@ -287,6 +296,8 @@ dependencies {
 
     implementation(kotlinx.immutable)
 
+    "coreLibraryDesugaring"(libs.desugar)
+
     // Tests
     testImplementation(libs.bundles.test)
     testRuntimeOnly(libs.bundles.test.runtime)
@@ -295,6 +306,13 @@ dependencies {
 }
 
 tasks {
+    withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
+
     // See https://kotlinlang.org/docs/reference/experimental.html#experimental-status-of-experimental-api(-markers)
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.freeCompilerArgs += listOf(

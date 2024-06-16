@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
+import dev.yokai.domain.chapter.interactor.GetChapters
+import dev.yokai.domain.download.DownloadPreferences
+import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -73,11 +76,8 @@ import rx.schedulers.Schedulers
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.chapter.interactor.GetChapters
-import yokai.domain.download.DownloadPreferences
-import yokai.domain.storage.StorageManager
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.CancellationException
 
 /**
  * Presenter used by the activity to perform background operations.

@@ -2,6 +2,8 @@ package eu.kanade.tachiyomi.ui.recents
 
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
+import dev.yokai.domain.recents.RecentsPreferences
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -14,12 +16,10 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.recents.RecentsPreferences
-import yokai.domain.ui.UiPreferences
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class RecentMangaAdapter(val delegate: RecentsInterface) :
     BaseChapterAdapter<IFlexible<*>>(delegate) {

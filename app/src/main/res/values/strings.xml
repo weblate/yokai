@@ -1116,6 +1116,12 @@
     <string name="file_picker_error">No file picker app found</string>
     <string name="file_picker_uri_permission_unsupported">Failed to acquire persistent folder access. The app may behave unexpectedly.</string>
 
+    <!-- Webview -->
+    <string name="failed_to_bypass_cloudflare">Failed to bypass Cloudflare</string>
+    <string name="please_update_webview">Please update the WebView app for better compatibility</string>
+    <!-- Do not translate "WebView" -->
+    <string name="webview_is_required">WebView is required for Tachiyomi</string>
+
     <!-- App widget -->
     <string name="appwidget_updates_description">See your recently updated library entries</string>
     <string name="appwidget_unavailable_locked">Widget not available when app lock is enabled</string>

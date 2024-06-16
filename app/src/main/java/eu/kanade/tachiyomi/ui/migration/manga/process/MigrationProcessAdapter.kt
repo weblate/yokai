@@ -1,6 +1,8 @@
 package eu.kanade.tachiyomi.ui.migration.manga.process
 
 import android.view.MenuItem
+import dev.yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -22,9 +24,7 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
-import yokai.domain.ui.UiPreferences
-import java.util.*
+import java.util.Date
 
 class MigrationProcessAdapter(
     val controller: MigrationListController,

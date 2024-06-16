@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.updater
 import android.content.Context
 import android.os.Build
 import androidx.annotation.VisibleForTesting
+import dev.yokai.domain.base.models.Version
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.GET
@@ -14,7 +15,6 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import yokai.domain.base.models.Version
 import java.util.*
 import java.util.concurrent.*
 

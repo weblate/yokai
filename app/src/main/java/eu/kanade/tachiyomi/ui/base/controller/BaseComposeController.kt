@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import yokai.presentation.theme.YokaiTheme
+import dev.yokai.presentation.theme.YokaiTheme
 
 abstract class BaseComposeController(bundle: Bundle? = null) :
     BaseController(bundle) {

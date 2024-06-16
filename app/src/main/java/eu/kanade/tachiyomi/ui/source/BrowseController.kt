@@ -23,6 +23,9 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
+import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
@@ -68,10 +71,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.parcelize.Parcelize
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.base.BasePreferences
-import yokai.domain.base.BasePreferences.ExtensionInstaller
-import yokai.presentation.extension.repo.ExtensionRepoController
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import kotlin.math.max
 
 /**

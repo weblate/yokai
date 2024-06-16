@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
+import dev.yokai.domain.chapter.interactor.GetChapters
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -29,7 +30,6 @@ import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.chapter.interactor.GetChapters
 
 class SearchActivity : MainActivity() {
     private val getChapters: GetChapters by injectLazy()

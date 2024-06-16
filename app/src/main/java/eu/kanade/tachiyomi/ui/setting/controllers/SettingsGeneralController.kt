@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceScreen
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
@@ -29,8 +30,7 @@ import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import eu.kanade.tachiyomi.util.system.systemLangContext
-import yokai.domain.base.BasePreferences
-import java.util.*
+import java.util.Locale
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsGeneralController : SettingsLegacyController() {

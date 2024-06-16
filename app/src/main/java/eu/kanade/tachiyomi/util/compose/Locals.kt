@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
-import yokai.domain.ComposableAlertDialog
+import dev.yokai.domain.ComposableAlertDialog
 
 val <T> ProvidableCompositionLocal<T?>.currentOrThrow
     @Composable

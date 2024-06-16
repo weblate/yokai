@@ -1,5 +1,8 @@
 package eu.kanade.tachiyomi.ui.library
 
+import dev.yokai.domain.chapter.interactor.GetChapters
+import dev.yokai.domain.manga.interactor.GetLibraryManga
+import dev.yokai.util.isLewd
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
@@ -54,11 +57,8 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.chapter.interactor.GetChapters
-import yokai.domain.manga.interactor.GetLibraryManga
-import yokai.util.isLewd
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 import kotlin.random.Random
 

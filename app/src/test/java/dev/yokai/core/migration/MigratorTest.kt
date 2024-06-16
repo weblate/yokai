@@ -1,4 +1,4 @@
-package yokai.core.migration
+package dev.yokai.core.migration
 
 import io.mockk.slot
 import io.mockk.spyk

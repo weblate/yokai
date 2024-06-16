@@ -18,6 +18,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import dev.yokai.domain.base.BasePreferences
+import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -37,8 +39,6 @@ import rikka.shizuku.Shizuku
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.base.BasePreferences
-import yokai.domain.base.BasePreferences.ExtensionInstaller
 import java.util.concurrent.*
 
 class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParameters) :

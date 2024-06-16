@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.updatePaddingRelative
+import dev.yokai.presentation.theme.YokaiTheme
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
@@ -23,7 +24,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import yokai.presentation.theme.YokaiTheme
 
 /**
  * View of the ViewPager that contains a chapter transition.

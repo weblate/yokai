@@ -11,6 +11,7 @@ import eu.kanade.tachiyomi.core.preference.getEnum
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.extension.model.InstalledExtensionsOrder
+import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.ui.library.LibraryItem
 import eu.kanade.tachiyomi.ui.library.filter.FilterBottomSheet
 import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
@@ -399,6 +400,10 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     fun themeMangaDetails() = prefs.getBoolean(Keys.themeMangaDetails, true)
 
     fun useLargeToolbar() = preferenceStore.getBoolean("use_large_toolbar", true)
+
+    fun dohProvider() = prefs.getInt(Keys.dohProvider, -1)
+
+    fun defaultUserAgent() = preferenceStore.getString("default_user_agent", NetworkHelper.DEFAULT_USER_AGENT)
 
     fun showSeriesInShortcuts() = prefs.getBoolean(Keys.showSeriesInShortcuts, true)
     fun showSourcesInShortcuts() = prefs.getBoolean(Keys.showSourcesInShortcuts, true)

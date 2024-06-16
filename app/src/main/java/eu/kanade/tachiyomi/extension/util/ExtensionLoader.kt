@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 import co.touchlab.kermit.Logger
 import dalvik.system.PathClassLoader
+import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -22,7 +23,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.extension.interactor.TrustExtension
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes

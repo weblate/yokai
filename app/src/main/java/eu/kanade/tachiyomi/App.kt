@@ -34,6 +34,13 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import dev.yokai.core.CrashlyticsLogWriter
+import dev.yokai.core.di.AppModule
+import dev.yokai.core.di.DomainModule
+import dev.yokai.core.di.PreferenceModule
+import dev.yokai.core.migration.Migrator
+import dev.yokai.core.migration.migrations.migrations
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
@@ -60,13 +67,6 @@ import org.conscrypt.Conscrypt
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.core.CrashlyticsLogWriter
-import yokai.core.di.AppModule
-import yokai.core.di.DomainModule
-import yokai.core.di.PreferenceModule
-import yokai.core.migration.Migrator
-import yokai.core.migration.migrations.migrations
-import yokai.domain.base.BasePreferences
 import java.security.Security
 
 open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factory {

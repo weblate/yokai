@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- WebView -->
-    <string name="failed_to_bypass_cloudflare">Failed to bypass Cloudflare</string>
-    <!-- Do not translate "WebView" -->
-    <string name="please_update_webview">Please update the WebView app for better compatibility</string>
-    <string name="webview_is_required">WebView is required for Tachiyomi</string>
-</resources>

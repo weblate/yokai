@@ -17,8 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isVisible
-import yokai.presentation.component.CombinedCircularProgressIndicator
-import yokai.presentation.theme.YokaiTheme
+import dev.yokai.presentation.component.CombinedCircularProgressIndicator
+import dev.yokai.presentation.theme.YokaiTheme
 
 /**
  * A custom progress bar that always rotates while being determinate. By always rotating we give

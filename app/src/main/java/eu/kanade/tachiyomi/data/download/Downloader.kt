@@ -6,6 +6,10 @@ import android.os.Looper
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import com.jakewharton.rxrelay.PublishRelay
+import dev.yokai.core.metadata.COMIC_INFO_FILE
+import dev.yokai.core.metadata.ComicInfo
+import dev.yokai.core.metadata.getComicInfo
+import dev.yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -48,13 +52,11 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import uy.kohesive.injekt.injectLazy
-import yokai.core.metadata.COMIC_INFO_FILE
-import yokai.core.metadata.ComicInfo
-import yokai.core.metadata.getComicInfo
-import yokai.domain.download.DownloadPreferences
 import java.io.BufferedOutputStream
 import java.io.File
-import java.util.zip.*
+import java.util.zip.CRC32
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 /**
  * This class is the one in charge of downloading chapters.

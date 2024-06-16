@@ -51,6 +51,7 @@ import com.bluelinelabs.conductor.ControllerChangeType
 import com.github.florent37.viewtooltip.ViewTooltip
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -129,8 +130,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import yokai.domain.ui.UiPreferences
-import java.util.*
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt

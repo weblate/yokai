@@ -1,6 +1,8 @@
 package eu.kanade.tachiyomi.ui.reader.viewer.pager
 
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import dev.yokai.domain.ui.settings.ReaderPreferences
+import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.reader.settings.PageLayout
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerConfig
@@ -10,14 +12,13 @@ import eu.kanade.tachiyomi.ui.reader.viewer.navigation.EdgeNavigation
 import eu.kanade.tachiyomi.ui.reader.viewer.navigation.KindlishNavigation
 import eu.kanade.tachiyomi.ui.reader.viewer.navigation.LNavigation
 import eu.kanade.tachiyomi.ui.reader.viewer.navigation.RightAndLeftNavigation
+import eu.kanade.tachiyomi.util.system.DeviceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import yokai.domain.ui.settings.ReaderPreferences
-import yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 
 /**
  * Configuration used by pager viewers.

@@ -12,6 +12,7 @@ import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import co.touchlab.kermit.Logger
+import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.ShizukuInstaller
@@ -46,7 +47,6 @@ import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.base.BasePreferences
 import java.io.File
 
 /**

@@ -11,6 +11,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
+import dev.yokai.presentation.theme.YokaiTheme
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
@@ -20,7 +21,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import yokai.presentation.theme.YokaiTheme
 
 /**
  * Holder of the webtoon viewer that contains a chapter transition.

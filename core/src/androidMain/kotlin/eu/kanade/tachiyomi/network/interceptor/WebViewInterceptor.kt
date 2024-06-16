@@ -5,7 +5,6 @@ import android.os.Build
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Toast
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.WebViewUtil
 import eu.kanade.tachiyomi.util.system.launchUI
@@ -15,6 +14,7 @@ import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import yokai.i18n.MR
 import java.util.*
 import java.util.concurrent.*
 
@@ -56,7 +56,7 @@ abstract class WebViewInterceptor(
 
         if (!WebViewUtil.supportsWebView(context)) {
             launchUI {
-                context.toast(R.string.webview_is_required, Toast.LENGTH_LONG)
+                context.toast(MR.strings.webview_is_required, Toast.LENGTH_LONG)
             }
             return response
         }

@@ -19,6 +19,7 @@ buildscript {
         classpath(kotlinx.serialization.gradle)
         classpath(libs.firebase.crashlytics.gradle)
         classpath(libs.sqldelight.gradle)
+        classpath(libs.moko.generator)
     }
     repositories {
         gradlePluginPortal()

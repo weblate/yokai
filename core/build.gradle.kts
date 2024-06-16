@@ -9,16 +9,18 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(libs.okhttp)
-                api(libs.okhttp.logging.interceptor)
-                api(libs.okhttp.dnsoverhttps)
-                api(libs.okhttp.brotli)
-                api(libs.okio)
+                implementation(projects.i18n)
                 api(libs.bundles.logging)
             }
         }
         val androidMain by getting {
             dependencies {
+                api(libs.okhttp)
+                api(libs.okhttp.logging.interceptor)
+                api(libs.okhttp.dnsoverhttps)
+                api(libs.okhttp.brotli)
+                api(libs.okio)
+
                 api(androidx.core)
                 api(androidx.annotation)
                 api(libs.rxjava)

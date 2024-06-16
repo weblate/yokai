@@ -155,6 +155,7 @@ android {
 
 dependencies {
     implementation(projects.core)
+    implementation(projects.i18n)
     implementation(projects.sourceApi)
 
     // Compose

@@ -51,28 +51,30 @@ interface Manga : SManga {
         get() = author == artist || artist.isNullOrBlank() ||
             author?.contains(artist ?: "", true) == true
 
-    fun copyFrom(other: Manga) {
-        if (other.author != null) {
-            author = other.originalAuthor
-        }
+    fun copyFrom(other: SManga) {
+        if (other is Manga) {
+            if (other.author != null) {
+                author = other.originalAuthor
+            }
 
-        if (other.artist != null) {
-            artist = other.originalArtist
-        }
+            if (other.artist != null) {
+                artist = other.originalArtist
+            }
 
-        if (other.description != null) {
-            description = other.originalDescription
-        }
+            if (other.description != null) {
+                description = other.originalDescription
+            }
 
-        if (other.genre != null) {
-            genre = other.originalGenre
-        }
+            if (other.genre != null) {
+                genre = other.originalGenre
+            }
 
-        if (other.thumbnail_url != null) {
-            thumbnail_url = other.thumbnail_url
-        }
+            if (other.thumbnail_url != null) {
+                thumbnail_url = other.thumbnail_url
+            }
 
-        status = other.originalStatus
+            status = other.originalStatus
+        }
 
         update_strategy = other.update_strategy
 

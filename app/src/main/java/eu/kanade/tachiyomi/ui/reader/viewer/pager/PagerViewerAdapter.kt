@@ -271,7 +271,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                         )
                         // Add a shifted page to the first place there isnt a full page
                         (fullPageBeforeIndex until items.size).forEach {
-                            if (items[it]?.fullPage == false) {
+                            if (items[it]?.fullPage != true) {
                                 items[it]?.shiftedPage = true
                                 return@loop
                             }

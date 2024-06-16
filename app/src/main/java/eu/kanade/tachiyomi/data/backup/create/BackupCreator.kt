@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
-import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.creators.CategoriesBackupCreator
@@ -22,6 +21,7 @@ import okio.sink
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.storage.StorageManager
 import java.io.FileOutputStream
 
 class BackupCreator(

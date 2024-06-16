@@ -9,12 +9,12 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import dev.yokai.domain.ui.UiPreferences
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.library.LibraryItem
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.pxToDp
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
+import yokai.domain.ui.UiPreferences
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow

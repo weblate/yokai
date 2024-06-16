@@ -1,8 +1,5 @@
 package eu.kanade.tachiyomi.data.backup.models
 
-import dev.yokai.core.metadata.ComicInfo
-import dev.yokai.core.metadata.ComicInfoPublishingStatus
-import dev.yokai.domain.library.custom.model.CustomMangaInfo
 import eu.kanade.tachiyomi.data.database.models.ChapterImpl
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
@@ -12,6 +9,7 @@ import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import eu.kanade.tachiyomi.util.chapter.ChapterUtil
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
+import yokai.domain.library.custom.model.CustomMangaInfo
 
 @Suppress("DEPRECATION")
 @Serializable

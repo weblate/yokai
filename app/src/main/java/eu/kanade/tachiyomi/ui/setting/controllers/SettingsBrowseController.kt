@@ -6,8 +6,6 @@ import android.os.Build
 import android.provider.Settings
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
-import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
-import dev.yokai.presentation.extension.repo.ExtensionRepoController
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -35,6 +33,8 @@ import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.base.BasePreferences.ExtensionInstaller
+import yokai.presentation.extension.repo.ExtensionRepoController
 
 class SettingsBrowseController : SettingsLegacyController() {
 

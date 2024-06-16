@@ -1,12 +1,18 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.preference.PreferenceScreen
-import dev.yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
-import eu.kanade.tachiyomi.data.preference.*
+import eu.kanade.tachiyomi.data.preference.DEVICE_BATTERY_NOT_LOW
+import eu.kanade.tachiyomi.data.preference.DEVICE_CHARGING
+import eu.kanade.tachiyomi.data.preference.DEVICE_ONLY_ON_WIFI
+import eu.kanade.tachiyomi.data.preference.DelayedLibrarySuggestionsJob
+import eu.kanade.tachiyomi.data.preference.MANGA_HAS_UNREAD
+import eu.kanade.tachiyomi.data.preference.MANGA_NON_COMPLETED
+import eu.kanade.tachiyomi.data.preference.MANGA_NON_READ
+import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.category.CategoryController
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.library.display.TabbedLibraryDisplaySheet
@@ -30,6 +36,7 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsLibraryController : SettingsLegacyController() {

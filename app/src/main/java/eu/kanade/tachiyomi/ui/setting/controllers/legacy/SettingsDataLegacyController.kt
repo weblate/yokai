@@ -14,8 +14,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.hippo.unifile.UniFile
-import dev.yokai.domain.storage.StorageManager
-import dev.yokai.domain.storage.StoragePreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
@@ -47,6 +45,8 @@ import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.storage.StorageManager
+import yokai.domain.storage.StoragePreferences
 
 @Deprecated("Migrating to compose")
 class SettingsDataLegacyController : SettingsLegacyController() {

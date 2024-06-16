@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.ui.more.stats.details
 import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
-import dev.yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -33,6 +32,7 @@ import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetLibraryManga
 import java.util.*
 import java.util.concurrent.*
 import kotlin.math.roundToInt

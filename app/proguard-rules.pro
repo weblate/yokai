@@ -2,7 +2,6 @@
 
 -keep,allowoptimization class eu.kanade.** { public protected *; }
 -keep,allowoptimization class tachiyomi.** { public protected *; }
--keep,allowoptimization class dev.yokai.** { public protected *; }
 -keep,allowoptimization class yokai.** { public protected *; }
 
 # Keep common dependencies used in extensions
@@ -74,11 +73,11 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class dev.yokai.**$$serializer { *; }
--keepclassmembers class dev.yokai.** {
+-keep,includedescriptorclasses class yokai.**$$serializer { *; }
+-keepclassmembers class yokai.** {
     *** Companion;
 }
--keepclasseswithmembers class dev.yokai.** {
+-keepclasseswithmembers class yokai.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 

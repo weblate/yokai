@@ -75,9 +75,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.hippo.unifile.UniFile
-import dev.yokai.domain.base.BasePreferences
-import dev.yokai.domain.ui.settings.ReaderPreferences
-import dev.yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.toggle
@@ -161,6 +158,9 @@ import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.base.BasePreferences
+import yokai.domain.ui.settings.ReaderPreferences
+import yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import java.io.ByteArrayOutputStream
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols

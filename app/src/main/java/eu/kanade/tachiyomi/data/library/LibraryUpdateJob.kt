@@ -20,7 +20,6 @@ import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
-import dev.yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -75,12 +74,12 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.manga.interactor.GetLibraryManga
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
-import java.util.concurrent.CancellationException
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.*
+import java.util.concurrent.atomic.*
 
 class LibraryUpdateJob(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {

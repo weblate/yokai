@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 import android.content.Intent
 import androidx.preference.PreferenceScreen
 import com.bluelinelabs.conductor.Controller
-import dev.yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -22,6 +21,7 @@ import eu.kanade.tachiyomi.ui.setting.triStateListPreference
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsDownloadController : SettingsLegacyController() {

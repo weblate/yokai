@@ -16,8 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
-import dev.yokai.domain.base.BasePreferences.ExtensionInstaller
-import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -79,6 +77,8 @@ import rikka.sui.Sui
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.base.BasePreferences.ExtensionInstaller
+import yokai.domain.extension.interactor.TrustExtension
 import java.io.File
 
 class SettingsAdvancedController : SettingsLegacyController() {

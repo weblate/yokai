@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.more.stats
 
-import dev.yokai.domain.manga.interactor.GetLibraryManga
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
@@ -21,6 +20,7 @@ import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetLibraryManga
 
 /**
  * Presenter of [StatsController].

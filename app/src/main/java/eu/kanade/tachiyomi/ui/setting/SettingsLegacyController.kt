@@ -16,7 +16,6 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
-import dev.yokai.domain.base.BasePreferences
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.changesIn
@@ -30,6 +29,7 @@ import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import kotlinx.coroutines.MainScope
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.base.BasePreferences
 import java.util.*
 
 abstract class SettingsLegacyController : PreferenceController(), SettingsControllerInterface, BackHandlerControllerInterface, BaseControllerPreferenceControllerCommonInterface {

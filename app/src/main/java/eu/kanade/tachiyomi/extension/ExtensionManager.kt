@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
 import co.touchlab.kermit.Logger
-import dev.yokai.domain.base.BasePreferences
-import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -28,6 +26,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.parcelize.Parcelize
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.base.BasePreferences
+import yokai.domain.extension.interactor.TrustExtension
 import java.util.*
 import java.util.concurrent.*
 

@@ -2,16 +2,6 @@ package eu.kanade.tachiyomi.data.library
 
 import android.content.Context
 import com.hippo.unifile.UniFile
-import dev.yokai.core.metadata.COMIC_INFO_EDITS_FILE
-import dev.yokai.core.metadata.ComicInfo
-import dev.yokai.core.metadata.ComicInfoPublishingStatus
-import dev.yokai.core.metadata.copyFromComicInfo
-import dev.yokai.domain.library.custom.interactor.CreateCustomManga
-import dev.yokai.domain.library.custom.interactor.DeleteCustomManga
-import dev.yokai.domain.library.custom.interactor.GetCustomManga
-import dev.yokai.domain.library.custom.interactor.RelinkCustomManga
-import dev.yokai.domain.library.custom.model.CustomMangaInfo
-import dev.yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +16,16 @@ import nl.adaptivity.xmlutil.serialization.XML
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 import uy.kohesive.injekt.injectLazy
+import yokai.core.metadata.COMIC_INFO_EDITS_FILE
+import yokai.core.metadata.ComicInfo
+import yokai.core.metadata.ComicInfoPublishingStatus
+import yokai.core.metadata.copyFromComicInfo
+import yokai.domain.library.custom.interactor.CreateCustomManga
+import yokai.domain.library.custom.interactor.DeleteCustomManga
+import yokai.domain.library.custom.interactor.GetCustomManga
+import yokai.domain.library.custom.interactor.RelinkCustomManga
+import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
 import java.nio.charset.StandardCharsets
 
 class CustomMangaManager(val context: Context) {

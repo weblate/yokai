@@ -194,10 +194,8 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
             }
             if (viewer.config.splitPages) {
                 val pagedItems = mutableListOf<ReaderItem>()
-                subItems.forEach {
-                    val page = it as? ReaderPage ?: return@forEach
-
-                    if (page.longPage == true) {
+                subItems.forEach { page ->
+                    if (page is ReaderPage && page.longPage == true) {
                         page.firstHalf = true
                         pagedItems.add(InsertPage(page).apply { firstHalf = true })
                         pagedItems.add(InsertPage(page))

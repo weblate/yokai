@@ -3,6 +3,7 @@ package dev.yokai.core.migration
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 
@@ -16,7 +17,7 @@ class MigrationJobFactory(
             .fold(CompletableDeferred(true)) { acc: Deferred<Boolean>, migration: Migration ->
                 if (!migrationContext.dryRun) {
                     Logger.i { "Running migration: { name = ${migration::class.simpleName}, version = ${migration.version} }" }
-                    async {
+                    async(start = CoroutineStart.UNDISPATCHED) {
                         val prev = acc.await()
                         migration(migrationContext) || prev
                     }

@@ -451,7 +451,7 @@ abstract class HttpSource : CatalogueSource {
     fun getChapterUrl(manga: SManga?, chapter: SChapter): String? {
         manga ?: return null
 
-        val chapterUrl = chapter.url.getUrlWithoutDomain()
+        val chapterUrl = getUrlWithoutDomain(chapter.url)
         val mangaUrl = getMangaUrl(manga)
         return if (chapterUrl.isBlank()) {
             mangaUrl
@@ -498,22 +498,6 @@ abstract class HttpSource : CatalogueSource {
      * Returns the list of filters for the source.
      */
     override fun getFilterList() = FilterList()
-
-    private fun String.getUrlWithoutDomain(): String {
-        return try {
-            val uri = URI(this.replace(" ", "%20"))
-            var out = uri.path
-            if (uri.query != null) {
-                out += "?" + uri.query
-            }
-            if (uri.fragment != null) {
-                out += "#" + uri.fragment
-            }
-            out
-        } catch (e: URISyntaxException) {
-            this
-        }
-    }
 }
 
 class LicensedMangaChaptersException : Exception("Licensed - No chapters to show")

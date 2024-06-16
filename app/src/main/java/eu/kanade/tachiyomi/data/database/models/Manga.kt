@@ -12,7 +12,7 @@ import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.Locale
+import java.util.*
 
 interface Manga : SManga {
 
@@ -33,6 +33,55 @@ interface Manga : SManga {
     var hide_title: Boolean
 
     var filtered_scanlators: String?
+
+    val originalTitle: String
+        get() = (this as? MangaImpl)?.ogTitle ?: title
+    val originalAuthor: String?
+        get() = (this as? MangaImpl)?.ogAuthor ?: author
+    val originalArtist: String?
+        get() = (this as? MangaImpl)?.ogArtist ?: artist
+    val originalDescription: String?
+        get() = (this as? MangaImpl)?.ogDesc ?: description
+    val originalGenre: String?
+        get() = (this as? MangaImpl)?.ogGenre ?: genre
+    val originalStatus: Int
+        get() = (this as? MangaImpl)?.ogStatus ?: status
+
+    val hasSameAuthorAndArtist: Boolean
+        get() = author == artist || artist.isNullOrBlank() ||
+            author?.contains(artist ?: "", true) == true
+
+    fun copyFrom(other: SManga) {
+        if (other is Manga) {
+            if (other.author != null) {
+                author = other.originalAuthor
+            }
+
+            if (other.artist != null) {
+                artist = other.originalArtist
+            }
+
+            if (other.description != null) {
+                description = other.originalDescription
+            }
+
+            if (other.genre != null) {
+                genre = other.originalGenre
+            }
+
+            if (other.thumbnail_url != null) {
+                thumbnail_url = other.thumbnail_url
+            }
+
+            status = other.originalStatus
+        }
+
+        update_strategy = other.update_strategy
+
+        if (!initialized) {
+            initialized = other.initialized
+        }
+    }
 
     fun isBlank() = id == Long.MIN_VALUE
     fun isHidden() = status == -1

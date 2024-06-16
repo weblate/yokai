@@ -3,9 +3,6 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 import android.content.ComponentName
 import android.content.Intent
 import androidx.preference.PreferenceScreen
-import dev.yokai.domain.ui.settings.ReaderPreferences
-import dev.yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
-import dev.yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.changesIn
@@ -33,6 +30,9 @@ import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.isTablet
 import eu.kanade.tachiyomi.util.view.activityBinding
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.ui.settings.ReaderPreferences
+import yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
+import yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsReaderController : SettingsLegacyController() {

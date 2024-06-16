@@ -32,6 +32,7 @@ import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.databinding.StatsDetailsChartBinding
 import eu.kanade.tachiyomi.databinding.StatsDetailsControllerBinding
 import eu.kanade.tachiyomi.source.Source
+import eu.kanade.tachiyomi.source.nameBasedOnEnabledLanguages
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
 import eu.kanade.tachiyomi.ui.base.controller.BaseCoroutineController
 import eu.kanade.tachiyomi.ui.library.FilteredLibraryController
@@ -59,8 +60,7 @@ import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 class StatsDetailsController :
     BaseCoroutineController<StatsDetailsControllerBinding, StatsDetailsPresenter>(),

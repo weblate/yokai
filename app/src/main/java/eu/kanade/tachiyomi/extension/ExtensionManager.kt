@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcelable
 import co.touchlab.kermit.Logger
-import dev.yokai.domain.base.BasePreferences
-import dev.yokai.domain.extension.interactor.TrustExtension
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -17,7 +15,6 @@ import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.ui.extension.ExtensionIntallInfo
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.parcelize.Parcelize
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.base.BasePreferences
+import yokai.domain.extension.interactor.TrustExtension
 import java.util.*
 import java.util.concurrent.*
 
@@ -155,7 +154,7 @@ class ExtensionManager(
         val extensions: List<Extension.Available> = try {
             api.findExtensions()
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Failed to find available extensions" }
             emptyList()
         }
 

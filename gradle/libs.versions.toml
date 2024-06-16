@@ -3,6 +3,7 @@ chucker = "3.5.2"
 coil3 = "3.0.0-alpha06"
 flexible-adapter = "c8013533"
 fast_adapter = "5.6.0"
+moko = "0.24.0"
 nucleus = "3.0.0"
 okhttp = "5.0.0-alpha.14"
 shizuku = "12.1.0"
@@ -59,6 +60,10 @@ junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
 junrar = { module = "com.github.junrar:junrar", version = "7.5.5" }
 loading-button = { module = "br.com.simplepass:loading-button-android", version = "2.2.0" }
 mockk = { module = "io.mockk:mockk", version = "1.13.11" }
+
+moko-resources = { module = "dev.icerock.moko:resources", version.ref = "moko" }
+moko-generator = { module = "dev.icerock.moko:resources-generator", version.ref = "moko" }
+
 okio = { module = "com.squareup.okio:okio", version = "3.9.0" }
 okhttp-brotli = { module = "com.squareup.okhttp3:okhttp-brotli", version.ref = "okhttp" }
 okhttp-dnsoverhttps = { module = "com.squareup.okhttp3:okhttp-dnsoverhttps", version.ref = "okhttp" }

@@ -1,10 +1,10 @@
 package eu.kanade.tachiyomi.ui.source.globalsearch
 
-import dev.yokai.domain.ui.UiPreferences
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.ui.UiPreferences
 
 /**
  * Adapter that holds the manga items from search results.

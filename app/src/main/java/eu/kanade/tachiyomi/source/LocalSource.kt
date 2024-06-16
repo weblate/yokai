@@ -5,11 +5,6 @@ import androidx.core.net.toFile
 import co.touchlab.kermit.Logger
 import com.github.junrar.Archive
 import com.hippo.unifile.UniFile
-import dev.yokai.core.metadata.COMIC_INFO_FILE
-import dev.yokai.core.metadata.ComicInfo
-import dev.yokai.core.metadata.copyFromComicInfo
-import dev.yokai.core.metadata.toComicInfo
-import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.source.model.Filter
 import eu.kanade.tachiyomi.source.model.FilterList
@@ -37,10 +32,15 @@ import nl.adaptivity.xmlutil.serialization.XML
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.core.metadata.COMIC_INFO_FILE
+import yokai.core.metadata.ComicInfo
+import yokai.core.metadata.copyFromComicInfo
+import yokai.core.metadata.toComicInfo
+import yokai.domain.storage.StorageManager
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSource {
     companion object {

@@ -1,19 +1,19 @@
 -dontobfuscate
 
--keep class eu.kanade.tachiyomi.source.** { public protected *; } # Avoid access modification
--keep,allowoptimization class eu.kanade.** { public protected *; }
--keep,allowoptimization class tachiyomi.** { public protected *; }
--keep,allowoptimization class dev.yokai.** { public protected *; }
+-keep,allowoptimization class eu.kanade.**
+-keep,allowoptimization class tachiyomi.**
+-keep,allowoptimization class yokai.**
 
 # Keep common dependencies used in extensions
--keep class androidx.preference.** { public protected *; }
--keep class kotlin.** { public protected *; }
+-keep,allowoptimization class androidx.preference.** { public protected *; }
+-keep,allowoptimization class kotlin.** { public protected *; }
 -keep,allowoptimization class kotlinx.coroutines.** { public protected *; }
--keep class kotlinx.serialization.** { public protected *; }
--keep class okhttp3.** { public protected *; }
+-keep,allowoptimization class kotlinx.serialization.** { public protected *; }
+-keep,allowoptimization class kotlin.time.** { public protected *; }
+-keep,allowoptimization class okhttp3.** { public protected *; }
 -keep,allowoptimization class okio.** { public protected *; }
 -keep,allowoptimization class rx.** { public protected *; }
--keep class org.jsoup.** { public protected *; }
+-keep,allowoptimization class org.jsoup.** { public protected *; }
 -keep,allowoptimization class com.google.gson.** { public protected *; }
 -keep,allowoptimization class app.cash.quickjs.** { public protected *; }
 -keep,allowoptimization class uy.kohesive.injekt.** { public protected *; }
@@ -73,11 +73,11 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class dev.yokai.**$$serializer { *; }
--keepclassmembers class dev.yokai.** {
+-keep,includedescriptorclasses class yokai.**$$serializer { *; }
+-keepclassmembers class yokai.** {
     *** Companion;
 }
--keepclasseswithmembers class dev.yokai.** {
+-keepclasseswithmembers class yokai.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 

@@ -10,10 +10,6 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
-import dev.yokai.domain.chapter.interactor.GetAvailableScanlators
-import dev.yokai.domain.chapter.interactor.GetChapters
-import dev.yokai.domain.library.custom.model.CustomMangaInfo
-import dev.yokai.domain.storage.StorageManager
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -36,6 +32,7 @@ import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.SourceNotFoundException
+import eu.kanade.tachiyomi.source.getExtension
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
@@ -74,11 +71,14 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.chapter.interactor.GetAvailableScanlators
+import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.storage.StorageManager
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class MangaDetailsPresenter(
     val manga: Manga,

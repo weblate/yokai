@@ -9,6 +9,7 @@ fun TaskContainerScope.registerLocalesConfigTask(project: Project): TaskProvider
             val emptyResourcesElement = "<resources>\\s*</resources>|<resources/>".toRegex()
             val valuesPrefix = "values-?".toRegex()
 
+            println(projectDir)
             val languages = fileTree("$projectDir/src/main/res/")
                 .matching {
                     include("**/strings.xml")

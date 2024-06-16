@@ -30,10 +30,11 @@ multiplatformResources {
 }
 
 tasks {
-    val localesConfigTask = registerLocalesConfigTask(project)
-    preBuild {
-        dependsOn(localesConfigTask)
-    }
+    // FIXME: Migrate fully to MR
+//    val localesConfigTask = registerLocalesConfigTask(project)
+//    preBuild {
+//        dependsOn(localesConfigTask)
+//    }
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.freeCompilerArgs += listOf(

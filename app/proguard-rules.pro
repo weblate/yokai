@@ -1,8 +1,8 @@
 -dontobfuscate
 
--keep,allowoptimization class eu.kanade.** { public protected *; }
--keep,allowoptimization class tachiyomi.** { public protected *; }
--keep,allowoptimization class yokai.** { public protected *; }
+-keep,allowoptimization class eu.kanade.**
+-keep,allowoptimization class tachiyomi.**
+-keep,allowoptimization class yokai.**
 
 # Keep common dependencies used in extensions
 -keep,allowoptimization class androidx.preference.** { public protected *; }

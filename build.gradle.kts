@@ -45,6 +45,7 @@ subprojects {
     plugins.withType<BasePlugin> {
         configure<BaseExtension> {
             compileSdkVersion(AndroidConfig.compileSdk)
+            ndkVersion = AndroidConfig.ndk
 
             defaultConfig {
                 minSdk = AndroidConfig.minSdk

@@ -52,6 +52,8 @@ interface Manga : SManga {
             author?.contains(artist ?: "", true) == true
 
     fun copyFrom(other: SManga) {
+        thumbnail_url = other.thumbnail_url ?: thumbnail_url
+
         if (other is Manga) {
             if (other.author != null) {
                 author = other.originalAuthor
@@ -67,10 +69,6 @@ interface Manga : SManga {
 
             if (other.genre != null) {
                 genre = other.originalGenre
-            }
-
-            if (other.thumbnail_url != null) {
-                thumbnail_url = other.thumbnail_url
             }
 
             status = other.originalStatus

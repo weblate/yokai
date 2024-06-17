@@ -14,7 +14,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.*
 
-// TODO: Transform  into data class
+// TODO: Transform into data class
 interface Manga : SManga {
 
     var id: Long?

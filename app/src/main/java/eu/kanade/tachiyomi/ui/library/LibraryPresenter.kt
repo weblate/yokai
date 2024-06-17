@@ -46,6 +46,7 @@ import eu.kanade.tachiyomi.util.mapStatus
 import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
+import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,8 +76,9 @@ class LibraryPresenter(
     private val trackManager: TrackManager = Injekt.get(),
 ) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
     private val getLibraryManga: GetLibraryManga by injectLazy()
-
     private val getChapters: GetChapters by injectLazy()
+
+    private val libraryManga: List<LibraryManga> = emptyList()
 
     private val context = preferences.context
     private val viewContext
@@ -169,8 +171,8 @@ class LibraryPresenter(
             Date().time >= preferences.lastLibrarySuggestion().get() + TimeUnit.HOURS.toMillis(2)
         ) {
             // Doing this instead of a job in case the app isn't used often
-            presenterScope.launchIO {
-                setSearchSuggestion(preferences, getLibraryManga, sourceManager)
+            presenterScope.launch {
+                withIOContext { setSearchSuggestion(preferences, getLibraryManga, sourceManager) }
                 withUIContext { view?.setTitle() }
             }
         }
@@ -195,7 +197,7 @@ class LibraryPresenter(
             categories = lastCategories ?: db.getCategories().executeAsBlocking().toMutableList()
         }
         presenterScope.launch {
-            val (library, hiddenItems) = withContext(Dispatchers.IO) { getLibraryFromDB() }
+            val (library, hiddenItems) = withIOContext { getLibraryFromDB() }
             setDownloadCount(library)
             setUnreadBadge(library)
             setSourceLanguage(library)
@@ -598,16 +600,6 @@ class LibraryPresenter(
      * @param itemList the map to sort.
      */
     private fun applySort(itemList: List<LibraryItem>): List<LibraryItem> {
-        val lastReadManga by lazy {
-            var counter = 0
-            db.getLastReadManga().executeAsBlocking().associate { it.id!! to counter++ }
-        }
-
-        val lastFetchedManga by lazy {
-            var counter = 0
-            db.getLastFetchedManga().executeAsBlocking().associate { it.id!! to counter++ }
-        }
-
         val sortFn: (LibraryItem, LibraryItem) -> Int = { i1, i2 ->
             if (i1.header.category.id == i2.header.category.id) {
                 val category = i1.header.category
@@ -630,21 +622,13 @@ class LibraryPresenter(
                                 else -> i1.manga.unread.compareTo(i2.manga.unread)
                             }
                             LibrarySort.LastRead -> {
-                                val manga1LastRead =
-                                    lastReadManga[i1.manga.id!!] ?: lastReadManga.size
-                                val manga2LastRead =
-                                    lastReadManga[i2.manga.id!!] ?: lastReadManga.size
-                                manga1LastRead.compareTo(manga2LastRead)
+                                i1.manga.lastRead.compareTo(i2.manga.lastRead)
                             }
                             LibrarySort.TotalChapters -> {
                                 i1.manga.totalChapters.compareTo(i2.manga.totalChapters)
                             }
                             LibrarySort.DateFetched -> {
-                                val manga1LastRead =
-                                    lastFetchedManga[i1.manga.id!!] ?: lastFetchedManga.size
-                                val manga2LastRead =
-                                    lastFetchedManga[i2.manga.id!!] ?: lastFetchedManga.size
-                                manga1LastRead.compareTo(manga2LastRead)
+                                i1.manga.lastFetch.compareTo(i2.manga.lastFetch)
                             }
                             LibrarySort.DateAdded -> i2.manga.date_added.compareTo(i1.manga.date_added)
                             LibrarySort.DragAndDrop -> {

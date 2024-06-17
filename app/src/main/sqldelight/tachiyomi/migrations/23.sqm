@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS library_view;
 CREATE VIEW library_view AS
 SELECT
     M.*,
@@ -21,7 +22,7 @@ LEFT JOIN (
     FROM chapters
     LEFT JOIN scanlators_view AS filtered_scanlators
     ON chapters.manga_id = filtered_scanlators.manga_id
-    AND ifnull(chapters.scanlator, 'N/A') = ifnull(filtered_scanlators.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+    AND ifnull(chapters.scanlator, 'N/A') = ifnull(filtered_scanlators.name, '/<INVALID>/')
     LEFT JOIN history
     ON chapters._id = history.history_chapter_id
     WHERE filtered_scanlators.name IS NULL
@@ -32,7 +33,3 @@ LEFT JOIN (SELECT * FROM mangas_categories) AS MC
 ON MC.manga_id = M._id
 WHERE M.favorite = 1
 ORDER BY M.title;
-
-findAll:
-SELECT *
-FROM library_view;

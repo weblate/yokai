@@ -185,26 +185,6 @@ interface MangaQueries : DbProvider {
         )
         .prepare()
 
-    fun getLastReadManga() = db.get()
-        .listOfObjects(Manga::class.java)
-        .withQuery(
-            RawQuery.builder()
-                .query(getLastReadMangaQuery())
-                .observesTables(MangaTable.TABLE)
-                .build(),
-        )
-        .prepare()
-
-    fun getLastFetchedManga() = db.get()
-        .listOfObjects(Manga::class.java)
-        .withQuery(
-            RawQuery.builder()
-                .query(getLastFetchedMangaQuery())
-                .observesTables(MangaTable.TABLE)
-                .build(),
-        )
-        .prepare()
-
     fun getTotalChapterManga() = db.get().listOfObjects(Manga::class.java)
         .withQuery(RawQuery.builder().query(getTotalChapterMangaQuery()).observesTables(MangaTable.TABLE).build()).prepare()
 

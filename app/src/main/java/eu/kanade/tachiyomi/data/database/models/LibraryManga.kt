@@ -1,19 +1,18 @@
 package eu.kanade.tachiyomi.data.database.models
 
 import eu.kanade.tachiyomi.data.database.updateStrategyAdapter
-import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import kotlin.math.roundToInt
 
-class LibraryManga : MangaImpl() {
-
-    var unread: Int = 0
-    var read: Int = 0
-
-    var category: Int = 0
-
-    var bookmarkCount: Int = 0
-
-    var totalChapters: Int = 0
+data class LibraryManga(
+    var unread: Int = 0,
+    var read: Int = 0,
+    var category: Int = 0,
+    var bookmarkCount: Int = 0,
+    var totalChapters: Int = 0,
+    var latestUpdate: Int = 0,
+    var lastRead: Int = 0,
+    var lastFetch: Int = 0,
+) : MangaImpl() {
 
     val hasRead
         get() = read > 0
@@ -55,7 +54,10 @@ class LibraryManga : MangaImpl() {
             total: Long,
             readCount: Double,
             bookmarkCount: Double,
-            categoryId: Long
+            categoryId: Long,
+            latestUpdate: Long,
+            lastRead: Long,
+            lastFetch: Long,
         ): LibraryManga = createBlank(categoryId.toInt()).apply {
             this.id = id
             this.source = source
@@ -80,6 +82,9 @@ class LibraryManga : MangaImpl() {
             this.unread = maxOf((total - readCount).roundToInt(), 0)
             this.totalChapters = readCount.roundToInt()
             this.bookmarkCount = bookmarkCount.roundToInt()
+            this.latestUpdate = latestUpdate.toInt()
+            this.lastRead = lastRead.toInt()
+            this.lastFetch = lastFetch.toInt()
         }
     }
 }

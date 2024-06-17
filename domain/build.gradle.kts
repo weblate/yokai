@@ -1,11 +1,23 @@
 plugins {
+    kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+}
+
+kotlin {
+    androidTarget()
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+            }
+        }
+    }
 }
 
 android {
     namespace = "yokai.domain"
-}
-
-dependencies {
 }

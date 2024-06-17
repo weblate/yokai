@@ -28,3 +28,4 @@
 - Update dependency com.google.gms:google-services to v4.4.2
 - Add crashlytics integration for Kermit
 - Replace ProgressBar with ProgressIndicator from Material3 to improve UI consistency
+- Merge lastFetch and lastRead query into library_view VIEW

@@ -3,6 +3,7 @@ package yokai.core.di
 import android.app.Application
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.security.SecurityPreferences
 import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackPreferences
@@ -38,6 +39,8 @@ class PreferenceModule(val application: Application) : InjektModule {
         addSingletonFactory { DownloadPreferences(get()) }
 
         addSingletonFactory { NetworkPreferences(get()) }
+
+        addSingletonFactory { SecurityPreferences(get()) }
 
         addSingletonFactory {
             PreferencesHelper(

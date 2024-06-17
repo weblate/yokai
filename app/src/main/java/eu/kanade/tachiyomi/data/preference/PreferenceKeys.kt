@@ -169,8 +169,6 @@ object PreferenceKeys {
 
     const val languageBadge = "display_language_badge"
 
-    const val useBiometrics = "use_biometrics"
-
     const val lockAfter = "lock_after"
 
     const val lastUnlock = "last_unlock"

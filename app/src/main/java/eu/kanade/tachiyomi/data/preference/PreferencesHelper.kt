@@ -294,8 +294,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun skipDupe() = preferenceStore.getBoolean("skip_dupe", false)
 
-    fun useBiometrics() = preferenceStore.getBoolean(Keys.useBiometrics, false)
-
     fun lockAfter() = preferenceStore.getInt(Keys.lockAfter, 0)
 
     fun lastUnlock() = preferenceStore.getLong(Keys.lastUnlock, 0)

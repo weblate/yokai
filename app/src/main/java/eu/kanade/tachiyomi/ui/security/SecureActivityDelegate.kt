@@ -6,16 +6,18 @@ import android.os.Build
 import android.view.Window
 import android.view.WindowManager
 import androidx.biometric.BiometricManager
+import eu.kanade.tachiyomi.core.security.SecurityPreferences
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.main.SearchActivity
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
 import uy.kohesive.injekt.injectLazy
-import java.util.Date
+import java.util.*
 
 object SecureActivityDelegate {
 
-    private val preferences by injectLazy<PreferencesHelper>()
+    private val preferences: PreferencesHelper by injectLazy()
+    private val securityPreferences: SecurityPreferences by injectLazy()
 
     var locked: Boolean = true
 
@@ -40,7 +42,7 @@ object SecureActivityDelegate {
     @Suppress("DEPRECATION")
     fun promptLockIfNeeded(activity: Activity?, requireSuccess: Boolean = false) {
         if (activity == null || AuthenticatorUtil.isAuthenticating) return
-        val lockApp = preferences.useBiometrics().get()
+        val lockApp = securityPreferences.useBiometrics().get()
         if (lockApp && BiometricManager.from(activity).canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL or BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS) {
             if (isAppLocked()) {
                 val intent = Intent(activity, BiometricActivity::class.java)
@@ -53,12 +55,12 @@ object SecureActivityDelegate {
                 }
             }
         } else if (lockApp) {
-            preferences.useBiometrics().set(false)
+            securityPreferences.useBiometrics().set(false)
         }
     }
 
     fun shouldBeLocked(): Boolean {
-        val lockApp = preferences.useBiometrics().get()
+        val lockApp = securityPreferences.useBiometrics().get()
         if (lockApp && isAppLocked()) return true
         return false
     }

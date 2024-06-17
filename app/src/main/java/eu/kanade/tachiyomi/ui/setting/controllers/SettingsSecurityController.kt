@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.core.security.SecurityPreferences
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.changesIn
@@ -18,14 +19,17 @@ import eu.kanade.tachiyomi.ui.setting.requireAuthentication
 import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.ui.setting.titleRes
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
+import uy.kohesive.injekt.injectLazy
 
 class SettingsSecurityController : SettingsLegacyController() {
+    private val securityPreferences: SecurityPreferences by injectLazy()
+
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = R.string.security
 
         if (context.isAuthenticationSupported()) {
             switchPreference {
-                key = PreferenceKeys.useBiometrics
+                bindTo(securityPreferences.useBiometrics())
                 titleRes = R.string.lock_with_biometrics
                 defaultValue = false
 
@@ -53,7 +57,7 @@ class SettingsSecurityController : SettingsLegacyController() {
                 entryValues = values
                 defaultValue = 0
 
-                preferences.useBiometrics().changesIn(viewScope) { isVisible = it }
+                securityPreferences.useBiometrics().changesIn(viewScope) { isVisible = it }
             }
         }
 

@@ -31,20 +31,19 @@ import eu.kanade.tachiyomi.appwidget.components.LockedWidget
 import eu.kanade.tachiyomi.appwidget.components.UpdatesWidget
 import eu.kanade.tachiyomi.appwidget.util.appWidgetBackgroundRadius
 import eu.kanade.tachiyomi.appwidget.util.calculateRowAndColumnCount
+import eu.kanade.tachiyomi.core.security.SecurityPreferences
 import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.MainScope
 import uy.kohesive.injekt.injectLazy
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import kotlin.math.min
 
 class UpdatesGridGlanceWidget : GlanceAppWidget() {
     private val app: Application by injectLazy()
-    private val preferences: PreferencesHelper by injectLazy()
+    private val preferences: SecurityPreferences by injectLazy()
 
     private val coroutineScope = MainScope()
 

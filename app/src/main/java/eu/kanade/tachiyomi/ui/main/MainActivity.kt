@@ -1601,15 +1601,15 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
         // Shortcut actions
         const val SHORTCUT_LIBRARY = "eu.kanade.tachiyomi.SHOW_LIBRARY"
-        @Deprecated
-        val SHORTCUT_RECENTS = Constants.SHORTCUT_RECENTS
+        @Deprecated("Use the one from Constants object instead")
+        const val SHORTCUT_RECENTS = Constants.SHORTCUT_RECENTS
         const val SHORTCUT_RECENTLY_UPDATED = "eu.kanade.tachiyomi.SHOW_RECENTLY_UPDATED"
         const val SHORTCUT_RECENTLY_READ = "eu.kanade.tachiyomi.SHOW_RECENTLY_READ"
         const val SHORTCUT_BROWSE = "eu.kanade.tachiyomi.SHOW_BROWSE"
         const val SHORTCUT_DOWNLOADS = "eu.kanade.tachiyomi.SHOW_DOWNLOADS"
-        @Deprecated
+        @Deprecated("Use the one from Constants object instead")
         const val SHORTCUT_MANGA = Constants.SHORTCUT_MANGA
-        @Deprecated
+        @Deprecated("Use the one from Constants object instead")
         const val SHORTCUT_MANGA_BACK = Constants.SHORTCUT_MANGA_BACK
         const val SHORTCUT_UPDATE_NOTES = "eu.kanade.tachiyomi.SHOW_UPDATE_NOTES"
         const val SHORTCUT_SOURCE = "eu.kanade.tachiyomi.SHOW_SOURCE"

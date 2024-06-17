@@ -1844,7 +1844,7 @@ class MangaDetailsController :
         const val SMART_SEARCH_CONFIG_EXTRA = "smartSearchConfig"
 
         const val FROM_CATALOGUE_EXTRA = "from_catalogue"
-        @Deprecated
+        @Deprecated("Use the one from Constants object instead")
         const val MANGA_EXTRA = Constants.MANGA_EXTRA
 
         private enum class RangeMode {

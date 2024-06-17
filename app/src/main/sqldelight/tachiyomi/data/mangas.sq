@@ -29,3 +29,23 @@ CREATE INDEX library_favorite_index ON mangas(favorite) WHERE favorite = 1;
 findAll:
 SELECT *
 FROM mangas;
+
+getLastRead:
+SELECT M.*, max(H.history_last_read) AS max
+FROM mangas AS M
+JOIN chapters AS C
+ON M._id = C.manga_id
+JOIN history AS H
+ON C._id = H.history_chapter_id
+WHERE M.favorite = 1
+GROUP BY M._id
+ORDER BY max DESC;
+
+getLastFetched:
+SELECT M.*, max(C.date_fetch) AS max
+FROM mangas AS M
+JOIN chapters AS C
+ON M._id = C.manga_id
+WHERE M.favorite = 1
+GROUP BY M._id
+ORDER BY max DESC;

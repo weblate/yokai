@@ -178,13 +178,6 @@ dependencies {
     implementation(libs.rxjava)
     implementation(libs.rxrelay)
 
-    // Network client
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.okhttp.dnsoverhttps)
-    implementation(libs.okhttp.brotli)
-    implementation(libs.okio)
-
     // Chucker
     debugImplementation(libs.chucker.library)
     releaseImplementation(libs.chucker.library.no.op)
@@ -223,14 +216,8 @@ dependencies {
     implementation(libs.nucleus)
     implementation(libs.nucleus.support.v7)
 
-    // Dependency injection
-    implementation(libs.injekt.core)
-
     // Image library
     implementation(libs.bundles.coil)
-
-    // Logging
-    implementation(libs.bundles.logging)
 
     // Sort
     implementation(libs.java.nat.sort)

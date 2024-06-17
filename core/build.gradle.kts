@@ -10,13 +10,17 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(projects.i18n)
+
+                // Logging
                 api(libs.bundles.logging)
             }
         }
         val androidMain by getting {
             dependencies {
+                // Dependency injection
                 api(libs.injekt.core)
 
+                // Network client
                 api(libs.okhttp)
                 api(libs.okhttp.logging.interceptor)
                 api(libs.okhttp.dnsoverhttps)

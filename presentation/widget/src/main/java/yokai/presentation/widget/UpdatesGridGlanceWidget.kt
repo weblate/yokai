@@ -24,6 +24,7 @@ import coil3.request.transformations
 import coil3.size.Precision
 import coil3.size.Scale
 import coil3.transform.RoundedCornersTransformation
+import eu.kanade.tachiyomi.core.security.SecurityPreferences
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.dpToPx
@@ -40,10 +41,10 @@ import yokai.presentation.widget.util.calculateRowAndColumnCount
 import java.util.*
 import kotlin.math.min
 
-// FIXME
+// FIXME: Move Manga to 'data' module
 class UpdatesGridGlanceWidget(
     private val app: Application = Injekt.get(),
-    //private val preferences: PreferencesHelper by injectLazy(),
+    private val preferences: SecurityPreferences = Injekt.get(),
 ) : GlanceAppWidget() {
     private val coroutineScope = MainScope()
 

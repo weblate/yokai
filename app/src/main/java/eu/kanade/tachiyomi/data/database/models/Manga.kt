@@ -12,8 +12,14 @@ import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.data.manga.originalArtist
+import yokai.data.manga.originalAuthor
+import yokai.data.manga.originalDescription
+import yokai.data.manga.originalGenre
+import yokai.data.manga.originalStatus
 import java.util.*
 
+// TODO: Transform into data class
 interface Manga : SManga {
 
     var id: Long?
@@ -52,27 +58,17 @@ interface Manga : SManga {
             author?.contains(artist ?: "", true) == true
 
     fun copyFrom(other: SManga) {
+        author = other.originalAuthor ?: author
+
+        artist = other.originalArtist ?: artist
+
+        description = other.originalDescription ?: description
+
+        genre = other.originalGenre ?: genre
+
+        status = other.originalStatus
+
         thumbnail_url = other.thumbnail_url ?: thumbnail_url
-
-        if (other is Manga) {
-            if (other.author != null) {
-                author = other.originalAuthor
-            }
-
-            if (other.artist != null) {
-                artist = other.originalArtist
-            }
-
-            if (other.description != null) {
-                description = other.originalDescription
-            }
-
-            if (other.genre != null) {
-                genre = other.originalGenre
-            }
-
-            status = other.originalStatus
-        }
 
         update_strategy = other.update_strategy
 

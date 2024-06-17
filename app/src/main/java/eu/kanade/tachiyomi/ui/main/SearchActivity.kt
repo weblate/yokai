@@ -30,6 +30,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapters
+import yokai.presentation.core.util.IntentCommon
 
 class SearchActivity : MainActivity() {
     private val getChapters: GetChapters by injectLazy()
@@ -199,15 +200,8 @@ class SearchActivity : MainActivity() {
     }
 
     companion object {
-        fun openMangaIntent(context: Context, id: Long?, canReturnToMain: Boolean = false) = Intent(
-            context,
-            SearchActivity::class
-                .java,
-        )
-            .apply {
-                action = if (canReturnToMain) SHORTCUT_MANGA_BACK else SHORTCUT_MANGA
-                putExtra(MangaDetailsController.MANGA_EXTRA, id)
-            }
+        fun openMangaIntent(context: Context, id: Long?, canReturnToMain: Boolean = false) =
+            IntentCommon.openManga(context, id, canReturnToMain)
 
         fun openReaderSettings(context: Context) = Intent(
             context,

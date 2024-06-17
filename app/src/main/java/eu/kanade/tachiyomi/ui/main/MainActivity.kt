@@ -141,6 +141,7 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import yokai.core.migration.Migrator
 import yokai.domain.base.BasePreferences
+import yokai.presentation.core.Constants
 import yokai.presentation.extension.repo.ExtensionRepoController
 import yokai.presentation.onboarding.OnboardingController
 import kotlin.collections.set
@@ -1596,17 +1597,20 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         private const val SWIPE_THRESHOLD = 100
         private const val SWIPE_VELOCITY_THRESHOLD = 100
 
-        const val MAIN_ACTIVITY = "eu.kanade.tachiyomi.ui.main.MainActivity"
+        const val MAIN_ACTIVITY = Constants.MAIN_ACTIVITY
 
         // Shortcut actions
         const val SHORTCUT_LIBRARY = "eu.kanade.tachiyomi.SHOW_LIBRARY"
-        const val SHORTCUT_RECENTS = "eu.kanade.tachiyomi.SHOW_RECENTS"
+        @Deprecated
+        val SHORTCUT_RECENTS = Constants.SHORTCUT_RECENTS
         const val SHORTCUT_RECENTLY_UPDATED = "eu.kanade.tachiyomi.SHOW_RECENTLY_UPDATED"
         const val SHORTCUT_RECENTLY_READ = "eu.kanade.tachiyomi.SHOW_RECENTLY_READ"
         const val SHORTCUT_BROWSE = "eu.kanade.tachiyomi.SHOW_BROWSE"
         const val SHORTCUT_DOWNLOADS = "eu.kanade.tachiyomi.SHOW_DOWNLOADS"
-        const val SHORTCUT_MANGA = "eu.kanade.tachiyomi.SHOW_MANGA"
-        const val SHORTCUT_MANGA_BACK = "eu.kanade.tachiyomi.SHOW_MANGA_BACK"
+        @Deprecated
+        const val SHORTCUT_MANGA = Constants.SHORTCUT_MANGA
+        @Deprecated
+        const val SHORTCUT_MANGA_BACK = Constants.SHORTCUT_MANGA_BACK
         const val SHORTCUT_UPDATE_NOTES = "eu.kanade.tachiyomi.SHOW_UPDATE_NOTES"
         const val SHORTCUT_SOURCE = "eu.kanade.tachiyomi.SHOW_SOURCE"
         const val SHORTCUT_READER_SETTINGS = "eu.kanade.tachiyomi.READER_SETTINGS"

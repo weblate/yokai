@@ -133,6 +133,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.presentation.core.Constants
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -1843,7 +1844,8 @@ class MangaDetailsController :
         const val SMART_SEARCH_CONFIG_EXTRA = "smartSearchConfig"
 
         const val FROM_CATALOGUE_EXTRA = "from_catalogue"
-        const val MANGA_EXTRA = "manga"
+        @Deprecated
+        const val MANGA_EXTRA = Constants.MANGA_EXTRA
 
         private enum class RangeMode {
             Download,

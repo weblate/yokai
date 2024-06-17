@@ -15,6 +15,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                api(libs.injekt.core)
+
                 api(libs.okhttp)
                 api(libs.okhttp.logging.interceptor)
                 api(libs.okhttp.dnsoverhttps)

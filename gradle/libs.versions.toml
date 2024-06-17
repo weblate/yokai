@@ -62,6 +62,7 @@ loading-button = { module = "br.com.simplepass:loading-button-android", version 
 mockk = { module = "io.mockk:mockk", version = "1.13.11" }
 
 moko-resources = { module = "dev.icerock.moko:resources", version.ref = "moko" }
+moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko" }
 moko-generator = { module = "dev.icerock.moko:resources-generator", version.ref = "moko" }
 
 okio = { module = "com.squareup.okio:okio", version = "3.9.0" }

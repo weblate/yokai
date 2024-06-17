@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="no_recent_read_updated_manga">No recently read or updated series</string>
+
+    <!-- Recents -->
+    <string name="label_recent_updates">Updates</string>
+
+    <!-- App widget -->
+    <string name="appwidget_updates_description">See your recently updated library entries</string>
+    <string name="appwidget_unavailable_locked">Widget not available when app lock is enabled</string>
+
     <!-- WebView -->
     <string name="failed_to_bypass_cloudflare">Failed to bypass Cloudflare</string>
     <!-- Do not translate "WebView" -->

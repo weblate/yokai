@@ -23,8 +23,6 @@
     <color name="tachiyomi_inverseSurface">#303033</color>
     <color name="tachiyomi_primaryInverse">#AEC6FF</color>
 
-    <color name="cover_placeholder">#1F888888</color>
-
     <!-- Application Colors -->
     <color name="primaryVariantTachiyomi">#E5ECF4</color>
     <color name="colorPrimaryInactive">#C2424242</color>

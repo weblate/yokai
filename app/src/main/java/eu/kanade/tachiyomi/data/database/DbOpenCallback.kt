@@ -3,7 +3,7 @@ package eu.kanade.tachiyomi.data.database
 import androidx.sqlite.db.SupportSQLiteDatabase
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import co.touchlab.kermit.Logger
-import tachiyomi.data.Database
+import yokai.data.Database
 
 class DbOpenCallback : AndroidSqliteDriver.Callback(Database.Schema) {
 

@@ -1,6 +1,8 @@
 package eu.kanade.tachiyomi.data.database
 
+import app.cash.sqldelight.ColumnAdapter
 import eu.kanade.tachiyomi.source.model.UpdateStrategy
+import java.util.*
 
 // TODO: Move to yokai.data.DatabaseAdapter
 
@@ -13,14 +15,18 @@ val updateStrategyAdapter = object : ColumnAdapter<UpdateStrategy, Int> {
     override fun encode(value: UpdateStrategy): Int = value.ordinal
 }
 
-interface ColumnAdapter<T : Any, S> {
-    /**
-     * @return [databaseValue] decoded as type [T].
-     */
-    fun decode(databaseValue: S): T
+val dateAdapter = object : ColumnAdapter<Date, Long> {
+    override fun decode(databaseValue: Long): Date = Date(databaseValue)
+    override fun encode(value: Date): Long = value.time
+}
 
-    /**
-     * @return [value] encoded as database type [S].
-     */
-    fun encode(value: T): S
+private const val listOfStringsSeparator = ", "
+val listOfStringsAdapter = object : ColumnAdapter<List<String>, String> {
+    override fun decode(databaseValue: String) =
+        if (databaseValue.isEmpty()) {
+            listOf()
+        } else {
+            databaseValue.split(listOfStringsSeparator)
+        }
+    override fun encode(value: List<String>) = value.joinToString(separator = listOfStringsSeparator)
 }

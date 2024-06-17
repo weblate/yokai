@@ -27,13 +27,13 @@ import kotlinx.serialization.json.Json
 import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.core.XmlVersion
 import nl.adaptivity.xmlutil.serialization.XML
-import tachiyomi.data.Database
 import uy.kohesive.injekt.api.InjektModule
 import uy.kohesive.injekt.api.InjektRegistrar
 import uy.kohesive.injekt.api.addSingleton
 import uy.kohesive.injekt.api.addSingletonFactory
 import uy.kohesive.injekt.api.get
 import yokai.data.AndroidDatabaseHandler
+import yokai.data.Database
 import yokai.data.DatabaseHandler
 import yokai.domain.SplashState
 import yokai.domain.storage.StorageManager

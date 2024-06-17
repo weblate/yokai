@@ -83,7 +83,7 @@ sqlite-framework = { module = "androidx.sqlite:sqlite-framework", version.ref = 
 sqlite-ktx = { module = "androidx.sqlite:sqlite-ktx", version.ref = "sqlite" }
 sqlite-android = { module = "com.github.requery:sqlite-android", version = "3.45.0" }
 
-sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions-jvm", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-android-paging = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
 sqldelight-dialects-sql = { module = "app.cash.sqldelight:sqlite-3-38-dialect", version.ref = "sqldelight" }
@@ -104,7 +104,8 @@ gradle-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
 
 [bundles]
 archive = [ "common-compress", "junrar" ]
-db = [ "sqldelight-android-driver", "sqldelight-android-paging", "sqldelight-coroutines" ]
+db = [ "sqldelight-coroutines" ]
+db-android = [ "sqldelight-android-driver", "sqldelight-android-paging" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
 logging = [ "kermit" ]
 sqlite = [ "sqlite-framework", "sqlite-ktx" ]

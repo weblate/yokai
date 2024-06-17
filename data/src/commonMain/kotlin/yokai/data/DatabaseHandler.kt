@@ -2,7 +2,6 @@ package yokai.data
 
 import app.cash.sqldelight.Query
 import kotlinx.coroutines.flow.Flow
-import tachiyomi.data.Database
 
 interface DatabaseHandler {
     suspend fun <T> await(inTransaction: Boolean = false, block: suspend Database.() -> T): T

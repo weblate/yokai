@@ -13,6 +13,14 @@ kotlin {
 
                 // Logging
                 api(libs.bundles.logging)
+
+                api(libs.okio)
+
+                api(libs.rxjava)
+                api(project.dependencies.enforcedPlatform(kotlinx.coroutines.bom))
+                api(kotlinx.coroutines.core)
+                api(kotlinx.serialization.json)
+                api(kotlinx.serialization.json.okio)
             }
         }
         val androidMain by getting {
@@ -25,14 +33,8 @@ kotlin {
                 api(libs.okhttp.logging.interceptor)
                 api(libs.okhttp.dnsoverhttps)
                 api(libs.okhttp.brotli)
-                api(libs.okio)
 
                 api(androidx.preference)
-                api(libs.rxjava)
-                api(project.dependencies.enforcedPlatform(kotlinx.coroutines.bom))
-                api(kotlinx.coroutines.core)
-                api(kotlinx.serialization.json)
-                api(kotlinx.serialization.json.okio)
 
                 implementation(libs.quickjs.android)
             }

@@ -1,6 +1,6 @@
 package eu.kanade.tachiyomi.data.database.models
 
-import eu.kanade.tachiyomi.data.database.updateStrategyAdapter
+import yokai.data.updateStrategyAdapter
 import kotlin.math.roundToInt
 
 data class LibraryManga(

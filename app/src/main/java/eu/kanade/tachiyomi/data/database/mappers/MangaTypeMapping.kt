@@ -31,7 +31,7 @@ import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_UPDATE_STRATEGY
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_URL
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_VIEWER
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.TABLE
-import eu.kanade.tachiyomi.data.database.updateStrategyAdapter
+import yokai.data.updateStrategyAdapter
 
 class MangaTypeMapping : SQLiteTypeMapping<Manga>(
     MangaPutResolver(),

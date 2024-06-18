@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.data.database
+package yokai.data
 
 import app.cash.sqldelight.ColumnAdapter
 import eu.kanade.tachiyomi.source.model.UpdateStrategy

@@ -29,3 +29,4 @@
 - Add crashlytics integration for Kermit
 - Replace ProgressBar with ProgressIndicator from Material3 to improve UI consistency
 - Merge lastFetch and lastRead query into library_view VIEW
+- Update Japenese translation

@@ -146,11 +146,6 @@ interface Manga : SManga {
         ).lowercase(Locale.getDefault())
     }
 
-    fun getGenres(): List<String>? {
-        return genre?.split(",")
-            ?.mapNotNull { tag -> tag.trim().takeUnless { it.isBlank() } }
-    }
-
     fun getOriginalGenres(): List<String>? {
         return (originalGenre ?: genre)?.split(",")
             ?.mapNotNull { tag -> tag.trim().takeUnless { it.isBlank() } }

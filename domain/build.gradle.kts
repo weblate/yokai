@@ -9,11 +9,11 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(projects.sourceApi)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation(projects.sourceApi)
             }
         }
     }

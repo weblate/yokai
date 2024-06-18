@@ -30,6 +30,8 @@ interface Category : Serializable {
 
     var langId: String?
 
+    var isSystem: Boolean
+
     fun isAscending(): Boolean {
         return ((mangaSort?.minus('a') ?: 0) % 2) != 1
     }
@@ -61,6 +63,7 @@ interface Category : Serializable {
         fun createDefault(context: Context): Category =
             create(context.getString(R.string.default_value)).apply {
                 id = 0
+                isSystem = true
             }
 
         fun createCustom(name: String, libSort: Int, ascending: Boolean): Category =
@@ -78,6 +81,36 @@ interface Category : Serializable {
                 id = -1
                 order = -1
                 isAlone = true
+                isSystem = true
             }
+
+        fun mangaOrderFromString(orderString: String?): Pair<Char?, List<Long>> {
+            return when {
+                orderString.isNullOrBlank() -> {
+                    Pair('a', emptyList())
+                }
+                orderString.firstOrNull()?.isLetter() == true -> {
+                    Pair(orderString.first(), emptyList())
+                }
+                else -> Pair(null, orderString.split("/").mapNotNull { it.toLongOrNull() })
+            }
+        }
+
+        fun mapper(
+            id: Long,
+            name: String,
+            sort: Long,
+            flags: Long,
+            orderString: String,
+        ) = create(name).also {
+            it.id = id.toInt()
+            it.name = name
+            it.order = sort.toInt()
+            it.flags = flags.toInt()
+
+            val (mangaSort, order) = mangaOrderFromString(orderString)
+            if (mangaSort != null) it.mangaSort = mangaSort
+            it.mangaOrder = order
+        }
     }
 }

@@ -24,6 +24,8 @@ class CategoryImpl : Category {
 
     override var langId: String? = null
 
+    override var isSystem: Boolean = false
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

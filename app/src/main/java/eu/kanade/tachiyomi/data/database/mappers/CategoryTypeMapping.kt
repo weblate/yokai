@@ -52,24 +52,16 @@ class CategoryPutResolver : DefaultPutResolver<Category>() {
 
 class CategoryGetResolver : DefaultGetResolver<Category>() {
 
-    override fun mapFromCursor(cursor: Cursor): Category = CategoryImpl().apply {
-        id = cursor.getInt(cursor.getColumnIndex(COL_ID))
-        name = cursor.getString(cursor.getColumnIndex(COL_NAME))
-        order = cursor.getInt(cursor.getColumnIndex(COL_ORDER))
-        flags = cursor.getInt(cursor.getColumnIndex(COL_FLAGS))
+    override fun mapFromCursor(cursor: Cursor): Category = CategoryImpl().also {
+        it.id = cursor.getInt(cursor.getColumnIndex(COL_ID))
+        it.name = cursor.getString(cursor.getColumnIndex(COL_NAME))
+        it.order = cursor.getInt(cursor.getColumnIndex(COL_ORDER))
+        it.flags = cursor.getInt(cursor.getColumnIndex(COL_FLAGS))
 
         val orderString = cursor.getString(cursor.getColumnIndex(COL_MANGA_ORDER))
-        when {
-            orderString.isNullOrBlank() -> {
-                mangaSort = 'a'
-                mangaOrder = emptyList()
-            }
-            orderString.firstOrNull()?.isLetter() == true -> {
-                mangaSort = orderString.first()
-                mangaOrder = emptyList()
-            }
-            else -> mangaOrder = orderString.split("/").mapNotNull { it.toLongOrNull() }
-        }
+        val (sort, order) = Category.mangaOrderFromString(orderString)
+        if (sort != null) it.mangaSort = sort
+        it.mangaOrder = order
     }
 }
 

@@ -5,10 +5,13 @@ import uy.kohesive.injekt.api.InjektRegistrar
 import uy.kohesive.injekt.api.addFactory
 import uy.kohesive.injekt.api.addSingletonFactory
 import uy.kohesive.injekt.api.get
+import yokai.data.category.CategoryRepositoryImpl
 import yokai.data.chapter.ChapterRepositoryImpl
 import yokai.data.extension.repo.ExtensionRepoRepositoryImpl
 import yokai.data.library.custom.CustomMangaRepositoryImpl
 import yokai.data.manga.MangaRepositoryImpl
+import yokai.domain.category.CategoryRepository
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.ChapterRepository
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapters
@@ -52,5 +55,8 @@ class DomainModule : InjektModule {
         addSingletonFactory<ChapterRepository> { ChapterRepositoryImpl(get()) }
         addFactory { GetAvailableScanlators(get()) }
         addFactory { GetChapters(get()) }
+
+        addSingletonFactory<CategoryRepository> { CategoryRepositoryImpl(get()) }
+        addFactory { GetCategories(get()) }
     }
 }

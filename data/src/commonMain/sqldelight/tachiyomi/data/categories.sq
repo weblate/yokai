@@ -5,3 +5,8 @@ CREATE TABLE categories(
     flags INTEGER NOT NULL,
     manga_order TEXT NOT NULL
 );
+
+findAll:
+SELECT *
+FROM categories
+ORDER BY sort;

@@ -49,12 +49,15 @@ import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapters
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.util.isLewd
@@ -62,6 +65,11 @@ import java.util.*
 import java.util.concurrent.*
 import kotlin.math.roundToInt
 import kotlin.random.Random
+
+/**
+ * Typealias for the library manga, using the category as keys, and list of manga as values.
+ */
+typealias LibraryMap = Map<Category, List<LibraryItem>>
 
 /**
  * Presenter of [LibraryController].
@@ -75,6 +83,7 @@ class LibraryPresenter(
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val trackManager: TrackManager = Injekt.get(),
 ) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
+    private val getCategories: GetCategories by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getChapters: GetChapters by injectLazy()
 
@@ -189,14 +198,15 @@ class LibraryPresenter(
 
     /** Get favorited manga for library and sort and filter it */
     fun getLibrary() {
-        if (categories.isEmpty()) {
-            val dbCategories = db.getCategories().executeAsBlocking()
-            if ((dbCategories + Category.createDefault(context)).distinctBy { it.order }.size != dbCategories.size + 1) {
-                reorderCategories(dbCategories)
-            }
-            categories = lastCategories ?: db.getCategories().executeAsBlocking().toMutableList()
-        }
         presenterScope.launch {
+            if (categories.isEmpty()) {
+                val dbCategories = getCategories.await()
+                if ((dbCategories + Category.createDefault(context)).distinctBy { it.order }.size != dbCategories.size + 1) {
+                    reorderCategories(dbCategories)
+                }
+                categories = lastCategories ?: getCategories.await().toMutableList()
+            }
+
             val (library, hiddenItems) = withIOContext { getLibraryFromDB() }
             setDownloadCount(library)
             setUnreadBadge(library)
@@ -700,6 +710,54 @@ class LibraryPresenter(
         }
     }
 
+    // TODO: Migrate getCategories to SQLDelight
+    /*
+    private fun getPreferencesFlow() = combine(
+    ) {
+       ItemPreferences(
+       )
+    }
+     */
+
+    private fun getLibraryFlow(): Flow<LibraryMap> {
+        return combine(
+            getCategories.subscribe(),
+            getLibraryManga.subscribe(),
+        ) { categories, libraryMangaList ->
+            val categoryAll = Category.createAll(
+                context,
+                preferences.librarySortingMode().get(),
+                preferences.librarySortingAscending().get(),
+            )
+            val catItemAll = LibraryHeaderItem({ categoryAll }, -1)
+            val categorySet = mutableSetOf<Int>()
+            val headerItems = (
+                categories.mapNotNull { category ->
+                    val id = category.id
+                    if (id == null) {
+                        null
+                    } else {
+                        id to LibraryHeaderItem({ getCategory(id) }, id)
+                    }
+                } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ getCategory(0) }, 0))
+                ).toMap()
+
+            val libraryManga = libraryMangaList.mapNotNull {
+                val headerItem = (
+                    if (!libraryIsGrouped) {
+                        catItemAll
+                    } else {
+                        headerItems[it.category]
+                    }
+                    ) ?: return@mapNotNull null
+                categorySet.add(it.category)
+                LibraryItem(it, headerItem, viewContext)
+            }.groupBy { it.manga.category }
+
+            categories.associateWith { libraryManga[it.id].orEmpty() }
+        }
+    }
+
     /**
      * Get the categories and all its manga from the database.
      *
@@ -707,7 +765,7 @@ class LibraryPresenter(
      */
     private suspend fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
         removeArticles = preferences.removeArticles().get()
-        val categories = db.getCategories().executeAsBlocking().toMutableList()
+        val categories = getCategories.await().toMutableList()
         var libraryManga = getLibraryManga.await()
         val showAll = showAllCategories
         if (groupType > BY_DEFAULT) {
@@ -1491,4 +1549,10 @@ class LibraryPresenter(
             view?.updateDownloadStatus(!downloadManager.isPaused())
         }
     }
+
+    /*
+    @Immutable
+    data class ItemPreferences(
+    )
+     */
 }

@@ -25,12 +25,13 @@ import coil3.size.Precision
 import coil3.size.Scale
 import coil3.transform.RoundedCornersTransformation
 import eu.kanade.tachiyomi.core.security.SecurityPreferences
+import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.MainScope
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import yokai.domain.manga.models.Manga
 import yokai.presentation.widget.components.CoverHeight
 import yokai.presentation.widget.components.CoverWidth
 import yokai.presentation.widget.components.LockedWidget

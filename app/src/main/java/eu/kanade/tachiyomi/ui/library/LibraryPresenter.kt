@@ -49,6 +49,7 @@ import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -78,7 +79,7 @@ class LibraryPresenter(
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getChapters: GetChapters by injectLazy()
 
-    private val libraryManga: List<LibraryManga> = emptyList()
+    private var libraryManga: List<LibraryManga> = emptyList()
 
     private val context = preferences.context
     private val viewContext
@@ -164,7 +165,19 @@ class LibraryPresenter(
             lastLibraryItems = null
             lastAllLibraryItems = null
         }
-        getLibrary()
+
+        presenterScope.launch {
+            getLibraryManga.subscribe().collectLatest { lib ->
+                libraryManga = lib.apply {
+                    if (groupType > BY_DEFAULT) {
+                        distinctBy { it.id }
+                    }
+                }
+
+                updateLibrary()
+            }
+        }
+
         if (!preferences.showLibrarySearchSuggestions().isSet()) {
             DelayedLibrarySuggestionsJob.setupTask(context, true)
         } else if (preferences.showLibrarySearchSuggestions().get() &&
@@ -187,8 +200,8 @@ class LibraryPresenter(
         }
     }
 
-    /** Get favorited manga for library and sort and filter it */
-    fun getLibrary() {
+    /** Update library state and sort and filter it */
+    fun updateLibrary() {
         if (categories.isEmpty()) {
             val dbCategories = db.getCategories().executeAsBlocking()
             if ((dbCategories + Category.createDefault(context)).distinctBy { it.order }.size != dbCategories.size + 1) {
@@ -708,11 +721,7 @@ class LibraryPresenter(
     private suspend fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
         removeArticles = preferences.removeArticles().get()
         val categories = db.getCategories().executeAsBlocking().toMutableList()
-        var libraryManga = getLibraryManga.await()
         val showAll = showAllCategories
-        if (groupType > BY_DEFAULT) {
-            libraryManga = libraryManga.distinctBy { it.id }
-        }
         val hiddenItems = mutableListOf<LibraryItem>()
 
         val items = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
@@ -1076,7 +1085,7 @@ class LibraryPresenter(
             mangaToDelete.forEach { it.favorite = false }
 
             db.insertMangas(mangaToDelete).executeOnIO()
-            getLibrary()
+            updateLibrary()
         }
     }
 
@@ -1102,7 +1111,7 @@ class LibraryPresenter(
     /** Called when Library Service updates a manga, update the item as well */
     fun updateManga() {
         presenterScope.launch {
-            getLibrary()
+            updateLibrary()
         }
     }
 
@@ -1113,7 +1122,7 @@ class LibraryPresenter(
             mangaToAdd.forEach { it.favorite = true }
             db.insertMangas(mangaToAdd).executeOnIO()
             (view as? FilteredLibraryController)?.updateStatsPage()
-            getLibrary()
+            updateLibrary()
             mangaToAdd.forEach { db.insertManga(it).executeAsBlocking() }
         }
     }
@@ -1201,7 +1210,7 @@ class LibraryPresenter(
                     db.insertCategory(category).executeAsBlocking()
                 }
             }
-            getLibrary()
+            updateLibrary()
         }
     }
 
@@ -1235,7 +1244,7 @@ class LibraryPresenter(
             }
             preferences.collapsedDynamicCategories().set(categoriesHidden)
         }
-        getLibrary()
+        updateLibrary()
     }
 
     private fun getDynamicCategoryName(category: Category): String =
@@ -1266,7 +1275,7 @@ class LibraryPresenter(
                 }
             }
         }
-        getLibrary()
+        updateLibrary()
     }
 
     fun allCategoriesExpanded(): Boolean {
@@ -1309,7 +1318,7 @@ class LibraryPresenter(
 
                 mapMangaChapters[manga] = oldChapters
             }
-            getLibrary()
+            updateLibrary()
         }
         return mapMangaChapters
     }
@@ -1321,7 +1330,7 @@ class LibraryPresenter(
             mangaList.forEach { (_, chapters) ->
                 db.updateChaptersProgress(chapters).executeAsBlocking()
             }
-            getLibrary()
+            updateLibrary()
         }
     }
 

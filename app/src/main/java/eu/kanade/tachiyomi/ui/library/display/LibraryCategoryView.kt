@@ -17,7 +17,7 @@ class LibraryCategoryView @JvmOverloads constructor(context: Context, attrs: Att
     override fun initGeneralPreferences() {
         with(binding) {
             showAll.bindToPreference(preferences.showAllCategories()) {
-                controller?.presenter?.getLibrary()
+                controller?.presenter?.updateLibrary()
                 binding.categoryShow.isEnabled = it
             }
             categoryShow.isEnabled = showAll.isChecked
@@ -27,7 +27,7 @@ class LibraryCategoryView @JvmOverloads constructor(context: Context, attrs: Att
             dynamicToBottom.text = context.getString(R.string.move_dynamic_to_bottom)
                 .withSubtitle(context, R.string.when_grouping_by_sources_tags)
             dynamicToBottom.bindToPreference(preferences.collapsedDynamicAtBottom()) {
-                controller?.presenter?.getLibrary()
+                controller?.presenter?.updateLibrary()
             }
             showEmptyCatsFiltering.bindToPreference(preferences.showEmptyCategoriesWhileFiltering()) {
                 controller?.presenter?.requestFilterUpdate()

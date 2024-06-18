@@ -30,3 +30,4 @@
 - Replace ProgressBar with ProgressIndicator from Material3 to improve UI consistency
 - Merge lastFetch and lastRead query into library_view VIEW
 - Update Japenese translation
+- Update dependency com.github.tachiyomiorg:unifile to a9de196cc7

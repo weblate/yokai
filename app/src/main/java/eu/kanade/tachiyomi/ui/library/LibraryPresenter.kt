@@ -184,7 +184,7 @@ class LibraryPresenter(
         presenterScope.launch {
             getLibraryManga.subscribe().collectLatest {
                 libraryManga = it.apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
-                getLibrary()
+                getLibrary(false)
             }
         }
         if (!preferences.showLibrarySearchSuggestions().isSet()) {
@@ -210,7 +210,7 @@ class LibraryPresenter(
     }
 
     /** Get favorited manga for library and sort and filter it */
-    fun getLibrary(forceFetch: Boolean = false) {
+    fun getLibrary(forceFetch: Boolean = true) {
         presenterScope.launch {
             if (categories.isEmpty()) {
                 val dbCategories = getCategories.await()

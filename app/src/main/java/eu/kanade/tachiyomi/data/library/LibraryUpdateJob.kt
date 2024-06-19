@@ -402,7 +402,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             val fetchedChapters = source.getChapterList(manga.copy())
 
             if (fetchedChapters.isNotEmpty()) {
-                val newChapters = syncChaptersWithSource(db, fetchedChapters, manga, source)
+                val newChapters = syncChaptersWithSource(fetchedChapters, manga, source)
                 if (newChapters.first.isNotEmpty()) {
                     if (shouldDownload) {
                         downloadChapters(

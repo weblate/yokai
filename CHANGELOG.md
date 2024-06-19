@@ -28,6 +28,9 @@
 - Update dependency com.google.gms:google-services to v4.4.2
 - Add crashlytics integration for Kermit
 - Replace ProgressBar with ProgressIndicator from Material3 to improve UI consistency
-- Merge lastFetch and lastRead query into library_view VIEW
+- More StorIO to SQLDelight migrations
+  - Merge lastFetch and lastRead query into library_view VIEW
+  - Migrated a few more chapter related queries
+  - Migrated most of manga related queries
 - Update Japenese translation
 - Update dependency com.github.tachiyomiorg:unifile to a9de196cc7

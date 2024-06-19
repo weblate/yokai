@@ -44,6 +44,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.view.RecyclerWindowInsetsListener
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.isControllerVisible
@@ -61,7 +62,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.*
 import kotlin.coroutines.CoroutineContext
 
 class MigrationListController(bundle: Bundle? = null) :
@@ -190,7 +191,6 @@ class MigrationListController(bundle: Bundle? = null) :
                                                 val chapters = source.getChapterList(localManga)
                                                 try {
                                                     syncChaptersWithSource(
-                                                        db,
                                                         chapters,
                                                         localManga,
                                                         source,
@@ -232,7 +232,7 @@ class MigrationListController(bundle: Bundle? = null) :
                                             emptyList()
                                         }
                                         withContext(Dispatchers.IO) {
-                                            syncChaptersWithSource(db, chapters, localManga, source)
+                                            syncChaptersWithSource(chapters, localManga, source)
                                         }
                                         localManga
                                     } else {
@@ -368,7 +368,7 @@ class MigrationListController(bundle: Bundle? = null) :
                 val localManga = smartSearchEngine.networkToLocalManga(manga, source.id)
                 try {
                     val chapters = source.getChapterList(localManga)
-                    syncChaptersWithSource(db, chapters, localManga, source)
+                    withIOContext { syncChaptersWithSource(chapters, localManga, source) }
                 } catch (e: Exception) {
                     return@async null
                 }

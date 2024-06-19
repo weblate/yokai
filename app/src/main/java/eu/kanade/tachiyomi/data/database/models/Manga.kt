@@ -12,6 +12,7 @@ import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.data.updateStrategyAdapter
+import yokai.domain.manga.models.MangaUpdate
 import java.util.*
 
 // TODO: Transform into data class
@@ -326,6 +327,30 @@ interface Manga : SManga {
             value ?: return
             MangaCoverMetadata.addCoverColor(this, value.first, value.second)
         }
+
+    fun toMangaUpdate(): MangaUpdate {
+        return MangaUpdate(
+            id = id!!,
+            source = source,
+            url = url,
+            artist = artist,
+            author = author,
+            description = description,
+            genres = genre?.split(", ").orEmpty(),
+            title = title,
+            status = status,
+            thumbnailUrl = thumbnail_url,
+            favorite = favorite,
+            lastUpdate = last_update,
+            initialized = initialized,
+            viewerFlags = viewer_flags,
+            hideTitle = hide_title,
+            chapterFlags = chapter_flags,
+            dateAdded = date_added,
+            filteredScanlators = filtered_scanlators,
+            updateStrategy = update_strategy,
+        )
+    }
 
     companion object {
 

@@ -53,10 +53,10 @@ import eu.kanade.tachiyomi.util.manga.MangaUtil
 import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.launchUI
+import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import kotlinx.coroutines.Dispatchers
@@ -74,6 +74,8 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapters
 import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.storage.StorageManager
 import java.io.File
 import java.io.FileOutputStream
@@ -92,6 +94,7 @@ class MangaDetailsPresenter(
 ) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
     private val getChapters: GetChapters by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
 
     private val customMangaManager: CustomMangaManager by injectLazy()
     private val mangaShortcutManager: MangaShortcutManager by injectLazy()
@@ -404,7 +407,7 @@ class MangaDetailsPresenter(
             }
             val finChapters = chapters.await()
             if (finChapters.isNotEmpty()) {
-                val newChapters = syncChaptersWithSource(db, finChapters, manga, source)
+                val newChapters = withIOContext { syncChaptersWithSource(finChapters, manga, source) }
                 if (newChapters.first.isNotEmpty()) {
                     if (manga.shouldDownloadNewChapters(db, preferences)) {
                         downloadChapters(
@@ -469,7 +472,7 @@ class MangaDetailsPresenter(
             }
             isLoading = false
             try {
-                syncChaptersWithSource(db, chapters, manga, source)
+                syncChaptersWithSource(chapters, manga, source)
 
                 getChapters()
                 withContext(Dispatchers.Main) {
@@ -555,14 +558,14 @@ class MangaDetailsPresenter(
         if (mangaSortMatchesDefault()) {
             manga.setSortToGlobal()
         }
-        asyncUpdateMangaAndChapters()
+        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
     }
 
     fun setGlobalChapterSort(sort: Int, descend: Boolean) {
         preferences.sortChapterOrder().set(sort)
         preferences.chaptersDescAsDefault().set(descend)
         manga.setSortToGlobal()
-        asyncUpdateMangaAndChapters()
+        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
     }
 
     fun mangaSortMatchesDefault(): Boolean {
@@ -583,7 +586,7 @@ class MangaDetailsPresenter(
 
     fun resetSortingToDefault() {
         manga.setSortToGlobal()
-        asyncUpdateMangaAndChapters()
+        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
     }
 
     /**
@@ -613,7 +616,7 @@ class MangaDetailsPresenter(
         if (mangaFilterMatchesDefault()) {
             manga.setFilterToGlobal()
         }
-        asyncUpdateMangaAndChapters()
+        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
     }
 
     /**
@@ -623,7 +626,7 @@ class MangaDetailsPresenter(
     fun hideTitle(hide: Boolean) {
         manga.displayMode = if (hide) Manga.CHAPTER_DISPLAY_NUMBER else Manga.CHAPTER_DISPLAY_NAME
         manga.setFilterToLocal()
-        db.updateChapterFlags(manga).executeAsBlocking()
+        presenterScope.launchIO { updateManga.await(MangaUpdate(manga.id!!, chapterFlags = manga.chapter_flags)) }
         if (mangaFilterMatchesDefault()) {
             manga.setFilterToGlobal()
         }
@@ -632,7 +635,7 @@ class MangaDetailsPresenter(
 
     fun resetFilterToDefault() {
         manga.setFilterToGlobal()
-        asyncUpdateMangaAndChapters()
+        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
     }
 
     fun setGlobalChapterFilters(
@@ -663,15 +666,13 @@ class MangaDetailsPresenter(
         )
         preferences.hideChapterTitlesByDefault().set(manga.hideChapterTitles)
         manga.setFilterToGlobal()
-        asyncUpdateMangaAndChapters()
+        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
     }
 
-    private fun asyncUpdateMangaAndChapters(justChapters: Boolean = false) {
-        presenterScope.launch {
-            if (!justChapters) db.updateChapterFlags(manga).executeOnIO()
-            getChapters()
-            withContext(Dispatchers.Main) { view?.updateChapters(chapters) }
-        }
+    private suspend fun asyncUpdateMangaAndChapters(justChapters: Boolean = false) {
+        if (!justChapters) updateManga.await(MangaUpdate(manga.id!!, chapterFlags = manga.chapter_flags))
+        getChapters()
+        withUIContext { view?.updateChapters(chapters) }
     }
 
     private fun isScanlatorFiltered() = manga.filtered_scanlators?.isNotEmpty() == true
@@ -690,13 +691,15 @@ class MangaDetailsPresenter(
     }
 
     fun setScanlatorFilter(filteredScanlators: Set<String>) {
-        val manga = manga
-        MangaUtil.setScanlatorFilter(
-            db,
-            manga,
-            if (filteredScanlators.size == allChapterScanlators.size) emptySet() else filteredScanlators
-        )
-        asyncUpdateMangaAndChapters()
+        presenterScope.launchIO {
+            val manga = manga
+            MangaUtil.setScanlatorFilter(
+                updateManga,
+                manga,
+                if (filteredScanlators.size == allChapterScanlators.size) emptySet() else filteredScanlators
+            )
+            asyncUpdateMangaAndChapters()
+        }
     }
 
     fun toggleFavorite(): Boolean {
@@ -802,11 +805,23 @@ class MangaDetailsPresenter(
                     }
                 }
                 manga.viewer_flags = -1
-                db.updateViewerFlags(manga).executeAsBlocking()
+                presenterScope.launchIO { updateManga.await(MangaUpdate(manga.id!!, viewerFlags = manga.viewer_flags)) }
             }
             manga.status = status ?: SManga.UNKNOWN
             LocalSource(downloadManager.context).updateMangaInfo(manga, lang)
-            db.updateMangaInfo(manga).executeAsBlocking()
+            presenterScope.launchIO {
+                updateManga.await(
+                    MangaUpdate(
+                        manga.id!!,
+                        title = manga.originalTitle,
+                        author = manga.originalAuthor,
+                        artist = manga.originalArtist,
+                        description = manga.originalDescription,
+                        genres = manga.originalGenre?.split(", ").orEmpty(),
+                        status = manga.originalStatus,
+                    )
+                )
+            }
         } else {
             var genre = if (!tags.isNullOrEmpty() && tags.joinToString(", ") != manga.originalGenre) {
                 tags.map { tag -> tag.replaceFirstChar { it.titlecase(Locale.getDefault()) } }
@@ -817,7 +832,7 @@ class MangaDetailsPresenter(
             if (seriesType != null) {
                 genre = setSeriesType(seriesType, genre?.joinToString())
                 manga.viewer_flags = -1
-                db.updateViewerFlags(manga).executeAsBlocking()
+                presenterScope.launchIO { updateManga.await(MangaUpdate(manga.id!!, viewerFlags = manga.viewer_flags)) }
             }
             val manga = CustomMangaInfo(
                 mangaId = manga.id!!,

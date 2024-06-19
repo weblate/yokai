@@ -17,14 +17,24 @@ import eu.kanade.tachiyomi.util.manga.MangaUtil
 import eu.kanade.tachiyomi.util.system.launchNow
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.category.interactor.GetCategories
+import yokai.domain.chapter.interactor.GetChapters
 import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.InsertManga
+import yokai.domain.manga.interactor.UpdateManga
 import kotlin.math.max
 
 class MangaBackupRestorer(
     private val db: DatabaseHelper = Injekt.get(),
     private val customMangaManager: CustomMangaManager = Injekt.get(),
+    private val getCategories: GetCategories = Injekt.get(),
+    private val getChapters: GetChapters = Injekt.get(),
+    private val getManga: GetManga = Injekt.get(),
+    private val insertManga: InsertManga = Injekt.get(),
+    private val updateManga: UpdateManga = Injekt.get(),
 ) {
-    fun restoreManga(
+    suspend fun restoreManga(
         backupManga: BackupManga,
         backupCategories: List<BackupCategory>,
         onComplete: (Manga) -> Unit,
@@ -40,19 +50,19 @@ class MangaBackupRestorer(
         val filteredScanlators = backupManga.excludedScanlators
 
         try {
-            val dbManga = db.getManga(manga.url, manga.source).executeAsBlocking()
+            val dbManga = getManga.awaitByUrlAndSource(manga.url, manga.source)
             if (dbManga == null) {
                 // Manga not in database
-                restoreExistingManga(manga, chapters, categories, history, tracks, backupCategories, filteredScanlators, customManga)
+                restoreNewManga(manga, chapters, categories, history, tracks, backupCategories, filteredScanlators, customManga)
             } else {
                 // Manga in database
                 // Copy information from manga already in database
                 manga.id = dbManga.id
                 manga.filtered_scanlators = dbManga.filtered_scanlators
                 manga.copyFrom(dbManga)
-                db.insertManga(manga).executeAsBlocking()
+                updateManga.await(manga.toMangaUpdate())
                 // Fetch rest of manga information
-                restoreNewManga(manga, chapters, categories, history, tracks, backupCategories, filteredScanlators, customManga)
+                restoreExistingManga(manga, chapters, categories, history, tracks, backupCategories, filteredScanlators, customManga)
             }
         } catch (e: Exception) {
             onError(manga, e)
@@ -69,7 +79,7 @@ class MangaBackupRestorer(
      * @param chapters chapters of manga that needs updating
      * @param categories categories that need updating
      */
-    private fun restoreExistingManga(
+    private suspend fun restoreNewManga(
         manga: Manga,
         chapters: List<Chapter>,
         categories: List<Int>,
@@ -81,7 +91,7 @@ class MangaBackupRestorer(
     ) {
         val fetchedManga = manga.also {
             it.initialized = it.description != null
-            it.id = db.insertManga(it).executeAsBlocking().insertedId()
+            it.id = insertManga.await(it)
         }
         fetchedManga.id ?: return
 
@@ -89,7 +99,7 @@ class MangaBackupRestorer(
         restoreExtras(fetchedManga, categories, history, tracks, backupCategories, filteredScanlators, customManga)
     }
 
-    private fun restoreNewManga(
+    private suspend fun restoreExistingManga(
         backupManga: Manga,
         chapters: List<Chapter>,
         categories: List<Int>,
@@ -103,8 +113,8 @@ class MangaBackupRestorer(
         restoreExtras(backupManga, categories, history, tracks, backupCategories, filteredScanlators, customManga)
     }
 
-    private fun restoreChapters(manga: Manga, chapters: List<Chapter>) {
-        val dbChapters = db.getChapters(manga).executeAsBlocking()
+    private suspend fun restoreChapters(manga: Manga, chapters: List<Chapter>) {
+        val dbChapters = getChapters.await(manga)
 
         chapters.forEach { chapter ->
             val dbChapter = dbChapters.find { it.url == chapter.url }
@@ -130,7 +140,7 @@ class MangaBackupRestorer(
         newChapters[false]?.let { db.insertChapters(it).executeAsBlocking() }
     }
 
-    private fun restoreExtras(
+    private suspend fun restoreExtras(
         manga: Manga,
         categories: List<Int>,
         history: List<BackupHistory>,
@@ -157,8 +167,8 @@ class MangaBackupRestorer(
      * @param manga the manga whose categories have to be restored.
      * @param categories the categories to restore.
      */
-    private fun restoreCategories(manga: Manga, categories: List<Int>, backupCategories: List<BackupCategory>) {
-        val dbCategories = db.getCategories().executeAsBlocking()
+    private suspend fun restoreCategories(manga: Manga, categories: List<Int>, backupCategories: List<BackupCategory>) {
+        val dbCategories = getCategories.await()
         val mangaCategoriesToUpdate = ArrayList<MangaCategory>(categories.size)
         categories.forEach { backupCategoryOrder ->
             backupCategories.firstOrNull {
@@ -184,7 +194,7 @@ class MangaBackupRestorer(
      *
      * @param history list containing history to be restored
      */
-    internal fun restoreHistoryForManga(history: List<BackupHistory>) {
+    internal suspend fun restoreHistoryForManga(history: List<BackupHistory>) {
         // List containing history to be updated
         val historyToBeUpdated = ArrayList<History>(history.size)
         for ((url, lastRead, readDuration) in history) {
@@ -216,7 +226,7 @@ class MangaBackupRestorer(
      * @param manga the manga whose sync have to be restored.
      * @param tracks the track list to restore.
      */
-    private fun restoreTrackForManga(manga: Manga, tracks: List<Track>) {
+    private suspend fun restoreTrackForManga(manga: Manga, tracks: List<Track>) {
         // Fix foreign keys with the current manga id
         tracks.map { it.manga_id = manga.id!! }
 
@@ -253,8 +263,8 @@ class MangaBackupRestorer(
         }
     }
 
-    private fun restoreFilteredScanlatorsForManga(manga: Manga, filteredScanlators: List<String>) {
+    private suspend fun restoreFilteredScanlatorsForManga(manga: Manga, filteredScanlators: List<String>) {
         val actualList = ChapterUtil.getScanlators(manga.filtered_scanlators) + filteredScanlators
-        MangaUtil.setScanlatorFilter(db, manga, actualList.toSet())
+        MangaUtil.setScanlatorFilter(updateManga, manga, actualList.toSet())
     }
 }

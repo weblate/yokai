@@ -75,6 +75,8 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapters
 import yokai.domain.download.DownloadPreferences
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.storage.StorageManager
 import java.util.*
 import java.util.concurrent.*
@@ -94,6 +96,7 @@ class ReaderViewModel(
     private val downloadPreferences: DownloadPreferences = Injekt.get(),
 ) : ViewModel() {
     private val getChapters: GetChapters by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
 
     private val mutableState = MutableStateFlow(State())
     val state = mutableState.asStateFlow()
@@ -333,7 +336,6 @@ class ReaderViewModel(
                 val chapterId: Long
                 if (chapters.isNotEmpty()) {
                     val newChapters = syncChaptersWithSource(
-                        db,
                         chapters,
                         manga,
                         delegatedSource.delegate!!,
@@ -678,7 +680,7 @@ class ReaderViewModel(
                 manga.viewer_flags = 0
             }
             manga.readingModeType = if (cantSwitchToLTR) 0 else readerType
-            db.updateViewerFlags(manga).asRxObservable().subscribe()
+            viewModelScope.launchIO { updateManga.await(MangaUpdate(manga.id!!, viewerFlags = manga.viewer_flags)) }
         }
         return if (manga.readingModeType == 0) default else manga.readingModeType
     }
@@ -689,9 +691,9 @@ class ReaderViewModel(
     fun setMangaReadingMode(readingModeType: Int) {
         val manga = manga ?: return
 
-        runBlocking(Dispatchers.IO) {
+        viewModelScope.launchIO {
             manga.readingModeType = readingModeType
-            db.updateViewerFlags(manga).executeAsBlocking()
+            updateManga.await(MangaUpdate(manga.id!!, viewerFlags = manga.viewer_flags))
             val currChapters = state.value.viewerChapters
             if (currChapters != null) {
                 // Save current page
@@ -726,12 +728,11 @@ class ReaderViewModel(
     fun setMangaOrientationType(rotationType: Int) {
         val manga = manga ?: return
         this.manga?.orientationType = rotationType
-        db.updateViewerFlags(manga).executeAsBlocking()
 
         Logger.i { "Manga orientation is ${manga.orientationType}" }
 
         viewModelScope.launchIO {
-            db.updateViewerFlags(manga).executeAsBlocking()
+            updateManga.await(MangaUpdate(manga.id!!, viewerFlags = manga.viewer_flags))
             val currChapters = state.value.viewerChapters
             if (currChapters != null) {
                 mutableState.update {

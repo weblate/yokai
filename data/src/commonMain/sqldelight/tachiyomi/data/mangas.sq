@@ -30,6 +30,16 @@ findAll:
 SELECT *
 FROM mangas;
 
+findByUrlAndSource:
+SELECT *
+FROM mangas
+WHERE url = :url AND source = :source;
+
+findById:
+SELECT *
+FROM mangas
+WHERE _id = :mangaId;
+
 insert:
 INSERT INTO mangas (source, url, artist, author, description, genre, title, status, thumbnail_url, favorite, last_update, initialized, viewer, hide_title, chapter_flags, date_added, filtered_scanlators, update_strategy)
 VALUES (:source, :url, :artist, :author, :description, :genre, :title, :status, :thumbnailUrl, :favorite, :lastUpdate, :initialized, :viewer, :hideTitle, :chapterFlags, :dateAdded, :filteredScanlators, :updateStrategy);

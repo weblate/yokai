@@ -13,8 +13,11 @@ import yokai.data.manga.MangaRepositoryImpl
 import yokai.domain.category.CategoryRepository
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.ChapterRepository
+import yokai.domain.chapter.interactor.DeleteChapters
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.chapter.interactor.InsertChapters
+import yokai.domain.chapter.interactor.UpdateChapters
 import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.extension.repo.ExtensionRepoRepository
 import yokai.domain.extension.repo.interactor.CreateExtensionRepo
@@ -30,6 +33,7 @@ import yokai.domain.library.custom.interactor.GetCustomManga
 import yokai.domain.library.custom.interactor.RelinkCustomManga
 import yokai.domain.manga.MangaRepository
 import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
 
@@ -52,13 +56,17 @@ class DomainModule : InjektModule {
         addFactory { RelinkCustomManga(get()) }
 
         addSingletonFactory<MangaRepository> { MangaRepositoryImpl(get()) }
+        addFactory { GetManga(get()) }
         addFactory { GetLibraryManga(get()) }
         addFactory { InsertManga(get()) }
         addFactory { UpdateManga(get()) }
 
         addSingletonFactory<ChapterRepository> { ChapterRepositoryImpl(get()) }
+        addFactory { DeleteChapters(get()) }
         addFactory { GetAvailableScanlators(get()) }
         addFactory { GetChapters(get()) }
+        addFactory { InsertChapters(get()) }
+        addFactory { UpdateChapters(get()) }
 
         addSingletonFactory<CategoryRepository> { CategoryRepositoryImpl(get()) }
         addFactory { GetCategories(get()) }

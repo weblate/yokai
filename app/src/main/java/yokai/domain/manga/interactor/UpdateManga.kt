@@ -6,6 +6,6 @@ import yokai.domain.manga.models.MangaUpdate
 class UpdateManga (
     private val mangaRepository: MangaRepository,
 ) {
-    suspend fun update(update: MangaUpdate) = mangaRepository.update(update)
-    suspend fun updateAll(updates: List<MangaUpdate>) = mangaRepository.updateAll(updates)
+    suspend fun await(update: MangaUpdate) = mangaRepository.update(update)
+    suspend fun awaitAll(updates: List<MangaUpdate>) = mangaRepository.updateAll(updates)
 }

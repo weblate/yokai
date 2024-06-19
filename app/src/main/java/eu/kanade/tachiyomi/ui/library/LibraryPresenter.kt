@@ -1136,7 +1136,7 @@ class LibraryPresenter(
             val mangaToDelete = mangas.distinctBy { it.id }
                 .mapNotNull { if (it.id != null) MangaUpdate(it.id!!, favorite = false) else null }
 
-            withIOContext { updateManga.updateAll(mangaToDelete) }
+            withIOContext { updateManga.awaitAll(mangaToDelete) }
             getLibrary()
         }
     }
@@ -1173,7 +1173,7 @@ class LibraryPresenter(
             val mangaToAdd = mangas.distinctBy { it.id }
                 .mapNotNull { if (it.id != null) MangaUpdate(it.id!!, favorite = true) else null }
 
-            withIOContext { updateManga.updateAll(mangaToAdd) }
+            withIOContext { updateManga.awaitAll(mangaToAdd) }
             (view as? FilteredLibraryController)?.updateStatsPage()
             getLibrary()
         }
@@ -1504,8 +1504,8 @@ class LibraryPresenter(
         fun updateDB() {
             val db: DatabaseHelper = Injekt.get()
             val getLibraryManga: GetLibraryManga by injectLazy()
+            val libraryManga = runBlocking { getLibraryManga.await() }
             db.inTransaction {
-                val libraryManga = runBlocking { getLibraryManga.await() }
                 libraryManga.forEach { manga ->
                     if (manga.date_added == 0L) {
                         val chapters = db.getChapters(manga).executeAsBlocking()
@@ -1529,8 +1529,8 @@ class LibraryPresenter(
             val db: DatabaseHelper = Injekt.get()
             val cc: CoverCache = Injekt.get()
             val getLibraryManga: GetLibraryManga by injectLazy()
+            val libraryManga = runBlocking { getLibraryManga.await() }
             db.inTransaction {
-                val libraryManga = runBlocking { getLibraryManga.await() }
                 libraryManga.forEach { manga ->
                     if (manga.thumbnail_url?.startsWith("custom", ignoreCase = true) == true) {
                         val file = cc.getCoverFile(manga)

@@ -4,16 +4,17 @@ import eu.kanade.tachiyomi.data.backup.models.BackupCategory
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.category.interactor.GetCategories
 
 class CategoriesBackupRestorer(
     private val db: DatabaseHelper = Injekt.get(),
+    private val getCategories: GetCategories = Injekt.get(),
 ) {
-    @Suppress("RedundantSuspendModifier")
     suspend fun restoreCategories(backupCategories: List<BackupCategory>, onComplete: () -> Unit) {
+        // Get categories from file and from db
+        // Do it outside of transaction because StorIO might hang because we're using SQLDelight
+        val dbCategories = getCategories.await()
         db.inTransaction {
-            // Get categories from file and from db
-            val dbCategories = db.getCategories().executeAsBlocking()
-
             // Iterate over them
             backupCategories.map { it.getCategoryImpl() }.forEach { category ->
                 // Used to know if the category is already in the db

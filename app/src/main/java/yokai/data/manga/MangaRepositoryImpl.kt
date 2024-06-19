@@ -11,10 +11,16 @@ import yokai.domain.manga.MangaRepository
 import yokai.domain.manga.models.MangaUpdate
 
 class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepository {
-    override suspend fun getManga(): List<Manga> =
+    override suspend fun getMangaList(): List<Manga> =
         handler.awaitList { mangasQueries.findAll(Manga::mapper) }
 
-    override fun getMangaAsFlow(): Flow<List<Manga>> =
+    override suspend fun getMangaByUrlAndSource(url: String, source: Long): Manga? =
+        handler.awaitOneOrNull { mangasQueries.findByUrlAndSource(url, source, Manga::mapper) }
+
+    override suspend fun getMangaById(id: Long): Manga? =
+        handler.awaitOneOrNull { mangasQueries.findById(id, Manga::mapper) }
+
+    override fun getMangaListAsFlow(): Flow<List<Manga>> =
         handler.subscribeToList { mangasQueries.findAll(Manga::mapper) }
 
     override suspend fun getLibraryManga(): List<LibraryManga> =

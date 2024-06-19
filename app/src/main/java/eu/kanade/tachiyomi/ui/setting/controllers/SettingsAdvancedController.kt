@@ -79,6 +79,7 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences.ExtensionInstaller
 import yokai.domain.extension.interactor.TrustExtension
+import yokai.domain.manga.interactor.GetManga
 import java.io.File
 
 class SettingsAdvancedController : SettingsLegacyController() {
@@ -87,6 +88,8 @@ class SettingsAdvancedController : SettingsLegacyController() {
     private val networkPreferences: NetworkPreferences by injectLazy()
 
     private val db: DatabaseHelper by injectLazy()
+
+    private val getManga: GetManga by injectLazy()
 
     private val downloadManager: DownloadManager by injectLazy()
 
@@ -404,7 +407,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
         if (job?.isActive == true) return
         activity?.toast(R.string.starting_cleanup)
         job = GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT) {
-            val mangaList = db.getMangas().executeAsBlocking()
+            val mangaList = getManga.awaitAll()
             val sourceManager: SourceManager = Injekt.get()
             val downloadProvider = DownloadProvider(activity!!)
             var foldersCleared = 0

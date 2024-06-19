@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.source.SourceManager
@@ -12,9 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.storage.StorageManager
 import java.util.concurrent.*
 
@@ -131,8 +132,8 @@ class DownloadCache(
                 onlineSources.find { provider.getSourceDirName(it).equals(entry.key, ignoreCase = true) }?.id
             }
 
-        val db: DatabaseHelper by injectLazy()
-        val mangas = db.getMangas().executeAsBlocking().groupBy { it.source }
+        val getManga: GetManga by injectLazy()
+        val mangas = runBlocking(Dispatchers.IO) { getManga.awaitAll().groupBy { it.source } }
 
         sourceDirs.forEach { sourceValue ->
             val sourceMangaRaw = mangas[sourceValue.key]?.toMutableSet() ?: return@forEach

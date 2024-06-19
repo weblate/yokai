@@ -16,15 +16,6 @@ import eu.kanade.tachiyomi.data.database.tables.MangaTable
 
 interface MangaQueries : DbProvider {
 
-    fun getMangas() = db.get()
-        .listOfObjects(Manga::class.java)
-        .withQuery(
-            Query.builder()
-                .table(MangaTable.TABLE)
-                .build(),
-        )
-        .prepare()
-
     fun getDuplicateLibraryManga(manga: Manga) = db.get()
         .`object`(Manga::class.java)
         .withQuery(

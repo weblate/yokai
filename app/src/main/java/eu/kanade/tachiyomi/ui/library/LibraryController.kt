@@ -1384,7 +1384,7 @@ open class LibraryController(
 
     private fun onRefresh() {
         showCategories(false)
-        presenter.getLibrary()
+        presenter.getLibrary(true)
         destroyActionModeIfNeeded()
     }
 
@@ -1796,7 +1796,7 @@ open class LibraryController(
         val category = (adapter.getItem(position) as? LibraryHeaderItem)?.category ?: return
         if (!category.isDynamic) {
             ManageCategoryDialog(category) {
-                presenter.getLibrary()
+                presenter.getLibrary(true)
             }.showDialog(router)
         }
     }

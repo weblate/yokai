@@ -1,6 +1,7 @@
 package yokai.core.migration.migrations
 
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
+import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.core.migration.Migration
 import yokai.core.migration.MigrationContext
 
@@ -9,7 +10,7 @@ class CustomInfoMigration : Migration {
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
         try {
-            LibraryPresenter.updateCustoms()
+            withIOContext { LibraryPresenter.updateCustoms() }
         } catch (e: Exception) {
             return false
         }

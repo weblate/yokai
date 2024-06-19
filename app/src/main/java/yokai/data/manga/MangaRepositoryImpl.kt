@@ -20,6 +20,9 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
     override suspend fun getMangaById(id: Long): Manga? =
         handler.awaitOneOrNull { mangasQueries.findById(id, Manga::mapper) }
 
+    override suspend fun getFavorites(): List<Manga> =
+        handler.awaitList { mangasQueries.findFavorites(Manga::mapper) }
+
     override fun getMangaListAsFlow(): Flow<List<Manga>> =
         handler.subscribeToList { mangasQueries.findAll(Manga::mapper) }
 

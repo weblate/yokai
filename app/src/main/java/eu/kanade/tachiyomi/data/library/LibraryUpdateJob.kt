@@ -75,6 +75,7 @@ import kotlinx.coroutines.sync.withPermit
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.manga.interactor.UpdateManga
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
@@ -92,6 +93,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private val trackManager: TrackManager = Injekt.get()
     private val mangaShortcutManager: MangaShortcutManager = Injekt.get()
     private val getLibraryManga: GetLibraryManga = Injekt.get()
+    private val updateManga: UpdateManga = Injekt.get()
 
     private var extraDeferredJobs = mutableListOf<Deferred<Any>>()
 
@@ -277,7 +279,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                                         .build()
                                 }
                             context.imageLoader.execute(request)
-                            db.insertManga(manga).executeAsBlocking()
+                            updateManga.await(manga.toMangaUpdate())
                         }
                     }
                 }

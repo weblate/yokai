@@ -7,6 +7,7 @@ import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.updater.AppUpdateJob
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
+import eu.kanade.tachiyomi.util.system.withIOContext
 import yokai.core.migration.Migration
 import yokai.core.migration.MigrationContext
 
@@ -18,7 +19,9 @@ class WorkManagerMigration : Migration {
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
         val context: App = migrationContext.get() ?: return false
-        LibraryPresenter.updateDB()
+        withIOContext {
+            LibraryPresenter.updateDB()
+        }
         if (BuildConfig.INCLUDE_UPDATER) {
             AppUpdateJob.setupTask(context)
         }

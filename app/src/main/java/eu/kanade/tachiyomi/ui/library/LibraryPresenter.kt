@@ -50,6 +50,7 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -59,7 +60,10 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.chapter.interactor.UpdateChapters
+import yokai.domain.chapter.models.ChapterUpdate
 import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.util.isLewd
@@ -88,9 +92,10 @@ class LibraryPresenter(
     private val getCategories: GetCategories by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getChapters: GetChapters by injectLazy()
+    private val updateChapter: UpdateChapters by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
-    private val libraryManga: List<LibraryManga> = emptyList()
+    private var libraryManga: List<LibraryManga> = emptyList()
 
     private val context = preferences.context
     private val viewContext
@@ -176,7 +181,12 @@ class LibraryPresenter(
             lastLibraryItems = null
             lastAllLibraryItems = null
         }
-        getLibrary()
+        presenterScope.launch {
+            getLibraryManga.subscribe().collectLatest {
+                libraryManga = it.apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
+                getLibrary()
+            }
+        }
         if (!preferences.showLibrarySearchSuggestions().isSet()) {
             DelayedLibrarySuggestionsJob.setupTask(context, true)
         } else if (preferences.showLibrarySearchSuggestions().get() &&
@@ -200,7 +210,7 @@ class LibraryPresenter(
     }
 
     /** Get favorited manga for library and sort and filter it */
-    fun getLibrary() {
+    fun getLibrary(forceFetch: Boolean = false) {
         presenterScope.launch {
             if (categories.isEmpty()) {
                 val dbCategories = getCategories.await()
@@ -210,7 +220,7 @@ class LibraryPresenter(
                 categories = lastCategories ?: getCategories.await().toMutableList()
             }
 
-            val (library, hiddenItems) = withIOContext { getLibraryFromDB() }
+            val (library, hiddenItems) = withIOContext { getLibraryFromDB(forceFetch) }
             setDownloadCount(library)
             setUnreadBadge(library)
             setSourceLanguage(library)
@@ -766,14 +776,12 @@ class LibraryPresenter(
      *
      * @return an list of all the manga in a itemized form.
      */
-    private suspend fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
+    private suspend fun getLibraryFromDB(forceFetch: Boolean = false): Pair<List<LibraryItem>, List<LibraryItem>> {
         removeArticles = preferences.removeArticles().get()
         val categories = getCategories.await().toMutableList()
-        var libraryManga = getLibraryManga.await()
+        if (forceFetch)
+            libraryManga = getLibraryManga.await().apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
         val showAll = showAllCategories
-        if (groupType > BY_DEFAULT) {
-            libraryManga = libraryManga.distinctBy { it.id }
-        }
         val hiddenItems = mutableListOf<LibraryItem>()
 
         val items = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
@@ -1222,6 +1230,7 @@ class LibraryPresenter(
         }
     }
 
+    // TODO: Use SQLDelight
     /** Shift a manga's category via drag & drop */
     fun moveMangaToCategory(
         manga: LibraryManga,
@@ -1360,15 +1369,14 @@ class LibraryPresenter(
         val mapMangaChapters = HashMap<Manga, List<Chapter>>()
         presenterScope.launchIO {
             mangaList.forEach { manga ->
-                val oldChapters = db.getChapters(manga).executeAsBlocking()
-                val chapters = oldChapters.copy()
-                chapters.forEach {
-                    it.read = markRead
-                    it.last_page_read = 0
+                val chapters = getChapters.await(manga)
+                val updates = chapters.copy().mapNotNull {
+                    if (it.id == null) return@mapNotNull null
+                    ChapterUpdate(it.id!!, read = markRead, lastPageRead = 0)
                 }
-                db.updateChaptersProgress(chapters).executeAsBlocking()
+                updateChapter.awaitAll(updates)
 
-                mapMangaChapters[manga] = oldChapters
+                mapMangaChapters[manga] = chapters
             }
             getLibrary()
         }
@@ -1379,9 +1387,13 @@ class LibraryPresenter(
         mangaList: HashMap<Manga, List<Chapter>>,
     ) {
         launchIO {
-            mangaList.forEach { (_, chapters) ->
-                db.updateChaptersProgress(chapters).executeAsBlocking()
-            }
+            val updates = mangaList.values.map { chapters ->
+                chapters.mapNotNull {
+                    if (it.id == null) return@mapNotNull null
+                    ChapterUpdate(it.id!!, read = it.read, lastPageRead = it.last_page_read.toLong())
+                }
+            }.flatten()
+            updateChapter.awaitAll(updates)
             getLibrary()
         }
     }
@@ -1501,46 +1513,48 @@ class LibraryPresenter(
         }
 
         /** Give library manga to a date added based on min chapter fetch */
-        fun updateDB() {
-            val db: DatabaseHelper = Injekt.get()
-            val getLibraryManga: GetLibraryManga by injectLazy()
-            val libraryManga = runBlocking { getLibraryManga.await() }
-            db.inTransaction {
-                libraryManga.forEach { manga ->
-                    if (manga.date_added == 0L) {
-                        val chapters = db.getChapters(manga).executeAsBlocking()
-                        manga.date_added = chapters.minByOrNull { it.date_fetch }?.date_fetch ?: 0L
-                        db.insertManga(manga).executeAsBlocking()
-                    }
+        suspend fun updateDB(
+            getChapters: GetChapters = Injekt.get(),
+            getLibraryManga: GetLibraryManga = Injekt.get(),
+            updateManga: UpdateManga = Injekt.get(),
+        ) {
+            val libraryManga = getLibraryManga.await()
+            libraryManga.forEach { manga ->
+                if (manga.id == null) return@forEach
+                if (manga.date_added == 0L) {
+                    val chapters = getChapters.await(manga)
+                    manga.date_added = chapters.minByOrNull { it.date_fetch }?.date_fetch ?: 0L
+                    updateManga.await(MangaUpdate(manga.id!!, dateAdded = manga.date_added))
                 }
             }
         }
 
-        suspend fun updateRatiosAndColors() {
-            val db: DatabaseHelper = Injekt.get()
-            val libraryManga = db.getFavoriteMangas().executeOnIO()
+        suspend fun updateRatiosAndColors(
+            getManga: GetManga = Injekt.get(),
+        ) {
+            val libraryManga = getManga.awaitFavorites()
             libraryManga.forEach { manga ->
                 try { withUIContext { MangaCoverMetadata.setRatioAndColors(manga) } } catch (_: Exception) { }
             }
             MangaCoverMetadata.savePrefs()
         }
 
-        fun updateCustoms() {
-            val db: DatabaseHelper = Injekt.get()
-            val cc: CoverCache = Injekt.get()
+        suspend fun updateCustoms(
+            cc: CoverCache = Injekt.get(),
+            updateManga: UpdateManga = Injekt.get(),
+        ) {
             val getLibraryManga: GetLibraryManga by injectLazy()
-            val libraryManga = runBlocking { getLibraryManga.await() }
-            db.inTransaction {
-                libraryManga.forEach { manga ->
-                    if (manga.thumbnail_url?.startsWith("custom", ignoreCase = true) == true) {
-                        val file = cc.getCoverFile(manga)
-                        if (file.exists()) {
-                            file.renameTo(cc.getCustomCoverFile(manga))
-                        }
-                        manga.thumbnail_url =
-                            manga.thumbnail_url!!.lowercase(Locale.ROOT).substringAfter("custom-")
-                        db.insertManga(manga).executeAsBlocking()
+            val libraryManga = getLibraryManga.await()
+            libraryManga.forEach { manga ->
+                if (manga.id == null) return@forEach
+                if (manga.thumbnail_url?.startsWith("custom", ignoreCase = true) == true) {
+                    val file = cc.getCoverFile(manga)
+                    if (file.exists()) {
+                        file.renameTo(cc.getCustomCoverFile(manga))
                     }
+                    manga.thumbnail_url =
+                        manga.thumbnail_url!!.lowercase(Locale.ROOT).substringAfter("custom-")
+                    updateManga.await(MangaUpdate(manga.id!!, thumbnailUrl = manga.thumbnail_url))
                 }
             }
         }

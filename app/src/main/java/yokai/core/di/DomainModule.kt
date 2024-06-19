@@ -30,6 +30,8 @@ import yokai.domain.library.custom.interactor.GetCustomManga
 import yokai.domain.library.custom.interactor.RelinkCustomManga
 import yokai.domain.manga.MangaRepository
 import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.manga.interactor.InsertManga
+import yokai.domain.manga.interactor.UpdateManga
 
 class DomainModule : InjektModule {
     override fun InjektRegistrar.registerInjectables() {
@@ -51,6 +53,8 @@ class DomainModule : InjektModule {
 
         addSingletonFactory<MangaRepository> { MangaRepositoryImpl(get()) }
         addFactory { GetLibraryManga(get()) }
+        addFactory { InsertManga(get()) }
+        addFactory { UpdateManga(get()) }
 
         addSingletonFactory<ChapterRepository> { ChapterRepositoryImpl(get()) }
         addFactory { GetAvailableScanlators(get()) }

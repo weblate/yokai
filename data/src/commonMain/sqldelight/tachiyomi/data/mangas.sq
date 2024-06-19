@@ -29,3 +29,32 @@ CREATE INDEX library_favorite_index ON mangas(favorite) WHERE favorite = 1;
 findAll:
 SELECT *
 FROM mangas;
+
+insert:
+INSERT INTO mangas (source, url, artist, author, description, genre, title, status, thumbnail_url, favorite, last_update, initialized, viewer, hide_title, chapter_flags, date_added, filtered_scanlators, update_strategy)
+VALUES (:source, :url, :artist, :author, :description, :genre, :title, :status, :thumbnailUrl, :favorite, :lastUpdate, :initialized, :viewer, :hideTitle, :chapterFlags, :dateAdded, :filteredScanlators, :updateStrategy);
+
+update:
+UPDATE mangas SET
+    source = coalesce(:source, source),
+    url = coalesce(:url, url),
+    artist = coalesce(:artist, artist),
+    author = coalesce(:author, author),
+    description = coalesce(:description, description),
+    genre = coalesce(:genre, genre),
+    title = coalesce(:title, title),
+    status = coalesce(:status, status),
+    thumbnail_url = coalesce(:thumbnailUrl, thumbnail_url),
+    favorite = coalesce(:favorite, favorite),
+    last_update = coalesce(:lastUpdate, last_update),
+    initialized = coalesce(:initialized, initialized),
+    viewer = coalesce(:viewer, viewer),
+    hide_title = coalesce(:hideTitle, hide_title),
+    chapter_flags = coalesce(:chapterFlags, chapter_flags),
+    date_added = coalesce(:dateAdded, date_added),
+    filtered_scanlators = coalesce(:filteredScanlators, filtered_scanlators),
+    update_strategy = coalesce(:updateStrategy, update_strategy)
+WHERE _id = :mangaId;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();

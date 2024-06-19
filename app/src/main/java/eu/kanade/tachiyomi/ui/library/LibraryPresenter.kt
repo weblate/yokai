@@ -60,6 +60,8 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapters
 import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaUpdate
 import yokai.util.isLewd
 import java.util.*
 import java.util.concurrent.*
@@ -86,6 +88,7 @@ class LibraryPresenter(
     private val getCategories: GetCategories by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getChapters: GetChapters by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
 
     private val libraryManga: List<LibraryManga> = emptyList()
 
@@ -1131,9 +1134,9 @@ class LibraryPresenter(
         presenterScope.launch {
             // Create a set of the list
             val mangaToDelete = mangas.distinctBy { it.id }
-            mangaToDelete.forEach { it.favorite = false }
+                .mapNotNull { if (it.id != null) MangaUpdate(it.id!!, favorite = false) else null }
 
-            db.insertMangas(mangaToDelete).executeOnIO()
+            withIOContext { updateManga.updateAll(mangaToDelete) }
             getLibrary()
         }
     }
@@ -1168,11 +1171,11 @@ class LibraryPresenter(
     fun reAddMangas(mangas: List<Manga>) {
         presenterScope.launch {
             val mangaToAdd = mangas.distinctBy { it.id }
-            mangaToAdd.forEach { it.favorite = true }
-            db.insertMangas(mangaToAdd).executeOnIO()
+                .mapNotNull { if (it.id != null) MangaUpdate(it.id!!, favorite = true) else null }
+
+            withIOContext { updateManga.updateAll(mangaToAdd) }
             (view as? FilteredLibraryController)?.updateStatsPage()
             getLibrary()
-            mangaToAdd.forEach { db.insertManga(it).executeAsBlocking() }
         }
     }
 

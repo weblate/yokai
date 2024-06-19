@@ -419,7 +419,7 @@ interface Manga : SManga {
             this.hide_title = hideTitle > 0
             this.date_added = dateAdded ?: 0L
             this.filtered_scanlators = filteredScanlators
-            this.update_strategy = updateStrategy.toInt().let(updateStrategyAdapter::decode)
+            this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
         }
     }
 }

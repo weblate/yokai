@@ -70,7 +70,7 @@ class MangaPutResolver : DefaultPutResolver<Manga>() {
         put(COL_CHAPTER_FLAGS, obj.chapter_flags)
         put(COL_DATE_ADDED, obj.date_added)
         put(COL_FILTERED_SCANLATORS, obj.filtered_scanlators)
-        put(COL_UPDATE_STRATEGY, obj.update_strategy.let(updateStrategyAdapter::encode))
+        put(COL_UPDATE_STRATEGY, obj.update_strategy.let(updateStrategyAdapter::encode).toInt())
     }
 }
 
@@ -94,9 +94,9 @@ interface BaseMangaGetResolver {
         hide_title = cursor.getInt(cursor.getColumnIndex(COL_HIDE_TITLE)) == 1
         date_added = cursor.getLong(cursor.getColumnIndex(COL_DATE_ADDED))
         filtered_scanlators = cursor.getString(cursor.getColumnIndex(COL_FILTERED_SCANLATORS))
-        update_strategy = cursor.getInt(cursor.getColumnIndex(COL_UPDATE_STRATEGY)).let(
-            updateStrategyAdapter::decode,
-        )
+        update_strategy = cursor.getInt(cursor.getColumnIndex(COL_UPDATE_STRATEGY)).let {
+            updateStrategyAdapter.decode(it.toLong())
+        }
     }
 }
 

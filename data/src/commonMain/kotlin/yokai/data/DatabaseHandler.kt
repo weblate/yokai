@@ -1,5 +1,6 @@
 package yokai.data
 
+import app.cash.sqldelight.ExecutableQuery
 import app.cash.sqldelight.Query
 import kotlinx.coroutines.flow.Flow
 
@@ -16,9 +17,19 @@ interface DatabaseHandler {
         block: suspend Database.() -> Query<T>
     ): T
 
+    suspend fun <T : Any> awaitOneExecutable(
+        inTransaction: Boolean = false,
+        block: suspend Database.() -> ExecutableQuery<T>,
+    ): T
+
     suspend fun <T : Any> awaitOneOrNull(
         inTransaction: Boolean = false,
         block: suspend Database.() -> Query<T>
+    ): T?
+
+    suspend fun <T : Any> awaitOneOrNullExecutable(
+        inTransaction: Boolean = false,
+        block: suspend Database.() -> ExecutableQuery<T>,
     ): T?
 
     fun <T : Any> subscribeToList(block: Database.() -> Query<T>): Flow<List<T>>

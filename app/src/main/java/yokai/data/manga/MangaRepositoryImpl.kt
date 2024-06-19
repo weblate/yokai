@@ -1,10 +1,14 @@
 package yokai.data.manga
 
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.util.system.toInt
 import kotlinx.coroutines.flow.Flow
 import yokai.data.DatabaseHandler
+import yokai.data.updateStrategyAdapter
 import yokai.domain.manga.MangaRepository
+import yokai.domain.manga.models.MangaUpdate
 
 class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepository {
     override suspend fun getManga(): List<Manga> =
@@ -18,4 +22,77 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
 
     override fun getLibraryMangaAsFlow(): Flow<List<LibraryManga>> =
         handler.subscribeToList { library_viewQueries.findAll(LibraryManga::mapper) }
+
+    override suspend fun update(update: MangaUpdate): Boolean {
+        return try {
+            partialUpdate(update)
+            true
+        } catch (e: Exception) {
+            Logger.e { "Failed to update manga with id '${update.id}'" }
+            false
+        }
+    }
+
+    override suspend fun updateAll(updates: List<MangaUpdate>): Boolean {
+        return try {
+            partialUpdate(*updates.toTypedArray())
+            true
+        } catch (e: Exception) {
+            Logger.e(e) { "Failed to bulk update manga" }
+            false
+        }
+    }
+
+    private suspend fun partialUpdate(vararg updates: MangaUpdate) {
+        handler.await(inTransaction = true) {
+            updates.forEach { update ->
+                mangasQueries.update(
+                    source = update.source,
+                    url = update.url,
+                    artist = update.artist,
+                    author = update.author,
+                    description = update.description,
+                    genre = update.genres?.joinToString(),
+                    title = update.title,
+                    status = update.status?.toLong(),
+                    thumbnailUrl = update.thumbnailUrl,
+                    favorite = update.favorite?.toInt()?.toLong(),
+                    lastUpdate = update.lastUpdate,
+                    initialized = update.initialized,
+                    viewer = update.viewerFlags?.toLong(),
+                    hideTitle = update.hideTitle?.toInt()?.toLong(),
+                    chapterFlags = update.chapterFlags?.toLong(),
+                    dateAdded = update.dateAdded,
+                    filteredScanlators = update.filteredScanlators,
+                    updateStrategy = update.updateStrategy?.let(updateStrategyAdapter::encode),
+                    mangaId = update.id,
+                )
+            }
+        }
+    }
+
+    override suspend fun insert(manga: Manga) =
+        handler.awaitOneOrNullExecutable(inTransaction = true) {
+            mangasQueries.insert(
+                source = manga.source,
+                url = manga.url,
+                artist = manga.artist,
+                author = manga.author,
+                description = manga.description,
+                genre = manga.genre,
+                title = manga.title,
+                status = manga.status.toLong(),
+                thumbnailUrl = manga.thumbnail_url,
+                favorite = manga.favorite.toInt().toLong(),
+                lastUpdate = manga.last_update,
+                initialized = manga.initialized,
+                viewer = manga.viewer_flags.toLong(),
+                hideTitle = manga.hide_title.toInt().toLong(),
+                chapterFlags = manga.chapter_flags.toLong(),
+                dateAdded = manga.date_added,
+                filteredScanlators = manga.filtered_scanlators,
+                updateStrategy = manga.update_strategy.let(updateStrategyAdapter::encode),
+            )
+            mangasQueries.selectLastInsertedRowId()
+        }
 }

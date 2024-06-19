@@ -77,7 +77,7 @@ data class LibraryManga(
             this.chapter_flags = chapterFlags.toInt()
             this.date_added = dateAdded ?: 0L
             this.filtered_scanlators = filteredScanlators
-            this.update_strategy = updateStrategy.toInt().let(updateStrategyAdapter::decode)
+            this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
             this.read = readCount.roundToInt()
             this.unread = maxOf((total - readCount).roundToInt(), 0)
             this.totalChapters = readCount.roundToInt()

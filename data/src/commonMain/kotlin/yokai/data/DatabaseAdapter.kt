@@ -6,13 +6,13 @@ import java.util.*
 
 // TODO: Move to yokai.data.DatabaseAdapter
 
-val updateStrategyAdapter = object : ColumnAdapter<UpdateStrategy, Int> {
+val updateStrategyAdapter = object : ColumnAdapter<UpdateStrategy, Long> {
     private val enumValues by lazy { UpdateStrategy.entries }
 
-    override fun decode(databaseValue: Int): UpdateStrategy =
-        enumValues.getOrElse(databaseValue) { UpdateStrategy.ALWAYS_UPDATE }
+    override fun decode(databaseValue: Long): UpdateStrategy =
+        enumValues.getOrElse(databaseValue.toInt()) { UpdateStrategy.ALWAYS_UPDATE }
 
-    override fun encode(value: UpdateStrategy): Int = value.ordinal
+    override fun encode(value: UpdateStrategy): Long = value.ordinal.toLong()
 }
 
 val dateAdapter = object : ColumnAdapter<Date, Long> {

@@ -1,5 +1,6 @@
 package yokai.data
 
+import app.cash.sqldelight.ExecutableQuery
 import app.cash.sqldelight.Query
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
@@ -38,9 +39,23 @@ class AndroidDatabaseHandler(
         return dispatch(inTransaction) { block(db).executeAsOne() }
     }
 
+    override suspend fun <T : Any> awaitOneExecutable(
+        inTransaction: Boolean,
+        block: suspend Database.() -> ExecutableQuery<T>,
+    ): T {
+        return dispatch(inTransaction) { block(db).executeAsOne() }
+    }
+
     override suspend fun <T : Any> awaitOneOrNull(
         inTransaction: Boolean,
         block: suspend Database.() -> Query<T>
+    ): T? {
+        return dispatch(inTransaction) { block(db).executeAsOneOrNull() }
+    }
+
+    override suspend fun <T : Any> awaitOneOrNullExecutable(
+        inTransaction: Boolean,
+        block: suspend Database.() -> ExecutableQuery<T>,
     ): T? {
         return dispatch(inTransaction) { block(db).executeAsOneOrNull() }
     }

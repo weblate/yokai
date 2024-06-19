@@ -91,8 +91,6 @@ interface MangaQueries : DbProvider {
 
     fun insertManga(manga: Manga) = db.put().`object`(manga).prepare()
 
-    fun insertMangas(mangas: List<Manga>) = db.put().objects(mangas).prepare()
-
     fun updateChapterFlags(manga: Manga) = db.put()
         .`object`(manga)
         .withPutResolver(MangaFlagsPutResolver(MangaTable.COL_CHAPTER_FLAGS, Manga::chapter_flags))

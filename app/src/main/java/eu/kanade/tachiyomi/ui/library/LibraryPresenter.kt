@@ -95,7 +95,7 @@ class LibraryPresenter(
     private val updateChapter: UpdateChapters by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
-    private var libraryManga: List<LibraryManga> = emptyList()
+    //private var libraryManga: List<LibraryManga> = emptyList()
 
     private val context = preferences.context
     private val viewContext
@@ -181,12 +181,18 @@ class LibraryPresenter(
             lastLibraryItems = null
             lastAllLibraryItems = null
         }
+
+        /*
         presenterScope.launch {
             getLibraryManga.subscribe().collectLatest {
                 libraryManga = it.apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
-                getLibrary(false)
+                getLibrary()
             }
         }
+        */
+
+        getLibrary()
+
         if (!preferences.showLibrarySearchSuggestions().isSet()) {
             DelayedLibrarySuggestionsJob.setupTask(context, true)
         } else if (preferences.showLibrarySearchSuggestions().get() &&
@@ -210,7 +216,7 @@ class LibraryPresenter(
     }
 
     /** Get favorited manga for library and sort and filter it */
-    fun getLibrary(forceFetch: Boolean = true) {
+    fun getLibrary() {
         presenterScope.launch {
             if (categories.isEmpty()) {
                 val dbCategories = getCategories.await()
@@ -220,7 +226,7 @@ class LibraryPresenter(
                 categories = lastCategories ?: getCategories.await().toMutableList()
             }
 
-            val (library, hiddenItems) = withIOContext { getLibraryFromDB(forceFetch) }
+            val (library, hiddenItems) = withIOContext { getLibraryFromDB() }
             setDownloadCount(library)
             setUnreadBadge(library)
             setSourceLanguage(library)
@@ -776,11 +782,10 @@ class LibraryPresenter(
      *
      * @return an list of all the manga in a itemized form.
      */
-    private suspend fun getLibraryFromDB(forceFetch: Boolean = false): Pair<List<LibraryItem>, List<LibraryItem>> {
+    private suspend fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
         removeArticles = preferences.removeArticles().get()
         val categories = getCategories.await().toMutableList()
-        if (forceFetch)
-            libraryManga = getLibraryManga.await().apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
+        val libraryManga = getLibraryManga.await().apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
         val showAll = showAllCategories
         val hiddenItems = mutableListOf<LibraryItem>()
 

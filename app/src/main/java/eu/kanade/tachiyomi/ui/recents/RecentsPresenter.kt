@@ -496,7 +496,7 @@ class RecentsPresenter(
             item.downloadInfo = item.mch.extraChapters.map { chapter ->
                 val downloadInfo = RecentMangaItem.DownloadInfo()
                 downloadInfo.chapterId = chapter.id
-                if (downloadManager.isChapterDownloaded(chapter, item.mch.manga)) {
+                if (downloadManager.isChapterDownloaded(chapter, item.mch.manga, true)) {
                     downloadInfo.status = Download.State.DOWNLOADED
                 } else if (downloadManager.hasQueue()) {
                     downloadInfo.download = downloadManager.queue.find { it.chapter.id == chapter.id }

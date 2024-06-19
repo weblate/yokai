@@ -17,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -27,6 +29,8 @@ class SourceManager(
     private val context: Context,
     private val extensionManager: ExtensionManager,
 ) {
+    private val _isInitialized = MutableStateFlow(false)
+    val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -73,6 +77,7 @@ class SourceManager(
                         }
                     }
                     sourcesMapFlow.value = mutableMap
+                    _isInitialized.value = true
                 }
         }
 
@@ -103,6 +108,11 @@ class SourceManager(
 
     fun getDelegatedSource(urlName: String): DelegatedHttpSource? {
         return delegatedSources.values.find { it.urlName == urlName }?.delegatedHttpSource
+    }
+
+    fun getStubSources(): List<StubSource> {
+        val onlineSourceIds = getOnlineSources().map { it.id }
+        return stubSourcesMap.values.filterNot { it.id in onlineSourceIds }
     }
 
     fun getOnlineSources() = sourcesMapFlow.value.values.filterIsInstance<HttpSource>()

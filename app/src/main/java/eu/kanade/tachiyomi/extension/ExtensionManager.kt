@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.parcelize.Parcelize
 import uy.kohesive.injekt.Injekt
@@ -45,6 +46,8 @@ class ExtensionManager(
     private val preferences: PreferencesHelper = Injekt.get(),
     private val trustExtension: TrustExtension = Injekt.get(),
 ) {
+    private val _isInitialized = MutableStateFlow(false)
+    val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
     /**
      * API where all the available extensions can be found.
@@ -122,6 +125,8 @@ class ExtensionManager(
         _untrustedExtensionsFlow.value = extensions
             .filterIsInstance<LoadResult.Untrusted>()
             .map { it.extension }
+
+        _isInitialized.value = true
     }
 
     fun isInstalledByApp(extension: Extension.Available): Boolean {

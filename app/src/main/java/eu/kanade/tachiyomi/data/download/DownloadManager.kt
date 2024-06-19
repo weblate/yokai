@@ -375,7 +375,7 @@ class DownloadManager(val context: Context) {
      * @param oldChapter the existing chapter with the old name.
      * @param newChapter the target chapter with the new name.
      */
-    fun renameChapter(source: Source, manga: Manga, oldChapter: Chapter, newChapter: Chapter) {
+    suspend fun renameChapter(source: Source, manga: Manga, oldChapter: Chapter, newChapter: Chapter) {
         val oldNames = provider.getValidChapterDirNames(oldChapter).map { listOf(it, "$it.cbz") }.flatten()
         var newName = provider.getChapterDirName(newChapter, includeId = downloadPreferences.downloadWithId().get())
         val mangaDir = provider.getMangaDir(manga, source)
@@ -393,7 +393,7 @@ class DownloadManager(val context: Context) {
 
         if (oldDownload.renameTo(newName)) {
             cache.removeChapters(listOf(oldChapter), manga)
-            cache.addChapter(newName, manga)
+            cache.addChapter(newName, mangaDir, manga)
         } else {
             Logger.e { "Could not rename downloaded chapter: ${oldNames.joinToString()}" }
         }
@@ -401,7 +401,7 @@ class DownloadManager(val context: Context) {
 
     // forceRefresh the download cache
     fun refreshCache() {
-        cache.forceRenewCache()
+        cache.invalidateCache()
     }
 
     fun addListener(listener: DownloadQueue.DownloadListener) = queue.addListener(listener)

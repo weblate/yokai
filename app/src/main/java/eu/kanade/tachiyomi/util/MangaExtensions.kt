@@ -139,6 +139,16 @@ fun Manga.addOrRemoveToFavorites(
 ): Snackbar? {
     if (!favorite) {
         if (checkForDupes) {
+            // TODO
+            /*
+            val duplicateManga = runBlocking(Dispatchers.IO) { handler.awaitOne {
+                mangasQueries.findDuplicateFavorite(
+                    this@addOrRemoveToFavorites.title,
+                    this@addOrRemoveToFavorites.source,
+                    Manga::mapper,
+                )
+            } }
+             */
             val duplicateManga = db.getDuplicateLibraryManga(this).executeAsBlocking()
             if (duplicateManga != null) {
                 showAddDuplicateDialog(

@@ -234,9 +234,9 @@ class LibraryPresenter(
             setSourceLanguage(hiddenItems)
             allLibraryItems = library
             hiddenLibraryItems = hiddenItems
-            var mangaMap = library
-            mangaMap = applyFilters(mangaMap)
-            mangaMap = applySort(mangaMap)
+            val mangaMap = library
+                .applyFilters()
+                .applySort()
             val freshStart = libraryItems.isEmpty()
             sectionLibrary(mangaMap, freshStart)
         }
@@ -318,7 +318,7 @@ class LibraryPresenter(
      *
      * @param items the items to filter.
      */
-    private fun applyFilters(items: List<LibraryItem>): List<LibraryItem> {
+    private fun List<LibraryItem>.applyFilters(): List<LibraryItem> {
         val filterPrefs = ItemPreferences(
             filterDownloaded = preferences.filterDownloaded().get(),
             filterUnread = preferences.filterUnread().get(),
@@ -344,7 +344,7 @@ class LibraryPresenter(
             )
         hasActiveFilters = !filtersOff
         val missingCategorySet = categories.mapNotNull { it.id }.toMutableSet()
-        val filteredItems = items.filter f@{ item ->
+        val filteredItems = this.filter f@{ item ->
             if (!showEmptyCategoriesWhileFiltering && item.manga.isHidden()) {
                 val subItems = sectionedLibraryItems[item.manga.category]?.takeUnless { it.size <= 1 }
                     ?: hiddenLibraryItems.filter { it.manga.category == item.manga.category }
@@ -605,7 +605,7 @@ class LibraryPresenter(
      *
      * @param itemList the map to sort.
      */
-    private fun applySort(itemList: List<LibraryItem>): List<LibraryItem> {
+    private fun List<LibraryItem>.applySort(): List<LibraryItem> {
         val sortFn: (LibraryItem, LibraryItem) -> Int = { i1, i2 ->
             if (i1.header.category.id == i2.header.category.id) {
                 val category = i1.header.category
@@ -679,7 +679,7 @@ class LibraryPresenter(
             }
         }
 
-        return itemList.sortedWith(Comparator(sortFn))
+        return this.sortedWith(Comparator(sortFn))
     }
 
     /** Gets the category by id
@@ -748,9 +748,9 @@ class LibraryPresenter(
                     ) ?: return@mapNotNull null
                 categorySet.add(it.category)
                 LibraryItem(it, headerItem, viewContext)
-            }.groupBy { it.manga.category }
+            }
 
-            categories.associateWith { libraryManga[it.id].orEmpty() }
+            categories.associateWith { libraryManga.filter { item -> item.header.category.id == it.id }.orEmpty() }
         }
     }
 
@@ -1066,9 +1066,9 @@ class LibraryPresenter(
     /** Requests the library to be filtered. */
     fun requestFilterUpdate() {
         presenterScope.launch {
-            var mangaMap = allLibraryItems
-            mangaMap = applyFilters(mangaMap)
-            mangaMap = applySort(mangaMap)
+            val mangaMap = allLibraryItems
+                .applyFilters()
+                .applySort()
             sectionLibrary(mangaMap)
         }
     }
@@ -1102,8 +1102,8 @@ class LibraryPresenter(
     /** Requests the library to be sorted. */
     private fun requestSortUpdate() {
         presenterScope.launch {
-            var mangaMap = libraryItems
-            mangaMap = applySort(mangaMap)
+            val mangaMap = libraryItems
+                .applySort()
             sectionLibrary(mangaMap)
         }
     }

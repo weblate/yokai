@@ -50,6 +50,7 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -94,7 +95,7 @@ class LibraryPresenter(
     private val updateChapter: UpdateChapters by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
-    //private var libraryManga: List<LibraryManga> = emptyList()
+    private var loadedManga: LibraryMap = mapOf()
 
     private val context = preferences.context
     private val viewContext
@@ -715,11 +716,19 @@ class LibraryPresenter(
     }
      */
 
+    /**
+     * Library's flow.
+     *
+     * If category id '-1' is not empty, it means the library not grouped by categories
+     */
     private fun getLibraryFlow(): Flow<LibraryMap> {
         return combine(
             getCategories.subscribe(),
             getLibraryManga.subscribe(),
-        ) { categories, libraryMangaList ->
+            preferences.groupLibraryBy().changes(),
+        ) { categories, libraryMangaList, groupType ->
+            this.groupType = groupType
+
             val categoryAll = Category.createAll(
                 context,
                 preferences.librarySortingMode().get(),
@@ -727,30 +736,35 @@ class LibraryPresenter(
             )
             val catItemAll = LibraryHeaderItem({ categoryAll }, -1)
             val categorySet = mutableSetOf<Int>()
-            val headerItems = (
-                categories.mapNotNull { category ->
-                    val id = category.id
-                    if (id == null) {
-                        null
-                    } else {
-                        id to LibraryHeaderItem({ getCategory(id) }, id)
-                    }
-                } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ getCategory(0) }, 0))
+            val headerItems = if (libraryIsGrouped)
+                (
+                    categories.mapNotNull { category ->
+                        val id = category.id
+                        if (id == null) {
+                            null
+                        } else {
+                            id to LibraryHeaderItem({ getCategory(id) }, id)
+                        }
+                    } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ getCategory(0) }, 0))
                 ).toMap()
+            else null
 
             val libraryManga = libraryMangaList.mapNotNull {
-                val headerItem = (
-                    if (!libraryIsGrouped) {
-                        catItemAll
-                    } else {
-                        headerItems[it.category]
-                    }
-                    ) ?: return@mapNotNull null
+                // header item is used to identify which category the library manga is actually belong to.
+                // because J2K have "fake tabbed" option and "show all" option.
+                val headerItem = if (headerItems == null) { catItemAll } else { headerItems[it.category] }
+                    ?: return@mapNotNull null
                 categorySet.add(it.category)
                 LibraryItem(it, headerItem, viewContext)
             }
 
-            categories.associateWith { libraryManga.filter { item -> item.header.category.id == it.id }.orEmpty() }
+            categories.associateWith { libraryManga.filter { item -> item.header.category.id == it.id } }
+        }
+    }
+
+    private suspend fun subscribeLibrary() {
+        getLibraryFlow().collectLatest { library ->
+            loadedManga = library
         }
     }
 

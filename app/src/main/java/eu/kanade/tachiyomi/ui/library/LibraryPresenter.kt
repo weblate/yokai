@@ -44,7 +44,7 @@ import eu.kanade.tachiyomi.util.lang.removeArticles
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.mapStatus
 import eu.kanade.tachiyomi.util.system.executeOnIO
-import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.launchNonCancellable
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
@@ -1156,7 +1156,7 @@ class LibraryPresenter(
 
     /** Remove manga from the library and delete the downloads */
     fun confirmDeletion(mangas: List<Manga>, coverCacheToo: Boolean = true) {
-        launchIO {
+        presenterScope.launchNonCancellable {
             val mangaToDelete = mangas.distinctBy { it.id }
             mangaToDelete.forEach { manga ->
                 if (coverCacheToo) {
@@ -1372,7 +1372,7 @@ class LibraryPresenter(
         markRead: Boolean,
     ): HashMap<Manga, List<Chapter>> {
         val mapMangaChapters = HashMap<Manga, List<Chapter>>()
-        presenterScope.launchIO {
+        presenterScope.launchNonCancellable {
             mangaList.forEach { manga ->
                 val chapters = getChapters.await(manga)
                 val updates = chapters.copy().mapNotNull {
@@ -1391,7 +1391,7 @@ class LibraryPresenter(
     fun undoMarkReadStatus(
         mangaList: HashMap<Manga, List<Chapter>>,
     ) {
-        launchIO {
+        presenterScope.launchNonCancellable {
             val updates = mangaList.values.map { chapters ->
                 chapters.mapNotNull {
                     if (it.id == null) return@mapNotNull null

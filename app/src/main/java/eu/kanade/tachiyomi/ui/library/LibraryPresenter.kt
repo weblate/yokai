@@ -754,9 +754,9 @@ class LibraryPresenter(
                     ?: return@mapNotNull null
                 categorySet.add(it.category)
                 LibraryItem(it, headerItem, viewContext)
-            }
+            }.groupBy { it.header.category.id!! }
 
-            libraryManga.groupBy { it.header.category.id!! }
+            categories.associateWith { libraryManga[it.id].orEmpty() }
         }
     }
 

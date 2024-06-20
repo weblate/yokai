@@ -50,7 +50,6 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -320,19 +319,15 @@ class LibraryPresenter(
      * @param items the items to filter.
      */
     private fun applyFilters(items: List<LibraryItem>): List<LibraryItem> {
-        val filterDownloaded = preferences.filterDownloaded().get()
-
-        val filterUnread = preferences.filterUnread().get()
-
-        val filterCompleted = preferences.filterCompleted().get()
-
-        val filterTracked = preferences.filterTracked().get()
-
-        val filterMangaType = preferences.filterMangaType().get()
-
-        val filterContentType = preferences.filterContentType().get()
-
-        val filterBookmarked = preferences.filterBookmarked().get()
+        val filterPrefs = ItemPreferences(
+            filterDownloaded = preferences.filterDownloaded().get(),
+            filterUnread = preferences.filterUnread().get(),
+            filterCompleted = preferences.filterCompleted().get(),
+            filterTracked = preferences.filterTracked().get(),
+            filterMangaType = preferences.filterMangaType().get(),
+            filterContentType = preferences.filterContentType().get(),
+            filterBookmarked = preferences.filterBookmarked().get(),
+        )
 
         val showEmptyCategoriesWhileFiltering = preferences.showEmptyCategoriesWhileFiltering().get()
 
@@ -340,12 +335,12 @@ class LibraryPresenter(
 
         val filtersOff = view?.isSubClass != true &&
             (
-                filterDownloaded == 0 &&
-                filterUnread == 0 &&
-                filterCompleted == 0 &&
-                filterTracked == 0 &&
-                filterMangaType == 0 &&
-                filterContentType == 0
+                filterPrefs.filterDownloaded == 0 &&
+                filterPrefs.filterUnread == 0 &&
+                filterPrefs.filterCompleted == 0 &&
+                filterPrefs.filterTracked == 0 &&
+                filterPrefs.filterMangaType == 0 &&
+                filterPrefs.filterContentType == 0
             )
         hasActiveFilters = !filtersOff
         val missingCategorySet = categories.mapNotNull { it.id }.toMutableSet()
@@ -359,14 +354,8 @@ class LibraryPresenter(
                     return@f subItems.any {
                         matchesFilters(
                             it,
-                            filterDownloaded,
-                            filterUnread,
-                            filterCompleted,
-                            filterTracked,
-                            filterMangaType,
-                            filterBookmarked,
+                            filterPrefs,
                             filterTrackers,
-                            filterContentType,
                         )
                     }
                 }
@@ -380,14 +369,8 @@ class LibraryPresenter(
             }
             val matches = matchesFilters(
                 item,
-                filterDownloaded,
-                filterUnread,
-                filterCompleted,
-                filterTracked,
-                filterMangaType,
-                filterBookmarked,
+                filterPrefs,
                 filterTrackers,
-                filterContentType,
             )
             if (matches) {
                 missingCategorySet.remove(item.manga.category)
@@ -404,34 +387,28 @@ class LibraryPresenter(
 
     private fun matchesFilters(
         item: LibraryItem,
-        filterDownloaded: Int,
-        filterUnread: Int,
-        filterCompleted: Int,
-        filterTracked: Int,
-        filterMangaType: Int,
-        filterBookmarked: Int,
+        filterPrefs: ItemPreferences,
         filterTrackers: String,
-        filterContentType: Int,
     ): Boolean {
         (view as? FilteredLibraryController)?.let {
             return matchesCustomFilters(item, it, filterTrackers)
         }
 
-        if (filterUnread == STATE_INCLUDE && item.manga.unread == 0) return false
-        if (filterUnread == STATE_EXCLUDE && item.manga.unread > 0) return false
+        if (filterPrefs.filterUnread == STATE_INCLUDE && item.manga.unread == 0) return false
+        if (filterPrefs.filterUnread == STATE_EXCLUDE && item.manga.unread > 0) return false
 
         // Filter for unread chapters
-        if (filterUnread == 3 && !(item.manga.unread > 0 && !item.manga.hasRead)) return false
-        if (filterUnread == 4 && !(item.manga.unread > 0 && item.manga.hasRead)) return false
+        if (filterPrefs.filterUnread == 3 && !(item.manga.unread > 0 && !item.manga.hasRead)) return false
+        if (filterPrefs.filterUnread == 4 && !(item.manga.unread > 0 && item.manga.hasRead)) return false
 
-        if (filterBookmarked == STATE_INCLUDE && item.manga.bookmarkCount == 0) return false
-        if (filterBookmarked == STATE_EXCLUDE && item.manga.bookmarkCount > 0) return false
+        if (filterPrefs.filterBookmarked == STATE_INCLUDE && item.manga.bookmarkCount == 0) return false
+        if (filterPrefs.filterBookmarked == STATE_EXCLUDE && item.manga.bookmarkCount > 0) return false
 
-        if (filterMangaType > 0) {
-            if (if (filterMangaType == Manga.TYPE_MANHWA) {
-                item.manga.seriesType(sourceManager = sourceManager) !in arrayOf(filterMangaType, Manga.TYPE_WEBTOON)
+        if (filterPrefs.filterMangaType > 0) {
+            if (if (filterPrefs.filterMangaType == Manga.TYPE_MANHWA) {
+                item.manga.seriesType(sourceManager = sourceManager) !in arrayOf(filterPrefs.filterMangaType, Manga.TYPE_WEBTOON)
             } else {
-                    filterMangaType != item.manga.seriesType(sourceManager = sourceManager)
+                    filterPrefs.filterMangaType != item.manga.seriesType(sourceManager = sourceManager)
                 }
             ) {
                 return false
@@ -439,24 +416,24 @@ class LibraryPresenter(
         }
 
         // Filter for completed status of manga
-        if (filterCompleted == STATE_INCLUDE && item.manga.status != SManga.COMPLETED) return false
-        if (filterCompleted == STATE_EXCLUDE && item.manga.status == SManga.COMPLETED) return false
+        if (filterPrefs.filterCompleted == STATE_INCLUDE && item.manga.status != SManga.COMPLETED) return false
+        if (filterPrefs.filterCompleted == STATE_EXCLUDE && item.manga.status == SManga.COMPLETED) return false
 
-        if (!matchesFilterTracking(item, filterTracked, filterTrackers)) return false
+        if (!matchesFilterTracking(item, filterPrefs.filterTracked, filterTrackers)) return false
 
         // Filter for downloaded manga
-        if (filterDownloaded != STATE_IGNORE) {
+        if (filterPrefs.filterDownloaded != STATE_IGNORE) {
             val isDownloaded = when {
                 item.manga.isLocal() -> true
                 item.downloadCount != -1 -> item.downloadCount > 0
                 else -> downloadManager.getDownloadCount(item.manga) > 0
             }
-            return if (filterDownloaded == STATE_INCLUDE) isDownloaded else !isDownloaded
+            return if (filterPrefs.filterDownloaded == STATE_INCLUDE) isDownloaded else !isDownloaded
         }
 
         // Filter for NSFW/SFW contents
-        if (filterContentType == STATE_INCLUDE) return !item.manga.isLewd()
-        if (filterContentType == STATE_EXCLUDE) return item.manga.isLewd()
+        if (filterPrefs.filterContentType == STATE_INCLUDE) return !item.manga.isLewd()
+        if (filterPrefs.filterContentType == STATE_EXCLUDE) return item.manga.isLewd()
         return true
     }
 
@@ -1572,9 +1549,13 @@ class LibraryPresenter(
         }
     }
 
-    /*
-    @Immutable
     data class ItemPreferences(
+        val filterDownloaded: Int,
+        val filterUnread: Int,
+        val filterCompleted: Int,
+        val filterTracked: Int,
+        val filterMangaType: Int,
+        val filterContentType: Int,
+        val filterBookmarked: Int,
     )
-     */
 }

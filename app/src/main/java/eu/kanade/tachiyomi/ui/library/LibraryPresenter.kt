@@ -729,6 +729,8 @@ class LibraryPresenter(
         ) { categories, libraryMangaList, groupType ->
             this.groupType = groupType
 
+            // TODO: Support custom groups
+
             val categoryAll = Category.createAll(
                 context,
                 preferences.librarySortingMode().get(),
@@ -739,12 +741,8 @@ class LibraryPresenter(
             val headerItems = if (libraryIsGrouped)
                 (
                     categories.mapNotNull { category ->
-                        val id = category.id
-                        if (id == null) {
-                            null
-                        } else {
-                            id to LibraryHeaderItem({ getCategory(id) }, id)
-                        }
+                        val id = category.id ?: return@mapNotNull null
+                        id to LibraryHeaderItem({ getCategory(id) }, id)
                     } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ getCategory(0) }, 0))
                 ).toMap()
             else null
@@ -758,7 +756,7 @@ class LibraryPresenter(
                 LibraryItem(it, headerItem, viewContext)
             }
 
-            categories.associateWith { libraryManga.filter { item -> item.header.category.id == it.id } }
+            libraryManga.groupBy { it.header.category.id!! }
         }
     }
 
@@ -768,6 +766,7 @@ class LibraryPresenter(
         }
     }
 
+    // TODO: Simplify this code
     /**
      * Get the categories and all its manga from the database.
      *
@@ -776,6 +775,9 @@ class LibraryPresenter(
     private suspend fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
         removeArticles = preferences.removeArticles().get()
         val categories = getCategories.await().toMutableList()
+
+        // In default grouping, which uses category as group, a manga can be in multiple categories.
+        // So before we group it by different type, we should make the list unique.
         val libraryManga = getLibraryManga.await().apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
         val showAll = showAllCategories
         val hiddenItems = mutableListOf<LibraryItem>()

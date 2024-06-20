@@ -126,7 +126,7 @@ import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.system.isTablet
 import eu.kanade.tachiyomi.util.system.launchIO
-import eu.kanade.tachiyomi.util.system.launchNonCancellable
+import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.openInBrowser
@@ -355,7 +355,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                     finish()
                     return
                 }
-                lifecycleScope.launchNonCancellable {
+                lifecycleScope.launchNonCancellableIO {
                     val initResult = viewModel.init(manga, chapter)
                     if (!initResult.getOrDefault(false)) {
                         val exception = initResult.exceptionOrNull() ?: IllegalStateException("Unknown err")

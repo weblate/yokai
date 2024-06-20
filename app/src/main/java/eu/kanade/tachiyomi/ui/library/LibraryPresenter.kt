@@ -44,7 +44,7 @@ import eu.kanade.tachiyomi.util.lang.removeArticles
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.mapStatus
 import eu.kanade.tachiyomi.util.system.executeOnIO
-import eu.kanade.tachiyomi.util.system.launchNonCancellable
+import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
@@ -751,7 +751,7 @@ class LibraryPresenter(
 
             val libraryManga = libraryMangaList.mapNotNull {
                 // header item is used to identify which category the library manga is actually belong to.
-                // because J2K have "fake tabbed" option and "show all" option.
+                // because J2K have an option to show everything in a single category.
                 val headerItem = if (headerItems == null) { catItemAll } else { headerItems[it.category] }
                     ?: return@mapNotNull null
                 categorySet.add(it.category)
@@ -1147,7 +1147,7 @@ class LibraryPresenter(
 
     /** Remove manga from the library and delete the downloads */
     fun confirmDeletion(mangas: List<Manga>, coverCacheToo: Boolean = true) {
-        presenterScope.launchNonCancellable {
+        presenterScope.launchNonCancellableIO {
             val mangaToDelete = mangas.distinctBy { it.id }
             mangaToDelete.forEach { manga ->
                 if (coverCacheToo) {
@@ -1363,7 +1363,7 @@ class LibraryPresenter(
         markRead: Boolean,
     ): HashMap<Manga, List<Chapter>> {
         val mapMangaChapters = HashMap<Manga, List<Chapter>>()
-        presenterScope.launchNonCancellable {
+        presenterScope.launchNonCancellableIO {
             mangaList.forEach { manga ->
                 val chapters = getChapters.await(manga)
                 val updates = chapters.copy().mapNotNull {
@@ -1382,7 +1382,7 @@ class LibraryPresenter(
     fun undoMarkReadStatus(
         mangaList: HashMap<Manga, List<Chapter>>,
     ) {
-        presenterScope.launchNonCancellable {
+        presenterScope.launchNonCancellableIO {
             val updates = mangaList.values.map { chapters ->
                 chapters.mapNotNull {
                     if (it.id == null) return@mapNotNull null

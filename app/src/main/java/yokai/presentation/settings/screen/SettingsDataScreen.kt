@@ -37,7 +37,7 @@ import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.e
-import eu.kanade.tachiyomi.util.system.launchNonCancellable
+import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.collections.immutable.persistentListOf
@@ -253,7 +253,7 @@ object SettingsDataScreen : ComposableSettings {
                     title = stringResource(R.string.clear_chapter_cache),
                     subtitle = stringResource(R.string.used_, cacheReadableSize),
                     onClick = {
-                        scope.launchNonCancellable {
+                        scope.launchNonCancellableIO {
                             try {
                                 val deletedFiles = chapterCache.clear()
                                 withUIContext {
@@ -279,7 +279,7 @@ object SettingsDataScreen : ComposableSettings {
                     ),
                     onClick = {
                         context.toast(R.string.starting_cleanup)
-                        scope.launchNonCancellable {
+                        scope.launchNonCancellableIO {
                             coverCache.deleteAllCachedCovers()
                         }
                     }
@@ -292,7 +292,7 @@ object SettingsDataScreen : ComposableSettings {
                     ),
                     onClick = {
                         context.toast(R.string.starting_cleanup)
-                        scope.launchNonCancellable {
+                        scope.launchNonCancellableIO {
                             coverCache.deleteOldCovers()
                         }
                     }

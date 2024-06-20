@@ -48,7 +48,7 @@ import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
-import eu.kanade.tachiyomi.util.system.launchNonCancellable
+import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
@@ -826,7 +826,7 @@ class ReaderViewModel(
         notifier.onClear()
 
         // Copy file in background.
-        viewModelScope.launchNonCancellable {
+        viewModelScope.launchNonCancellableIO {
             try {
                 val file = saveImage(page, destDir, manga)
                 DiskUtil.scanMedia(context, file)
@@ -882,7 +882,7 @@ class ReaderViewModel(
 
         val destDir = UniFile.fromFile(context.cacheDir)!!.createDirectory("shared_image")!!
 
-        viewModelScope.launchNonCancellable {
+        viewModelScope.launchNonCancellableIO {
             val file = saveImage(page, destDir, manga)
             eventChannel.send(Event.ShareImage(file, page))
         }
@@ -912,7 +912,7 @@ class ReaderViewModel(
         val manga = manga ?: return
         val stream = page.stream ?: return
 
-        viewModelScope.launchNonCancellable {
+        viewModelScope.launchNonCancellableIO {
             val result = try {
                 if (manga.isLocal()) {
                     val context = Injekt.get<Application>()

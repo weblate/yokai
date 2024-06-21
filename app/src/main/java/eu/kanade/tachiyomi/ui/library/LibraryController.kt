@@ -523,14 +523,14 @@ open class LibraryController(
             groupItems.add(BY_TRACK_STATUS)
         }
         groupItems.add(BY_LANGUAGE)
-        if (presenter.allCategories.size > 1) {
+        if (presenter.isCategoryMoreThanOne()) {
             groupItems.add(UNGROUPED)
         }
         val items = groupItems.map { id ->
             MaterialMenuSheet.MenuSheetItem(
                 id,
                 LibraryGroup.groupTypeDrawableRes(id),
-                LibraryGroup.groupTypeStringRes(id, presenter.allCategories.size > 1),
+                LibraryGroup.groupTypeStringRes(id, presenter.isCategoryMoreThanOne()),
             )
         }
         MaterialMenuSheet(
@@ -682,7 +682,7 @@ open class LibraryController(
             if (!LibraryUpdateJob.isRunning(context)) {
                 when {
                     !presenter.showAllCategories && presenter.groupType == BY_DEFAULT -> {
-                        presenter.allCategories.find { it.id == presenter.currentCategory }?.let {
+                        presenter.findCurrentCategory()?.let {
                             updateLibrary(it)
                         }
                     }
@@ -2007,7 +2007,7 @@ open class LibraryController(
         val migrationItem = menu.findItem(R.id.action_migrate)
         val shareItem = menu.findItem(R.id.action_share)
         val categoryItem = menu.findItem(R.id.action_move_to_category)
-        categoryItem.isVisible = presenter.allCategories.size > 1
+        categoryItem.isVisible = presenter.isCategoryMoreThanOne()
         migrationItem.isVisible = selectedMangas.any { it.source != LocalSource.ID }
         shareItem.isVisible = migrationItem.isVisible
         if (count == 0) {

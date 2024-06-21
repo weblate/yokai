@@ -116,8 +116,7 @@ class LibraryPresenter(
     private var removeArticles: Boolean = preferences.removeArticles().get()
 
     /** All categories of the library, in case they are hidden because of hide categories is on */
-    var allCategories: List<Category> = emptyList()
-        private set
+    private var allCategories: List<Category> = emptyList()
 
     /** List of all manga to update the */
     var libraryItems: List<LibraryItem> = emptyList()
@@ -159,6 +158,10 @@ class LibraryPresenter(
             filterContentType == 0
         )
     }
+
+    fun isCategoryMoreThanOne(): Boolean = allCategories.size > 1
+
+    fun findCurrentCategory() = allCategories.find { it.id == currentCategory }
 
     /** Save the current list to speed up loading later */
     override fun onDestroy() {

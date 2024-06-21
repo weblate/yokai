@@ -52,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -319,17 +320,8 @@ class LibraryPresenter(
      *
      * @param items the items to filter.
      */
-    private fun List<LibraryItem>.applyFilters(): List<LibraryItem> {
-        val filterPrefs = ItemPreferences(
-            filterDownloaded = preferences.filterDownloaded().get(),
-            filterUnread = preferences.filterUnread().get(),
-            filterCompleted = preferences.filterCompleted().get(),
-            filterTracked = preferences.filterTracked().get(),
-            filterMangaType = preferences.filterMangaType().get(),
-            filterContentType = preferences.filterContentType().get(),
-            filterBookmarked = preferences.filterBookmarked().get(),
-        )
-
+    private suspend fun List<LibraryItem>.applyFilters(): List<LibraryItem> {
+        val filterPrefs = getPreferencesFlow().first()
         val showEmptyCategoriesWhileFiltering = preferences.showEmptyCategoriesWhileFiltering().get()
 
         val filterTrackers = FilterBottomSheet.FILTER_TRACKER
@@ -707,14 +699,30 @@ class LibraryPresenter(
         }
     }
 
-    // TODO: Migrate getCategories to SQLDelight
-    /*
     private fun getPreferencesFlow() = combine(
+        preferences.filterDownloaded().changes(),
+        preferences.filterUnread().changes(),
+        preferences.filterCompleted().changes(),
+        preferences.filterTracked().changes(),
+        preferences.filterMangaType().changes(),
+        preferences.filterContentType().changes(),
+        preferences.filterBookmarked().changes(),
+
+        preferences.groupLibraryBy().changes(),
+        preferences.showAllCategories().changes(),
     ) {
        ItemPreferences(
+           filterDownloaded = it[0] as Int,
+           filterUnread = it[1] as Int,
+           filterCompleted = it[2] as Int,
+           filterTracked = it[3] as Int,
+           filterMangaType = it[4] as Int,
+           filterContentType = it[5] as Int,
+           filterBookmarked = it[6] as Int,
+           groupType = it[7] as Int,
+           showAllCategories = it[8] as Boolean,
        )
     }
-     */
 
     /**
      * Library's flow.
@@ -725,38 +733,96 @@ class LibraryPresenter(
         return combine(
             getCategories.subscribe(),
             getLibraryManga.subscribe(),
-            preferences.groupLibraryBy().changes(),
-        ) { categories, libraryMangaList, groupType ->
-            this.groupType = groupType
+            getPreferencesFlow(),
+        ) { _categories, libraryMangaList, prefs ->
+            this.groupType = prefs.groupType
+            val showAll = forceShowAllCategories || prefs.showAllCategories
 
             // TODO: Support custom groups
+            /*
+            val (items, customCategories) = getCustomMangaItems(libraryManga)
+            this.categories = customCategories
+            items
+             */
+
+            val hiddenCategories = if (forceShowAllCategories || controllerIsSubClass) {
+                emptySet()
+            } else {
+                preferences.collapsedCategories().get().mapNotNull { it.toIntOrNull() }.toSet()
+            }
 
             val categoryAll = Category.createAll(
                 context,
                 preferences.librarySortingMode().get(),
                 preferences.librarySortingAscending().get(),
             )
-            val catItemAll = LibraryHeaderItem({ categoryAll }, -1)
-            val categorySet = mutableSetOf<Int>()
+
+            val categories: List<Category> = _categories
+                .filter { it.id != null }
+                .toMutableList().apply { add(0, createDefaultCategory()) }
+            categories.forEach { it.isHidden = it.id in hiddenCategories && showAll && categories.size > 1 }
+
             val headerItems = if (libraryIsGrouped)
-                (
-                    categories.mapNotNull { category ->
-                        val id = category.id ?: return@mapNotNull null
-                        id to LibraryHeaderItem({ getCategory(id) }, id)
-                    } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ getCategory(0) }, 0))
-                ).toMap()
+                categories.mapNotNull { category ->
+                    val id = category.id ?: return@mapNotNull null
+                    id to LibraryHeaderItem({ getCategory(id) }, id)
+                }.toMap()
             else null
 
-            val libraryManga = libraryMangaList.mapNotNull {
-                // header item is used to identify which category the library manga is actually belong to.
-                // because J2K have an option to show everything in a single category.
-                val headerItem = if (headerItems == null) { catItemAll } else { headerItems[it.category] }
-                    ?: return@mapNotNull null
-                categorySet.add(it.category)
-                LibraryItem(it, headerItem, viewContext)
-            }.groupBy { it.header.category.id!! }
+            val removedManga = mutableListOf<Pair<LibraryManga, LibraryHeaderItem>>()
+            val libraryManga = libraryMangaList
+                .mapNotNull {
+                    // Header item is used to identify which category the library manga is actually belong to,
+                    // because J2K have an option to show everything in a single category.
+                    val headerItem = if (headerItems == null) {
+                        // This ensures that only when "Show all" display is enabled that we gonna get '-1' category.
+                        LibraryHeaderItem({ categoryAll }, -1)
+                    } else {
+                        headerItems[it.category]
+                    } ?: return@mapNotNull null
 
-            categories.associateWith { libraryManga[it.id].orEmpty() }
+                    // We'll handle hidden manga separately
+                    if (headerItem.isHidden) {
+                        removedManga.add(it to headerItem)
+                        return@mapNotNull null
+                    }
+
+                    LibraryItem(it, headerItem, viewContext)
+                }
+                .toMutableList().apply {
+                    // Add every hidden manga as a single item
+                    val headerItem = try {
+                        removedManga.first().second
+                    } catch (e: NoSuchElementException) {
+                        return@apply  // No hidden manga to be handled
+                    }
+                    val mergedTitle = removedManga.joinToString("-") {
+                        it.first.title + "-" + it.first.author
+                    }
+                    this.add(
+                        LibraryItem(
+                            LibraryManga.createHide(
+                                headerItem.catId,
+                                mergedTitle,
+                                removedManga.size,
+                            ),
+                            headerItem,
+                            viewContext,
+                        ),
+                    )
+                }
+                .groupBy { it.header.category.id!! }
+
+            categories.associateWith {
+                libraryManga[it.id] ?: headerItems?.get(it.id!!)?.let { headerItem ->
+                    // J2K behaviour, not sure why, but J2K added blank manga if library is grouped.
+                    // Since headerItems is always null if library is not grouped, that already act as a check for
+                    // "is library grouped".
+                    listOf(
+                        LibraryItem(LibraryManga.createBlank(it.id!!), headerItem, viewContext),
+                    )
+                } ?: emptyList()
+            }.filter { it.value.isNotEmpty() }
         }
     }
 
@@ -887,19 +953,16 @@ class LibraryPresenter(
 
         // internal function to make headers
         fun makeOrGetHeader(name: String, checkNameSwap: Boolean = false): LibraryHeaderItem {
-            return if (tagItems.containsKey(name)) {
-                tagItems[name]!!
-            } else {
-                if (checkNameSwap && name.contains(" ")) {
-                    val swappedName = name.split(" ").reversed().joinToString(" ")
-                    if (tagItems.containsKey(swappedName)) {
-                        return tagItems[swappedName]!!
-                    }
+            tagItems.get(name)?.let { return it }
+            if (checkNameSwap && name.contains(" ")) {
+                val swappedName = name.split(" ").reversed().joinToString(" ")
+                if (tagItems.containsKey(swappedName)) {
+                    return tagItems[swappedName]!!
                 }
-                val headerItem = LibraryHeaderItem({ getCategory(it) }, tagItems.count())
-                tagItems[name] = headerItem
-                headerItem
             }
+            val headerItem = LibraryHeaderItem({ getCategory(it) }, tagItems.count())
+            tagItems[name] = headerItem
+            return headerItem
         }
 
         val unknown = context.getString(R.string.unknown)
@@ -989,7 +1052,7 @@ class LibraryPresenter(
         } else {
             preferences.collapsedDynamicCategories().get()
         }
-        var headers = tagItems.map { item ->
+        val headers = tagItems.map { item ->
             Category.createCustom(
                 item.key,
                 preferences.librarySortingMode().get(),
@@ -1015,9 +1078,9 @@ class LibraryPresenter(
                     it.name
                 }
             },
-        )
-        if (preferences.collapsedDynamicAtBottom().get()) {
-            headers = headers.filterNot { it.isHidden } + headers.filter { it.isHidden }
+        ).let { headers ->
+            if (!preferences.collapsedDynamicAtBottom().get()) return@let headers
+            headers.filterNot { it.isHidden } + headers.filter { it.isHidden }
         }
         headers.forEach { category ->
             val catId = category.id ?: return@forEach
@@ -1573,5 +1636,8 @@ class LibraryPresenter(
         val filterMangaType: Int,
         val filterContentType: Int,
         val filterBookmarked: Int,
+
+        val groupType: Int,
+        val showAllCategories: Boolean,
     )
 }

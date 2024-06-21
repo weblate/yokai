@@ -72,7 +72,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetAvailableScanlators
-import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
@@ -93,7 +93,7 @@ class MangaDetailsPresenter(
     internal val storageManager: StorageManager = Injekt.get(),
 ) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
-    private val getChapters: GetChapters by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
     private val customMangaManager: CustomMangaManager by injectLazy()
@@ -178,7 +178,7 @@ class MangaDetailsPresenter(
     }
 
     private suspend fun getChapters() {
-        val chapters = getChapters.await(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
+        val chapters = getChapter.awaitAll(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
 
         // Find downloaded chapters
         setDownloadedChapters(chapters)
@@ -189,7 +189,7 @@ class MangaDetailsPresenter(
                 getAvailableScanlators.await(manga.id!!)
             }.toSet()
         // Store the last emission
-        allChapters = if (!isScanlatorFiltered()) chapters else getChapters.await(manga.id!!, false).map { it.toModel() }
+        allChapters = if (!isScanlatorFiltered()) chapters else getChapter.awaitAll(manga.id!!, false).map { it.toModel() }
         this.chapters = applyChapterFilters(chapters)
     }
 

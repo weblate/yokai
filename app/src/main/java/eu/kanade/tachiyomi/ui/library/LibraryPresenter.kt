@@ -59,8 +59,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
-import yokai.domain.chapter.interactor.GetChapters
-import yokai.domain.chapter.interactor.UpdateChapters
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.GetManga
@@ -91,8 +91,8 @@ class LibraryPresenter(
 ) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
     private val getCategories: GetCategories by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
-    private val getChapters: GetChapters by injectLazy()
-    private val updateChapter: UpdateChapters by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
+    private val updateChapter: UpdateChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
     private var loadedManga: LibraryMap = mapOf()
@@ -1187,7 +1187,7 @@ class LibraryPresenter(
 
     /** Returns first unread chapter of a manga */
     fun getFirstUnread(manga: Manga): Chapter? {
-        val chapters = runBlocking { getChapters.await(manga) }
+        val chapters = runBlocking { getChapter.awaitAll(manga) }
         return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
     }
 
@@ -1350,7 +1350,7 @@ class LibraryPresenter(
         presenterScope.launch {
             withContext(Dispatchers.IO) {
                 mangaList.forEach { list ->
-                    val chapters = getChapters.await(list).filter { !it.read }
+                    val chapters = getChapter.awaitAll(list).filter { !it.read }
                     downloadManager.downloadChapters(list, chapters)
                 }
             }
@@ -1367,7 +1367,7 @@ class LibraryPresenter(
         val mapMangaChapters = HashMap<Manga, List<Chapter>>()
         presenterScope.launchNonCancellableIO {
             mangaList.forEach { manga ->
-                val chapters = getChapters.await(manga)
+                val chapters = getChapter.awaitAll(manga)
                 val updates = chapters.copy().mapNotNull {
                     if (it.id == null) return@mapNotNull null
                     ChapterUpdate(it.id!!, read = markRead, lastPageRead = 0)
@@ -1512,7 +1512,7 @@ class LibraryPresenter(
 
         /** Give library manga to a date added based on min chapter fetch */
         suspend fun updateDB(
-            getChapters: GetChapters = Injekt.get(),
+            getChapter: GetChapter = Injekt.get(),
             getLibraryManga: GetLibraryManga = Injekt.get(),
             updateManga: UpdateManga = Injekt.get(),
         ) {
@@ -1520,7 +1520,7 @@ class LibraryPresenter(
             libraryManga.forEach { manga ->
                 if (manga.id == null) return@forEach
                 if (manga.date_added == 0L) {
-                    val chapters = getChapters.await(manga)
+                    val chapters = getChapter.awaitAll(manga)
                     manga.date_added = chapters.minByOrNull { it.date_fetch }?.date_fetch ?: 0L
                     updateManga.await(MangaUpdate(manga.id!!, dateAdded = manga.date_added))
                 }

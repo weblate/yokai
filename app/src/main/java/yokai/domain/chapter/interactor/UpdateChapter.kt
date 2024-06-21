@@ -3,7 +3,7 @@ package yokai.domain.chapter.interactor
 import yokai.domain.chapter.ChapterRepository
 import yokai.domain.chapter.models.ChapterUpdate
 
-class UpdateChapters(
+class UpdateChapter(
     private val chapterRepository: ChapterRepository,
 ) {
     suspend fun await(chapter: ChapterUpdate) = chapterRepository.update(chapter)

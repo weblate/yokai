@@ -73,7 +73,7 @@ import rx.schedulers.Schedulers
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.download.DownloadPreferences
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
@@ -95,7 +95,7 @@ class ReaderViewModel(
     private val storageManager: StorageManager = Injekt.get(),
     private val downloadPreferences: DownloadPreferences = Injekt.get(),
 ) : ViewModel() {
-    private val getChapters: GetChapters by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
     private val mutableState = MutableStateFlow(State())
@@ -146,7 +146,7 @@ class ReaderViewModel(
      */
     private val chapterList by lazy {
         val manga = manga!!
-        val dbChapters = runBlocking { getChapters.await(manga) }
+        val dbChapters = runBlocking { getChapter.awaitAll(manga) }
 
         val selectedChapter = dbChapters.find { it.id == chapterId }
             ?: error("Requested chapter of id $chapterId not found in chapter list")
@@ -264,7 +264,7 @@ class ReaderViewModel(
         val manga = manga ?: return emptyList()
         chapterItems = withContext(Dispatchers.IO) {
             val chapterSort = ChapterSort(manga, chapterFilter, preferences)
-            val dbChapters = runBlocking { getChapters.await(manga) }
+            val dbChapters = runBlocking { getChapter.awaitAll(manga) }
             chapterSort.getChaptersSorted(
                 dbChapters,
                 filterForReader = true,

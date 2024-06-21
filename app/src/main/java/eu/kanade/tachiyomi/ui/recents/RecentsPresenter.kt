@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.recents.RecentsPreferences
 import yokai.domain.ui.UiPreferences
 import java.text.SimpleDateFormat
@@ -51,7 +51,7 @@ class RecentsPresenter(
     val db: DatabaseHelper = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
 ) : BaseCoroutinePresenter<RecentsController>(), DownloadQueue.DownloadListener {
-    private val getChapters: GetChapters by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
 
     private var recentsJob: Job? = null
     var recentItems = listOf<RecentMangaItem>()
@@ -452,12 +452,12 @@ class RecentsPresenter(
     }
 
     private suspend fun getNextChapter(manga: Manga): Chapter? {
-        val chapters = getChapters.await(manga)
+        val chapters = getChapter.awaitAll(manga)
         return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
     }
 
     private suspend fun getFirstUpdatedChapter(manga: Manga, chapter: Chapter): Chapter? {
-        val chapters = getChapters.await(manga)
+        val chapters = getChapter.awaitAll(manga)
         return chapters
             .sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
                 !it.read && abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)

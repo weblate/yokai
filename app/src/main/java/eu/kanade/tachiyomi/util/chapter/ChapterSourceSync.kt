@@ -11,10 +11,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.data.DatabaseHandler
-import yokai.domain.chapter.interactor.DeleteChapters
-import yokai.domain.chapter.interactor.GetChapters
-import yokai.domain.chapter.interactor.InsertChapters
-import yokai.domain.chapter.interactor.UpdateChapters
+import yokai.domain.chapter.interactor.DeleteChapter
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.InsertChapter
+import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
@@ -33,10 +33,10 @@ suspend fun syncChaptersWithSource(
     rawSourceChapters: List<SChapter>,
     manga: Manga,
     source: Source,
-    deleteChapters: DeleteChapters = Injekt.get(),
-    getChapters: GetChapters = Injekt.get(),
-    insertChapters: InsertChapters = Injekt.get(),
-    updateChapters: UpdateChapters = Injekt.get(),
+    deleteChapter: DeleteChapter = Injekt.get(),
+    getChapter: GetChapter = Injekt.get(),
+    insertChapter: InsertChapter = Injekt.get(),
+    updateChapter: UpdateChapter = Injekt.get(),
     updateManga: UpdateManga = Injekt.get(),
     handler: DatabaseHandler = Injekt.get(),
 ): Pair<List<Chapter>, List<Chapter>> {
@@ -46,7 +46,7 @@ suspend fun syncChaptersWithSource(
 
     val downloadManager: DownloadManager by injectLazy()
     // Chapters from db.
-    val dbChapters = getChapters.await(manga, false)
+    val dbChapters = getChapter.awaitAll(manga, false)
 
     val sourceChapters = rawSourceChapters
         .distinctBy { it.url }
@@ -135,7 +135,7 @@ suspend fun syncChaptersWithSource(
             }
             deletedChapterNumbers.add(c.chapter_number)
         }
-        deleteChapters.awaitAll(toDelete)
+        deleteChapter.awaitAll(toDelete)
     }
 
     if (toAdd.isNotEmpty()) {
@@ -161,12 +161,12 @@ suspend fun syncChaptersWithSource(
             }
         }
         toAdd.forEach { chapter ->
-            chapter.id = insertChapters.await(chapter)
+            chapter.id = insertChapter.await(chapter)
         }
     }
 
     if (toChange.isNotEmpty()) {
-        updateChapters.awaitAll(toChange)
+        updateChapter.awaitAll(toChange)
     }
 
     // Fix order in source.
@@ -183,7 +183,7 @@ suspend fun syncChaptersWithSource(
 
     var mangaUpdate: MangaUpdate? = null
     // Set this manga as updated since chapters were changed
-    val newestChapterDate = getChapters.await(manga, false)
+    val newestChapterDate = getChapter.awaitAll(manga, false)
         .maxOfOrNull { it.date_upload } ?: 0L
     if (newestChapterDate == 0L) {
         if (toAdd.isNotEmpty()) {

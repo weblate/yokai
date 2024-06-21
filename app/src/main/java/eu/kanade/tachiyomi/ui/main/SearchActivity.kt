@@ -29,11 +29,11 @@ import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.presentation.core.util.IntentCommon
 
 class SearchActivity : MainActivity() {
-    private val getChapters: GetChapters by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
 
     private var backToMain = false
 
@@ -157,7 +157,7 @@ class SearchActivity : MainActivity() {
                     if (mangaId != 0L) {
                         val db = Injekt.get<DatabaseHelper>()
                         db.getManga(mangaId).executeAsBlocking()?.let { manga ->
-                            val chapters = runBlocking { getChapters.await(manga) }
+                            val chapters = runBlocking { getChapter.awaitAll(manga) }
                             val nextUnreadChapter = ChapterSort(manga).getNextUnreadChapter(chapters, false)
                             if (nextUnreadChapter != null) {
                                 val activity =

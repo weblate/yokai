@@ -18,7 +18,7 @@ import eu.kanade.tachiyomi.util.system.launchNow
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.category.interactor.GetCategories
-import yokai.domain.chapter.interactor.GetChapters
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
@@ -29,7 +29,7 @@ class MangaBackupRestorer(
     private val db: DatabaseHelper = Injekt.get(),
     private val customMangaManager: CustomMangaManager = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
-    private val getChapters: GetChapters = Injekt.get(),
+    private val getChapter: GetChapter = Injekt.get(),
     private val getManga: GetManga = Injekt.get(),
     private val insertManga: InsertManga = Injekt.get(),
     private val updateManga: UpdateManga = Injekt.get(),
@@ -114,7 +114,7 @@ class MangaBackupRestorer(
     }
 
     private suspend fun restoreChapters(manga: Manga, chapters: List<Chapter>) {
-        val dbChapters = getChapters.await(manga)
+        val dbChapters = getChapter.awaitAll(manga)
 
         chapters.forEach { chapter ->
             val dbChapter = dbChapters.find { it.url == chapter.url }

@@ -87,6 +87,8 @@ import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.updateGradiantBGRadius
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.max
 
@@ -381,7 +383,11 @@ class RecentsController(bundle: Bundle? = null) :
                 }
             },
         )
-        binding.swipeRefresh.isRefreshing = LibraryUpdateJob.isRunning(view.context)
+        viewScope.launch {
+            LibraryUpdateJob.isRunningFlow(view.context).collectLatest {
+                binding.swipeRefresh.isRefreshing = it
+            }
+        }
         binding.swipeRefresh.setOnRefreshListener {
             if (!LibraryUpdateJob.isRunning(view.context)) {
                 snack?.dismiss()
@@ -401,14 +407,6 @@ class RecentsController(bundle: Bundle? = null) :
                             )
                         }
                     }
-                    addCallback(
-                        object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                super.onDismissed(transientBottomBar, event)
-                                binding.swipeRefresh.isRefreshing = LibraryUpdateJob.isRunning(view.context)
-                            }
-                        },
-                    )
                 }
                 LibraryUpdateJob.startNow(view.context)
             }
@@ -576,7 +574,6 @@ class RecentsController(bundle: Bundle? = null) :
         }
         binding.progress.isVisible = false
         binding.recentsFrameLayout.alpha = 1f
-        binding.swipeRefresh.isRefreshing = LibraryUpdateJob.isRunning(view!!.context)
         adapter.removeAllScrollableHeaders()
         adapter.updateDataSet(recents)
         adapter.onLoadMoreComplete(null)

@@ -66,8 +66,10 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
@@ -675,6 +677,12 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
         fun cancelAllWorks(context: Context) {
             WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
+        }
+
+        fun isRunningFlow(context: Context): Flow<Boolean> {
+            return WorkManager.getInstance(context).getWorkInfosByTagFlow(TAG).map { list ->
+                list.any { it.state == WorkInfo.State.RUNNING }
+            }
         }
 
         fun isRunning(context: Context): Boolean {

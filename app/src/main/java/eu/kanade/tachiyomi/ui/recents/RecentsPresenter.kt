@@ -17,7 +17,6 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import eu.kanade.tachiyomi.util.chapter.ChapterFilter
-import eu.kanade.tachiyomi.util.chapter.ChapterFilter.Companion.filterChaptersByScanlators
 import eu.kanade.tachiyomi.util.chapter.ChapterSort
 import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
@@ -205,7 +204,7 @@ class RecentsPresenter(
                             val manga = mchs.first().manga
                             val chapters = mchs.map { mch ->
                                 ChapterHistory(mch.chapter, mch.history)
-                            }.filterChaptersByScanlators(manga)
+                            }
                             extraCount += mchs.size - chapters.size
                             if (chapters.isEmpty()) return@mapNotNull null
                             val lastAmount = if (groupChaptersHistory == GroupType.ByDay) {

@@ -6,7 +6,6 @@ import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.HttpSource
-import eu.kanade.tachiyomi.util.chapter.ChapterFilter.Companion.filterChaptersByScanlators
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -201,6 +200,17 @@ suspend fun syncChaptersWithSource(
         toAdd.subtract(reAddedSet).toList().filterChaptersByScanlators(manga),
         toDelete - reAddedSet,
     )
+}
+
+private fun List<Chapter>.filterChaptersByScanlators(manga: Manga): List<Chapter> {
+    if (manga.filtered_scanlators == null) return this
+
+    return this.filter { chapter ->
+        ChapterUtil.getScanlators(chapter.scanlator)
+            .none { group ->
+                ChapterUtil.getScanlators(manga.filtered_scanlators).contains(group)
+            }
+    }
 }
 
 // checks if the chapter in db needs updated

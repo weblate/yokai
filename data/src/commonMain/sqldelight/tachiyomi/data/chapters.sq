@@ -52,6 +52,61 @@ AND (
 ORDER BY C.date_fetch DESC
 LIMIT :limit OFFSET :offset;
 
+getRecentsUngrouped:
+SELECT
+    M.url AS mangaUrl,
+    M.*,
+    C.*,
+    H.*
+FROM mangas AS M
+JOIN chapters AS C
+ON M._id = C.manga_id
+JOIN history AS H
+ON C._id = H.history_chapter_id
+AND H.history_last_read > 0
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE lower(M.title) LIKE :search
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+)
+ORDER BY H.history_last_read DESC
+LIMIT :limit OFFSET :offset;
+
+getRecentsBySeries:
+SELECT
+    M.url AS mangaUrl,
+    M.*,
+    C.*,
+    H.*
+FROM mangas AS M
+JOIN chapters AS C
+ON M._id = C.manga_id
+JOIN history AS H
+ON C._id = H.history_chapter_id
+JOIN (
+    SELECT
+        C2.manga_id AS manga_id,
+        C2._id AS history_chapter_id,
+        MAX(H2.history_last_read) AS history_last_read
+    FROM chapters AS C2 JOIN history AS H2
+    ON C2._id = H2.history_chapter_id
+    GROUP BY C2.manga_id
+) AS max_last_read
+ON C.manga_id = max_last_read.manga_id
+AND max_last_read.history_chapter_id = H.history_chapter_id
+AND max_last_read.history_last_read > 0
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE lower(M.title) LIKE :search
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+)
+ORDER BY max_last_read.history_last_read DESC
+LIMIT :limit OFFSET :offset;
+
 getScanlatorsByMangaId:
 SELECT scanlator
 FROM chapters

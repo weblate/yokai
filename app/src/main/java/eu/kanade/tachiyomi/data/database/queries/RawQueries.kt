@@ -40,6 +40,7 @@ fun limitAndOffset(endless: Boolean, isResuming: Boolean, offset: Int): String {
     }
 }
 
+// TODO: Migrate to SQLDelight
 /**
  * Query to get the recently read chapters of manga from the library up to a date.
  * The max_last_read table contains the most recent chapters grouped by manga
@@ -52,18 +53,27 @@ fun getRecentHistoryUngrouped(
     isResuming: Boolean,
 ) =
     """
-    SELECT ${Manga.TABLE}.${Manga.COL_URL} as mangaUrl, ${Manga.TABLE}.*, ${Chapter.TABLE}.*, ${History.TABLE}.*
-    FROM ${Manga.TABLE}
-    JOIN ${Chapter.TABLE}
-    ON ${Manga.TABLE}.${Manga.COL_ID} = ${Chapter.TABLE}.${Chapter.COL_MANGA_ID}
-    JOIN ${History.TABLE}
-    ON ${Chapter.TABLE}.${Chapter.COL_ID} = ${History.TABLE}.${History.COL_CHAPTER_ID}
-    AND ${History.TABLE}.${History.COL_LAST_READ} > 0
-    AND lower(${Manga.TABLE}.${Manga.COL_TITLE}) LIKE '%$search%'
-    ORDER BY ${History.TABLE}.${History.COL_LAST_READ} DESC
+    SELECT
+        M.url AS mangaUrl,
+        M.*,
+        C.*,
+        H.*
+    FROM mangas AS M
+    JOIN chapters AS C
+    ON M._id = C.manga_id
+    JOIN history AS H
+    ON C._id = H.history_chapter_id
+    AND H.history_last_read > 0
+    LEFT JOIN scanlators_view AS S
+    ON C.manga_id = S.manga_id
+    AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')
+    WHERE lower(M.title) LIKE '%$search%'
+    AND S.name IS NULL
+    ORDER BY H.history_last_read DESC
     ${limitAndOffset(true, isResuming, offset)}
 """
 
+// TODO: Migrate to SQLDelight
 /**
  * Query to get the recently read chapters of manga from the library up to a date.
  * The max_last_read table contains the most recent chapters grouped by manga
@@ -76,22 +86,34 @@ fun getRecentMangasLimitQuery(
     isResuming: Boolean,
 ) =
     """
-    SELECT ${Manga.TABLE}.${Manga.COL_URL} as mangaUrl, ${Manga.TABLE}.*, ${Chapter.TABLE}.*, ${History.TABLE}.*
-    FROM ${Manga.TABLE}
-    JOIN ${Chapter.TABLE}
-    ON ${Manga.TABLE}.${Manga.COL_ID} = ${Chapter.TABLE}.${Chapter.COL_MANGA_ID}
-    JOIN ${History.TABLE}
-    ON ${Chapter.TABLE}.${Chapter.COL_ID} = ${History.TABLE}.${History.COL_CHAPTER_ID}
+    SELECT
+        M.url AS mangaUrl,
+        M.*,
+        C.*,
+        H.*
+    FROM mangas AS M
+    JOIN chapters AS C
+    ON M._id = C.manga_id
+    JOIN history AS H
+    ON C._id = H.history_chapter_id
     JOIN (
-    SELECT ${Chapter.TABLE}.${Chapter.COL_MANGA_ID},${Chapter.TABLE}.${Chapter.COL_ID} as ${History.COL_CHAPTER_ID}, MAX(${History.TABLE}.${History.COL_LAST_READ}) as ${History.COL_LAST_READ}
-    FROM ${Chapter.TABLE} JOIN ${History.TABLE}
-    ON ${Chapter.TABLE}.${Chapter.COL_ID} = ${History.TABLE}.${History.COL_CHAPTER_ID}
-    GROUP BY ${Chapter.TABLE}.${Chapter.COL_MANGA_ID}) AS max_last_read
-    ON ${Chapter.TABLE}.${Chapter.COL_MANGA_ID} = max_last_read.${Chapter.COL_MANGA_ID}
-    AND max_last_read.${History.COL_CHAPTER_ID} = ${History.TABLE}.${History.COL_CHAPTER_ID}
-    AND max_last_read.${History.COL_LAST_READ} > 0
-    AND lower(${Manga.TABLE}.${Manga.COL_TITLE}) LIKE '%$search%'
-    ORDER BY max_last_read.${History.COL_LAST_READ} DESC
+        SELECT
+            C2.manga_id AS manga_id,
+            C2._id AS history_chapter_id,
+            MAX(H2.history_last_read) AS history_last_read
+        FROM chapters AS C2 JOIN history AS H2
+        ON C2._id = H2.history_chapter_id
+        GROUP BY C2.manga_id
+    ) AS max_last_read
+    ON C.manga_id = max_last_read.manga_id
+    AND max_last_read.history_chapter_id = H.history_chapter_id
+    AND max_last_read.history_last_read > 0
+    LEFT JOIN scanlators_view AS S
+    ON C.manga_id = S.manga_id
+    AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')
+    WHERE lower(M.title) LIKE '%$search%'
+    AND S.name IS NULL
+    ORDER BY max_last_read.history_last_read DESC
     ${limitAndOffset(true, isResuming, offset)}
 """
 

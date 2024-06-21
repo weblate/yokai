@@ -46,7 +46,7 @@ suspend fun syncChaptersWithSource(
 
     val downloadManager: DownloadManager by injectLazy()
     // Chapters from db.
-    val dbChapters = getChapters.await(manga)
+    val dbChapters = getChapters.await(manga, false)
 
     val sourceChapters = rawSourceChapters
         .distinctBy { it.url }
@@ -183,7 +183,7 @@ suspend fun syncChaptersWithSource(
 
     var mangaUpdate: MangaUpdate? = null
     // Set this manga as updated since chapters were changed
-    val newestChapterDate = getChapters.await(manga)
+    val newestChapterDate = getChapters.await(manga, false)
         .maxOfOrNull { it.date_upload } ?: 0L
     if (newestChapterDate == 0L) {
         if (toAdd.isNotEmpty()) {

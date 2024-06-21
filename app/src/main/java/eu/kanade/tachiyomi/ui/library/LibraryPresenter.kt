@@ -260,11 +260,12 @@ class LibraryPresenter(
         view?.onNextLibraryUpdate(sectionedLibraryItems[currentCategory] ?: blankItem())
     }
 
-    fun blankItem(id: Int = currentCategory): List<LibraryItem> {
+    fun blankItem(id: Int = currentCategory, categories: List<Category>? = null): List<LibraryItem> {
+        val actualCategories = categories ?: this.categories
         return listOf(
             LibraryItem(
                 LibraryManga.createBlank(id),
-                LibraryHeaderItem({ getCategory(id) }, id),
+                LibraryHeaderItem({ actualCategories.getOrDefault(id) }, id),
                 viewContext,
             ),
         )
@@ -682,9 +683,9 @@ class LibraryPresenter(
      *
      * @param categoryId id of the category to get
      */
-    private fun getCategory(categoryId: Int): Category {
-        val category = categories.find { categoryId == it.id } ?: createDefaultCategory()
-        category.isAlone = categories.size <= 1
+    private fun List<Category>.getOrDefault(categoryId: Int): Category {
+        val category = this.find { categoryId == it.id } ?: createDefaultCategory()
+        category.isAlone = this.size <= 1
         return category
     }
 
@@ -768,7 +769,7 @@ class LibraryPresenter(
             val headerItems = if (libraryIsGrouped)
                 categories.mapNotNull { category ->
                     val id = category.id ?: return@mapNotNull null
-                    id to LibraryHeaderItem({ getCategory(id) }, id)
+                    id to LibraryHeaderItem({ categories.getOrDefault(id) }, id)
                 }.toMap()
             else null
 
@@ -818,7 +819,7 @@ class LibraryPresenter(
 
             categories.associateWith {
                 libraryManga[it.id] ?: headerItems?.get(it.id!!)?.let { headerItem ->
-                    // J2K behaviour, not sure why, but J2K added blank manga if library is grouped.
+                    // J2K behaviour, blank manga is added if library is grouped, used as placeholder for empty state.
                     // Since headerItems is always null if library is not grouped, that already act as a check for
                     // "is library grouped".
                     listOf(
@@ -865,9 +866,9 @@ class LibraryPresenter(
                     if (id == null) {
                         null
                     } else {
-                        id to LibraryHeaderItem({ getCategory(id) }, id)
+                        id to LibraryHeaderItem({ categories.getOrDefault(id) }, id)
                     }
-                } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ getCategory(0) }, 0))
+                } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ categories.getOrDefault(0) }, 0))
                 ).toMap()
 
             val items = libraryManga.mapNotNull {
@@ -963,7 +964,7 @@ class LibraryPresenter(
                     return tagItems[swappedName]!!
                 }
             }
-            val headerItem = LibraryHeaderItem({ getCategory(it) }, tagItems.count())
+            val headerItem = LibraryHeaderItem({ categories.getOrDefault(it) }, tagItems.count())
             tagItems[name] = headerItem
             return headerItem
         }
@@ -1360,7 +1361,7 @@ class LibraryPresenter(
                 .set(categoriesHidden.map { it.toString() }.toMutableSet())
         } else {
             val categoriesHidden = preferences.collapsedDynamicCategories().get().toMutableSet()
-            val category = getCategory(categoryId)
+            val category = categories.getOrDefault(categoryId)
             val dynamicName = getDynamicCategoryName(category)
             if (dynamicName in categoriesHidden) {
                 categoriesHidden.remove(dynamicName)

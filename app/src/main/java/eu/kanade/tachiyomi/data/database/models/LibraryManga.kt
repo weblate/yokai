@@ -14,6 +14,13 @@ data class LibraryManga(
     var lastFetch: Int = 0,
 ) : MangaImpl() {
 
+    var realMangaCount = 0
+        get() = if (isBlank()) field else throw IllegalStateException("realMangaCount is only accessible for placeholders")
+        set(value) {
+            if (!isBlank()) throw IllegalStateException("realMangaCount can only be set for placeholders")
+            field = value
+        }
+
     val hasRead
         get() = read > 0
 

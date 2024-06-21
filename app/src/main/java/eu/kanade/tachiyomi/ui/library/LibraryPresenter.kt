@@ -341,7 +341,12 @@ class LibraryPresenter(
             )
         hasActiveFilters = !filtersOff
         val missingCategorySet = categories.mapNotNull { it.id }.toMutableSet()
+        val realCount = mutableMapOf<Int, Int>()
         val filteredItems = this.filter f@{ item ->
+            if (showEmptyCategoriesWhileFiltering) {
+                realCount[item.manga.category] = sectionedLibraryItems[item.manga.category]?.size ?: 0
+            }
+
             if (!showEmptyCategoriesWhileFiltering && item.manga.isHidden()) {
                 val subItems = sectionedLibraryItems[item.manga.category]?.takeUnless { it.size <= 1 }
                     ?: hiddenLibraryItems.filter { it.manga.category == item.manga.category }
@@ -376,7 +381,9 @@ class LibraryPresenter(
         }.toMutableList()
         if (showEmptyCategoriesWhileFiltering) {
             missingCategorySet.forEach {
-                filteredItems.add(blankItem(it).first())
+                filteredItems.add(
+                    blankItem(it).first().apply { manga.realMangaCount = realCount[it] ?: 0 }
+                )
             }
         }
         return filteredItems

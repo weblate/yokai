@@ -48,7 +48,7 @@ class LibraryListHolder(
                 binding.title.isVisible = false
             } else {
                 binding.title.text = itemView.context.getString(
-                    if (adapter.hasActiveFilters) {
+                    if (adapter.hasActiveFilters && item.manga.realMangaCount >= 1) {
                         R.string.no_matches_for_filters_short
                     } else {
                         R.string.category_is_empty

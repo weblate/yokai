@@ -32,6 +32,26 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 );
 
+getRecents:
+SELECT
+    M.url AS mangaUrl,
+    M.*,
+    C.*
+FROM mangas AS M
+JOIN chapters AS C
+ON M._id = C.manga_id
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE M.favorite = 1
+AND C.date_fetch > M.date_added
+AND lower(M.title) LIKE :search
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+)
+ORDER BY C.date_fetch DESC
+LIMIT :limit OFFSET :offset;
+
 getScanlatorsByMangaId:
 SELECT scanlator
 FROM chapters

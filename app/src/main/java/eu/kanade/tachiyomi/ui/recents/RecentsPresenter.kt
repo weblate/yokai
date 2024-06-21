@@ -247,7 +247,6 @@ class RecentsPresenter(
                     .mapNotNull { (key, mcs) ->
                         val manga = mcs.first().manga
                         val chapters = mcs.map { ChapterHistory(it.chapter) }
-                            .filterChaptersByScanlators(manga)
                         extraCount += mcs.size - chapters.size
                         if (chapters.isEmpty()) return@mapNotNull null
                         val existingItem = recentItems.takeLast(ENDLESS_LIMIT).find {

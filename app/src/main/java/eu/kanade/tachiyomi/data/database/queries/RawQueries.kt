@@ -8,17 +8,27 @@ import eu.kanade.tachiyomi.data.database.tables.HistoryTable as History
 import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable as MangaCategory
 import eu.kanade.tachiyomi.data.database.tables.MangaTable as Manga
 
+// TODO: Migrate to SQLDelight
 /**
  * Query to get the recent chapters of manga from the library up to a date.
  */
 fun getRecentsQuery(search: String, offset: Int, isResuming: Boolean) =
     """
-    SELECT ${Manga.TABLE}.${Manga.COL_URL} as mangaUrl, * FROM ${Manga.TABLE} JOIN ${Chapter.TABLE}
-    ON ${Manga.TABLE}.${Manga.COL_ID} = ${Chapter.TABLE}.${Chapter.COL_MANGA_ID}
-    WHERE ${Manga.COL_FAVORITE} = 1
-    AND ${Chapter.COL_DATE_FETCH} > ${Manga.COL_DATE_ADDED}
-    AND lower(${Manga.COL_TITLE}) LIKE '%$search%'
-    ORDER BY ${Chapter.COL_DATE_FETCH} DESC
+    SELECT
+        M.url AS mangaUrl,
+        M.*,
+        C.*
+    FROM mangas AS M
+    JOIN chapters AS C
+    ON M._id = C.manga_id
+    LEFT JOIN scanlators_view AS S
+    ON C.manga_id = S.manga_id
+    AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')
+    WHERE M.favorite = 1
+    AND C.date_fetch > M.date_added
+    AND lower(M.title) LIKE '%$search%'
+    AND S.name IS NULL
+    ORDER BY C.date_fetch DESC
     ${limitAndOffset(true, isResuming, offset)}
 """
 

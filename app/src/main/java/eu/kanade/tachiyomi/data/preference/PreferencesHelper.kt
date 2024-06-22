@@ -57,6 +57,7 @@ operator fun <T> Preference<Set<T>>.minusAssign(item: Collection<T>) {
 
 class PreferencesHelper(val context: Context, val preferenceStore: PreferenceStore) {
 
+    @Deprecated("Use [preferenceStore] instead")
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun getInt(key: String, default: Int) = preferenceStore.getInt(key, default)

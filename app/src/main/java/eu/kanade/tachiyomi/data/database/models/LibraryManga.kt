@@ -34,8 +34,8 @@ data class LibraryManga(
         fun createHide(categoryId: Int, title: String, hideCount: Int): LibraryManga =
             createBlank(categoryId).apply {
                 this.title = title
-                status = -1
-                read = hideCount
+                this.status = -1
+                this.read = hideCount
             }
 
         fun mapper(

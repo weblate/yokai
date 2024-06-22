@@ -27,6 +27,7 @@ import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_AUTHOR
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_DEFAULT
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_LANGUAGE
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_SOURCE
+import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_STATUS
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_TAG
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_TRACK_STATUS
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.UNGROUPED
@@ -735,6 +736,208 @@ class LibraryPresenter(
        )
     }
 
+    private fun MutableList<LibraryItem>.addRemovedManga(
+        removedManga: List<Pair<LibraryManga, LibraryHeaderItem>>,
+    ): MutableList<LibraryItem> {
+        val headerItem = try {
+            removedManga.first().second
+        } catch (e: NoSuchElementException) {
+            return this  // No hidden manga to be handled
+        }
+        val mergedTitle = removedManga.joinToString("-") {
+            it.first.title + "-" + it.first.author
+        }
+        this.add(
+            LibraryItem(
+                LibraryManga.createHide(
+                    headerItem.catId,
+                    mergedTitle,
+                    removedManga.size,
+                ),
+                headerItem,
+                viewContext,
+            ),
+        )
+        return this
+    }
+
+    private suspend fun getCustomMangaMap(
+        libraryMangaList: List<LibraryManga>,
+        groupType: Int,
+    ): LibraryMap {
+        val tagItems: MutableMap<String, LibraryHeaderItem> = mutableMapOf()
+
+        val hiddenDynamics = if (controllerIsSubClass) {
+            emptySet()
+        } else {
+            preferences.collapsedDynamicCategories().get()
+        }
+
+        // internal function to make headers
+        fun makeOrGetHeader(name: String, checkNameSwap: Boolean = false): LibraryHeaderItem {
+            tagItems.get(name)?.let { return it }
+            if (checkNameSwap && name.contains(" ")) {
+                val swappedName = name.split(" ").reversed().joinToString(" ")
+                if (tagItems.containsKey(swappedName)) {
+                    return tagItems[swappedName]!!
+                }
+            }
+            val catId = tagItems.count()
+            val category = Category.createCustom(
+                name,
+                preferences.librarySortingMode().get(),
+                preferences.librarySortingAscending().get(),
+            ).apply {
+                this.id = catId
+                if (name.contains(sourceSplitter)) {
+                    val split = name.split(sourceSplitter)
+                    this.name = split.first()
+                    this.sourceId = split.last().toLongOrNull()
+                } else if (name.contains(langSplitter)) {
+                    val split = name.split(langSplitter)
+                    this.name = split.last()
+                    this.langId = split.first()
+                }
+                this.isHidden = getDynamicCategoryName(this) in hiddenDynamics
+            }
+            val headerItem = LibraryHeaderItem({ category }, catId)
+            tagItems[name] = headerItem
+            return headerItem
+        }
+
+        val unknown = context.getString(R.string.unknown)
+        val removedManga = mutableListOf<Pair<LibraryManga, LibraryHeaderItem>>()
+        val items = libraryMangaList.mapNotNull map@ { manga ->
+            when (groupType) {
+                BY_TAG -> {
+                    val tags = if (manga.genre.isNullOrBlank()) {
+                        listOf(unknown)
+                    } else {
+                        manga.genre?.split(",")?.mapNotNull {
+                            val tag = it.trim().capitalizeWords()
+                            tag.ifBlank { null }
+                        } ?: listOf(unknown)
+                    }
+                    tags.mapNotNull inner@ {
+                        val header = makeOrGetHeader(it)
+                        if (header.category.isHidden) {
+                            removedManga.add(manga to header)
+                            return@inner null
+                        }
+                        LibraryItem(manga, header, viewContext)
+                    }
+                }
+                BY_TRACK_STATUS -> {
+                    val tracks = db.getTracks(manga).executeOnIO()
+                    val track = tracks.find { track ->
+                        loggedServices.any { it.id == track?.sync_id }
+                    }
+                    val service = loggedServices.find { it.id == track?.sync_id }
+                    val status: String = if (track != null && service != null) {
+                        if (loggedServices.size > 1) {
+                            service.getGlobalStatus(track.status)
+                        } else {
+                            service.getStatus(track.status)
+                        }
+                    } else {
+                        view?.view?.context?.getString(R.string.not_tracked) ?: ""
+                    }
+                    val header = makeOrGetHeader(status)
+                    if (header.category.isHidden) {
+                        removedManga.add(manga to header)
+                        return@map null
+                    }
+                    listOf(LibraryItem(manga, header, viewContext))
+                }
+                BY_SOURCE -> {
+                    val source = sourceManager.getOrStub(manga.source)
+                    val header = makeOrGetHeader("${source.name}$sourceSplitter${source.id}")
+                    if (header.category.isHidden) {
+                        removedManga.add(manga to header)
+                        return@map null
+                    }
+                    listOf(
+                        LibraryItem(manga, header, viewContext),
+                    )
+                }
+                BY_AUTHOR -> {
+                    if (manga.artist.isNullOrBlank() && manga.author.isNullOrBlank()) {
+                        val header = makeOrGetHeader(unknown)
+                        if (header.category.isHidden) {
+                            removedManga.add(manga to header)
+                            return@map null
+                        }
+                        listOf(LibraryItem(manga, header, viewContext))
+                    } else {
+                        listOfNotNull(
+                            manga.author.takeUnless { it.isNullOrBlank() },
+                            manga.artist.takeUnless { it.isNullOrBlank() },
+                        ).map {
+                            it.split(",", "/", " x ", " - ", ignoreCase = true).mapNotNull { name ->
+                                val author = name.trim()
+                                author.ifBlank { null }
+                            }
+                        }.flatten().distinct().mapNotNull inner@ {
+                            val header = makeOrGetHeader(it, true)
+                            if (header.category.isHidden) {
+                                removedManga.add(manga to header)
+                                return@inner null
+                            }
+                            LibraryItem(manga, header, viewContext)
+                        }
+                    }
+                }
+                BY_LANGUAGE -> {
+                    val lang = getLanguage(manga)
+                    val header = makeOrGetHeader(
+                        lang?.plus(langSplitter)?.plus(
+                            run {
+                                val locale = Locale.forLanguageTag(lang)
+                                locale.getDisplayName(locale)
+                                    .replaceFirstChar { it.uppercase(locale) }
+                            },
+                        ) ?: unknown,
+                    )
+                    if (header.category.isHidden) {
+                        removedManga.add(manga to header)
+                        return@map null
+                    }
+                    listOf(
+                        LibraryItem(manga, header, viewContext),
+                    )
+                }
+                BY_STATUS -> {
+                    val header = makeOrGetHeader(context.mapStatus(manga.status))
+                    if (header.category.isHidden) {
+                        removedManga.add(manga to header)
+                        return@map null
+                    }
+                    listOf(LibraryItem(manga, header, viewContext))
+                }
+                else -> throw IllegalStateException("Invalid group type")
+            }
+        }.flatten().toMutableList()
+            .addRemovedManga(removedManga)
+            .groupBy { it.header.category.id!! }
+
+        val categories = tagItems
+            .map { it.value.category }
+            .sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) {
+                    if (groupType == BY_TRACK_STATUS) {
+                        mapTrackingOrder(it.name)
+                    } else {
+                        it.name
+                    }
+                },
+            ).let { headers ->
+                if (!preferences.collapsedDynamicAtBottom().get()) return@let headers
+                headers.filterNot { it.isHidden } + headers.filter { it.isHidden }
+            }
+
+        return categories.associateWith { items[it.id] ?: emptyList() }.filter { it.value.isNotEmpty() }
+    }
+
     /**
      * Library's flow.
      *
@@ -746,94 +949,73 @@ class LibraryPresenter(
             getLibraryManga.subscribe(),
             getPreferencesFlow(),
         ) { _categories, libraryMangaList, prefs ->
-            this.groupType = prefs.groupType
-            val showAll = forceShowAllCategories || prefs.showAllCategories
+            val groupType = prefs.groupType
+            val libraryIsGrouped = groupType != UNGROUPED
 
-            // TODO: Support custom groups
-            /*
-            val (items, customCategories) = getCustomMangaItems(libraryManga)
-            this.categories = customCategories
-            items
-             */
+            if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
+                val showAll = forceShowAllCategories || prefs.showAllCategories
 
-            val hiddenCategories = if (forceShowAllCategories || controllerIsSubClass) {
-                emptySet()
+                val hiddenCategories = if (forceShowAllCategories || controllerIsSubClass) {
+                    emptySet()
+                } else {
+                    preferences.collapsedCategories().get().mapNotNull { it.toIntOrNull() }.toSet()
+                }
+
+                val categoryAll = Category.createAll(
+                    context,
+                    preferences.librarySortingMode().get(),
+                    preferences.librarySortingAscending().get(),
+                )
+
+                val categories: List<Category> = _categories
+                    .filter { it.id != null }
+                    .toMutableList().apply { add(0, createDefaultCategory()) }
+                categories.forEach { it.isHidden = it.id in hiddenCategories && showAll && categories.size > 1 }
+
+                val headerItems = if (libraryIsGrouped)
+                    categories.mapNotNull { category ->
+                        val id = category.id ?: return@mapNotNull null
+                        id to LibraryHeaderItem({ categories.getOrDefault(id) }, id)
+                    }.toMap()
+                else null
+
+                val removedManga = mutableListOf<Pair<LibraryManga, LibraryHeaderItem>>()
+                val libraryManga = libraryMangaList
+                    .mapNotNull {
+                        // Header item is used to identify which category the library manga is actually belong to,
+                        // because J2K have an option to show everything in a single category.
+                        val headerItem = if (headerItems == null) {
+                            // This ensures that only when "Show all" display is enabled that we gonna get '-1' category.
+                            LibraryHeaderItem({ categoryAll }, -1)
+                        } else {
+                            headerItems[it.category]
+                        } ?: return@mapNotNull null
+
+                        // We'll handle hidden manga separately
+                        if (headerItem.isHidden) {
+                            removedManga.add(it to headerItem)
+                            return@mapNotNull null
+                        }
+
+                        LibraryItem(it, headerItem, viewContext)
+                    }
+                    .toMutableList()
+                    .addRemovedManga(removedManga)
+                    .groupBy { it.header.category.id!! }
+
+                categories.associateWith {
+                    libraryManga[it.id] ?: headerItems?.get(it.id!!)?.let { headerItem ->
+                        // J2K behaviour, blank manga is added if library is grouped, used as placeholder for empty state.
+                        // Since headerItems is always null if library is not grouped, that already act as a check for
+                        // "is library grouped".
+                        listOf(
+                            LibraryItem(LibraryManga.createBlank(it.id!!), headerItem, viewContext),
+                        )
+                    } ?: emptyList()
+                }.filter { it.value.isNotEmpty() }
             } else {
-                preferences.collapsedCategories().get().mapNotNull { it.toIntOrNull() }.toSet()
+                getCustomMangaMap(getLibraryManga.await().distinctBy { it.id }, groupType)
             }
-
-            val categoryAll = Category.createAll(
-                context,
-                preferences.librarySortingMode().get(),
-                preferences.librarySortingAscending().get(),
-            )
-
-            val categories: List<Category> = _categories
-                .filter { it.id != null }
-                .toMutableList().apply { add(0, createDefaultCategory()) }
-            categories.forEach { it.isHidden = it.id in hiddenCategories && showAll && categories.size > 1 }
-
-            val headerItems = if (libraryIsGrouped)
-                categories.mapNotNull { category ->
-                    val id = category.id ?: return@mapNotNull null
-                    id to LibraryHeaderItem({ categories.getOrDefault(id) }, id)
-                }.toMap()
-            else null
-
-            val removedManga = mutableListOf<Pair<LibraryManga, LibraryHeaderItem>>()
-            val libraryManga = libraryMangaList
-                .mapNotNull {
-                    // Header item is used to identify which category the library manga is actually belong to,
-                    // because J2K have an option to show everything in a single category.
-                    val headerItem = if (headerItems == null) {
-                        // This ensures that only when "Show all" display is enabled that we gonna get '-1' category.
-                        LibraryHeaderItem({ categoryAll }, -1)
-                    } else {
-                        headerItems[it.category]
-                    } ?: return@mapNotNull null
-
-                    // We'll handle hidden manga separately
-                    if (headerItem.isHidden) {
-                        removedManga.add(it to headerItem)
-                        return@mapNotNull null
-                    }
-
-                    LibraryItem(it, headerItem, viewContext)
-                }
-                .toMutableList().apply {
-                    // Add every hidden manga as a single item
-                    val headerItem = try {
-                        removedManga.first().second
-                    } catch (e: NoSuchElementException) {
-                        return@apply  // No hidden manga to be handled
-                    }
-                    val mergedTitle = removedManga.joinToString("-") {
-                        it.first.title + "-" + it.first.author
-                    }
-                    this.add(
-                        LibraryItem(
-                            LibraryManga.createHide(
-                                headerItem.catId,
-                                mergedTitle,
-                                removedManga.size,
-                            ),
-                            headerItem,
-                            viewContext,
-                        ),
-                    )
-                }
-                .groupBy { it.header.category.id!! }
-
-            categories.associateWith {
-                libraryManga[it.id] ?: headerItems?.get(it.id!!)?.let { headerItem ->
-                    // J2K behaviour, blank manga is added if library is grouped, used as placeholder for empty state.
-                    // Since headerItems is always null if library is not grouped, that already act as a check for
-                    // "is library grouped".
-                    listOf(
-                        LibraryItem(LibraryManga.createBlank(it.id!!), headerItem, viewContext),
-                    )
-                } ?: emptyList()
-            }.filter { it.value.isNotEmpty() }
         }
     }
 

@@ -231,7 +231,8 @@ class LibraryPresenter(
                 categories = lastCategories ?: getCategories.await().toMutableList()
             }
 
-            val (library, hiddenItems) = withIOContext { getLibraryFromDB() }
+            val (library, _) = withIOContext { getLibraryFromDB() }
+            val hiddenItems = library.filter { it.manga.isHidden() }.mapNotNull { it.manga.items }.flatten()
             setDownloadCount(library)
             setUnreadBadge(library)
             setSourceLanguage(library)
@@ -737,27 +738,30 @@ class LibraryPresenter(
     }
 
     private fun MutableList<LibraryItem>.addRemovedManga(
-        removedManga: List<Pair<LibraryManga, LibraryHeaderItem>>,
+        removedManga: Map<Category, List<LibraryItem>>,
     ): MutableList<LibraryItem> {
-        val headerItem = try {
-            removedManga.first().second
-        } catch (e: NoSuchElementException) {
-            return this  // No hidden manga to be handled
-        }
-        val mergedTitle = removedManga.joinToString("-") {
-            it.first.title + "-" + it.first.author
-        }
-        this.add(
-            LibraryItem(
-                LibraryManga.createHide(
-                    headerItem.catId,
-                    mergedTitle,
-                    removedManga.size,
+        removedManga.keys.forEach { key ->
+            val manga = removedManga[key] ?: return@forEach
+            val headerItem = try {
+                manga.first().header
+            } catch (e: NoSuchElementException) {
+                return@forEach  // No hidden manga to be handled
+            }
+            val mergedTitle = manga.joinToString("-") {
+                it.manga.title + "-" + it.manga.author
+            }
+            this.add(
+                LibraryItem(
+                    LibraryManga.createHide(
+                        headerItem.catId,
+                        mergedTitle,
+                        manga,
+                    ),
+                    headerItem,
+                    viewContext,
                 ),
-                headerItem,
-                viewContext,
-            ),
-        )
+            )
+        }
         return this
     }
 
@@ -806,7 +810,7 @@ class LibraryPresenter(
         }
 
         val unknown = context.getString(R.string.unknown)
-        val removedManga = mutableListOf<Pair<LibraryManga, LibraryHeaderItem>>()
+        val removedManga = mutableListOf<LibraryItem>()
         val items = libraryMangaList.mapNotNull map@ { manga ->
             when (groupType) {
                 BY_TAG -> {
@@ -820,11 +824,12 @@ class LibraryPresenter(
                     }
                     tags.mapNotNull inner@ {
                         val header = makeOrGetHeader(it)
+                        val item = LibraryItem(manga, header, viewContext)
                         if (header.category.isHidden) {
-                            removedManga.add(manga to header)
+                            removedManga.add(item)
                             return@inner null
                         }
-                        LibraryItem(manga, header, viewContext)
+                        item
                     }
                 }
                 BY_TRACK_STATUS -> {
@@ -843,31 +848,32 @@ class LibraryPresenter(
                         view?.view?.context?.getString(R.string.not_tracked) ?: ""
                     }
                     val header = makeOrGetHeader(status)
+                    val item = LibraryItem(manga, header, viewContext)
                     if (header.category.isHidden) {
-                        removedManga.add(manga to header)
+                        removedManga.add(item)
                         return@map null
                     }
-                    listOf(LibraryItem(manga, header, viewContext))
+                    listOf(item)
                 }
                 BY_SOURCE -> {
                     val source = sourceManager.getOrStub(manga.source)
                     val header = makeOrGetHeader("${source.name}$sourceSplitter${source.id}")
+                    val item = LibraryItem(manga, header, viewContext)
                     if (header.category.isHidden) {
-                        removedManga.add(manga to header)
+                        removedManga.add(item)
                         return@map null
                     }
-                    listOf(
-                        LibraryItem(manga, header, viewContext),
-                    )
+                    listOf(item)
                 }
                 BY_AUTHOR -> {
                     if (manga.artist.isNullOrBlank() && manga.author.isNullOrBlank()) {
                         val header = makeOrGetHeader(unknown)
+                        val item = LibraryItem(manga, header, viewContext)
                         if (header.category.isHidden) {
-                            removedManga.add(manga to header)
+                            removedManga.add(item)
                             return@map null
                         }
-                        listOf(LibraryItem(manga, header, viewContext))
+                        listOf(item)
                     } else {
                         listOfNotNull(
                             manga.author.takeUnless { it.isNullOrBlank() },
@@ -879,11 +885,12 @@ class LibraryPresenter(
                             }
                         }.flatten().distinct().mapNotNull inner@ {
                             val header = makeOrGetHeader(it, true)
+                            val item = LibraryItem(manga, header, viewContext)
                             if (header.category.isHidden) {
-                                removedManga.add(manga to header)
+                                removedManga.add(item)
                                 return@inner null
                             }
-                            LibraryItem(manga, header, viewContext)
+                            item
                         }
                     }
                 }
@@ -898,26 +905,26 @@ class LibraryPresenter(
                             },
                         ) ?: unknown,
                     )
+                    val item = LibraryItem(manga, header, viewContext)
                     if (header.category.isHidden) {
-                        removedManga.add(manga to header)
+                        removedManga.add(item)
                         return@map null
                     }
-                    listOf(
-                        LibraryItem(manga, header, viewContext),
-                    )
+                    listOf(item)
                 }
                 BY_STATUS -> {
                     val header = makeOrGetHeader(context.mapStatus(manga.status))
+                    val item = LibraryItem(manga, header, viewContext)
                     if (header.category.isHidden) {
-                        removedManga.add(manga to header)
+                        removedManga.add(item)
                         return@map null
                     }
-                    listOf(LibraryItem(manga, header, viewContext))
+                    listOf(item)
                 }
                 else -> throw IllegalStateException("Invalid group type")
             }
         }.flatten().toMutableList()
-            .addRemovedManga(removedManga)
+            .addRemovedManga(removedManga.groupBy { it.header.category })
             .groupBy { it.header.category.id!! }
 
         val categories = tagItems
@@ -979,7 +986,7 @@ class LibraryPresenter(
                     }.toMap()
                 else null
 
-                val removedManga = mutableListOf<Pair<LibraryManga, LibraryHeaderItem>>()
+                val removedManga = mutableListOf<LibraryItem>()
                 val libraryManga = libraryMangaList
                     .mapNotNull {
                         // Header item is used to identify which category the library manga is actually belong to,
@@ -991,16 +998,18 @@ class LibraryPresenter(
                             headerItems[it.category]
                         } ?: return@mapNotNull null
 
+                        val item = LibraryItem(it, headerItem, viewContext)
+
                         // We'll handle hidden manga separately
                         if (headerItem.isHidden) {
-                            removedManga.add(it to headerItem)
+                            removedManga.add(item)
                             return@mapNotNull null
                         }
 
-                        LibraryItem(it, headerItem, viewContext)
+                        item
                     }
                     .toMutableList()
-                    .addRemovedManga(removedManga)
+                    .addRemovedManga(removedManga.groupBy { it.header.category })
                     .groupBy { it.header.category.id!! }
 
                 categories.associateWith {
@@ -1106,7 +1115,7 @@ class LibraryPresenter(
                                     LibraryManga.createHide(
                                         catId,
                                         mergedTitle,
-                                        mangaToRemove.size,
+                                        mangaToRemove,
                                     ),
                                     headerItem,
                                     viewContext,
@@ -1295,7 +1304,7 @@ class LibraryPresenter(
                 if (headerItem != null) {
                     items.add(
                         LibraryItem(
-                            LibraryManga.createHide(catId, mergedTitle, mangaToRemove.size),
+                            LibraryManga.createHide(catId, mergedTitle, mangaToRemove),
                             headerItem,
                             viewContext,
                         ),

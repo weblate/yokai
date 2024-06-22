@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.database.models
 
+import eu.kanade.tachiyomi.ui.library.LibraryItem
 import yokai.data.updateStrategyAdapter
 import kotlin.math.roundToInt
 
@@ -15,14 +16,22 @@ data class LibraryManga(
 ) : MangaImpl() {
 
     var realMangaCount = 0
-        get() = if (isBlank()) field else throw IllegalStateException("realMangaCount is only accessible for placeholders")
+        get() = if (isBlank()) field else throw IllegalStateException("realMangaCount is only accessible by placeholders")
         set(value) {
-            if (!isBlank()) throw IllegalStateException("realMangaCount can only be set for placeholders")
+            if (!isBlank()) throw IllegalStateException("realMangaCount can only be set by placeholders")
             field = value
         }
 
     val hasRead
         get() = read > 0
+
+    @Transient
+    var items: List<LibraryItem>? = null
+        get() = if (isHidden()) field else throw IllegalStateException("items only accessible by placeholders")
+        set(value) {
+            if (!isHidden()) throw IllegalStateException("items can only be set by placeholders")
+            field = value
+        }
 
     companion object {
         fun createBlank(categoryId: Int): LibraryManga = LibraryManga().apply {
@@ -31,11 +40,12 @@ data class LibraryManga(
             category = categoryId
         }
 
-        fun createHide(categoryId: Int, title: String, hideCount: Int): LibraryManga =
+        fun createHide(categoryId: Int, title: String, hiddenItems: List<LibraryItem>): LibraryManga =
             createBlank(categoryId).apply {
                 this.title = title
                 this.status = -1
-                this.read = hideCount
+                this.read = hiddenItems.size
+                this.items = hiddenItems
             }
 
         fun mapper(

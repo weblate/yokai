@@ -1192,7 +1192,7 @@
     <string name="confirm_revoke_all_extensions">Revogar todas as extensões confiáveis?</string>
     <string name="pref_legacy_cutout_info">Em dispositivos mais antigos que o Android 9, não há como modificar a configuração do recorte, exceto configurando manualmente nas configurações do sistema</string>
     <string name="untrusted_extension_message">Extensões maliciosas podem ler qualquer credencial de login armazenada ou executar código arbitrário. Ao confiar nesta extensão, você aceita esses riscos.</string>
-    <string name="browse_long_tap">Comportamento do toque longo em 'Navegar'</string>
+    <string name="browse_long_tap">Comportamento do toque longo em \'Navegar\'</string>
     <string name="crash_screen_title">Ocorreu um erro inesperado</string>
     <string name="download_with_id_details">Pode corrigir problemas com conflitos de capítulos baixados quando eles têm o mesmo nome</string>
     <string name="pref_display_profile">Perfil de exibição personalizado</string>
@@ -1200,7 +1200,7 @@
     <string name="crash_screen_description">%s encontrou um erro inesperado. Sugerimos que você tire uma captura de tela desta mensagem, faça o dump dos logs de falha e compartilhe em um problema no GitHub.</string>
     <string name="pref_legacy_cutout">Abrir configurações de recorte legado</string>
     <string name="recents_long_tap_last_read">Abrir o último capítulo lido</string>
-    <string name="recents_long_tap">Comportamento do toque longo em 'Recentes'</string>
+    <string name="recents_long_tap">Comportamento do toque longo em \'Recentes\'</string>
     <string name="pref_cutout_short">Mostrar conteúdo na área de recorte</string>
     <string name="share_cover">Compartilhar capa</string>
     <string name="open_in_browser_fail">Não foi possível abrir a URL</string>

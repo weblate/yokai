@@ -15,6 +15,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.moko.resources)
+                api(libs.moko.resources.compose)
             }
         }
         val androidMain by getting {

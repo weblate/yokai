@@ -15,7 +15,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import yokai.i18n.MR
-import yokai.util.lang.getMString
+import yokai.util.lang.getString
 import java.io.IOException
 import java.util.concurrent.*
 
@@ -49,7 +49,7 @@ class CloudflareInterceptor(
         // Because OkHttp's enqueue only handles IOExceptions, wrap the exception so that
         // we don't crash the entire app
         catch (e: CloudflareBypassException) {
-            throw IOException(context.getMString(MR.strings.failed_to_bypass_cloudflare))
+            throw IOException(context.getString(MR.strings.failed_to_bypass_cloudflare))
         } catch (e: Exception) {
             throw IOException(e)
         }

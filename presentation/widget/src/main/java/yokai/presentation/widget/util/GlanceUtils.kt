@@ -7,7 +7,7 @@ import androidx.glance.LocalContext
 import androidx.glance.appwidget.cornerRadius
 import dev.icerock.moko.resources.StringResource
 import yokai.presentation.widget.R
-import yokai.util.lang.getMString
+import yokai.util.lang.getString
 
 fun GlanceModifier.appWidgetBackgroundRadius(): GlanceModifier {
     return this.cornerRadius(R.dimen.appwidget_background_radius)
@@ -19,7 +19,7 @@ fun GlanceModifier.appWidgetInnerRadius(): GlanceModifier {
 
 @Composable
 fun stringResource(id: StringResource): String {
-    return LocalContext.current.getMString(id)
+    return LocalContext.current.getString(id)
 }
 
 /**

@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.annotation.StringRes
 import dev.icerock.moko.resources.StringResource
-import yokai.util.lang.getMString
+import yokai.util.lang.getString
 
 /**
  * Display a toast in this context.
@@ -23,7 +23,7 @@ fun Context.toast(@StringRes resource: Int, duration: Int = Toast.LENGTH_SHORT) 
  * @param duration the duration of the toast. Defaults to short.
  */
 fun Context.toast(resource: StringResource, duration: Int = Toast.LENGTH_SHORT) {
-    toast(getMString(resource), duration)
+    toast(getString(resource), duration)
 }
 
 /**

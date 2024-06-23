@@ -36,5 +36,4 @@ val migrations: ImmutableList<Migration> = persistentListOf(
     ExtensionInstallerEnumMigration(),
     CutoutMigration(),
     RepoJsonMigration(),
-    NetworkPrefsMigration(),
 )

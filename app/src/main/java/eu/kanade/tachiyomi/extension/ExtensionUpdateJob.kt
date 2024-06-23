@@ -84,7 +84,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
         }
         if (ExtensionManager.canAutoInstallUpdates(true) &&
             inputData.getBoolean(RUN_AUTO, true) &&
-            preferences.autoUpdateExtensions() != AppDownloadInstallJob.NEVER &&
+            preferences.autoUpdateExtensions().get() != AppDownloadInstallJob.NEVER &&
             !ExtensionInstallerJob.isRunning(context) &&
             extensionsInstalledByApp.isNotEmpty()
         ) {
@@ -92,7 +92,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
             val libraryServiceRunning = LibraryUpdateJob.isRunning(context)
             if (
                 (
-                    preferences.autoUpdateExtensions() == AppDownloadInstallJob.ALWAYS ||
+                    preferences.autoUpdateExtensions().get() == AppDownloadInstallJob.ALWAYS ||
                         !cm.isActiveNetworkMetered
                     ) && !libraryServiceRunning
             ) {

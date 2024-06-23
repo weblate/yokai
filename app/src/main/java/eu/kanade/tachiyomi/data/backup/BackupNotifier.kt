@@ -13,7 +13,7 @@ import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
 import uy.kohesive.injekt.injectLazy
 import java.io.File
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 class BackupNotifier(private val context: Context) {
 
@@ -82,7 +82,7 @@ class BackupNotifier(private val context: Context) {
         val builder = with(progressNotificationBuilder) {
             setContentTitle(context.getString(R.string.restoring_backup))
 
-            if (!preferences.hideNotificationContent()) {
+            if (!preferences.hideNotificationContent().get()) {
                 setContentText(content)
             }
 

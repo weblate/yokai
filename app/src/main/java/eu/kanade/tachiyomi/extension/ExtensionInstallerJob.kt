@@ -129,7 +129,7 @@ class ExtensionInstallerJob(val context: Context, workerParams: WorkerParameters
         }
 
         if (showUpdatedNotification && installedExtensions.size > 0) {
-            notifier.showUpdatedNotification(installedExtensions, preferences.hideNotificationContent())
+            notifier.showUpdatedNotification(installedExtensions, preferences.hideNotificationContent().get())
         }
         if (reRunUpdateCheck || installedExtensions.size != list.size) {
             ExtensionUpdateJob.runJobAgain(context, NetworkType.CONNECTED, false)

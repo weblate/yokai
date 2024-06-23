@@ -152,7 +152,7 @@ class SearchActivity : MainActivity() {
             }
             SHORTCUT_MANGA, SHORTCUT_MANGA_BACK -> {
                 val extras = intent.extras ?: return false
-                if (intent.action == SHORTCUT_MANGA_BACK && preferences.openChapterInShortcuts()) {
+                if (intent.action == SHORTCUT_MANGA_BACK && preferences.openChapterInShortcuts().get()) {
                     val mangaId = extras.getLong(MangaDetailsController.MANGA_EXTRA)
                     if (mangaId != 0L) {
                         val db = Injekt.get<DatabaseHelper>()

@@ -1224,7 +1224,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         }
 
         if (noDefault && viewModel.manga?.readingModeType!! > 0 &&
-            viewModel.manga?.readingModeType!! != preferences.defaultReadingMode()
+            viewModel.manga?.readingModeType!! != preferences.defaultReadingMode().get()
         ) {
             snackbar = binding.readerLayout.snack(
                 getString(

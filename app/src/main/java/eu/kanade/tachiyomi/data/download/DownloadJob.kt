@@ -79,7 +79,7 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
     private fun checkConnectivity(): Boolean {
         return with(applicationContext) {
             if (isOnline()) {
-                val noWifi = preferences.downloadOnlyOverWifi() && !isConnectedToWifi()
+                val noWifi = preferences.downloadOnlyOverWifi().get() && !isConnectedToWifi()
                 if (noWifi) {
                     downloadManager.stopDownloads(applicationContext.getString(R.string.no_wifi_connection))
                 }

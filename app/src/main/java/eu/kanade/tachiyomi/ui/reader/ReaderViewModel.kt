@@ -667,7 +667,7 @@ class ReaderViewModel(
      * Returns the viewer position used by this manga or the default one.
      */
     fun getMangaReadingMode(): Int {
-        val default = preferences.defaultReadingMode()
+        val default = preferences.defaultReadingMode().get()
         val manga = manga ?: return default
         val readerType = manga.defaultReaderType()
         if (manga.viewer_flags == -1) {
@@ -955,7 +955,7 @@ class ReaderViewModel(
      * will run in a background thread and errors are ignored.
      */
     private fun updateTrackChapterAfterReading(readerChapter: ReaderChapter) {
-        if (!preferences.autoUpdateTrack()) return
+        if (!preferences.autoUpdateTrack().get()) return
 
         launchIO {
             val newChapterRead = readerChapter.chapter.chapter_number

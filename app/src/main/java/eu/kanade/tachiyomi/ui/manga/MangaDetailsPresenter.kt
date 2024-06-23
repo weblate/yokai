@@ -536,7 +536,7 @@ class MangaDetailsPresenter(
                 }
             }
             db.updateChaptersProgress(selectedChapters).executeAsBlocking()
-            if (read && deleteNow && preferences.removeAfterMarkedAsRead()) {
+            if (read && deleteNow && preferences.removeAfterMarkedAsRead().get()) {
                 deleteChapters(selectedChapters, false)
             }
             getChapters()

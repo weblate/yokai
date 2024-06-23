@@ -39,19 +39,19 @@ class MangaShortcutManager(
         launchIO {
             with(TachiyomiWidgetManager()) { context.init() }
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N_MR1) {
-                if (!preferences.showSeriesInShortcuts() && !preferences.showSourcesInShortcuts()) {
+                if (!preferences.showSeriesInShortcuts().get() && !preferences.showSourcesInShortcuts().get()) {
                     val shortcutManager = context.getSystemService(ShortcutManager::class.java)
                     shortcutManager.removeAllDynamicShortcuts()
                     return@launchIO
                 }
                 val shortcutManager = context.getSystemService(ShortcutManager::class.java)
 
-                val recentManga = if (preferences.showSeriesInShortcuts()) {
+                val recentManga = if (preferences.showSeriesInShortcuts().get()) {
                     RecentsPresenter.getRecentManga()
                 } else {
                     emptyList()
                 }
-                val recentSources = if (preferences.showSourcesInShortcuts()) {
+                val recentSources = if (preferences.showSourcesInShortcuts().get()) {
                     preferences.lastUsedSources().get().mapNotNull {
                         val splitS = it.split(":")
                         splitS.first().toLongOrNull()?.let { id ->

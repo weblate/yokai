@@ -302,7 +302,7 @@ class MangaHeaderHolder(
                 chapterBinding.chaptersTitle.text =
                     itemView.resources.getQuantityString(R.plurals.chapters_plural, count, count)
                 chapterBinding.filtersText.text = presenter.currentFilters()
-                if (adapter.preferences.themeMangaDetails()) {
+                if (adapter.preferences.themeMangaDetails().get()) {
                     val accentColor = adapter.delegate.accentColor() ?: return
                     chapterBinding.filterButton.imageTintList = ColorStateList.valueOf(accentColor)
                 }
@@ -459,7 +459,7 @@ class MangaHeaderHolder(
 
         if (!manga.initialized) return
         updateCover(manga)
-        if (adapter.preferences.themeMangaDetails()) {
+        if (adapter.preferences.themeMangaDetails().get()) {
             updateColors(false)
         }
     }

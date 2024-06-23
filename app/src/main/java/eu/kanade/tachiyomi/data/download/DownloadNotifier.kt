@@ -87,7 +87,7 @@ internal class DownloadNotifier(private val context: Context) {
                 )
             }
 
-            if (download != null && !preferences.hideNotificationContent()) {
+            if (download != null && !preferences.hideNotificationContent().get()) {
                 val title = download.manga.title.chop(15)
                 val quotedTitle = Pattern.quote(title)
                 val name = download.chapter.preferredChapterName(context, download.manga, preferences)
@@ -138,7 +138,7 @@ internal class DownloadNotifier(private val context: Context) {
                 context.localeContext.getString(R.string.downloading_progress)
                     .format(download.downloadedImages, download.pages!!.size)
 
-            if (preferences.hideNotificationContent()) {
+            if (preferences.hideNotificationContent().get()) {
                 setContentTitle(downloadingProgressText)
             } else {
                 val title = download.manga.title.chop(15)

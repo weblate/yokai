@@ -249,7 +249,7 @@ class MangaDetailsController :
         binding.swipeRefresh.isRefreshing = presenter.isLoading
         binding.swipeRefresh.setOnRefreshListener { presenter.refreshAll() }
         updateToolbarTitleAlpha()
-        if (presenter.preferences.themeMangaDetails()) {
+        if (presenter.preferences.themeMangaDetails().get()) {
             setItemColors()
         }
     }
@@ -257,7 +257,7 @@ class MangaDetailsController :
     private fun setAccentColorValue(colorToUse: Int? = null) {
         val context = view?.context ?: return
         setCoverColorValue(colorToUse)
-        accentColor = if (presenter.preferences.themeMangaDetails()) {
+        accentColor = if (presenter.preferences.themeMangaDetails().get()) {
             (colorToUse ?: manga?.vibrantCoverColor)?.let {
                 val luminance = ColorUtils.calculateLuminance(it).toFloat()
                 if (if (!context.isInNightMode()) luminance > 0.4 else luminance <= 0.6) {
@@ -281,7 +281,7 @@ class MangaDetailsController :
         val colorBack = context.getResourceColor(R.attr.background)
         coverColor =
             (
-                if (presenter.preferences.themeMangaDetails()) {
+                if (presenter.preferences.themeMangaDetails().get()) {
                     (colorToUse ?: manga?.vibrantCoverColor)
                 } else {
                     ColorUtils.blendARGB(
@@ -306,7 +306,7 @@ class MangaDetailsController :
 
     private fun setRefreshStyle() {
         with(binding.swipeRefresh) {
-            if (presenter.preferences.themeMangaDetails() && accentColor != null && headerColor != null) {
+            if (presenter.preferences.themeMangaDetails().get() && accentColor != null && headerColor != null) {
                 val newColor = makeColorFrom(
                     hueOf = accentColor!!,
                     satAndLumOf = context.getResourceColor(R.attr.actionBarTintColor),
@@ -321,7 +321,7 @@ class MangaDetailsController :
 
     private fun setHeaderColorValue(colorToUse: Int? = null) {
         val context = view?.context ?: return
-        headerColor = if (presenter.preferences.themeMangaDetails()) {
+        headerColor = if (presenter.preferences.themeMangaDetails().get()) {
             (colorToUse ?: manga?.vibrantCoverColor)?.let { color ->
                 val newColor =
                     makeColorFrom(color, context.getResourceColor(R.attr.colorPrimaryVariant))
@@ -591,7 +591,7 @@ class MangaDetailsController :
                     if (bitmap != null) {
                         Palette.from(bitmap).generate {
                             if (it == null) return@generate
-                            if (presenter.preferences.themeMangaDetails()) {
+                            if (presenter.preferences.themeMangaDetails().get()) {
                                 launchUI {
                                     view.context.getResourceColor(R.attr.colorSecondary)
                                     val vibrantColor = it.getBestColor() ?: return@launchUI
@@ -1023,7 +1023,7 @@ class MangaDetailsController :
                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                         super.onDismissed(transientBottomBar, event)
                         if (!undoing && !read) {
-                            if (preferences.removeAfterMarkedAsRead()) {
+                            if (preferences.removeAfterMarkedAsRead().get()) {
                                 presenter.deleteChapters(listOf(item))
                             }
                             updateTrackChapterMarkedAsRead(db, preferences, chapter, manga?.id) {

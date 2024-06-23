@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.data.preference
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.preference.Preference
@@ -57,9 +56,6 @@ operator fun <T> Preference<Set<T>>.minusAssign(item: Collection<T>) {
 
 class PreferencesHelper(val context: Context, val preferenceStore: PreferenceStore) {
 
-    @Deprecated("Use [preferenceStore] instead")
-    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-
     fun getInt(key: String, default: Int) = preferenceStore.getInt(key, default)
     fun getStringPref(key: String, default: String = "") = preferenceStore.getString(key, default)
     fun getStringSet(key: String, default: Set<String>) = preferenceStore.getStringSet(key, default)
@@ -70,8 +66,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     fun hasShownNotifPermission() = preferenceStore.getBoolean("has_shown_notification_permission", false)
 
     fun hasDeniedA11FilePermission() = preferenceStore.getBoolean(Keys.deniedA11FilePermission, false)
-
-    fun clear() = prefs.edit().clear().apply()
 
     fun nightMode() = preferenceStore.getInt(Keys.nightMode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
@@ -101,7 +95,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun colorFilterMode() = preferenceStore.getInt(Keys.colorFilterMode, 0)
 
-    fun defaultReadingMode() = prefs.getInt(Keys.defaultReadingMode, ReadingModeType.RIGHT_TO_LEFT.flagValue)
+    fun defaultReadingMode() = preferenceStore.getInt(Keys.defaultReadingMode, ReadingModeType.RIGHT_TO_LEFT.flagValue)
 
     fun defaultOrientationType() = preferenceStore.getInt(Keys.defaultOrientationType, OrientationType.FREE.flagValue)
 
@@ -164,9 +158,9 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun preloadSize() = preferenceStore.getInt(Keys.preloadSize, 6)
 
-    fun autoUpdateTrack() = prefs.getBoolean(Keys.autoUpdateTrack, true)
+    fun autoUpdateTrack() = preferenceStore.getBoolean(Keys.autoUpdateTrack, true)
 
-    fun trackMarkedAsRead() = prefs.getBoolean(Keys.trackMarkedAsRead, false)
+    fun trackMarkedAsRead() = preferenceStore.getBoolean(Keys.trackMarkedAsRead, false)
 
     fun trackingsToAddOnline() = preferenceStore.getStringSet(Keys.trackingsToAddOnline, emptySet())
 
@@ -200,7 +194,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun appLanguage() = preferenceStore.getString("app_language", "")
 
-    fun downloadOnlyOverWifi() = prefs.getBoolean(Keys.downloadOnlyOverWifi, true)
+    fun downloadOnlyOverWifi() = preferenceStore.getBoolean(Keys.downloadOnlyOverWifi, true)
 
     fun folderPerManga() = preferenceStore.getBoolean("create_folder_per_manga", false)
 
@@ -215,7 +209,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     fun backupInterval() = preferenceStore.getInt(Keys.backupInterval, 0)
     fun removeAfterReadSlots() = preferenceStore.getInt(Keys.removeAfterReadSlots, -1)
 
-    fun removeAfterMarkedAsRead() = prefs.getBoolean(Keys.removeAfterMarkedAsRead, false)
+    fun removeAfterMarkedAsRead() = preferenceStore.getBoolean(Keys.removeAfterMarkedAsRead, false)
 
     fun libraryUpdateInterval() = preferenceStore.getInt(Keys.libraryUpdateInterval, 24)
 
@@ -287,11 +281,11 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun autoDownloadWhileReading() = preferenceStore.getInt("auto_download_while_reading", 0)
 
-    fun defaultCategory() = prefs.getInt(Keys.defaultCategory, -2)
+    fun defaultCategory() = preferenceStore.getInt(Keys.defaultCategory, -2)
 
-    fun skipRead() = prefs.getBoolean(Keys.skipRead, false)
+    fun skipRead() = preferenceStore.getBoolean(Keys.skipRead, false)
 
-    fun skipFiltered() = prefs.getBoolean(Keys.skipFiltered, true)
+    fun skipFiltered() = preferenceStore.getBoolean(Keys.skipFiltered, true)
 
     fun skipDupe() = preferenceStore.getBoolean("skip_dupe", false)
 
@@ -301,7 +295,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun secureScreen() = preferenceStore.getEnum("secure_screen_v2", Values.SecureScreenMode.INCOGNITO)
 
-    fun hideNotificationContent() = prefs.getBoolean(Keys.hideNotificationContent, false)
+    fun hideNotificationContent() = preferenceStore.getBoolean(Keys.hideNotificationContent, false)
 
     fun removeArticles() = preferenceStore.getBoolean(Keys.removeArticles, false)
 
@@ -395,13 +389,13 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
     // TODO: SourcePref
     fun showNsfwSources() = preferenceStore.getBoolean(Keys.showNsfwSource, true)
 
-    fun themeMangaDetails() = prefs.getBoolean(Keys.themeMangaDetails, true)
+    fun themeMangaDetails() = preferenceStore.getBoolean(Keys.themeMangaDetails, true)
 
     fun useLargeToolbar() = preferenceStore.getBoolean("use_large_toolbar", true)
 
-    fun showSeriesInShortcuts() = prefs.getBoolean(Keys.showSeriesInShortcuts, true)
-    fun showSourcesInShortcuts() = prefs.getBoolean(Keys.showSourcesInShortcuts, true)
-    fun openChapterInShortcuts() = prefs.getBoolean(Keys.openChapterInShortcuts, true)
+    fun showSeriesInShortcuts() = preferenceStore.getBoolean(Keys.showSeriesInShortcuts, true)
+    fun showSourcesInShortcuts() = preferenceStore.getBoolean(Keys.showSourcesInShortcuts, true)
+    fun openChapterInShortcuts() = preferenceStore.getBoolean(Keys.openChapterInShortcuts, true)
 
     fun incognitoMode() = preferenceStore.getBoolean(Keys.incognitoMode, false)
 
@@ -409,10 +403,10 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun sideNavMode() = preferenceStore.getInt(Keys.sideNavMode, 0)
 
-    fun appShouldAutoUpdate() = prefs.getInt(Keys.shouldAutoUpdate, AppDownloadInstallJob.ONLY_ON_UNMETERED)
+    fun appShouldAutoUpdate() = preferenceStore.getInt(Keys.shouldAutoUpdate, AppDownloadInstallJob.ONLY_ON_UNMETERED)
 
     // TODO: SourcePref
-    fun autoUpdateExtensions() = prefs.getInt(Keys.autoUpdateExtensions, AppDownloadInstallJob.ONLY_ON_UNMETERED)
+    fun autoUpdateExtensions() = preferenceStore.getInt(Keys.autoUpdateExtensions, AppDownloadInstallJob.ONLY_ON_UNMETERED)
 
     fun filterChapterByRead() = preferenceStore.getInt(Keys.defaultChapterFilterByRead, Manga.SHOW_ALL)
 
@@ -426,7 +420,7 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun chaptersDescAsDefault() = preferenceStore.getBoolean(Keys.chaptersDescAsDefault, true)
 
-    fun sortChapterByAscendingOrDescending() = prefs.getInt(Keys.defaultChapterSortByAscendingOrDescending, Manga.CHAPTER_SORT_DESC)
+    fun sortChapterByAscendingOrDescending() = preferenceStore.getInt(Keys.defaultChapterSortByAscendingOrDescending, Manga.CHAPTER_SORT_DESC)
 
     fun coverRatios() = preferenceStore.getStringSet(Keys.coverRatios, emptySet())
 

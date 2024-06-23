@@ -42,14 +42,14 @@ class ChapterFilter(val preferences: PreferencesHelper = Injekt.get(), val downl
     fun <T : Chapter> filterChaptersForReader(chapters: List<T>, manga: Manga, selectedChapter: T? = null): List<T> {
         var filteredChapters = chapters
         // if filter prefs aren't enabled don't even filter
-        if (!preferences.skipRead() && !preferences.skipFiltered() && !preferences.skipDupe().get()) {
+        if (!preferences.skipRead().get() && !preferences.skipFiltered().get() && !preferences.skipDupe().get()) {
             return filteredChapters
         }
 
-        if (preferences.skipRead()) {
+        if (preferences.skipRead().get()) {
             filteredChapters = filteredChapters.filter { !it.read }
         }
-        if (preferences.skipFiltered()) {
+        if (preferences.skipFiltered().get()) {
             filteredChapters = filterChapters(filteredChapters, manga)
         }
         if (preferences.skipDupe().get()) {

@@ -211,7 +211,7 @@ class NotificationReceiver : BroadcastReceiver() {
             val chapter = db.getChapter(it, mangaId).executeAsBlocking() ?: return
             chapter.read = true
             db.updateChapterProgress(chapter).executeAsBlocking()
-            if (preferences.removeAfterMarkedAsRead()) {
+            if (preferences.removeAfterMarkedAsRead().get()) {
                 val sourceManager: SourceManager = Injekt.get()
                 val source = sourceManager.get(manga.source) ?: return
                 downloadManager.deleteChapters(listOf(chapter), manga, source)

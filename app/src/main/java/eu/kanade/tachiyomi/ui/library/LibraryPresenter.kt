@@ -1665,7 +1665,7 @@ class LibraryPresenter(
         mangaList: HashMap<Manga, List<Chapter>>,
         markRead: Boolean,
     ) {
-        if (preferences.removeAfterMarkedAsRead() && markRead) {
+        if (preferences.removeAfterMarkedAsRead().get() && markRead) {
             mangaList.forEach { (manga, oldChapters) ->
                 deleteChapters(manga, oldChapters)
             }

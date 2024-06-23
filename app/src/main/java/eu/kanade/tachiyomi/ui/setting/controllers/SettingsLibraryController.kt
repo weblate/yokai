@@ -113,11 +113,11 @@ class SettingsLibraryController : SettingsLegacyController() {
                     when (catId) {
                         -2 -> context.getString(R.string.last_used)
                         -1 -> context.getString(R.string.always_ask)
-                        else -> categories.find { it.id == preferences.defaultCategory() }?.name
+                        else -> categories.find { it.id == preferences.defaultCategory().get() }?.name
                             ?: context.getString(R.string.last_used)
                     }
                 }
-                summary = categoryName(preferences.defaultCategory())
+                summary = categoryName(preferences.defaultCategory().get())
                 onChange { newValue ->
                     summary = categoryName(newValue as Int)
                     true

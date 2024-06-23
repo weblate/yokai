@@ -76,7 +76,7 @@ class AppUpdateChecker(
             }
             if (doExtrasAfterNewUpdate && result is AppUpdateResult.NewUpdate) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                    preferences.appShouldAutoUpdate() != AppDownloadInstallJob.NEVER
+                    preferences.appShouldAutoUpdate().get() != AppDownloadInstallJob.NEVER
                 ) {
                     AppDownloadInstallJob.start(context, null, false, waitUntilIdle = true)
                 }

@@ -84,7 +84,7 @@ class AppDownloadInstallJob(private val context: Context, workerParams: WorkerPa
             ) {
                 return Result.failure()
             }
-            if (preferences.appShouldAutoUpdate() == ONLY_ON_UNMETERED &&
+            if (preferences.appShouldAutoUpdate().get() == ONLY_ON_UNMETERED &&
                 context.connectivityManager.isActiveNetworkMetered
             ) {
                 return Result.retry()
@@ -262,7 +262,7 @@ class AppDownloadInstallJob(private val context: Context, workerParams: WorkerPa
                 .apply {
                     if (waitUntilIdle) {
                         data.putBoolean(IDLE_RUN, true)
-                        val shouldAutoUpdate = Injekt.get<PreferencesHelper>().appShouldAutoUpdate()
+                        val shouldAutoUpdate = Injekt.get<PreferencesHelper>().appShouldAutoUpdate().get()
                         val constraints = Constraints.Builder()
                             .setRequiredNetworkType(
                                 if (shouldAutoUpdate == ALWAYS) {

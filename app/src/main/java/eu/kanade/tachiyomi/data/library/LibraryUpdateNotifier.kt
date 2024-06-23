@@ -84,7 +84,7 @@ class LibraryUpdateNotifier(private val context: Context) {
             Notifications.ID_LIBRARY_PROGRESS,
             progressNotificationBuilder
                 .setContentTitle("${context.getString(R.string.updating_library)} (${current + 1}/$total)")
-                .setContentText(if (preferences.hideNotificationContent()) null else manga.title)
+                .setContentText(if (preferences.hideNotificationContent().get()) null else manga.title)
                 .setProgress(total, current, false)
                 .build(),
         )
@@ -176,7 +176,7 @@ class LibraryUpdateNotifier(private val context: Context) {
         val updates = newUpdates.toMap()
         GlobalScope.launch {
             val notifications = ArrayList<Pair<Notification, Int>>()
-            if (!preferences.hideNotificationContent()) {
+            if (!preferences.hideNotificationContent().get()) {
                 updates.forEach {
                     val manga = it.key
                     val chapters = it.value
@@ -272,7 +272,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                                     updates.size,
                                 ),
                             )
-                            if (!preferences.hideNotificationContent()) {
+                            if (!preferences.hideNotificationContent().get()) {
                                 setStyle(
                                     NotificationCompat.BigTextStyle()
                                         .bigText(
@@ -282,7 +282,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                                         ),
                                 )
                             }
-                        } else if (!preferences.hideNotificationContent()) {
+                        } else if (!preferences.hideNotificationContent().get()) {
                             setContentText(updates.keys.first().title.chop(45))
                         }
                         priority = NotificationCompat.PRIORITY_HIGH

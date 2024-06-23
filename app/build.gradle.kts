@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("kapt")
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
     id("com.google.android.gms.oss-licenses-plugin")

@@ -1,7 +1,5 @@
 package eu.kanade.tachiyomi.util.system
 
-import android.annotation.TargetApi
-import android.os.Build
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -28,7 +26,6 @@ abstract class WebViewClientCompat : WebViewClient() {
     ) {
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     final override fun shouldOverrideUrlLoading(
         view: WebView,
         request: WebResourceRequest,
@@ -36,6 +33,7 @@ abstract class WebViewClientCompat : WebViewClient() {
         return shouldOverrideUrlCompat(view, request.url.toString())
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("shouldOverrideUrlCompat(view, url)"))
     final override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
         return shouldOverrideUrlCompat(view, url)
     }
@@ -47,6 +45,7 @@ abstract class WebViewClientCompat : WebViewClient() {
         return shouldInterceptRequestCompat(view, request.url.toString())
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("shouldInterceptRequestCompat(view, url)"))
     final override fun shouldInterceptRequest(
         view: WebView,
         url: String,
@@ -68,6 +67,9 @@ abstract class WebViewClientCompat : WebViewClient() {
         )
     }
 
+    @Deprecated("Deprecated in Java",
+        ReplaceWith("onReceivedErrorCompat(view, errorCode, description, failingUrl, failingUrl == view.url)")
+    )
     final override fun onReceivedError(
         view: WebView,
         errorCode: Int,

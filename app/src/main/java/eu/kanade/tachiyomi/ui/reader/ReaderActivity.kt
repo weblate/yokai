@@ -168,6 +168,7 @@ import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
+import android.R as AR
 
 /**
  * Activity containing the reader of Tachiyomi. This activity is mostly a container of the
@@ -286,7 +287,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         // Setup shared element transitions
         if (intent.extras?.getString(TRANSITION_NAME) != null) {
             window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-            findViewById<View>(android.R.id.content)?.let { contentView ->
+            findViewById<View>(AR.id.content)?.let { contentView ->
                 MainActivity.chapterIdToExitTo = 0L
                 contentView.transitionName = intent.extras?.getString(TRANSITION_NAME)
                 visibleChapterRange = intent.extras?.getLongArray(VISIBLE_CHAPTERS) ?: longArrayOf()
@@ -302,7 +303,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         super.onCreate(savedInstanceState)
         binding = ReaderActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val a = obtainStyledAttributes(intArrayOf(android.R.attr.windowLightStatusBar))
+        val a = obtainStyledAttributes(intArrayOf(AR.attr.windowLightStatusBar))
         val lightStatusBar = a.getBoolean(0, false)
         a.recycle()
         setCutoutMode()
@@ -749,13 +750,13 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             duration = (
                 resources?.getInteger(
                     if (entering) {
-                        android.R.integer.config_longAnimTime
+                        AR.integer.config_longAnimTime
                     } else {
-                        android.R.integer.config_mediumAnimTime
+                        AR.integer.config_mediumAnimTime
                     },
                 ) ?: 500
                 ).toLong()
-            addTarget(android.R.id.content)
+            addTarget(AR.id.content)
         }
     }
 
@@ -1659,10 +1660,10 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
 
         materialAlertDialog()
             .setMessage(R.string.use_image_as_cover)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setPositiveButton(AR.string.ok) { _, _ ->
                 setAsCover(page)
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .show()
     }
 

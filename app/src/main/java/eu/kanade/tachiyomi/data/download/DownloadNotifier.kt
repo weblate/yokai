@@ -19,7 +19,8 @@ import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
 import uy.kohesive.injekt.injectLazy
-import java.util.regex.Pattern
+import java.util.regex.*
+import android.R as AR
 
 /**
  * DownloadNotifier is used to show notifications when downloading one or multiple chapters.
@@ -70,7 +71,7 @@ internal class DownloadNotifier(private val context: Context) {
         with(notification) {
             // Check if first call.
             if (!isDownloading) {
-                setSmallIcon(android.R.drawable.stat_sys_download)
+                setSmallIcon(AR.drawable.stat_sys_download)
                 setAutoCancel(false)
                 clearActions()
                 setOngoing(true)
@@ -117,7 +118,7 @@ internal class DownloadNotifier(private val context: Context) {
         with(notification) {
             // Check if first call.
             if (!isDownloading) {
-                setSmallIcon(android.R.drawable.stat_sys_download)
+                setSmallIcon(AR.drawable.stat_sys_download)
                 setAutoCancel(false)
                 clearActions()
                 setOngoing(true)
@@ -269,7 +270,7 @@ internal class DownloadNotifier(private val context: Context) {
                     error ?: context.getString(R.string.could_not_download_unexpected_error),
                 ),
             )
-            setSmallIcon(android.R.drawable.stat_sys_warning)
+            setSmallIcon(AR.drawable.stat_sys_warning)
             setCategory(NotificationCompat.CATEGORY_ERROR)
             setOngoing(false)
             clearActions()

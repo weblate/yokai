@@ -39,6 +39,7 @@ import yokai.presentation.component.EmptyScreen
 import yokai.presentation.component.ToolTipButton
 import yokai.presentation.extension.repo.component.ExtensionRepoInput
 import yokai.presentation.extension.repo.component.ExtensionRepoItem
+import android.R as AR
 
 @Composable
 fun ExtensionRepoScreen(
@@ -163,7 +164,7 @@ fun ExtensionRepoReplacePrompt(
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = stringResource(android.R.string.cancel))
+                Text(text = stringResource(AR.string.cancel))
             }
         },
         title = {

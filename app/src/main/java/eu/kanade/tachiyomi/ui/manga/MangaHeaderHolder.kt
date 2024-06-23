@@ -45,6 +45,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
+import android.R as AR
 
 @SuppressLint("ClickableViewAccessibility")
 class MangaHeaderHolder(
@@ -210,7 +211,7 @@ class MangaHeaderHolder(
                     .addTransition(androidx.transition.Fade())
                     .addTransition(androidx.transition.Slide())
                 transition.duration = binding.root.resources.getInteger(
-                    android.R.integer.config_shortAnimTime,
+                    AR.integer.config_shortAnimTime,
                 ).toLong()
                 androidx.transition.TransitionManager.beginDelayedTransition(
                     adapter.controller.binding.recycler,
@@ -241,7 +242,7 @@ class MangaHeaderHolder(
                 .addTransition(androidx.transition.ChangeBounds())
                 .addTransition(androidx.transition.Fade())
             transition.duration = binding.root.resources.getInteger(
-                android.R.integer.config_shortAnimTime,
+                AR.integer.config_shortAnimTime,
             ).toLong()
             androidx.transition.TransitionManager.beginDelayedTransition(
                 adapter.controller.binding.recycler,
@@ -498,7 +499,7 @@ class MangaHeaderHolder(
                 ),
             )
             val states = arrayOf(
-                intArrayOf(-android.R.attr.state_activated),
+                intArrayOf(-AR.attr.state_activated),
                 intArrayOf(),
             )
             val colors = intArrayOf(
@@ -596,7 +597,7 @@ class MangaHeaderHolder(
             filterButton.imageTintList = ColorStateList.valueOf(accentColor)
 
             val states = arrayOf(
-                intArrayOf(-android.R.attr.state_enabled),
+                intArrayOf(-AR.attr.state_enabled),
                 intArrayOf(),
             )
 
@@ -609,7 +610,7 @@ class MangaHeaderHolder(
 
             val textColors = intArrayOf(
                 ColorUtils.setAlphaComponent(root.context.getResourceColor(R.attr.colorOnSurface), 97),
-                root.context.getResourceColor(android.R.attr.textColorPrimaryInverse),
+                root.context.getResourceColor(AR.attr.textColorPrimaryInverse),
             )
             startReadingButton.setTextColor(ColorStateList(states, textColors))
             trackButton.iconTint = ColorStateList.valueOf(accentColor)

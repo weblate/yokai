@@ -20,6 +20,7 @@ import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import uy.kohesive.injekt.injectLazy
+import android.R as AR
 
 class ManageCategoryDialog(bundle: Bundle? = null) :
     DialogController(bundle) {
@@ -54,7 +55,7 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
             setTitle(if (category == null) R.string.new_category else R.string.manage_category)
             binding = MangaCategoryDialogBinding.inflate(activity.layoutInflater)
             setView(binding.root)
-            setNegativeButton(android.R.string.cancel, null)
+            setNegativeButton(AR.string.cancel, null)
             setPositiveButton(R.string.save) { dialog, _ ->
                 if (onPositiveButtonClick()) {
                     dialog.dismiss()

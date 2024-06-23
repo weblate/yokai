@@ -22,6 +22,7 @@ import eu.kanade.tachiyomi.util.view.setBottomEdge
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
 import eu.kanade.tachiyomi.widget.SortTextView
 import kotlin.math.max
+import android.R as AR
 
 class ChaptersSortBottomSheet(controller: MangaDetailsController) :
     E2EBottomSheetDialog<ChapterSortBottomSheetBinding>(controller.activity!!) {
@@ -179,7 +180,7 @@ class ChaptersSortBottomSheet(controller: MangaDetailsController) :
                     alertDialog?.getButton(BUTTON_POSITIVE)?.isEnabled =
                         scanlators.size != filteredScanlators.size
                 }
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(AR.string.cancel, null)
                 .setPositiveButton(R.string.filter) { _, _ ->
                     presenter.setScanlatorFilter(filteredScanlators)
                 }

@@ -18,6 +18,7 @@ import eu.kanade.tachiyomi.util.chapter.ChapterUtil.Companion.preferredChapterNa
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getResourceColor
+import android.R as AR
 
 class ChapterHolder(
     view: View,
@@ -154,7 +155,7 @@ class ChapterHolder(
         adapter.delegate.accentColor()?.let {
             binding.startView.backgroundTintList = ColorStateList.valueOf(it)
             binding.bookmark.imageTintList = ColorStateList.valueOf(
-                context.getResourceColor(android.R.attr.textColorPrimaryInverse),
+                context.getResourceColor(AR.attr.textColorPrimaryInverse),
             )
             TextViewCompat.setCompoundDrawableTintList(
                 binding.chapterTitle,

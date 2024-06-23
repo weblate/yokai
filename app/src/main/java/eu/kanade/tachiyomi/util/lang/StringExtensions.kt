@@ -23,8 +23,9 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import net.greypanther.natsort.CaseInsensitiveSimpleNaturalComparator
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.Locale
+import java.util.*
 import kotlin.math.floor
+import android.R as AR
 
 /**
  * Replaces the given string to have at most [count] characters using [replacement] at its end.
@@ -166,7 +167,7 @@ fun String.withSubtitle(subtitle: Spanned): Spanned =
 fun String.withSubtitle(context: Context, subtitle: String): Spanned {
     val spannable = SpannableStringBuilder(this + "\n" + subtitle)
     spannable.setSpan(
-        ForegroundColorSpan(context.getResourceColor(android.R.attr.textColorSecondary)),
+        ForegroundColorSpan(context.getResourceColor(AR.attr.textColorSecondary)),
         this.length + 1,
         spannable.length,
         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,

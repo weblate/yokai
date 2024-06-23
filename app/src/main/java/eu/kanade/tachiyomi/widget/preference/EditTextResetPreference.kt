@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import androidx.preference.Preference.SummaryProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.tachiyomi.R
+import android.R as AR
 
 class EditTextResetPreference @JvmOverloads constructor(
     activity: Activity?,
@@ -31,7 +32,7 @@ class EditTextResetPreference @JvmOverloads constructor(
     }
 
     override fun didShow(dialog: DialogInterface) {
-        val textView = (dialog as? AlertDialog)?.findViewById<EditText>(android.R.id.edit) ?: return
+        val textView = (dialog as? AlertDialog)?.findViewById<EditText>(AR.id.edit) ?: return
         textView.requestFocus()
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
     }
@@ -47,12 +48,12 @@ class EditTextResetPreference @JvmOverloads constructor(
 
     override fun dialog(): MaterialAlertDialogBuilder {
         return super.dialog().apply {
-            val attrs = intArrayOf(android.R.attr.dialogLayout)
+            val attrs = intArrayOf(AR.attr.dialogLayout)
             val a = context.obtainStyledAttributes(R.style.Preference_DialogPreference_EditTextPreference_Material, attrs)
             val resourceId = a.getResourceId(0, 0)
             val view = LayoutInflater.from(context).inflate(resourceId, null)
-            val textView = view.findViewById<EditText>(android.R.id.edit)
-            val message = view.findViewById<TextView>(android.R.id.message)
+            val textView = view.findViewById<EditText>(AR.id.edit)
+            val message = view.findViewById<TextView>(AR.id.message)
             message?.isVisible = dialogSummary != null
             message?.text = dialogSummary
             textView?.append(
@@ -75,7 +76,7 @@ class EditTextResetPreference @JvmOverloads constructor(
                     notifyChanged()
                 }
             }
-            this.setPositiveButton(android.R.string.ok) { _, _ ->
+            this.setPositiveButton(AR.string.ok) { _, _ ->
                 if (callChangeListener(textView.text.toString())) {
                     if (preferenceDataStore != null) {
                         if (textView.text.isNullOrBlank()) {

@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import android.R as AR
 
 
 @Composable
@@ -73,7 +74,7 @@ fun <T> ListPreferenceWidget(
             },
             confirmButton = {
                 TextButton(onClick = { isDialogShown = false }) {
-                    Text(text = stringResource(android.R.string.cancel))
+                    Text(text = stringResource(AR.string.cancel))
                 }
             },
         )

@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.R
+import android.R as AR
 
 private enum class State {
     CHECKED, INVERSED, UNCHECKED
@@ -120,7 +121,7 @@ fun <T> TriStateListDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = stringResource(android.R.string.cancel))
+                Text(text = stringResource(AR.string.cancel))
             }
         },
         confirmButton = {
@@ -135,7 +136,7 @@ fun <T> TriStateListDialog(
                     onValueChanged(included, excluded)
                 },
             ) {
-                Text(text = stringResource(android.R.string.ok))
+                Text(text = stringResource(AR.string.ok))
             }
         },
     )

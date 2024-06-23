@@ -91,6 +91,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.max
+import android.R as AR
 
 /**
  * Fragment that shows recently read manga.
@@ -812,7 +813,7 @@ class RecentsController(bundle: Bundle? = null) :
                         manga.seriesType(activity),
                     ),
                 )
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(AR.string.cancel, null)
                 .setPositiveButton(R.string.reset) { dialog, _ ->
                     removeHistory(manga, history, dialog.isPromptChecked)
                 }
@@ -838,7 +839,7 @@ class RecentsController(bundle: Bundle? = null) :
         val holderId = (holder as? RecentMangaHolder)?.chapterId
         adapter.notifyItemChanged(position)
         val transition = TransitionSet().addTransition(androidx.transition.Fade())
-        transition.duration = view!!.resources.getInteger(android.R.integer.config_shortAnimTime)
+        transition.duration = view!!.resources.getInteger(AR.integer.config_shortAnimTime)
             .toLong()
         androidx.transition.TransitionManager.beginDelayedTransition(binding.recycler, transition)
         if (holderId == -1L) return

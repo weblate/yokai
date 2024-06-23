@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import android.R as AR
 
 class MiniSearchView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     SearchView(context, attrs) {
@@ -26,7 +27,7 @@ class MiniSearchView @JvmOverloads constructor(context: Context, attrs: Attribut
     private val searchTextView: SearchAutoComplete? = findViewById(androidx.appcompat.R.id.search_src_text)
 
     init {
-        searchTextView?.setTextAppearance(android.R.style.TextAppearance_Material_Body1)
+        searchTextView?.setTextAppearance(AR.style.TextAppearance_Material_Body1)
         val actionColorAlpha =
             ColorUtils.setAlphaComponent(context.getResourceColor(R.attr.actionBarTintColor), 200)
         searchTextView?.setTextColor(actionColorAlpha)

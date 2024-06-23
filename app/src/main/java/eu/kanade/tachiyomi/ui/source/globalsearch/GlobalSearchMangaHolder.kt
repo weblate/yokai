@@ -8,15 +8,16 @@ import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.placeholder
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.coil.CoverViewTarget
 import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
+import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.databinding.SourceGlobalSearchControllerCardItemBinding
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.setExtras
 import eu.kanade.tachiyomi.util.view.makeShapeCorners
 import eu.kanade.tachiyomi.util.view.setCards
+import android.R as AR
 
 class GlobalSearchMangaHolder(view: View, adapter: GlobalSearchCardAdapter) :
     BaseFlexibleViewHolder(view, adapter) {
@@ -56,7 +57,7 @@ class GlobalSearchMangaHolder(view: View, adapter: GlobalSearchCardAdapter) :
         binding.itemImage.dispose()
         if (!manga.thumbnail_url.isNullOrEmpty()) {
             val request = ImageRequest.Builder(itemView.context).data(manga)
-                .placeholder(android.R.color.transparent)
+                .placeholder(AR.color.transparent)
                 .memoryCachePolicy(CachePolicy.DISABLED)
                 .target(CoverViewTarget(binding.itemImage, binding.progress))
                 .setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)

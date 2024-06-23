@@ -77,6 +77,7 @@ import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.random.Random
+import android.R as AR
 
 fun Controller.setOnQueryTextChangeListener(
     searchView: SearchView?,
@@ -494,7 +495,7 @@ fun Controller.scrollViewWith(
         ) {
             if (!recycler.canScrollVertically(-1)) {
                 val shortAnimationDuration = resources?.getInteger(
-                    android.R.integer.config_shortAnimTime,
+                    AR.integer.config_shortAnimTime,
                 ) ?: 0
                 activityBinding?.appBar?.y = 0f
                 activityBinding?.appBar?.updateAppBarAfterY(recycler)
@@ -555,7 +556,7 @@ fun Controller.scrollViewWith(
         ) {
             val halfWay = activityBinding.appBar.height.toFloat() / 2
             val shortAnimationDuration = resources?.getInteger(
-                android.R.integer.config_shortAnimTime,
+                AR.integer.config_shortAnimTime,
             ) ?: 0
             val closerToTop = abs(activityBinding.appBar.y) > halfWay
             val halfWayBottom = (activityBinding.bottomNav?.height?.toFloat() ?: 0f) / 2
@@ -745,7 +746,7 @@ fun Controller.setAppBarBG(value: Float, includeTabView: Boolean = false) {
         }
         if (activityBinding?.appBar?.isInvisible != true) {
             activity?.window?.statusBarColor =
-                context.getResourceColor(android.R.attr.statusBarColor)
+                context.getResourceColor(AR.attr.statusBarColor)
         }
     } else {
         val color = ColorUtils.blendARGB(

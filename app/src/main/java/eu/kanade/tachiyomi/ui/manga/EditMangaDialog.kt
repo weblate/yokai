@@ -17,10 +17,10 @@ import coil3.load
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
 import eu.kanade.tachiyomi.data.coil.loadManga
+import eu.kanade.tachiyomi.data.database.DatabaseHelper
+import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.databinding.EditMangaDialogBinding
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.source.LocalSource
@@ -39,6 +39,7 @@ import eu.kanade.tachiyomi.widget.TachiyomiTextInputEditText
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import android.R as AR
 
 class EditMangaDialog : DialogController {
 
@@ -74,7 +75,7 @@ class EditMangaDialog : DialogController {
         binding = EditMangaDialogBinding.inflate(activity!!.layoutInflater)
         val dialog = activity!!.materialAlertDialog().apply {
             setView(binding.root)
-            setNegativeButton(android.R.string.cancel, null)
+            setNegativeButton(AR.string.cancel, null)
             setPositiveButton(R.string.save) { _, _ -> onPositiveButtonClick() }
         }
         onViewCreated()

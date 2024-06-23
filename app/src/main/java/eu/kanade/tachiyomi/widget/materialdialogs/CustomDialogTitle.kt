@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import com.google.android.material.textview.MaterialTextView
 import eu.kanade.tachiyomi.R
+import android.R as AR
 
 class CustomDialogTitle constructor(context: Context, attrs: AttributeSet? = null) :
     MaterialTextView(context, attrs) {
@@ -23,8 +24,8 @@ class CustomDialogTitle constructor(context: Context, attrs: AttributeSet? = nul
                     val a = context.obtainStyledAttributes(
                         null,
                         R.styleable.TextAppearance,
-                        android.R.attr.textAppearanceMedium,
-                        android.R.style.TextAppearance_Medium,
+                        AR.attr.textAppearanceMedium,
+                        AR.style.TextAppearance_Medium,
                     )
                     a.getDimensionPixelSize(
                         R.styleable.TextAppearance_android_textSize,

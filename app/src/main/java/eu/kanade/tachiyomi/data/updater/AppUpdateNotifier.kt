@@ -15,6 +15,7 @@ import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.notificationManager
+import android.R as AR
 
 /**
  * DownloadNotifier is used to show notifications when downloading and update.
@@ -28,7 +29,7 @@ internal class AppUpdateNotifier(private val context: Context) {
      */
     val notificationBuilder by lazy {
         NotificationCompat.Builder(context, Notifications.CHANNEL_COMMON).apply {
-            setSmallIcon(android.R.drawable.stat_sys_download)
+            setSmallIcon(AR.drawable.stat_sys_download)
             setContentTitle(context.getString(R.string.app_name))
         }
     }
@@ -67,13 +68,13 @@ internal class AppUpdateNotifier(private val context: Context) {
             )
             setContentIntent(pendingIntent)
             setAutoCancel(true)
-            setSmallIcon(android.R.drawable.stat_sys_download_done)
+            setSmallIcon(AR.drawable.stat_sys_download_done)
             color = context.getResourceColor(R.attr.colorSecondary)
             clearActions()
             val isOnA12 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             // Download action
             addAction(
-                android.R.drawable.stat_sys_download_done,
+                AR.drawable.stat_sys_download_done,
                 context.getString(if (isOnA12) R.string.update else R.string.download),
                 NotificationReceiver.startAppUpdatePendingJob(context, url, true),
             )
@@ -104,7 +105,7 @@ internal class AppUpdateNotifier(private val context: Context) {
         with(notificationBuilder) {
             setContentTitle(context.getString(R.string.app_name))
             setContentText(context.getString(R.string.downloading))
-            setSmallIcon(android.R.drawable.stat_sys_download)
+            setSmallIcon(AR.drawable.stat_sys_download)
             setProgress(0, 0, true)
             setAutoCancel(false)
             setOngoing(true)
@@ -129,7 +130,7 @@ internal class AppUpdateNotifier(private val context: Context) {
         with(notificationBuilder) {
             setContentTitle(context.getString(R.string.app_name))
             setContentText(context.getString(R.string.downloading))
-            setSmallIcon(android.R.drawable.stat_sys_download)
+            setSmallIcon(AR.drawable.stat_sys_download)
             setProgress(100, progress, false)
             setOnlyAlertOnce(true)
             clearActions()
@@ -145,7 +146,7 @@ internal class AppUpdateNotifier(private val context: Context) {
     fun onInstalling() {
         with(NotificationCompat.Builder(context, Notifications.CHANNEL_INSTALLING)) {
             setContentTitle(context.getString(R.string.installing))
-            setSmallIcon(android.R.drawable.stat_sys_download)
+            setSmallIcon(AR.drawable.stat_sys_download)
             setProgress(0, 0, true)
             setOnlyAlertOnce(true)
             clearActions()
@@ -161,7 +162,7 @@ internal class AppUpdateNotifier(private val context: Context) {
     fun onDownloadFinished(uri: Uri) {
         with(notificationBuilder) {
             setContentText(context.getString(R.string.download_complete))
-            setSmallIcon(android.R.drawable.stat_sys_download_done)
+            setSmallIcon(AR.drawable.stat_sys_download_done)
             setAutoCancel(false)
             setOnlyAlertOnce(false)
             setProgress(0, 0, false)
@@ -219,7 +220,7 @@ internal class AppUpdateNotifier(private val context: Context) {
     fun onDownloadError(url: String) {
         with(notificationBuilder) {
             setContentText(context.getString(R.string.download_error))
-            setSmallIcon(android.R.drawable.stat_sys_warning)
+            setSmallIcon(AR.drawable.stat_sys_warning)
             setOnlyAlertOnce(false)
             setAutoCancel(false)
             setProgress(0, 0, false)
@@ -246,7 +247,7 @@ internal class AppUpdateNotifier(private val context: Context) {
         with(notificationBuilder) {
             setContentTitle(context.getString(R.string.app_name))
             setContentText(context.getString(R.string.could_not_install_update))
-            setSmallIcon(android.R.drawable.stat_sys_warning)
+            setSmallIcon(AR.drawable.stat_sys_warning)
             setOnlyAlertOnce(false)
             setAutoCancel(false)
             setProgress(0, 0, false)

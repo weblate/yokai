@@ -7,13 +7,14 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.isLTR
+import android.R as AR
 
 class MangaDetailsDivider(context: Context, val padding: Int = 12.dpToPx) : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
 
     private val divider: Drawable
 
     init {
-        val a = context.obtainStyledAttributes(intArrayOf(android.R.attr.listDivider))
+        val a = context.obtainStyledAttributes(intArrayOf(AR.attr.listDivider))
         divider = a.getDrawable(0)!!
         a.recycle()
     }

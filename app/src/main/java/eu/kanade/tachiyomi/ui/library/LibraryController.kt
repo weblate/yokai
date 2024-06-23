@@ -136,6 +136,7 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.random.nextInt
+import android.R as AR
 
 open class LibraryController(
     bundle: Bundle? = null,
@@ -399,7 +400,7 @@ open class LibraryController(
 
     fun updateHopperPosition() {
         val shortAnimationDuration = resources?.getInteger(
-            android.R.integer.config_shortAnimTime,
+            AR.integer.config_shortAnimTime,
         ) ?: 0
         if (preferences.autohideHopper().get()) {
             val bottomBar = if (isSubClass) null else activityBinding?.bottomNav
@@ -1134,7 +1135,7 @@ open class LibraryController(
         adapter.setItems(mangaMap)
         if (binding.libraryGridRecycler.recycler.translationX != 0f) {
             val time = binding.root.resources.getInteger(
-                android.R.integer.config_shortAnimTime,
+                AR.integer.config_shortAnimTime,
             ).toLong()
             viewScope.launchUI {
                 delay(time / 2)
@@ -2049,7 +2050,7 @@ open class LibraryController(
                             presenter.confirmDeletion(mangas, false)
                         }
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(AR.string.cancel, null)
                     .show().apply {
                         disableItems(arrayOf(options.first()))
                     }
@@ -2063,7 +2064,7 @@ open class LibraryController(
                     .setPositiveButton(R.string.mark_as_read) { _, _ ->
                         markReadStatus(R.string.marked_as_read, true)
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(AR.string.cancel, null)
                     .show()
             }
             R.id.action_mark_as_unread -> {
@@ -2072,7 +2073,7 @@ open class LibraryController(
                     .setPositiveButton(R.string.mark_as_unread) { _, _ ->
                         markReadStatus(R.string.marked_as_unread, false)
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(AR.string.cancel, null)
                     .show()
             }
             R.id.action_migrate -> {

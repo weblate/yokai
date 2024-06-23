@@ -29,6 +29,7 @@ import eu.kanade.tachiyomi.util.view.compatToolTipText
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlin.math.roundToInt
+import android.R as AR
 
 class StatsController : BaseLegacyController<StatsControllerBinding>() {
 
@@ -121,7 +122,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
             pieData.setDrawValues(false)
 
             binding.mangaStatsStatusPieChart.apply {
-                setHoleColor(ContextCompat.getColor(context, android.R.color.transparent))
+                setHoleColor(ContextCompat.getColor(context, AR.color.transparent))
                 setDrawEntryLabels(false)
                 setTouchEnabled(false)
                 description.isEnabled = false

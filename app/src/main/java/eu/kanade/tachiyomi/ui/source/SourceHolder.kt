@@ -11,6 +11,7 @@ import eu.kanade.tachiyomi.source.includeLangInName
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.compatToolTipText
+import android.R as AR
 
 class SourceHolder(view: View, val adapter: SourceAdapter) :
     BaseFlexibleViewHolder(view, adapter) {
@@ -43,7 +44,7 @@ class SourceHolder(view: View, val adapter: SourceAdapter) :
                     if (isPinned) {
                         R.attr.colorSecondary
                     } else {
-                        android.R.attr.textColorSecondary
+                        AR.attr.textColorSecondary
                     },
                 ),
             )

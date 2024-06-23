@@ -24,7 +24,8 @@ import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
-import java.util.Locale
+import java.util.*
+import android.R as AR
 
 class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
     BaseFlexibleViewHolder(view, adapter) {
@@ -82,7 +83,7 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
         binding.extTitle.text = if (infoText.size > 1) {
             buildSpannedString {
                 append(extension.name + " ")
-                color(binding.extTitle.context.getResourceColor(android.R.attr.textColorSecondary)) {
+                color(binding.extTitle.context.getResourceColor(AR.attr.textColorSecondary)) {
                     scale(0.75f) {
                         append(LocaleHelper.getDisplayName(extension.lang))
                     }

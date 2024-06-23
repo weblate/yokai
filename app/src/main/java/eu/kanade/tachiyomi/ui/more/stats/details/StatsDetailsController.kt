@@ -61,6 +61,7 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
+import android.R as AR
 
 class StatsDetailsController :
     BaseCoroutineController<StatsDetailsControllerBinding, StatsDetailsPresenter>(),
@@ -143,7 +144,7 @@ class StatsDetailsController :
                         highlightedDay = null
                         binding.statsRecyclerView.scrollToPosition(0)
                     }
-                    ?.setNegativeButton(android.R.string.cancel, null)
+                    ?.setNegativeButton(AR.string.cancel, null)
                     ?.show()
             }
             chipSeriesType.setOnClickListener {
@@ -397,8 +398,8 @@ class StatsDetailsController :
                     tempValues.remove(newSelection)
                 }
             }
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setNegativeButton(AR.string.cancel, null)
+            .setPositiveButton(AR.string.ok) { _, _ ->
                 selectedValues.clear()
                 selectedValues.addAll(tempValues)
                 setState(selectedValues, resourceId, resourceIdPlural)
@@ -787,7 +788,7 @@ class StatsDetailsController :
                 resetLayout()
                 updateStats(binding, true)
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .show()
     }
 

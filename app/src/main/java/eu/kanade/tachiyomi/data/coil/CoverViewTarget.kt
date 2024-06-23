@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.data.coil
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
@@ -9,6 +8,7 @@ import coil3.Image
 import coil3.target.ImageViewTarget
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.getResourceColor
+import android.R as AR
 
 class CoverViewTarget(
     view: ImageView,
@@ -26,7 +26,7 @@ class CoverViewTarget(
             R.drawable.ic_broken_image_24dp,
             null,
         )
-        vector?.setTint(view.context.getResourceColor(android.R.attr.textColorSecondary))
+        vector?.setTint(view.context.getResourceColor(AR.attr.textColorSecondary))
         view.setImageDrawable(vector)
     }
 

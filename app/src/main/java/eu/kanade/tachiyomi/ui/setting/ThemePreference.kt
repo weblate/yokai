@@ -35,6 +35,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import uy.kohesive.injekt.injectLazy
 import kotlin.math.max
+import android.R as AR
 
 class ThemePreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     Preference(context, attrs) {
@@ -239,8 +240,8 @@ class ThemePreference @JvmOverloads constructor(context: Context, attrs: Attribu
                 configuration.uiMode = if (item.isDarkTheme) UI_MODE_NIGHT_YES else UI_MODE_NIGHT_NO
                 val themeContext = context.createConfigurationContext(configuration)
                 themeContext.setTheme(item.theme.styleRes)
-                val primaryText = themeContext.getResourceColor(android.R.attr.textColorPrimary)
-                val secondaryText = themeContext.getResourceColor(android.R.attr.textColorSecondary)
+                val primaryText = themeContext.getResourceColor(AR.attr.textColorPrimary)
+                val secondaryText = themeContext.getResourceColor(AR.attr.textColorSecondary)
                 val background = themeContext.getResourceColor(R.attr.background)
                 val colorSecondary = themeContext.getResourceColor(R.attr.colorSecondary)
                 val appBar = themeContext.getResourceColor(R.attr.colorSurface)

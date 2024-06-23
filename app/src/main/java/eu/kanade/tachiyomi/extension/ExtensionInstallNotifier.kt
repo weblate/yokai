@@ -8,6 +8,7 @@ import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
+import android.R as AR
 
 class ExtensionInstallNotifier(private val context: Context) {
 
@@ -31,7 +32,7 @@ class ExtensionInstallNotifier(private val context: Context) {
     val progressNotificationBuilder by lazy {
         context.notificationBuilder(Notifications.CHANNEL_EXT_PROGRESS) {
             setContentTitle(context.getString(R.string.app_name))
-            setSmallIcon(android.R.drawable.stat_sys_download)
+            setSmallIcon(AR.drawable.stat_sys_download)
             setLargeIcon(notificationBitmap)
             setContentTitle(context.getString(R.string.updating_extensions))
             setProgress(0, 0, true)
@@ -39,7 +40,7 @@ class ExtensionInstallNotifier(private val context: Context) {
             setSilent(true)
             setOnlyAlertOnce(true)
             color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)
-            addAction(R.drawable.ic_close_24dp, context.getString(android.R.string.cancel), cancelIntent)
+            addAction(R.drawable.ic_close_24dp, context.getString(AR.string.cancel), cancelIntent)
         }
     }
 

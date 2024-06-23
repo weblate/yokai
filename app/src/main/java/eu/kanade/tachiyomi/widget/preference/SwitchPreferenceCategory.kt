@@ -12,6 +12,7 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceViewHolder
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.getResourceColor
+import android.R as AR
 
 class SwitchPreferenceCategory @JvmOverloads constructor(
     context: Context,
@@ -30,7 +31,7 @@ class SwitchPreferenceCategory @JvmOverloads constructor(
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        val titleView = holder.findViewById(android.R.id.title) as TextView
+        val titleView = holder.findViewById(AR.id.title) as TextView
         titleView.setTextColor(context.getResourceColor(R.attr.colorSecondary))
         syncSwitchView(holder)
     }

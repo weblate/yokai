@@ -14,7 +14,7 @@ import eu.kanade.tachiyomi.data.notification.NotificationHandler
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.util.system.notificationManager
-import java.io.File
+import android.R as AR
 
 /**
  * Class used to show BigPictureStyle notifications
@@ -105,7 +105,7 @@ class SaveImageNotifier(private val context: Context) {
         with(notificationBuilder) {
             setContentTitle(context.getString(R.string.download_error))
             setContentText(error ?: context.getString(R.string.unknown_error))
-            setSmallIcon(android.R.drawable.ic_menu_report_image)
+            setSmallIcon(AR.drawable.ic_menu_report_image)
         }
         updateNotification()
     }

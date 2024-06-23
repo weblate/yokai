@@ -32,8 +32,9 @@ import eu.kanade.tachiyomi.ui.more.stats.details.StatsDetailsPresenter.StatsSort
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isLandscape
 import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 import kotlin.math.ceil
+import android.R as AR
 
 class StatsDetailsChartLayout @JvmOverloads constructor(
     context: Context,
@@ -222,7 +223,7 @@ class StatsDetailsChartLayout @JvmOverloads constructor(
                 pieData.setDrawValues(false)
 
                 statsPieChart.apply {
-                    setHoleColor(ContextCompat.getColor(context, android.R.color.transparent))
+                    setHoleColor(ContextCompat.getColor(context, AR.color.transparent))
                     setDrawEntryLabels(false)
                     setTouchEnabled(false)
                     description.isEnabled = false

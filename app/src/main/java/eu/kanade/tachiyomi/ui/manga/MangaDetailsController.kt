@@ -139,6 +139,7 @@ import java.io.IOException
 import java.util.*
 import kotlin.math.max
 import kotlin.math.roundToInt
+import android.R as AR
 
 class MangaDetailsController :
     BaseCoroutineController<MangaDetailsControllerBinding, MangaDetailsPresenter>,
@@ -702,7 +703,7 @@ class MangaDetailsController :
                     activityBinding?.appBar?.setBackgroundColor(colorSurface)
                 }
                 activity?.window?.statusBarColor = activity?.getResourceColor(
-                    android.R.attr.statusBarColor,
+                    AR.attr.statusBarColor,
                 ) ?: colorSurface
             }
         }
@@ -1161,7 +1162,7 @@ class MangaDetailsController :
                     .setPositiveButton(R.string.mark_as_read) { _, _ ->
                         markAsRead(presenter.chapters)
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(AR.string.cancel, null)
                     .show()
             }
             R.id.remove_all, R.id.remove_read, R.id.remove_non_bookmarked, R.id.remove_custom -> massDeleteChapters(item.itemId)
@@ -1171,7 +1172,7 @@ class MangaDetailsController :
                     .setPositiveButton(R.string.mark_as_unread) { _, _ ->
                         markAsUnread(presenter.chapters)
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(AR.string.cancel, null)
                     .show()
             }
             R.id.download_next, R.id.download_next_5, R.id.download_custom, R.id.download_unread, R.id.download_all -> downloadChapters(
@@ -1333,7 +1334,7 @@ class MangaDetailsController :
             .setPositiveButton(R.string.remove) { _, _ ->
                 presenter.deleteChapters(chapters, isEverything = isEverything)
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .show()
     }
 

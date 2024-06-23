@@ -40,6 +40,7 @@ import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.*
+import android.R as AR
 
 fun Manga.isLocal() = source == LocalSource.ID
 
@@ -374,7 +375,7 @@ private fun showAddDuplicateDialog(
                         setNegativeButton(R.string.copy) { mDialog, _ ->
                             migrateManga(mDialog, false)
                         }
-                        setNeutralButton(android.R.string.cancel, null)
+                        setNeutralButton(AR.string.cancel, null)
                         setCancelable(true)
                     }.show()
                 }
@@ -382,7 +383,7 @@ private fun showAddDuplicateDialog(
             }
             dialog.dismiss()
         }
-        setNegativeButton(activity.getString(android.R.string.cancel)) { _, _ -> }
+        setNegativeButton(activity.getString(AR.string.cancel)) { _, _ -> }
         setCancelable(true)
     }.create().apply {
         setOnShowListener {

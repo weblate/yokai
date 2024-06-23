@@ -46,6 +46,7 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences
 import yokai.domain.base.BasePreferences.ExtensionInstaller
+import android.R as AR
 
 class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     LinearLayout(context, attrs),
@@ -231,7 +232,7 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
             controller.activity!!.materialAlertDialog()
                 .setTitle(R.string.update_all)
                 .setMessage(R.string.some_extensions_may_prompt)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
+                .setPositiveButton(AR.string.ok) { _, _ ->
                     presenter.preferences.hasPromptedBeforeUpdateAll().set(true)
                     updateAllExtensions(position)
                 }
@@ -435,7 +436,7 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
                 .setPositiveButton(R.string.remove) { _, _ ->
                     presenter.uninstallExtension(pkgName)
                 }
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(AR.string.cancel, null)
                 .show()
         }
     }

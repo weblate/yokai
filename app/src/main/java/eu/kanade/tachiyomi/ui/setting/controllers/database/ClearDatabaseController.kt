@@ -31,6 +31,7 @@ import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.snack
 import kotlin.math.max
 import kotlin.math.roundToInt
+import android.R as AR
 
 class ClearDatabaseController :
     BaseCoroutineController<ClearDatabaseControllerBinding, ClearDatabasePresenter>(),
@@ -122,10 +123,10 @@ class ClearDatabaseController :
                     .setMultiChoiceItems(item, selected) { _, which, checked ->
                         selected[which] = checked
                     }
-                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                    .setPositiveButton(AR.string.ok) { _, _ ->
                         clearDatabaseForSelectedSources(selected.last())
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(AR.string.cancel, null)
                     .show()
             }
         }

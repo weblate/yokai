@@ -16,6 +16,7 @@ import eu.kanade.tachiyomi.ui.base.holder.BaseViewHolder
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import uy.kohesive.injekt.injectLazy
 import java.text.DateFormat
+import android.R as AR
 
 class TrackHolder(view: View, adapter: TrackAdapter) : BaseViewHolder(view) {
 
@@ -133,9 +134,9 @@ class TrackHolder(view: View, adapter: TrackAdapter) : BaseViewHolder(view) {
     fun enabledTextColor(enabled: Boolean): Int {
         return binding.root.context.getResourceColor(
             if (enabled) {
-                android.R.attr.textColorPrimary
+                AR.attr.textColorPrimary
             } else {
-                android.R.attr.textColorHint
+                AR.attr.textColorHint
             },
         )
     }

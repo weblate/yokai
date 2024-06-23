@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.storage.StorageManager
 import yokai.domain.storage.StoragePreferences
+import android.R as AR
 
 @Deprecated("Migrating to compose")
 class SettingsDataLegacyController : SettingsLegacyController() {
@@ -324,7 +325,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                 }
                 createBackup(BackupOptions.fromBooleanArray(booleanArrayList.toBooleanArray()))
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .show().apply {
                 disableItems(arrayOf(options.first()))
             }
@@ -366,7 +367,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
             activity.materialAlertDialog()
                 .setTitle(R.string.invalid_backup_file)
                 .setMessage(e.message)
-                .setPositiveButton(android.R.string.cancel, null)
+                .setPositiveButton(AR.string.cancel, null)
                 .show()
         }
     }

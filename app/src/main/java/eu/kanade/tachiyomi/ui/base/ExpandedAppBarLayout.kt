@@ -35,6 +35,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import android.R as AR
 
 class ExpandedAppBarLayout@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     AppBarLayout(context, attrs) {
@@ -390,9 +391,9 @@ class ExpandedAppBarLayout@JvmOverloads constructor(context: Context, attrs: Att
         val halfWay = compactAppBarHeight / 2
         val shortAnimationDuration = resources?.getInteger(
             if (toolbarMode != ToolbarState.EXPANDED) {
-                android.R.integer.config_shortAnimTime
+                AR.integer.config_shortAnimTime
             } else {
-                android.R.integer.config_longAnimTime
+                AR.integer.config_longAnimTime
             },
         ) ?: 0
         val realHeight = preLayoutHeightWhileSearching + paddingTop

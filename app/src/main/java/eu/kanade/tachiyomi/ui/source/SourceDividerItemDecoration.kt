@@ -5,13 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.R as AR
 
 class SourceDividerItemDecoration(context: Context) : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
 
     private val divider: Drawable
 
     init {
-        val a = context.obtainStyledAttributes(intArrayOf(android.R.attr.listDivider))
+        val a = context.obtainStyledAttributes(intArrayOf(AR.attr.listDivider))
         divider = a.getDrawable(0)!!
         a.recycle()
     }

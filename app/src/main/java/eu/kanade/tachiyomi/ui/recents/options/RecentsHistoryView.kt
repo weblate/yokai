@@ -7,6 +7,7 @@ import eu.kanade.tachiyomi.databinding.RecentsHistoryViewBinding
 import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.widget.BaseRecentsDisplayView
+import android.R as AR
 
 class RecentsHistoryView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     BaseRecentsDisplayView<RecentsHistoryViewBinding>(context, attrs) {
@@ -24,7 +25,7 @@ class RecentsHistoryView @JvmOverloads constructor(context: Context, attrs: Attr
                 .setPositiveButton(R.string.clear) { _, _ ->
                     controller?.presenter?.deleteAllHistory()
                 }
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(AR.string.cancel, null)
                 .show()
         }
     }

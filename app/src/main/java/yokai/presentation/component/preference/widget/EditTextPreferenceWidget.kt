@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.launch
+import android.R as AR
 
 
 @Composable
@@ -83,12 +84,12 @@ fun EditTextPreferenceWidget(
                         }
                     },
                 ) {
-                    Text(text = stringResource(android.R.string.ok))
+                    Text(text = stringResource(AR.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = onDismissRequest) {
-                    Text(text = stringResource(android.R.string.cancel))
+                    Text(text = stringResource(AR.string.cancel))
                 }
             },
         )

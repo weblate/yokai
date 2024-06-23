@@ -22,6 +22,7 @@ import eu.kanade.tachiyomi.util.system.setLocaleByAppCompat
 import eu.kanade.tachiyomi.util.system.setThemeByPref
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.SplashState
+import android.R as AR
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
@@ -62,7 +63,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     }
 
     private fun SplashScreen.setSplashScreenExitAnimation() {
-        val root = findViewById<View>(android.R.id.content)
+        val root = findViewById<View>(AR.id.content)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             this.setOnExitAnimationListener { splashProvider ->

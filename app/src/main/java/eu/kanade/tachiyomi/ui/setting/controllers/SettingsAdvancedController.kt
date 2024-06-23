@@ -81,6 +81,7 @@ import yokai.domain.base.BasePreferences.ExtensionInstaller
 import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.manga.interactor.GetManga
 import java.io.File
+import android.R as AR
 
 class SettingsAdvancedController : SettingsLegacyController() {
 
@@ -175,8 +176,8 @@ class SettingsAdvancedController : SettingsLegacyController() {
                         activity!!.materialAlertDialog()
                             .setTitle(R.string.warning)
                             .setMessage(if (it) R.string.warning_enroll_into_beta else R.string.warning_unenroll_from_beta)
-                            .setPositiveButton(android.R.string.ok) { _, _ -> isChecked = it }
-                            .setNegativeButton(android.R.string.cancel, null)
+                            .setPositiveButton(AR.string.ok) { _, _ -> isChecked = it }
+                            .setNegativeButton(AR.string.cancel, null)
                             .show()
                         false
                     } else {
@@ -213,13 +214,13 @@ class SettingsAdvancedController : SettingsLegacyController() {
                                 listView.setItemChecked(position, true)
                             }
                         }
-                        .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                        .setPositiveButton(AR.string.ok) { dialog, _ ->
                             val listView = (dialog as AlertDialog).listView
                             val deleteRead = listView.isItemChecked(1)
                             val deleteNonFavorite = listView.isItemChecked(2)
                             cleanupDownloads(deleteRead, deleteNonFavorite)
                         }
-                        .setNegativeButton(android.R.string.cancel, null)
+                        .setNegativeButton(AR.string.cancel, null)
                         .show().apply {
                             disableItems(arrayOf(activity!!.getString(R.string.clean_orphaned_downloads)))
                         }
@@ -320,7 +321,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                                 .setPositiveButton(R.string.download) { _, _ ->
                                     openInBrowser(ShizukuInstaller.downloadLink)
                                 }
-                                .setNegativeButton(android.R.string.cancel, null)
+                                .setNegativeButton(AR.string.cancel, null)
                                 .show()
                             false
                         } else {
@@ -342,11 +343,11 @@ class SettingsAdvancedController : SettingsLegacyController() {
                 onClick {
                     activity?.materialAlertDialog()
                         ?.setTitle(R.string.confirm_revoke_all_extensions)
-                        ?.setPositiveButton(android.R.string.ok) { _, _ ->
+                        ?.setPositiveButton(AR.string.ok) { _, _ ->
                             trustExtension.revokeAll()
                             activity?.toast(R.string.requires_app_restart)
                         }
-                        ?.setNegativeButton(android.R.string.cancel, null)?.show()
+                        ?.setNegativeButton(AR.string.cancel, null)?.show()
                 }
             }
         }

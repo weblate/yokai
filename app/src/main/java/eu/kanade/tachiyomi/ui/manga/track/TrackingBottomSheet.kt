@@ -60,6 +60,7 @@ import eu.kanade.tachiyomi.util.view.expand
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
 import java.text.DateFormat
 import java.util.*
+import android.R as AR
 
 class TrackingBottomSheet(private val controller: MangaDetailsController) :
     E2EBottomSheetDialog<TrackingBottomSheetBinding>(controller.activity!!),
@@ -381,7 +382,7 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
                         hideSearchView()
                         dialog.dismiss()
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(AR.string.cancel, null)
                     .show()
                 return
             }
@@ -413,7 +414,7 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
 
         activity.materialAlertDialog()
             .setTitle(R.string.status)
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .setSingleChoiceItems(
                 statusString.toTypedArray(),
                 selectedIndex,
@@ -430,7 +431,7 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
 
         val dialog = activity.materialAlertDialog()
             .setTitle(R.string.remove_tracking)
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
 
         if (item.service.canRemoveFromService()) {
             val serviceName = activity.getString(item.service.nameRes())
@@ -473,8 +474,8 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
         val dialog = activity.materialAlertDialog()
             .setTitle(R.string.chapters)
             .setView(binding.root)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setNegativeButton(AR.string.cancel, null)
+            .setPositiveButton(AR.string.ok) { _, _ ->
                 // Remove focus to update selected number
                 val np = binding.chaptersPicker
                 np.clearFocus()
@@ -507,8 +508,8 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
         val dialog = activity.materialAlertDialog()
             .setTitle(R.string.score)
             .setView(binding.root)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setNegativeButton(AR.string.cancel, null)
+            .setPositiveButton(AR.string.ok) { _, _ ->
                 val np = binding.scorePicker
                 np.clearFocus()
 

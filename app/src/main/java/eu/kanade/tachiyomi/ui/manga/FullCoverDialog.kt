@@ -45,6 +45,7 @@ import uy.kohesive.injekt.injectLazy
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import android.R as AR
 
 class FullCoverDialog(val controller: MangaDetailsController, drawable: Drawable, private val thumbView: View) :
     ComponentDialog(controller.activity!!, R.style.FullCoverDialogTheme) {
@@ -58,7 +59,7 @@ class FullCoverDialog(val controller: MangaDetailsController, drawable: Drawable
     private val fullRatio = 0f
     private val shortAnimationDuration = (
         activity?.resources?.getInteger(
-            android.R.integer.config_shortAnimTime,
+            AR.integer.config_shortAnimTime,
         ) ?: 0
         ).toLong()
 

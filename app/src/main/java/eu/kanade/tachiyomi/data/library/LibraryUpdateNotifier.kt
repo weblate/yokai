@@ -36,7 +36,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
-import java.util.ArrayList
+import android.R as AR
 
 class LibraryUpdateNotifier(private val context: Context) {
 
@@ -68,7 +68,7 @@ class LibraryUpdateNotifier(private val context: Context) {
             setOnlyAlertOnce(true)
             setProgress(0, 0, true)
             color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)
-            addAction(R.drawable.ic_close_24dp, context.getString(android.R.string.cancel), cancelIntent)
+            addAction(R.drawable.ic_close_24dp, context.getString(AR.string.cancel), cancelIntent)
         }
     }
 

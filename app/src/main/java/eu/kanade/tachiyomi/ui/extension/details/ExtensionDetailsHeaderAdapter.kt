@@ -13,6 +13,7 @@ import eu.kanade.tachiyomi.ui.extension.getApplicationIcon
 import eu.kanade.tachiyomi.util.system.LocaleHelper
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.view.inflate
+import android.R as AR
 
 class ExtensionDetailsHeaderAdapter(private val presenter: ExtensionDetailsPresenter) :
     RecyclerView.Adapter<ExtensionDetailsHeaderAdapter.HeaderViewHolder>() {
@@ -58,7 +59,7 @@ class ExtensionDetailsHeaderAdapter(private val presenter: ExtensionDetailsPrese
                         .setPositiveButton(R.string.remove) { _, _ ->
                             presenter.uninstallExtension()
                         }
-                        .setNegativeButton(android.R.string.cancel, null)
+                        .setNegativeButton(AR.string.cancel, null)
                         .show()
                 }
             }

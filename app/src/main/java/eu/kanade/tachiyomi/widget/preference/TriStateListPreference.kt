@@ -6,11 +6,12 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.core.content.edit
 import androidx.core.text.buildSpannedString
+import androidx.preference.Preference.SummaryProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.ui.setting.defaultValue
 import eu.kanade.tachiyomi.util.system.setTriStateItems
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
+import android.R as AR
 
 class TriStateListPreference @JvmOverloads constructor(
     activity: Activity?,
@@ -114,7 +115,7 @@ class TriStateListPreference @JvmOverloads constructor(
                 if (allSelectionRes != null && showAllLast) { allValue } else { intArrayOf() }
         var includedItems = set
         var excludedItems = excludedSet
-        setPositiveButton(android.R.string.ok) { _, _ ->
+        setPositiveButton(AR.string.ok) { _, _ ->
             sharedPreferences?.edit {
                 putStringSet(key, includedItems)
                 excludeKey?.let { putStringSet(it, excludedItems) }

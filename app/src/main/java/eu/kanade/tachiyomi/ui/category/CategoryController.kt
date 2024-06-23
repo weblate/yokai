@@ -18,6 +18,7 @@ import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.view.liftAppbarWith
 import eu.kanade.tachiyomi.util.view.snack
+import android.R as AR
 
 /**
  * Controller to manage the categories for the users' library.
@@ -132,7 +133,7 @@ class CategoryController(bundle: Bundle? = null) :
             .setPositiveButton(R.string.delete) { _, _ ->
                 deleteCategory(position)
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .show()
     }
 

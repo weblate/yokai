@@ -12,6 +12,7 @@ import androidx.preference.PreferenceViewHolder
 import com.google.android.material.card.MaterialCardView
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.dpToPx
+import android.R as AR
 
 class TrackerPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     Preference(context, attrs) {
@@ -28,7 +29,7 @@ class TrackerPreference @JvmOverloads constructor(context: Context, attrs: Attri
 
         logoContainer.setCardBackgroundColor(iconColor)
         val padding = if (Color.alpha(iconColor) == 0) 0 else 4.dpToPx
-        holder.findViewById(android.R.id.icon).setPadding(padding)
+        holder.findViewById(AR.id.icon).setPadding(padding)
         checkedIcon.isVisible = !getPersistedString("").isNullOrEmpty()
     }
 

@@ -14,6 +14,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.setAnimVectorCompat
 import eu.kanade.tachiyomi.util.view.setVectorCompat
 import kotlin.math.roundToInt
+import android.R as AR
 
 class TriStateCheckBox constructor(context: Context, attrs: AttributeSet?) :
     FrameLayout(context, attrs) {
@@ -67,7 +68,7 @@ class TriStateCheckBox constructor(context: Context, attrs: AttributeSet?) :
     )
 
     private val disabledAlpha = run {
-        val typedArray = context.obtainStyledAttributes(intArrayOf(android.R.attr.disabledAlpha))
+        val typedArray = context.obtainStyledAttributes(intArrayOf(AR.attr.disabledAlpha))
         val attrValue = typedArray.getFloat(0, 0f)
         typedArray.recycle()
         attrValue

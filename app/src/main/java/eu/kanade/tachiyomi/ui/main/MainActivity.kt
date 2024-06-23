@@ -148,6 +148,7 @@ import kotlin.collections.set
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToLong
+import android.R as AR
 
 @SuppressLint("ResourceType")
 open class MainActivity : BaseActivity<MainActivityBinding>() {
@@ -184,7 +185,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     val velocityTracker: VelocityTracker by lazy { VelocityTracker.obtain() }
     private val actionButtonSize: Pair<Int, Int> by lazy {
-        val attrs = intArrayOf(android.R.attr.minWidth, android.R.attr.minHeight)
+        val attrs = intArrayOf(AR.attr.minWidth, AR.attr.minHeight)
         val ta = obtainStyledAttributes(androidx.appcompat.R.style.Widget_AppCompat_ActionButton, attrs)
         val dimenW = ta.getDimensionPixelSize(0, 0.dpToPx)
         val dimenH = ta.getDimensionPixelSize(1, 0.dpToPx)
@@ -198,7 +199,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                 materialAlertDialog()
                     .setTitle(R.string.warning)
                     .setMessage(R.string.allow_notifications_recommended)
-                    .setPositiveButton(android.R.string.ok, null)
+                    .setPositiveButton(AR.string.ok, null)
                     .show()
             }
         }
@@ -872,7 +873,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             // if the android q+ device has gesture nav, transparent nav bar
             // this is here in case some crazy with a notch uses landscape
             insets.isBottomTappable() -> {
-                getColor(android.R.color.transparent)
+                getColor(AR.color.transparent)
             }
             // if in landscape with 2/3 button mode, fully opaque nav bar
             insets.hasSideNavBar() -> {
@@ -904,13 +905,13 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                 Settings.Global.ANIMATOR_DURATION_SCALE,
                 1.0f,
             )
-            val duration = resources.getInteger(android.R.integer.config_mediumAnimTime) * scale
+            val duration = resources.getInteger(AR.integer.config_mediumAnimTime) * scale
             delay(duration.toLong())
             delay(100)
             if (Color.alpha(window?.statusBarColor ?: Color.BLACK) >= 255) {
                 window?.statusBarColor =
                     getResourceColor(
-                        android.R.attr.statusBarColor,
+                        AR.attr.statusBarColor,
                     )
             }
         }
@@ -921,7 +922,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         window?.statusBarColor = if (show) {
             ColorUtils.setAlphaComponent(window?.statusBarColor ?: Color.TRANSPARENT, 0)
         } else {
-            val color = getResourceColor(android.R.attr.statusBarColor)
+            val color = getResourceColor(AR.attr.statusBarColor)
             ColorUtils.setAlphaComponent(window?.statusBarColor ?: color, Color.alpha(color))
         }
     }
@@ -968,7 +969,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     .titleTextColorInt(getResourceColor(R.attr.colorOnSecondary)).descriptionTextSize(16)
                     .descriptionTextColorInt(getResourceColor(R.attr.colorOnSecondary))
                     .icon(contextCompatDrawable(R.drawable.ic_recent_read_32dp))
-                    .targetCircleColor(android.R.color.white)
+                    .targetCircleColor(AR.color.white)
                     .targetRadius(45),
                 object : TapTargetView.Listener() {
                     override fun onTargetClick(view: TapTargetView) {

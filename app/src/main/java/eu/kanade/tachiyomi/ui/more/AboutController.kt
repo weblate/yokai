@@ -43,6 +43,7 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import android.R as AR
 
 class AboutController : SettingsLegacyController() {
 
@@ -205,7 +206,7 @@ class AboutController : SettingsLegacyController() {
 
         override fun onAttach(view: View) {
             super.onAttach(view)
-            (dialog?.findViewById(android.R.id.message) as? TextView)?.movementMethod =
+            (dialog?.findViewById(AR.id.message) as? TextView)?.movementMethod =
                 LinkMovementMethod.getInstance()
         }
 

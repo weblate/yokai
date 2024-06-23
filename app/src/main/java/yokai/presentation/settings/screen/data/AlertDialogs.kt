@@ -23,6 +23,7 @@ import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.presentation.component.LabeledCheckbox
+import android.R as AR
 
 @Composable
 fun RestoreBackup(
@@ -64,7 +65,7 @@ fun RestoreBackup(
             },
             dismissButton = {
                 TextButton(onClick = onDismissRequest) {
-                    Text(text = stringResource(android.R.string.cancel))
+                    Text(text = stringResource(AR.string.cancel))
                 }
             },
             title = { Text(text = stringResource(R.string.restore_backup)) },
@@ -75,7 +76,7 @@ fun RestoreBackup(
             onDismissRequest = onDismissRequest,
             confirmButton = {
                 TextButton(onClick = onDismissRequest) {
-                    Text(text = stringResource(android.R.string.cancel))
+                    Text(text = stringResource(AR.string.cancel))
                 }
             },
             title = { Text(text = stringResource(R.string.invalid_backup_file)) },

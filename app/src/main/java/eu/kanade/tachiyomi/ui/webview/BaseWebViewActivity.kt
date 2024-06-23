@@ -36,6 +36,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.setDefaultSettings
 import eu.kanade.tachiyomi.util.view.setStyle
+import android.R as AR
 
 open class BaseWebViewActivity : BaseActivity<WebviewActivityBinding>() {
 
@@ -95,7 +96,7 @@ open class BaseWebViewActivity : BaseActivity<WebviewActivityBinding>() {
 
         ViewCompat.setOnApplyWindowInsetsListener(content) { v, insets ->
             // if pure white theme on a device that does not support dark status bar
-            /*if (getResourceColor(android.R.attr.statusBarColor) != Color.TRANSPARENT)
+            /*if (getResourceColor(AR.attr.statusBarColor) != Color.TRANSPARENT)
                 window.statusBarColor = Color.BLACK
             else window.statusBarColor = getResourceColor(R.attr.colorPrimary)*/
             window.navigationBarColor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -179,7 +180,7 @@ open class BaseWebViewActivity : BaseActivity<WebviewActivityBinding>() {
             setTheme(R.style.ThemeOverlay_Tachiyomi_Amoled)
         }
         val themeValue = TypedValue()
-        theme.resolveAttribute(android.R.attr.windowLightStatusBar, themeValue, true)
+        theme.resolveAttribute(AR.attr.windowLightStatusBar, themeValue, true)
 
         val wic = WindowInsetsControllerCompat(window, window.decorView)
         wic.isAppearanceLightStatusBars = themeValue.data == -1

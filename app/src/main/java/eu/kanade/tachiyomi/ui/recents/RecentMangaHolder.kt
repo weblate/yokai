@@ -16,10 +16,10 @@ import androidx.core.view.updatePaddingRelative
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
 import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.RecentMangaItemBinding
 import eu.kanade.tachiyomi.databinding.RecentSubChapterItemBinding
 import eu.kanade.tachiyomi.ui.download.DownloadButton
@@ -32,8 +32,9 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
 import eu.kanade.tachiyomi.util.view.setAnimVectorCompat
 import eu.kanade.tachiyomi.util.view.setCards
-import java.util.Date
-import java.util.concurrent.TimeUnit
+import java.util.*
+import java.util.concurrent.*
+import android.R as AR
 
 class RecentMangaHolder(
     view: View,
@@ -84,7 +85,7 @@ class RecentMangaHolder(
                 .addTransition(androidx.transition.ChangeBounds())
                 .addTransition(androidx.transition.Slide())
             transition.duration =
-                itemView.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+                itemView.resources.getInteger(AR.integer.config_shortAnimTime).toLong()
             TransitionManager.beginDelayedTransition(adapter.recyclerView, transition)
         }
         updateCards()

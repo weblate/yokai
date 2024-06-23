@@ -28,6 +28,7 @@ import eu.kanade.tachiyomi.widget.preference.IntListMatPreference
 import eu.kanade.tachiyomi.widget.preference.ListMatPreference
 import eu.kanade.tachiyomi.widget.preference.MultiListMatPreference
 import eu.kanade.tachiyomi.widget.preference.TriStateListPreference
+import android.R as AR
 
 @DslMarker
 @Target(AnnotationTarget.TYPE)
@@ -107,7 +108,7 @@ fun PreferenceGroup.infoPreference(@StringRes infoRes: Int): Preference {
         Preference(context),
     ) {
         iconRes = R.drawable.ic_info_outline_24dp
-        iconTint = context.getResourceColor(android.R.attr.textColorSecondary)
+        iconTint = context.getResourceColor(AR.attr.textColorSecondary)
         summaryRes = infoRes
         isSelectable = false
     }

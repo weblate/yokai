@@ -64,6 +64,7 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import java.util.concurrent.atomic.*
 import kotlin.coroutines.CoroutineContext
+import android.R as AR
 
 class MigrationListController(bundle: Bundle? = null) :
     BaseLegacyController<MigrationListControllerBinding>(bundle),
@@ -464,7 +465,7 @@ class MigrationListController(bundle: Bundle? = null) :
                 router.popCurrentController()
                 migrationsJob?.cancel()
             }
-            ?.setNegativeButton(android.R.string.cancel, null)?.show()
+            ?.setNegativeButton(AR.string.cancel, null)?.show()
         return true
     }
 
@@ -534,7 +535,7 @@ class MigrationListController(bundle: Bundle? = null) :
                     migrateMangas()
                 }
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .show()
     }
 
@@ -546,7 +547,7 @@ class MigrationListController(bundle: Bundle? = null) :
                     block()
                     migrationsJob?.cancel()
                 }
-                ?.setNegativeButton(android.R.string.cancel, null)
+                ?.setNegativeButton(AR.string.cancel, null)
             return false
         }
         return true

@@ -8,8 +8,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatCheckedTextView
 import androidx.core.content.edit
 import androidx.core.view.children
+import androidx.preference.Preference.SummaryProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.tachiyomi.util.system.disableItems
+import android.R as AR
 
 class MultiListMatPreference @JvmOverloads constructor(
     activity: Activity?,
@@ -82,7 +84,7 @@ class MultiListMatPreference @JvmOverloads constructor(
             if (allSelectionRes != null && !showAllLast) { allValue } else { booleanArrayOf() } +
                 entryValues.map { it in set }.toBooleanArray() +
                 if (allSelectionRes != null && showAllLast) { allValue } else { booleanArrayOf() }
-        setPositiveButton(android.R.string.ok) { _, _ ->
+        setPositiveButton(AR.string.ok) { _, _ ->
             val pos = mutableListOf<Int>()
             for (i in items.indices)
                 if (!(allSelectionRes != null && i == allPos) && selected[i]) pos.add(i)

@@ -29,6 +29,7 @@ import eu.kanade.tachiyomi.util.view.checkHeightThen
 import eu.kanade.tachiyomi.util.view.expand
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
 import uy.kohesive.injekt.injectLazy
+import android.R as AR
 
 class ExpandedFilterSheet(
     private val activity: Activity,
@@ -177,7 +178,7 @@ class ExpandedFilterSheet(
         context.materialAlertDialog()
             .setTitle(R.string.reorder_filters)
             .setView(recycler)
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(AR.string.cancel, null)
             .setPositiveButton(R.string.reorder) { _, _ ->
                 val order = adapter.currentItems.map { it.char }.joinToString("")
                 preferences.filterOrder().set(order)

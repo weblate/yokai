@@ -12,6 +12,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import android.R as AR
 
 open class MatPreference @JvmOverloads constructor(
     val activity: Activity?,
@@ -96,7 +97,7 @@ open class MatPreference @JvmOverloads constructor(
             } else if (title != null) {
                 setTitle(title.toString())
             }
-            setNegativeButton(android.R.string.cancel, null)
+            setNegativeButton(AR.string.cancel, null)
         }
     }
 }

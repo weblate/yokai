@@ -21,6 +21,7 @@ import eu.kanade.tachiyomi.util.view.checkHeightThen
 import eu.kanade.tachiyomi.util.view.collapse
 import eu.kanade.tachiyomi.util.view.doOnApplyWindowInsetsCompat
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
+import android.R as AR
 
 class SourceFilterSheet(val activity: Activity) :
     E2EBottomSheetDialog<SourceFilterSheetBinding>(activity) {
@@ -57,7 +58,7 @@ class SourceFilterSheet(val activity: Activity) :
             }
         }
 
-        val attrsArray = intArrayOf(android.R.attr.actionBarSize)
+        val attrsArray = intArrayOf(AR.attr.actionBarSize)
         val array = context.obtainStyledAttributes(attrsArray)
         val headerHeight = array.getDimensionPixelSize(0, 0)
         array.recycle()
@@ -130,7 +131,7 @@ class SourceFilterSheet(val activity: Activity) :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val attrsArray = intArrayOf(android.R.attr.actionBarSize)
+        val attrsArray = intArrayOf(AR.attr.actionBarSize)
         val array = context.obtainStyledAttributes(attrsArray)
         val headerHeight = array.getDimensionPixelSize(0, 0)
         binding.titleLayout.updatePaddingRelative(

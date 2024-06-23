@@ -32,6 +32,7 @@
   - Merge lastFetch and lastRead query into library_view VIEW
   - Migrated a few more chapter related queries
   - Migrated most of manga related queries
-- Update Japenese translation
+- Update Japanese translation (akir45)
 - Update dependency com.github.tachiyomiorg:unifile to a9de196cc7
 - Update project to Kotlin 2.0
+- Update Brazilian Portuguese translation (AshbornXS)

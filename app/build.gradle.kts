@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -12,6 +13,7 @@ plugins {
     id("com.google.android.gms.oss-licenses-plugin")
     id("com.google.gms.google-services") apply false
     id("com.google.firebase.crashlytics") apply false
+    alias(kotlinx.plugins.compose.compiler)
 }
 
 if (gradle.startParameter.taskRequests.toString().contains("Standard")) {
@@ -135,10 +137,6 @@ android {
         checkReleaseBuilds = false
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = compose.versions.compose.compiler.get()
-    }
-
     namespace = "eu.kanade.tachiyomi"
 }
 
@@ -151,6 +149,7 @@ dependencies {
     implementation(projects.sourceApi)
 
     // Compose
+    implementation(platform(compose.bom))
     implementation(compose.bundles.compose)
     debugImplementation(compose.ui.tooling)
     implementation(libs.compose.theme.adapter3)
@@ -274,8 +273,8 @@ dependencies {
 
 tasks {
     // See https://kotlinlang.org/docs/reference/experimental.html#experimental-status-of-experimental-api(-markers)
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.freeCompilerArgs += listOf(
+    withType<KotlinCompile> {
+        compilerOptions.freeCompilerArgs.addAll(
             "-Xcontext-receivers",
             // "-opt-in=kotlin.Experimental",
             "-opt-in=kotlin.RequiresOptIn",
@@ -298,12 +297,12 @@ tasks {
         )
 
         if (project.findProperty("tachiyomi.enableComposeCompilerMetrics") == "true") {
-            kotlinOptions.freeCompilerArgs += listOf(
+            compilerOptions.freeCompilerArgs.addAll(
                 "-P",
                 "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
                     (project.layout.buildDirectory.asFile.orNull?.absolutePath ?: "/tmp/yokai") + "/compose_metrics",
             )
-            kotlinOptions.freeCompilerArgs += listOf(
+            compilerOptions.freeCompilerArgs.addAll(
                 "-P",
                 "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
                         (project.layout.buildDirectory.asFile.orNull?.absolutePath ?: "/tmp/yokai") + "/compose_metrics",

@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    alias(kotlinx.plugins.compose.compiler)
 }
 
 android {
@@ -13,10 +14,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = compose.versions.compose.compiler.get()
     }
 }
 

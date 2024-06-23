@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -36,8 +38,8 @@ tasks {
 //        dependsOn(localesConfigTask)
 //    }
 
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.freeCompilerArgs += listOf(
+    withType<KotlinCompile> {
+        compilerOptions.freeCompilerArgs.addAll(
             "-Xexpect-actual-classes",
         )
     }

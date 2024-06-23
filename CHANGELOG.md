@@ -34,3 +34,4 @@
   - Migrated most of manga related queries
 - Update Japenese translation
 - Update dependency com.github.tachiyomiorg:unifile to a9de196cc7
+- Update project to Kotlin 2.0

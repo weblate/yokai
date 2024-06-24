@@ -5,7 +5,6 @@ import android.text.format.Formatter
 import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.memory.MemoryCache
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
@@ -19,10 +18,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 /**
  * Class used to create cover cache.
@@ -85,7 +86,7 @@ class CoverCache(val context: Context) {
         withUIContext {
             context.toast(
                 context.getString(
-                    R.string.deleted_,
+                    MR.strings.deleted_,
                     Formatter.formatFileSize(context, deletedSize),
                 ),
             )
@@ -108,7 +109,7 @@ class CoverCache(val context: Context) {
         withContext(Dispatchers.Main) {
             context.toast(
                 context.getString(
-                    R.string.deleted_,
+                    MR.strings.deleted_,
                     Formatter.formatFileSize(context, deletedSize),
                 ),
             )

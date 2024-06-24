@@ -8,10 +8,13 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
+import eu.kanade.tachiyomi.util.view.setTitle
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.util.lang.getString
 import android.R as AR
 
 open class MatPreference @JvmOverloads constructor(
@@ -24,14 +27,14 @@ open class MatPreference @JvmOverloads constructor(
 
     protected val prefs: PreferencesHelper = Injekt.get()
 
-    @StringRes var preSummaryRes: Int? = null
+    var preSummaryRes: StringResource? = null
         set(value) {
             field = value
             notifyChanged()
         }
     private var isShowing = false
 
-    @StringRes var dialogTitleRes: Int? = null
+    var dialogTitleRes: StringResource? = null
 
     override fun onClick() {
         if (!isShowing) {
@@ -60,7 +63,7 @@ open class MatPreference @JvmOverloads constructor(
         customSummaryProvider?.let {
             val preSummaryRes = preSummaryRes
             return if (preSummaryRes != null) {
-                context.getString(preSummaryRes, it.provideSummary(this))
+                context.getString(preSummaryRes, it.provideSummary(this) ?: "")
             } else {
                 it.provideSummary(this)
             }

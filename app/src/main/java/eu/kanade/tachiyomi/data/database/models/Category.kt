@@ -1,9 +1,10 @@
 package eu.kanade.tachiyomi.data.database.models
 
 import android.content.Context
-import androidx.annotation.StringRes
-import eu.kanade.tachiyomi.R
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.ui.library.LibrarySort
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.Serializable
 
 interface Category : Serializable {
@@ -45,8 +46,7 @@ interface Category : Serializable {
                 mangaSort == LibrarySort.DragAndDrop.categoryValue
             ) && !isDynamic
 
-    @StringRes
-    fun sortRes(): Int =
+    fun sortRes(): StringResource =
         (LibrarySort.valueOf(mangaSort) ?: LibrarySort.DragAndDrop).stringRes(isDynamic)
 
     fun changeSortTo(sort: Int) {
@@ -61,7 +61,7 @@ interface Category : Serializable {
         }
 
         fun createDefault(context: Context): Category =
-            create(context.getString(R.string.default_value)).apply {
+            create(context.getString(MR.strings.default_value)).apply {
                 id = 0
                 isSystem = true
             }
@@ -77,7 +77,7 @@ interface Category : Serializable {
             }
 
         fun createAll(context: Context, libSort: Int, ascending: Boolean): Category =
-            createCustom(context.getString(R.string.all), libSort, ascending).apply {
+            createCustom(context.getString(MR.strings.all), libSort, ascending).apply {
                 id = -1
                 order = -1
                 isAlone = true

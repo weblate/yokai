@@ -1,7 +1,11 @@
 package eu.kanade.tachiyomi.ui.migration
 
 import android.content.Context
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -21,7 +25,7 @@ object MigrationFlags {
     private val db: DatabaseHelper by injectLazy()
     private val customMangaManager: CustomMangaManager by injectLazy()
 
-    val titles get() = arrayOf(R.string.chapters, R.string.categories, R.string.tracking, R.string.custom_manga_info)
+    val titles get() = arrayOf(MR.strings.chapters, MR.strings.categories, MR.strings.tracking, MR.strings.custom_manga_info)
     val flags get() = arrayOf(CHAPTERS, CATEGORIES, TRACK, CUSTOM_MANGA_INFO)
 
     fun hasChapters(value: Int): Boolean {
@@ -71,13 +75,13 @@ object MigrationFlags {
         return flags.toTypedArray()
     }
 
-    private fun titleForFlag(flag: Int): Int {
+    private fun titleForFlag(flag: Int): StringResource {
         return when (flag) {
-            CHAPTERS -> R.string.chapters
-            CATEGORIES -> R.string.categories
-            TRACK -> R.string.tracking
-            CUSTOM_MANGA_INFO -> R.string.custom_manga_info
-            else -> 0
+            CHAPTERS -> MR.strings.chapters
+            CATEGORIES -> MR.strings.categories
+            TRACK -> MR.strings.tracking
+            CUSTOM_MANGA_INFO -> MR.strings.custom_manga_info
+            else -> throw IllegalStateException("Invalid flag")
         }
     }
 

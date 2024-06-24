@@ -6,6 +6,8 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.core.content.edit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.icerock.moko.resources.StringResource
+import yokai.util.lang.getString
 
 open class ListMatPreference @JvmOverloads constructor(
     activity: Activity?,
@@ -16,7 +18,7 @@ open class ListMatPreference @JvmOverloads constructor(
     MatPreference(activity, context, attrs) {
 
     var entryValues: List<String> = emptyList()
-    var entriesRes: Array<Int>
+    var entriesRes: Array<StringResource>
         get() = emptyArray()
         set(value) { entries = value.map { context.getString(it) } }
     private var defValue: String = ""

@@ -8,6 +8,8 @@ import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class ExtensionInstallNotifier(private val context: Context) {
@@ -31,10 +33,10 @@ class ExtensionInstallNotifier(private val context: Context) {
      */
     val progressNotificationBuilder by lazy {
         context.notificationBuilder(Notifications.CHANNEL_EXT_PROGRESS) {
-            setContentTitle(context.getString(R.string.app_name))
+            setContentTitle(context.getString(MR.strings.app_name))
             setSmallIcon(AR.drawable.stat_sys_download)
             setLargeIcon(notificationBitmap)
-            setContentTitle(context.getString(R.string.updating_extensions))
+            setContentTitle(context.getString(MR.strings.updating_extensions))
             setProgress(0, 0, true)
             setOngoing(true)
             setSilent(true)
@@ -56,7 +58,7 @@ class ExtensionInstallNotifier(private val context: Context) {
             Notifications.ID_EXTENSION_PROGRESS,
             progressNotificationBuilder
                 .setChannelId(Notifications.CHANNEL_EXT_PROGRESS)
-                .setContentTitle(context.getString(R.string.updating_extensions))
+                .setContentTitle(context.getString(MR.strings.updating_extensions))
                 .setProgress(max, progress, progress == 0)
                 .build(),
         )
@@ -68,8 +70,8 @@ class ExtensionInstallNotifier(private val context: Context) {
             progressNotificationBuilder
                 .setChannelId(Notifications.CHANNEL_EXT_UPDATED)
                 .setContentTitle(
-                    context.resources.getQuantityString(
-                        R.plurals.extensions_updated_plural,
+                    context.getString(
+                        MR.plurals.extensions_updated_plural,
                         extensions.size,
                         extensions.size,
                     ),

@@ -31,6 +31,9 @@ import coil3.request.placeholder
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.databinding.ChapterHeaderItemBinding
@@ -143,7 +146,7 @@ class MangaHeaderHolder(
             }
             title.setOnLongClickListener {
                 title.text?.toString()?.toNormalized()?.let {
-                    adapter.delegate.copyContentToClipboard(it, R.string.title)
+                    adapter.delegate.copyContentToClipboard(it, MR.strings.title)
                 }
                 true
             }
@@ -154,7 +157,7 @@ class MangaHeaderHolder(
             }
             mangaAuthor.setOnLongClickListener {
                 mangaAuthor.text?.toString()?.let {
-                    adapter.delegate.copyContentToClipboard(it, R.string.author)
+                    adapter.delegate.copyContentToClipboard(it, MR.strings.author)
                 }
                 true
             }
@@ -266,7 +269,7 @@ class MangaHeaderHolder(
         if (binding != null) {
             val desc = adapter.controller.mangaPresenter().manga.description
             binding.mangaSummary.text = when {
-                desc.isNullOrBlank() -> itemView.context.getString(R.string.no_description)
+                desc.isNullOrBlank() -> itemView.context.getString(MR.strings.no_description)
                 binding.mangaSummary.maxLines != Int.MAX_VALUE -> desc.replace(
                     Regex(
                         "[\\r\\n\\s*]{2,}",
@@ -284,11 +287,11 @@ class MangaHeaderHolder(
         val count = presenter.chapters.size
         if (binding != null) {
             binding.chaptersTitle.text =
-                itemView.resources.getQuantityString(R.plurals.chapters_plural, count, count)
+                itemView.context.getString(MR.plurals.chapters_plural, count, count)
             binding.filtersText.text = presenter.currentFilters()
         } else if (chapterBinding != null) {
             chapterBinding.chaptersTitle.text =
-                itemView.resources.getQuantityString(R.plurals.chapters_plural, count, count)
+                itemView.context.getString(MR.plurals.chapters_plural, count, count)
             chapterBinding.filtersText.text = presenter.currentFilters()
         }
     }
@@ -300,7 +303,7 @@ class MangaHeaderHolder(
             if (chapterBinding != null) {
                 val count = presenter.chapters.size
                 chapterBinding.chaptersTitle.text =
-                    itemView.resources.getQuantityString(R.plurals.chapters_plural, count, count)
+                    itemView.context.getString(MR.plurals.chapters_plural, count, count)
                 chapterBinding.filtersText.text = presenter.currentFilters()
                 if (adapter.preferences.themeMangaDetails().get()) {
                     val accentColor = adapter.delegate.accentColor() ?: return
@@ -338,7 +341,7 @@ class MangaHeaderHolder(
             }
         }
         binding.mangaSummaryLabel.text = itemView.context.getString(
-            R.string.about_this_,
+            MR.strings.about_this_,
             manga.seriesType(itemView.context),
         )
         with(binding.favoriteButton) {
@@ -350,11 +353,11 @@ class MangaHeaderHolder(
                     else -> R.drawable.ic_heart_outline_24dp
                 },
             )
-            text = itemView.resources.getString(
+            text = itemView.context.getString(
                 when {
-                    item.isLocked -> R.string.unlock
-                    manga.favorite -> R.string.in_library
-                    else -> R.string.add_to_library
+                    item.isLocked -> MR.strings.unlock
+                    manga.favorite -> MR.strings.in_library
+                    else -> MR.strings.add_to_library
                 },
             )
             checked(!item.isLocked && manga.favorite)
@@ -371,9 +374,9 @@ class MangaHeaderHolder(
             isVisible = presenter.hasTrackers()
             text = itemView.context.getString(
                 if (tracked) {
-                    R.string.tracked
+                    MR.strings.tracked
                 } else {
-                    R.string.tracking
+                    MR.strings.tracking
                 },
             )
 
@@ -392,30 +395,30 @@ class MangaHeaderHolder(
             text = if (nextChapter != null) {
                 val number = adapter.decimalFormat.format(nextChapter.chapter_number.toDouble())
                 if (nextChapter.chapter_number > 0) {
-                    resources.getString(
+                    context.getString(
                         if (nextChapter.last_page_read > 0) {
-                            R.string.continue_reading_chapter_
+                            MR.strings.continue_reading_chapter_
                         } else {
-                            R.string.start_reading_chapter_
+                            MR.strings.start_reading_chapter_
                         },
                         number,
                     )
                 } else {
-                    resources.getString(
+                    context.getString(
                         if (nextChapter.last_page_read > 0) {
-                            R.string.continue_reading
+                            MR.strings.continue_reading
                         } else {
-                            R.string.start_reading
+                            MR.strings.start_reading
                         },
                     )
                 }
             } else {
-                resources.getString(R.string.all_chapters_read)
+                context.getString(MR.strings.all_chapters_read)
             }
         }
 
         val count = presenter.chapters.size
-        binding.chaptersTitle.text = itemView.resources.getQuantityString(R.plurals.chapters_plural, count, count)
+        binding.chaptersTitle.text = itemView.context.getString(MR.plurals.chapters_plural, count, count)
 
         binding.topView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             height = adapter.delegate.topCoverHeight()
@@ -425,13 +428,13 @@ class MangaHeaderHolder(
         binding.mangaStatus.text = (
             itemView.context.getString(
                 when (manga.status) {
-                    SManga.ONGOING -> R.string.ongoing
-                    SManga.COMPLETED -> R.string.completed
-                    SManga.LICENSED -> R.string.licensed
-                    SManga.PUBLISHING_FINISHED -> R.string.publishing_finished
-                    SManga.CANCELLED -> R.string.cancelled
-                    SManga.ON_HIATUS -> R.string.on_hiatus
-                    else -> R.string.unknown_status
+                    SManga.ONGOING -> MR.strings.ongoing
+                    SManga.COMPLETED -> MR.strings.completed
+                    SManga.LICENSED -> MR.strings.licensed
+                    SManga.PUBLISHING_FINISHED -> MR.strings.publishing_finished
+                    SManga.CANCELLED -> MR.strings.cancelled
+                    SManga.ON_HIATUS -> MR.strings.on_hiatus
+                    else -> MR.strings.unknown_status
                 },
             )
             )
@@ -444,7 +447,7 @@ class MangaHeaderHolder(
                     presenter.source.name != presenter.source.id.toString()
                 ) {
                     scale(0.9f) {
-                        append(" (${context.getString(R.string.source_not_installed)})")
+                        append(" (${context.getString(MR.strings.source_not_installed)})")
                     }
                 }
             }
@@ -630,9 +633,9 @@ class MangaHeaderHolder(
         with(binding.trackButton) {
             text = itemView.context.getString(
                 if (tracked) {
-                    R.string.tracked
+                    MR.strings.tracked
                 } else {
-                    R.string.tracking
+                    MR.strings.tracking
                 },
             )
 

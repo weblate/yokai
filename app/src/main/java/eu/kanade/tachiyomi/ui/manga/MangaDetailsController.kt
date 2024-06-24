@@ -51,9 +51,13 @@ import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dev.icerock.moko.resources.StringResource
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.coil.getBestColor
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -122,7 +126,11 @@ import eu.kanade.tachiyomi.util.view.getText
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.previousController
 import eu.kanade.tachiyomi.util.view.scrollViewWith
+import eu.kanade.tachiyomi.util.view.setAction
+import eu.kanade.tachiyomi.util.view.setMessage
+import eu.kanade.tachiyomi.util.view.setNegativeButton
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
+import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setStyle
 import eu.kanade.tachiyomi.util.view.setTextColorAlpha
 import eu.kanade.tachiyomi.util.view.snack
@@ -726,7 +734,7 @@ class MangaDetailsController :
 
     fun isNotOnline(showSnackbar: Boolean = true): Boolean {
         if (activity == null || !activity!!.isOnline()) {
-            if (showSnackbar) view?.snack(R.string.no_network_connection)
+            if (showSnackbar) view?.snack(MR.strings.no_network_connection)
             return true
         }
         return false
@@ -750,15 +758,15 @@ class MangaDetailsController :
                 val chapterNames = deletedChapters.map { it.name }
                 context.materialAlertDialog()
                     .setCustomTitleAndMessage(
-                        R.string.chapters_removed,
-                        context.resources.getQuantityString(
-                            R.plurals.deleted_chapters,
+                        MR.strings.chapters_removed,
+                        context.getString(
+                            MR.plurals.deleted_chapters,
                             deletedChapters.size,
                             deletedChapters.size,
                             if (deletedChapters.size > 5) {
                                 "${chapterNames.take(5 - 1).joinToString(", ")}, " +
-                                    context.resources.getQuantityString(
-                                        R.plurals.notification_and_n_more,
+                                    context.getString(
+                                        MR.plurals.notification_and_n_more,
                                         (chapterNames.size - (4 - 1)),
                                         (chapterNames.size - (4 - 1)),
                                     )
@@ -767,15 +775,15 @@ class MangaDetailsController :
                             },
                         ),
                     )
-                    .setPositiveButton(R.string.delete) { dialog, _ ->
+                    .addCheckBoxPrompt(MR.strings.remember_this_choice)
+                    .setPositiveButton(MR.strings.delete) { dialog, _ ->
                         presenter.deleteChapters(deletedChapters, false)
                         if (dialog.isPromptChecked) deleteRemovedPref.set(2)
                     }
-                    .setNegativeButton(R.string.keep) { dialog, _ ->
+                    .setNegativeButton(MR.strings.keep) { dialog, _ ->
                         if (dialog.isPromptChecked) deleteRemovedPref.set(1)
                     }
                     .setCancelable(false)
-                    .addCheckBoxPrompt(R.string.remember_this_choice)
                     .show()
             }
         }
@@ -898,22 +906,22 @@ class MangaDetailsController :
             MaterialMenuSheet.MenuSheetItem(
                 0,
                 if (descending) R.drawable.ic_eye_down_24dp else R.drawable.ic_eye_up_24dp,
-                R.string.mark_previous_as_read,
+                MR.strings.mark_previous_as_read,
             ),
             MaterialMenuSheet.MenuSheetItem(
                 1,
                 if (descending) R.drawable.ic_eye_off_down_24dp else R.drawable.ic_eye_off_up_24dp,
-                R.string.mark_previous_as_unread,
+                MR.strings.mark_previous_as_unread,
             ),
             MaterialMenuSheet.MenuSheetItem(
                 2,
                 R.drawable.ic_eye_range_24dp,
-                R.string.mark_range_as_read,
+                MR.strings.mark_range_as_read,
             ),
             MaterialMenuSheet.MenuSheetItem(
                 3,
                 R.drawable.ic_eye_off_range_24dp,
-                R.string.mark_range_as_unread,
+                MR.strings.mark_range_as_unread,
             ),
         )
         if (presenter.getChapterUrl(item.chapter) != null) {
@@ -922,12 +930,12 @@ class MangaDetailsController :
                 MaterialMenuSheet.MenuSheetItem(
                     4,
                     R.drawable.ic_open_in_webview_24dp,
-                    R.string.open_in_webview,
+                    MR.strings.open_in_webview,
                 ),
             )
         }
         val lastRead = presenter.allHistory.find { it.chapter_id == item.id }?.let {
-            activity?.timeSpanFromNow(R.string.read_, it.last_read) + "\n"
+            activity?.timeSpanFromNow(MR.strings.read_, it.last_read) + "\n"
         }
         val menuSheet =
             MaterialMenuSheet(activity!!, items, item.name, subtitle = lastRead) { _, itemPos ->
@@ -982,13 +990,13 @@ class MangaDetailsController :
         snack?.dismiss()
         snack = view?.snack(
             if (bookmarked) {
-                R.string.removed_bookmark
+                MR.strings.removed_bookmark
             } else {
-                R.string.bookmarked
+                MR.strings.bookmarked
             },
             Snackbar.LENGTH_INDEFINITE,
         ) {
-            setAction(R.string.undo) {
+            setAction(MR.strings.undo) {
                 bookmarkChapters(listOf(item), bookmarked)
             }
         }
@@ -1007,14 +1015,14 @@ class MangaDetailsController :
         snack?.dismiss()
         snack = view?.snack(
             if (read) {
-                R.string.marked_as_unread
+                MR.strings.marked_as_unread
             } else {
-                R.string.marked_as_read
+                MR.strings.marked_as_read
             },
             Snackbar.LENGTH_INDEFINITE,
         ) {
             var undoing = false
-            setAction(R.string.undo) {
+            setAction(MR.strings.undo) {
                 presenter.markChaptersRead(listOf(item), read, true, lastRead, pagesLeft)
                 undoing = true
             }
@@ -1078,17 +1086,17 @@ class MangaDetailsController :
         colorToolbar(binding.recycler.canScrollVertically(-1))
         updateMenuVisibility(menu)
         menu.findItem(R.id.action_migrate).title = view?.context?.getString(
-            R.string.migrate_,
+            MR.strings.migrate_,
             presenter.manga.seriesType(view!!.context),
         )
         menu.findItem(R.id.download_next).title =
-            view?.resources?.getQuantityString(R.plurals.next_unread_chapters, 1, 1)
+            view?.context?.getString(MR.plurals.next_unread_chapters, 1, 1)
         menu.findItem(R.id.download_next_5).title =
-            view?.resources?.getQuantityString(R.plurals.next_unread_chapters, 5, 5)
+            view?.context?.getString(MR.plurals.next_unread_chapters, 5, 5)
 
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
-        searchView.queryHint = resources?.getString(R.string.search_chapters)
+        searchView.queryHint = activity?.getString(MR.strings.search_chapters)
         if (query.isNotEmpty() && (!searchItem.isActionViewExpanded || searchView.query != query)) {
             searchItem.expandActionView()
             setSearchViewListener(searchView)
@@ -1158,8 +1166,8 @@ class MangaDetailsController :
                 }
             R.id.action_mark_all_as_read -> {
                 activity!!.materialAlertDialog()
-                    .setMessage(R.string.mark_all_chapters_as_read)
-                    .setPositiveButton(R.string.mark_as_read) { _, _ ->
+                    .setMessage(MR.strings.mark_all_chapters_as_read)
+                    .setPositiveButton(MR.strings.mark_as_read) { _, _ ->
                         markAsRead(presenter.chapters)
                     }
                     .setNegativeButton(AR.string.cancel, null)
@@ -1168,8 +1176,8 @@ class MangaDetailsController :
             R.id.remove_all, R.id.remove_read, R.id.remove_non_bookmarked, R.id.remove_custom -> massDeleteChapters(item.itemId)
             R.id.action_mark_all_as_unread -> {
                 activity!!.materialAlertDialog()
-                    .setMessage(R.string.mark_all_chapters_as_unread)
-                    .setPositiveButton(R.string.mark_as_unread) { _, _ ->
+                    .setMessage(MR.strings.mark_all_chapters_as_unread)
+                    .setPositiveButton(MR.strings.mark_as_unread) { _, _ ->
                         markAsUnread(presenter.chapters)
                     }
                     .setNegativeButton(AR.string.cancel, null)
@@ -1186,9 +1194,9 @@ class MangaDetailsController :
 
     fun saveCover() {
         if (presenter.saveCover()) {
-            activity?.toast(R.string.cover_saved)
+            activity?.toast(MR.strings.cover_saved)
         } else {
-            activity?.toast(R.string.error_saving_cover)
+            activity?.toast(MR.strings.error_saving_cover)
         }
     }
 
@@ -1202,9 +1210,9 @@ class MangaDetailsController :
                 clipData = ClipData.newRawUri(null, stream)
                 type = "image/*"
             }
-            startActivity(Intent.createChooser(intent, activity?.getString(R.string.share)))
+            startActivity(Intent.createChooser(intent, activity?.getString(MR.strings.share)))
         } else {
-            activity?.toast(R.string.error_sharing_cover)
+            activity?.toast(MR.strings.error_sharing_cover)
         }
     }
 
@@ -1233,7 +1241,7 @@ class MangaDetailsController :
                 }
             }
             startActivity(
-                Intent.createChooser(intent, context.getString(R.string.share)).apply {
+                Intent.createChooser(intent, context.getString(MR.strings.share)).apply {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && stream != null) {
                         val shareCoverIntent = Intent(Intent.ACTION_SEND).apply {
                             putExtra(Intent.EXTRA_STREAM, stream)
@@ -1244,12 +1252,12 @@ class MangaDetailsController :
                         val pendingIntent = PendingIntent.getActivity(
                             context,
                             manga?.id?.hashCode() ?: 0,
-                            Intent.createChooser(shareCoverIntent, context.getString(R.string.share)),
+                            Intent.createChooser(shareCoverIntent, context.getString(MR.strings.share)),
                             PendingIntent.FLAG_IMMUTABLE,
                         )
                         val action = ChooserAction.Builder(
                             Icon.createWithResource(context, R.drawable.ic_photo_24dp),
-                            context.getString(R.string.share_cover),
+                            context.getString(MR.strings.share_cover),
                             pendingIntent,
                         ).build()
                         putExtra(Intent.EXTRA_CHOOSER_CUSTOM_ACTIONS, arrayOf(action))
@@ -1313,7 +1321,7 @@ class MangaDetailsController :
             massDeleteChapters(chaptersToDelete, choice == R.id.remove_all)
         } else {
             snack?.dismiss()
-            snack = view?.snack(R.string.no_chapters_to_delete)
+            snack = view?.snack(MR.strings.no_chapters_to_delete)
         }
     }
 
@@ -1322,16 +1330,16 @@ class MangaDetailsController :
         context.materialAlertDialog()
             .setMessage(
                 if (isEverything) {
-                    context.getString(R.string.remove_all_downloads)
+                    context.getString(MR.strings.remove_all_downloads)
                 } else {
-                    context.resources.getQuantityString(
-                        R.plurals.remove_n_chapters,
+                    context.getString(
+                        MR.plurals.remove_n_chapters,
                         chapters.size,
                         chapters.size,
                     )
                 },
             )
-            .setPositiveButton(R.string.remove) { _, _ ->
+            .setPositiveButton(MR.strings.remove) { _, _ ->
                 presenter.deleteChapters(chapters, isEverything = isEverything)
             }
             .setNegativeButton(AR.string.cancel, null)
@@ -1415,7 +1423,7 @@ class MangaDetailsController :
         val view = view ?: return
         presenter.downloadChapters(chapters)
         val text = view.context.getString(
-            R.string.add_x_to_library,
+            MR.strings.add_x_to_library,
             presenter.manga.seriesType(view.context).lowercase(Locale.ROOT),
         )
         if (!presenter.manga.favorite && (
@@ -1424,7 +1432,7 @@ class MangaDetailsController :
             )
         ) {
             snack = view.snack(text, Snackbar.LENGTH_INDEFINITE) {
-                setAction(R.string.add) {
+                setAction(MR.strings.add) {
                     if (!presenter.manga.favorite) {
                         toggleMangaFavorite()
                     }
@@ -1468,9 +1476,9 @@ class MangaDetailsController :
         if (item != null) {
             openChapter(item.chapter, readingButton)
         } else if (snack == null ||
-            snack?.getText() != view?.context?.getString(R.string.next_chapter_not_found)
+            snack?.getText() != view?.context?.getString(MR.strings.next_chapter_not_found)
         ) {
-            snack = view?.snack(R.string.next_chapter_not_found, Snackbar.LENGTH_LONG) {
+            snack = view?.snack(MR.strings.next_chapter_not_found, Snackbar.LENGTH_LONG) {
                 addCallback(
                     object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -1610,9 +1618,9 @@ class MangaDetailsController :
     private fun makeFavPopup(popupView: View, categories: List<Category>): PopupMenu? {
         val view = view ?: return null
         val popup = PopupMenu(view.context, popupView)
-        popup.menu.add(0, 1, 0, R.string.remove_from_library)
+        popup.menu.add(0, 1, 0, view.context.getString(MR.strings.remove_from_library))
         if (categories.isNotEmpty()) {
-            popup.menu.add(0, 0, 1, R.string.edit_categories)
+            popup.menu.add(0, 0, 1, view.context.getString(MR.strings.edit_categories))
         }
 
         // Set a listener so we are notified if a menu item is clicked
@@ -1670,10 +1678,22 @@ class MangaDetailsController :
     private fun showAddedSnack() {
         val view = view ?: return
         snack?.dismiss()
-        snack = view.snack(view.context.getString(R.string.added_to_library))
+        snack = view.snack(view.context.getString(MR.strings.added_to_library))
     }
 
     override fun mangaPresenter(): MangaDetailsPresenter = presenter
+
+    /**
+     * Copies a string to clipboard
+     *
+     * @param content the actual text to copy to the board
+     * @param label Label to show to the user describing the content
+     */
+    override fun copyContentToClipboard(content: String, label: StringResource, useToast: Boolean) {
+        val view = view ?: return
+        val contentType = if (label.resourceId != 0) view.context.getString(label) else null
+        copyContentToClipboard(content, contentType, useToast)
+    }
 
     /**
      * Copies a string to clipboard
@@ -1764,9 +1784,9 @@ class MangaDetailsController :
     override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         mode?.title = view?.context?.getString(
             if (startingRangeChapterPos == null) {
-                R.string.select_starting_chapter
+                MR.strings.select_starting_chapter
             } else {
-                R.string.select_ending_chapter
+                MR.strings.select_ending_chapter
             },
         )
         return false
@@ -1798,12 +1818,12 @@ class MangaDetailsController :
             startActivityForResult(
                 Intent.createChooser(
                     intent,
-                    resources?.getString(R.string.select_cover_image),
+                    activity?.getString(MR.strings.select_cover_image),
                 ),
                 101,
             )
         } else {
-            activity?.toast(R.string.must_be_in_library_to_edit)
+            activity?.toast(MR.strings.must_be_in_library_to_edit)
         }
     }
 
@@ -1819,7 +1839,7 @@ class MangaDetailsController :
                     presenter.editCoverWithStream(uri)
                 }
             } catch (error: IOException) {
-                activity.toast(R.string.failed_to_update_cover)
+                activity.toast(MR.strings.failed_to_update_cover)
                 Logger.e(error)
             }
         }
@@ -1895,16 +1915,16 @@ class MangaDetailsController :
             val context = view?.context ?: return false
             val localItem = menu?.findItem(R.id.action_local_search) ?: return true
             localItem.isVisible = previousController !is FilteredLibraryController
-            val library = context.getString(R.string.library).lowercase(Locale.getDefault())
-            localItem.title = context.getString(R.string.search_, library)
-            sourceMenuItem?.title = context.getString(R.string.search_, presenter.source.name)
+            val library = context.getString(MR.strings.library).lowercase(Locale.getDefault())
+            localItem.title = context.getString(MR.strings.search_, library)
+            sourceMenuItem?.title = context.getString(MR.strings.search_, presenter.source.name)
             menu.findItem(R.id.action_search_author)?.title = context.getString(
-                R.string.search_,
-                context.getString(R.string.author).lowercase(Locale.getDefault()),
+                MR.strings.search_,
+                context.getString(MR.strings.author).lowercase(Locale.getDefault()),
             )
             menu.findItem(R.id.action_search_artist)?.title = context.getString(
-                R.string.search_,
-                context.getString(R.string.artist).lowercase(Locale.getDefault()),
+                MR.strings.search_,
+                context.getString(MR.strings.artist).lowercase(Locale.getDefault()),
             )
             if (isTag) {
                 if (previousController is BrowseSourceController) {

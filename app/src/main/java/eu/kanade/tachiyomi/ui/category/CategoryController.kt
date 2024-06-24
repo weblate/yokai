@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.CategoriesControllerBinding
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
 import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
@@ -17,7 +16,13 @@ import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.view.liftAppbarWith
+import eu.kanade.tachiyomi.util.view.setAction
+import eu.kanade.tachiyomi.util.view.setMessage
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.snack
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 /**
@@ -49,7 +54,7 @@ class CategoryController(bundle: Bundle? = null) :
      * Returns the toolbar title to show when this controller is attached.
      */
     override fun getTitle(): String? {
-        return resources?.getString(R.string.edit_categories)
+        return view?.context?.getString(MR.strings.edit_categories)
     }
 
     override fun createBinding(inflater: LayoutInflater) = CategoriesControllerBinding.inflate(inflater)
@@ -117,7 +122,7 @@ class CategoryController(bundle: Bundle? = null) :
     override fun onCategoryRename(position: Int, newName: String): Boolean {
         val category = adapter?.getItem(position)?.category ?: return false
         if (newName.isBlank()) {
-            activity?.toast(R.string.category_cannot_be_blank)
+            activity?.toast(MR.strings.category_cannot_be_blank)
             return false
         }
         if (category.order == CREATE_CATEGORY_ORDER) {
@@ -128,9 +133,9 @@ class CategoryController(bundle: Bundle? = null) :
 
     override fun onItemDelete(position: Int) {
         activity!!.materialAlertDialog()
-            .setTitle(R.string.confirm_category_deletion)
-            .setMessage(R.string.confirm_category_deletion_message)
-            .setPositiveButton(R.string.delete) { _, _ ->
+            .setTitle(MR.strings.confirm_category_deletion)
+            .setMessage(MR.strings.confirm_category_deletion_message)
+            .setPositiveButton(MR.strings.delete) { _, _ ->
                 deleteCategory(position)
             }
             .setNegativeButton(AR.string.cancel, null)
@@ -141,9 +146,9 @@ class CategoryController(bundle: Bundle? = null) :
         confirmDelete()
         adapter?.removeItem(position)
         snack =
-            view?.snack(R.string.category_deleted, Snackbar.LENGTH_INDEFINITE) {
+            view?.snack(MR.strings.category_deleted, Snackbar.LENGTH_INDEFINITE) {
                 var undoing = false
-                setAction(R.string.undo) {
+                setAction(MR.strings.undo) {
                     adapter?.restoreDeletedItems()
                     undoing = true
                 }
@@ -189,6 +194,6 @@ class CategoryController(bundle: Bundle? = null) :
      * Called from the presenter when a category with the given name already exists.
      */
     fun onCategoryExistsError() {
-        activity?.toast(R.string.category_with_name_exists)
+        activity?.toast(MR.strings.category_with_name_exists)
     }
 }

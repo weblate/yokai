@@ -19,6 +19,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.bluelinelabs.conductor.Controller
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.MigrationBottomSheetBinding
@@ -130,7 +133,7 @@ class MigrationBottomSheetDialog(
         binding.skipStep.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 (listener as? Controller)?.activity?.toast(
-                    R.string.to_show_again_setting_sources,
+                    MR.strings.to_show_again_setting_sources,
                     Toast.LENGTH_LONG,
                 )
             }

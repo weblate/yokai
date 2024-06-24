@@ -11,9 +11,12 @@ import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.google.android.material.button.MaterialButton
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.CommonViewEmptyBinding
+import eu.kanade.tachiyomi.util.view.setText
 import eu.kanade.tachiyomi.util.view.setVectorCompat
+import yokai.util.lang.getString
 import android.R as AR
 
 class EmptyView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
@@ -27,6 +30,14 @@ class EmptyView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      */
     fun hide() {
         this.isVisible = false
+    }
+
+    /**
+     * Show the information view
+     * @param textResource text of information view
+     */
+    fun show(@DrawableRes drawable: Int, textResource: StringResource, actions: List<Action>? = null) {
+        show(drawable, context.getString(textResource), actions)
     }
 
     /**
@@ -71,7 +82,7 @@ class EmptyView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     data class Action(
-        @StringRes val resId: Int,
+        val resId: StringResource,
         val listener: OnClickListener,
     )
 }

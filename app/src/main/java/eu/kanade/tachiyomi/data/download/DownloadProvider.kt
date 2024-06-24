@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -17,6 +16,8 @@ import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.download.DownloadPreferences
 import yokai.domain.storage.StorageManager
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * This class is used to provide the directories where the downloads should be saved.
@@ -56,7 +57,7 @@ class DownloadProvider(private val context: Context) {
             return downloadsDir?.createDirectory(getSourceDirName(source))!!
                 .createDirectory(getMangaDirName(manga))!!
         } catch (e: NullPointerException) {
-            throw Exception(context.getString(R.string.invalid_download_location))
+            throw Exception(context.getString(MR.strings.invalid_download_location))
         }
     }
 

@@ -17,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.appwidget.util.stringResource
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackService
 import yokai.presentation.component.TrackLogoIcon
 import yokai.presentation.component.preference.LocalPreferenceHighlighted
@@ -40,7 +42,7 @@ fun TrackingPreferenceWidget(
         ) {
             TrackLogoIcon(tracker)
             Text(
-                text = stringResource(id = tracker.nameRes()),
+                text = stringResource(tracker.nameRes()),
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 16.dp),
@@ -55,7 +57,7 @@ fun TrackingPreferenceWidget(
                         .padding(4.dp)
                         .size(32.dp),
                     tint = Color(0xFF4CAF50),
-                    contentDescription = stringResource(R.string.successfully_logged_in),
+                    contentDescription = stringResource(MR.strings.successfully_logged_in),
                 )
             }
         }

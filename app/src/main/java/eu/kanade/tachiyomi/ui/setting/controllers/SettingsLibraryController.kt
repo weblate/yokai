@@ -2,6 +2,9 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -26,9 +29,9 @@ import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.ui.setting.triStateListPreference
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
@@ -45,20 +48,20 @@ class SettingsLibraryController : SettingsLegacyController() {
     private val getLibraryManga: GetLibraryManga by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.library
+        titleRes = MR.strings.library
         preferenceCategory {
-            titleRes = R.string.general
+            titleRes = MR.strings.general
             switchPreference {
                 key = Keys.removeArticles
-                titleRes = R.string.sort_by_ignoring_articles
-                summaryRes = R.string.when_sorting_ignore_articles
+                titleRes = MR.strings.sort_by_ignoring_articles
+                summaryRes = MR.strings.when_sorting_ignore_articles
                 defaultValue = false
             }
 
             switchPreference {
                 key = Keys.showLibrarySearchSuggestions
-                titleRes = R.string.search_suggestions
-                summaryRes = R.string.search_tips_show_periodically
+                titleRes = MR.strings.search_suggestions
+                summaryRes = MR.strings.search_tips_show_periodically
 
                 onChange {
                     it as Boolean
@@ -77,8 +80,8 @@ class SettingsLibraryController : SettingsLegacyController() {
             preference {
                 key = "library_display_options"
                 isPersistent = false
-                titleRes = R.string.display_options
-                summaryRes = R.string.can_be_found_in_library_filters
+                titleRes = MR.strings.display_options
+                summaryRes = MR.strings.can_be_found_in_library_filters
 
                 onClick {
                     TabbedLibraryDisplaySheet(this@SettingsLibraryController).show()
@@ -89,32 +92,32 @@ class SettingsLibraryController : SettingsLegacyController() {
         val dbCategories = db.getCategories().executeAsBlocking()
 
         preferenceCategory {
-            titleRes = R.string.categories
+            titleRes = MR.strings.categories
             preference {
                 key = "edit_categories"
                 isPersistent = false
                 val catCount = db.getCategories().executeAsBlocking().size
-                titleRes = if (catCount > 0) R.string.edit_categories else R.string.add_categories
-                if (catCount > 0) summary = context.resources.getQuantityString(R.plurals.category_plural, catCount, catCount)
+                titleRes = if (catCount > 0) MR.strings.edit_categories else MR.strings.add_categories
+                if (catCount > 0) summary = context.getString(MR.plurals.category_plural, catCount, catCount)
                 onClick { router.pushController(CategoryController().withFadeTransaction()) }
             }
             intListPreference(activity) {
                 key = Keys.defaultCategory
-                titleRes = R.string.default_category
+                titleRes = MR.strings.default_category
 
                 val categories = listOf(Category.createDefault(context)) + dbCategories
                 entries =
-                    listOf(context.getString(R.string.last_used), context.getString(R.string.always_ask)) +
+                    listOf(context.getString(MR.strings.last_used), context.getString(MR.strings.always_ask)) +
                         categories.map { it.name }.toTypedArray()
                 entryValues = listOf(-2, -1) + categories.mapNotNull { it.id }.toList()
                 defaultValue = "-2"
 
                 val categoryName: (Int) -> String = { catId ->
                     when (catId) {
-                        -2 -> context.getString(R.string.last_used)
-                        -1 -> context.getString(R.string.always_ask)
+                        -2 -> context.getString(MR.strings.last_used)
+                        -1 -> context.getString(MR.strings.always_ask)
                         else -> categories.find { it.id == preferences.defaultCategory().get() }?.name
-                            ?: context.getString(R.string.last_used)
+                            ?: context.getString(MR.strings.last_used)
                     }
                 }
                 summary = categoryName(preferences.defaultCategory().get())
@@ -126,17 +129,17 @@ class SettingsLibraryController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.global_updates
+            titleRes = MR.strings.global_updates
             intListPreference(activity) {
                 key = Keys.libraryUpdateInterval
-                titleRes = R.string.library_update_frequency
+                titleRes = MR.strings.library_update_frequency
                 entriesRes = arrayOf(
-                    R.string.manual,
-                    R.string.every_12_hours,
-                    R.string.daily,
-                    R.string.every_2_days,
-                    R.string.every_3_days,
-                    R.string.weekly,
+                    MR.strings.manual,
+                    MR.strings.every_12_hours,
+                    MR.strings.daily,
+                    MR.strings.every_2_days,
+                    MR.strings.every_3_days,
+                    MR.strings.weekly,
                 )
                 entryValues = listOf(0, 12, 24, 48, 72, 168)
                 defaultValue = 24
@@ -155,11 +158,11 @@ class SettingsLibraryController : SettingsLegacyController() {
             }
             multiSelectListPreferenceMat(activity) {
                 bindTo(preferences.libraryUpdateDeviceRestriction())
-                titleRes = R.string.library_update_restriction
-                entriesRes = arrayOf(R.string.wifi, R.string.charging, R.string.battery_not_low)
+                titleRes = MR.strings.library_update_restriction
+                entriesRes = arrayOf(MR.strings.wifi, MR.strings.charging, MR.strings.battery_not_low)
                 entryValues = listOf(DEVICE_ONLY_ON_WIFI, DEVICE_CHARGING, DEVICE_BATTERY_NOT_LOW)
-                preSummaryRes = R.string.restrictions_
-                noSelectionRes = R.string.none
+                preSummaryRes = MR.strings.restrictions_
+                noSelectionRes = MR.strings.none
 
                 preferences.libraryUpdateInterval().changesIn(viewScope) {
                     isVisible = it > 0
@@ -174,33 +177,33 @@ class SettingsLibraryController : SettingsLegacyController() {
 
             multiSelectListPreferenceMat(activity) {
                 bindTo(preferences.libraryUpdateMangaRestriction())
-                titleRes = R.string.pref_library_update_manga_restriction
+                titleRes = MR.strings.pref_library_update_manga_restriction
                 entriesRes = arrayOf(
-                    R.string.pref_update_only_completely_read,
-                    R.string.pref_update_only_started,
-                    R.string.pref_update_only_non_completed,
+                    MR.strings.pref_update_only_completely_read,
+                    MR.strings.pref_update_only_started,
+                    MR.strings.pref_update_only_non_completed,
                 )
                 entryValues = listOf(MANGA_HAS_UNREAD, MANGA_NON_READ, MANGA_NON_COMPLETED)
-                noSelectionRes = R.string.none
+                noSelectionRes = MR.strings.none
             }
 
             triStateListPreference(activity) {
                 preferences.apply {
                     bindTo(libraryUpdateCategories(), libraryUpdateCategoriesExclude())
                 }
-                titleRes = R.string.categories
+                titleRes = MR.strings.categories
 
                 val categories = listOf(Category.createDefault(context)) + dbCategories
                 entries = categories.map { it.name }
                 entryValues = categories.map { it.id.toString() }
 
-                allSelectionRes = R.string.all
+                allSelectionRes = MR.strings.all
             }
 
             switchPreference {
                 key = Keys.refreshCoversToo
-                titleRes = R.string.auto_refresh_covers
-                summaryRes = R.string.auto_refresh_covers_summary
+                titleRes = MR.strings.auto_refresh_covers
+                summaryRes = MR.strings.auto_refresh_covers_summary
                 defaultValue = true
             }
         }

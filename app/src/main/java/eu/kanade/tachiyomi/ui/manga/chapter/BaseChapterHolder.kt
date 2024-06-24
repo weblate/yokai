@@ -6,6 +6,8 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.download.model.Download
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 open class BaseChapterHolder(
     view: View,
@@ -40,7 +42,7 @@ open class BaseChapterHolder(
                 // Hide download and show delete if the chapter is downloaded
                 if (chapterStatus != Download.State.DOWNLOADED) {
                     popup.menu.findItem(R.id.action_delete).title = downloadButton.context.getString(
-                        R.string.cancel,
+                        MR.strings.cancel,
                     )
                 }
 

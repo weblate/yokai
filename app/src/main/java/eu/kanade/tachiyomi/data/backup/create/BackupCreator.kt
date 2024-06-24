@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.creators.CategoriesBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.MangaBackupCreator
@@ -22,6 +21,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.storage.StorageManager
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.FileOutputStream
 
 class BackupCreator(
@@ -95,7 +96,7 @@ class BackupCreator(
 
             val byteArray = parser.encodeToByteArray(Backup.serializer(), backup!!)
             if (byteArray.isEmpty()) {
-                throw IllegalStateException(context.getString(R.string.empty_backup_error))
+                throw IllegalStateException(context.getString(MR.strings.empty_backup_error))
             }
 
             file.openOutputStream().also {

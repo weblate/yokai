@@ -30,6 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import android.R as AR
 
 private enum class State {
@@ -103,9 +106,9 @@ fun <T> TriStateListDialog(
                                     },
                                     contentDescription = stringResource(
                                         when (state) {
-                                            State.UNCHECKED -> R.string.not_selected
-                                            State.CHECKED -> R.string.selected
-                                            State.INVERSED -> R.string.disabled
+                                            State.UNCHECKED -> MR.strings.not_selected
+                                            State.CHECKED -> MR.strings.selected
+                                            State.INVERSED -> MR.strings.disabled
                                         },
                                     ),
                                 )

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <plurals name="remove_n_chapters">
+        <item quantity="one">Boqonnaa %1$d buufame haquu\?</item>
+        <item quantity="other">Boqonnaawwan %1$d buufaman haquu\?</item>
+    </plurals>
+
+    <plurals name="chapters_plural">
+        <item quantity="one">Boqonnaa %1$s</item>
+        <item quantity="other">Boqonnaawwan %1$s</item>
+    </plurals>
+
+    <plurals name="pages_left">
+        <item quantity="one">fuula %1$d hafe</item>
+        <item quantity="other">fuulootaa %1$d hafe</item>
+    </plurals>
+
+    <plurals name="category_plural">
+        <item quantity="one">Ramaddi %d</item>
+        <item quantity="other">Ramaddiiwwan %d</item>
+    </plurals>
+</resources>

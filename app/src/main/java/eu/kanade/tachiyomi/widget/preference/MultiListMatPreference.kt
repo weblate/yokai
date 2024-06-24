@@ -10,7 +10,9 @@ import androidx.core.content.edit
 import androidx.core.view.children
 import androidx.preference.Preference.SummaryProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.util.system.disableItems
+import yokai.util.lang.getString
 import android.R as AR
 
 class MultiListMatPreference @JvmOverloads constructor(
@@ -21,8 +23,8 @@ class MultiListMatPreference @JvmOverloads constructor(
 ) :
     ListMatPreference(activity, context, attrs) {
 
-    var allSelectionRes: Int? = null
-    var noSelectionRes: Int? = null
+    var allSelectionRes: StringResource? = null
+    var noSelectionRes: StringResource? = null
 
     /** All item is always selected and uncheckabele */
     var allIsAlwaysSelected = false

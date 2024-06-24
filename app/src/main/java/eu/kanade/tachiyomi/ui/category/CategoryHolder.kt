@@ -16,7 +16,7 @@ import eu.kanade.tachiyomi.databinding.CategoriesItemBinding
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.ui.category.CategoryPresenter.Companion.CREATE_CATEGORY_ORDER
 import eu.kanade.tachiyomi.util.system.getResourceColor
-import java.util.Locale
+import java.util.*
 
 /**
  * Holder used to display category items.

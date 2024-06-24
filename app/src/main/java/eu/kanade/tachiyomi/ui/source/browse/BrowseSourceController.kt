@@ -51,6 +51,7 @@ import eu.kanade.tachiyomi.util.view.fullAppBarHeight
 import eu.kanade.tachiyomi.util.view.inflate
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.scrollViewWith
+import eu.kanade.tachiyomi.util.view.setAction
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
@@ -58,6 +59,8 @@ import eu.kanade.tachiyomi.widget.AutofitRecyclerView
 import eu.kanade.tachiyomi.widget.EmptyView
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import kotlin.math.roundToInt
 
 /**
@@ -169,7 +172,7 @@ open class BrowseSourceController(bundle: Bundle) :
         activityBinding?.appBar?.updateAppBarAfterY(recycler)
         activityBinding?.appBar?.lockYPos = true
         if (!presenter.sourceIsInitialized) {
-            activity?.toast(R.string.source_not_installed)
+            activity?.toast(MR.strings.source_not_installed)
             if (activity is SearchActivity) {
                 activity?.finish()
             } else {
@@ -308,12 +311,11 @@ open class BrowseSourceController(bundle: Bundle) :
                 R.drawable.ic_heart_24dp
             }
             setIcon(icon)
-            val titleRes = if (!presenter.useLatest) {
-                R.string.latest
+            title = activity?.getString(if (!presenter.useLatest) {
+                MR.strings.latest
             } else {
-                R.string.popular
-            }
-            setTitle(titleRes)
+                MR.strings.popular
+            })
         }
     }
 
@@ -579,15 +581,15 @@ open class BrowseSourceController(bundle: Bundle) :
 
             actions += if (presenter.source is LocalSource) {
                 EmptyView.Action(
-                    R.string.local_source_help_guide,
+                    MR.strings.local_source_help_guide,
                 ) { openLocalSourceHelpGuide() }
             } else {
-                EmptyView.Action(R.string.retry, retryAction)
+                EmptyView.Action(MR.strings.retry, retryAction)
             }
 
             if (presenter.source is HttpSource) {
                 actions += EmptyView.Action(
-                    R.string.open_in_webview,
+                    MR.strings.open_in_webview,
                 ) { openInWebView() }
             }
 
@@ -602,7 +604,7 @@ open class BrowseSourceController(bundle: Bundle) :
             )
         } else {
             snack = binding.sourceLayout.snack(message, Snackbar.LENGTH_INDEFINITE) {
-                setAction(R.string.retry, retryAction)
+                setAction(MR.strings.retry, retryAction)
             }
         }
         if (isControllerVisible) {
@@ -612,12 +614,12 @@ open class BrowseSourceController(bundle: Bundle) :
 
     private fun getErrorMessage(error: Throwable): String {
         if (error is NoResultsException) {
-            return activity!!.getString(R.string.no_results_found)
+            return activity!!.getString(MR.strings.no_results_found)
         }
 
         return when {
             error.message == null -> ""
-            error.message!!.startsWith("HTTP error") -> "${error.message}: ${activity!!.getString(R.string.check_site_in_web)}"
+            error.message!!.startsWith("HTTP error") -> "${error.message}: ${activity!!.getString(MR.strings.check_site_in_web)}"
             else -> error.message!!
         }
     }
@@ -775,7 +777,7 @@ open class BrowseSourceController(bundle: Bundle) :
             this,
             onMangaAdded = {
                 adapter?.notifyItemChanged(position)
-                snack = view.snack(R.string.added_to_library)
+                snack = view.snack(MR.strings.added_to_library)
             },
             onMangaMoved = { adapter?.notifyItemChanged(position) },
             onMangaDeleted = { presenter.confirmDeletion(manga) },

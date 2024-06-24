@@ -1,14 +1,18 @@
 package eu.kanade.tachiyomi.ui.reader.settings
 
 import androidx.annotation.StringRes
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 
-enum class ReaderBackgroundColor(val prefValue: Int, @StringRes val stringRes: Int, @StringRes val longStringRes: Int? = null) {
-    WHITE(0, R.string.white),
-    GRAY(4, R.string.gray_background),
-    BLACK(1, R.string.black),
-    SMART_PAGE(2, R.string.smart_by_page, R.string.smart_based_on_page),
-    SMART_THEME(3, R.string.smart_by_theme, R.string.smart_based_on_page_and_theme),
+enum class ReaderBackgroundColor(val prefValue: Int, val stringRes: StringResource, val longStringRes: StringResource? = null) {
+    WHITE(0, MR.strings.white),
+    GRAY(4, MR.strings.gray_background),
+    BLACK(1, MR.strings.black),
+    SMART_PAGE(2, MR.strings.smart_by_page, MR.strings.smart_based_on_page),
+    SMART_THEME(3, MR.strings.smart_by_theme, MR.strings.smart_based_on_page_and_theme),
     ;
 
     val isSmartColor get() = this == SMART_PAGE || this == SMART_THEME

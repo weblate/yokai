@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.ui.reader.loader
 import android.content.Context
 import co.touchlab.kermit.Logger
 import com.github.junrar.exception.UnsupportedRarV5Exception
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
@@ -13,6 +12,8 @@ import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.util.system.openReadOnlyChannel
 import eu.kanade.tachiyomi.util.system.withIOContext
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * Loader used to retrieve the [PageLoader] for a given chapter.
@@ -45,7 +46,7 @@ class ChapterLoader(
                     .onEach { it.chapter = chapter }
 
                 if (pages.isEmpty()) {
-                    throw Exception(context.getString(R.string.no_pages_found))
+                    throw Exception(context.getString(MR.strings.no_pages_found))
                 }
 
                 // If the chapter is partially read, set the starting page to the last the user read
@@ -85,12 +86,12 @@ class ChapterLoader(
                     is LocalSource.Format.Rar -> try {
                         RarPageLoader(format.file.openInputStream())
                     } catch (e: UnsupportedRarV5Exception) {
-                        error(context.getString(R.string.loader_rar5_error))
+                        error(context.getString(MR.strings.loader_rar5_error))
                     }
                     is LocalSource.Format.Epub -> EpubPageLoader(format.file.openReadOnlyChannel(context))
                 }
             }
-            else -> error(context.getString(R.string.source_not_installed))
+            else -> error(context.getString(MR.strings.source_not_installed))
         }
     }
 }

@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.data.backup.restore
 
 import android.content.Context
 import android.net.Uri
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
 import eu.kanade.tachiyomi.data.backup.models.BackupSource
 import eu.kanade.tachiyomi.data.backup.restore.restorers.CategoriesBackupRestorer
@@ -12,6 +11,8 @@ import eu.kanade.tachiyomi.util.BackupUtil
 import eu.kanade.tachiyomi.util.system.createFileInCacheDir
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -65,17 +66,17 @@ class BackupRestorer(
             if (backup.backupCategories.isNotEmpty()) {
                 categoriesBackupRestorer.restoreCategories(backup.backupCategories) {
                     restoreProgress += 1
-                    showRestoreProgress(restoreProgress, restoreAmount, context.getString(R.string.categories))
+                    showRestoreProgress(restoreProgress, restoreAmount, context.getString(MR.strings.categories))
                 }
             }
 
             preferenceBackupRestorer.restoreAppPreferences(backup.backupPreferences) {
                 restoreProgress += 1
-                showRestoreProgress(restoreProgress, restoreAmount, context.getString(R.string.app_settings))
+                showRestoreProgress(restoreProgress, restoreAmount, context.getString(MR.strings.app_settings))
             }
             preferenceBackupRestorer.restoreSourcePreferences(backup.backupSourcePreferences) {
                 restoreProgress += 1
-                showRestoreProgress(restoreProgress, restoreAmount, context.getString(R.string.source_settings))
+                showRestoreProgress(restoreProgress, restoreAmount, context.getString(MR.strings.source_settings))
             }
 
             // Restore individual manga

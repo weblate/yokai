@@ -4,6 +4,9 @@ import android.app.Activity
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
@@ -23,7 +26,7 @@ import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.view.snack
@@ -44,20 +47,20 @@ class SettingsTrackingController :
     val trackPreferences: TrackPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.tracking
+        titleRes = MR.strings.tracking
 
         switchPreference {
             key = Keys.autoUpdateTrack
-            titleRes = R.string.update_tracking_after_reading
+            titleRes = MR.strings.update_tracking_after_reading
             defaultValue = true
         }
         switchPreference {
             key = Keys.trackMarkedAsRead
-            titleRes = R.string.update_tracking_marked_read
+            titleRes = MR.strings.update_tracking_marked_read
             defaultValue = false
         }
         preferenceCategory {
-            titleRes = R.string.services
+            titleRes = MR.strings.services
 
             trackPreference(trackManager.myAnimeList) {
                 activity?.openInBrowser(MyAnimeListApi.authUrl(), trackManager.myAnimeList.getLogoColor(), true)
@@ -69,7 +72,7 @@ class SettingsTrackingController :
                 key = "update_anilist_scoring"
                 isPersistent = false
                 isIconSpaceReserved = true
-                title = context.getString(R.string.update_tracking_scoring_type, context.getString(R.string.anilist))
+                title = context.getString(MR.strings.update_tracking_scoring_type, context.getString(MR.strings.anilist))
 
                 preferences.getStringPref(trackManager.aniList.getUsername())
                     .changesIn(viewScope) {
@@ -80,11 +83,11 @@ class SettingsTrackingController :
                     viewScope.launchIO {
                         val (result, error) = trackManager.aniList.updatingScoring()
                         if (result) {
-                            view?.snack(R.string.scoring_type_updated)
+                            view?.snack(MR.strings.scoring_type_updated)
                         } else {
                             view?.snack(
                                 context.getString(
-                                    R.string.could_not_update_scoring_,
+                                    MR.strings.could_not_update_scoring_,
                                     error?.localizedMessage.orEmpty(),
                                 ),
                             )
@@ -93,12 +96,12 @@ class SettingsTrackingController :
                 }
             }
             trackPreference(trackManager.kitsu) {
-                val dialog = TrackLoginDialog(trackManager.kitsu, R.string.email)
+                val dialog = TrackLoginDialog(trackManager.kitsu, MR.strings.email)
                 dialog.targetController = this@SettingsTrackingController
                 dialog.showDialog(router)
             }
             trackPreference(trackManager.mangaUpdates) {
-                val dialog = TrackLoginDialog(trackManager.mangaUpdates, R.string.username)
+                val dialog = TrackLoginDialog(trackManager.mangaUpdates, MR.strings.username)
                 dialog.targetController = this@SettingsTrackingController
                 dialog.showDialog(router)
             }
@@ -108,10 +111,10 @@ class SettingsTrackingController :
             trackPreference(trackManager.bangumi) {
                 activity?.openInBrowser(BangumiApi.authUrl(), trackManager.bangumi.getLogoColor(), true)
             }
-            infoPreference(R.string.tracking_info)
+            infoPreference(MR.strings.tracking_info)
         }
         preferenceCategory {
-            titleRes = R.string.enhanced_services
+            titleRes = MR.strings.enhanced_services
             val sourceManager = Injekt.get<SourceManager>()
             val enhancedTrackers = trackManager.services
                 .filter { service ->
@@ -119,7 +122,7 @@ class SettingsTrackingController :
                     sourceManager.getCatalogueSources().any { service.accept(it) }
                 }
             enhancedTrackers.forEach { trackPreference(it) }
-            infoPreference(R.string.enhanced_tracking_info)
+            infoPreference(MR.strings.enhanced_tracking_info)
         }
     }
 

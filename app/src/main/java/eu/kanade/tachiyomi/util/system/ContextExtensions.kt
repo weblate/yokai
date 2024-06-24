@@ -45,6 +45,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
 import java.io.File
 import java.util.*
 import kotlin.math.max
@@ -440,5 +441,5 @@ fun Context.tryTakePersistableUriPermission(uri: Uri, flags: Int) = try {
     contentResolver.takePersistableUriPermission(uri, flags)
 } catch (e: SecurityException) {
     Logger.e(e)
-    toast(R.string.file_picker_uri_permission_unsupported)
+    toast(MR.strings.file_picker_uri_permission_unsupported)
 }

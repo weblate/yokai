@@ -1,14 +1,14 @@
 package eu.kanade.tachiyomi.extension.model
 
-import androidx.annotation.StringRes
-import eu.kanade.tachiyomi.R
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import yokai.i18n.MR
 
-enum class InstalledExtensionsOrder(val value: Int, @StringRes val nameRes: Int) {
-    Name(0, R.string.name),
-    RecentlyUpdated(1, R.string.recently_updated),
-    RecentlyInstalled(2, R.string.recently_installed),
-    Language(3, R.string.language),
+enum class InstalledExtensionsOrder(val value: Int, val nameRes: StringResource) {
+    Name(0, MR.strings.name),
+    RecentlyUpdated(1, MR.strings.recently_updated),
+    RecentlyInstalled(2, MR.strings.recently_installed),
+    Language(3, MR.strings.language),
     ;
 
     companion object {

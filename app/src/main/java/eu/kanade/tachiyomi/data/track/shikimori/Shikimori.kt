@@ -5,6 +5,9 @@ import android.graphics.Color
 import androidx.annotation.StringRes
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
@@ -27,8 +30,7 @@ class Shikimori(private val context: Context, id: Int) : TrackService(id) {
         const val DEFAULT_SCORE = 0
     }
 
-    @StringRes
-    override fun nameRes() = R.string.shikimori
+    override fun nameRes() = MR.strings.shikimori
 
     private val json: Json by injectLazy()
 
@@ -54,12 +56,12 @@ class Shikimori(private val context: Context, id: Int) : TrackService(id) {
 
     override fun getStatus(status: Int): String = with(context) {
         when (status) {
-            READING -> getString(R.string.reading)
-            COMPLETED -> getString(R.string.completed)
-            ON_HOLD -> getString(R.string.on_hold)
-            DROPPED -> getString(R.string.dropped)
-            PLAN_TO_READ -> getString(R.string.plan_to_read)
-            REREADING -> getString(R.string.rereading)
+            READING -> getString(MR.strings.reading)
+            COMPLETED -> getString(MR.strings.completed)
+            ON_HOLD -> getString(MR.strings.on_hold)
+            DROPPED -> getString(MR.strings.dropped)
+            PLAN_TO_READ -> getString(MR.strings.plan_to_read)
+            REREADING -> getString(MR.strings.rereading)
             else -> ""
         }
     }

@@ -19,6 +19,9 @@ import coil3.request.ImageRequest
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -61,7 +64,7 @@ class LibraryUpdateNotifier(private val context: Context) {
      */
     val progressNotificationBuilder by lazy {
         context.notificationBuilder(Notifications.CHANNEL_LIBRARY_PROGRESS) {
-            setContentTitle(context.getString(R.string.updating_library))
+            setContentTitle(context.getString(MR.strings.updating_library))
             setSmallIcon(R.drawable.ic_refresh_24dp)
             setLargeIcon(notificationBitmap)
             setOngoing(true)
@@ -83,7 +86,7 @@ class LibraryUpdateNotifier(private val context: Context) {
         context.notificationManager.notify(
             Notifications.ID_LIBRARY_PROGRESS,
             progressNotificationBuilder
-                .setContentTitle("${context.getString(R.string.updating_library)} (${current + 1}/$total)")
+                .setContentTitle("${context.getString(MR.strings.updating_library)} (${current + 1}/$total)")
                 .setContentText(if (preferences.hideNotificationContent().get()) null else manga.title)
                 .setProgress(total, current, false)
                 .build(),
@@ -104,8 +107,8 @@ class LibraryUpdateNotifier(private val context: Context) {
         context.notificationManager.notify(
             Notifications.ID_LIBRARY_ERROR,
             context.notificationBuilder(Notifications.CHANNEL_LIBRARY_ERROR) {
-                setContentTitle(context.getString(R.string.notification_update_error, errors.size))
-                setContentText(context.getString(R.string.tap_to_see_details))
+                setContentTitle(context.getString(MR.strings.notification_update_error, errors.size))
+                setContentText(context.getString(MR.strings.tap_to_see_details))
                 setStyle(
                     NotificationCompat.BigTextStyle().bigText(
                         errors.joinToString("\n") {
@@ -117,7 +120,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                 setSmallIcon(R.drawable.ic_yokai)
                 addAction(
                     R.drawable.ic_file_open_24dp,
-                    context.getString(R.string.open_log),
+                    context.getString(MR.strings.open_log),
                     pendingIntent,
                 )
             }
@@ -139,8 +142,8 @@ class LibraryUpdateNotifier(private val context: Context) {
         context.notificationManager.notify(
             Notifications.ID_LIBRARY_SKIPPED,
             context.notificationBuilder(Notifications.CHANNEL_LIBRARY_SKIPPED) {
-                setContentTitle(context.getString(R.string.notification_update_skipped, skips.size))
-                setContentText(context.getString(R.string.tap_to_learn_more))
+                setContentTitle(context.getString(MR.strings.notification_update_skipped, skips.size))
+                setContentText(context.getString(MR.strings.tap_to_learn_more))
                 setStyle(
                     NotificationCompat.BigTextStyle().bigText(
                         skips.joinToString("\n") {
@@ -152,12 +155,12 @@ class LibraryUpdateNotifier(private val context: Context) {
                 setSmallIcon(R.drawable.ic_yokai)
                 addAction(
                     R.drawable.ic_file_open_24dp,
-                    context.getString(R.string.open_log),
+                    context.getString(MR.strings.open_log),
                     NotificationReceiver.openErrorOrSkippedLogPendingActivity(context, uri),
                 )
                 addAction(
                     R.drawable.ic_help_outline_24dp,
-                    context.getString(R.string.learn_why),
+                    context.getString(MR.strings.learn_why),
                     NotificationHandler.openUrl(context, HELP_SKIPPED_URL),
                 )
             }
@@ -205,8 +208,8 @@ class LibraryUpdateNotifier(private val context: Context) {
                                 color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)
                                 val chaptersNames = if (chapterNames.size > MAX_CHAPTERS) {
                                     "${chapterNames.take(MAX_CHAPTERS - 1).joinToString(", ")}, " +
-                                        context.resources.getQuantityString(
-                                            R.plurals.notification_and_n_more,
+                                        context.getString(
+                                            MR.plurals.notification_and_n_more,
                                             (chapterNames.size - (MAX_CHAPTERS - 1)),
                                             (chapterNames.size - (MAX_CHAPTERS - 1)),
                                         )
@@ -226,7 +229,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                                 )
                                 addAction(
                                     R.drawable.ic_eye_24dp,
-                                    context.getString(R.string.mark_as_read),
+                                    context.getString(MR.strings.mark_as_read),
                                     NotificationReceiver.markAsReadPendingBroadcast(
                                         context,
                                         manga,
@@ -236,7 +239,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                                 )
                                 addAction(
                                     R.drawable.ic_book_24dp,
-                                    context.getString(R.string.view_chapters),
+                                    context.getString(MR.strings.view_chapters),
                                     NotificationReceiver.openChapterPendingActivity(
                                         context,
                                         manga,
@@ -262,12 +265,12 @@ class LibraryUpdateNotifier(private val context: Context) {
                     context.notification(Notifications.CHANNEL_NEW_CHAPTERS) {
                         setSmallIcon(R.drawable.ic_yokai)
                         setLargeIcon(notificationBitmap)
-                        setContentTitle(context.getString(R.string.new_chapters_found))
+                        setContentTitle(context.getString(MR.strings.new_chapters_found))
                         color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)
                         if (updates.size > 1) {
                             setContentText(
-                                context.resources.getQuantityString(
-                                    R.plurals.for_n_titles,
+                                context.getString(
+                                    MR.plurals.for_n_titles,
                                     updates.size,
                                     updates.size,
                                 ),
@@ -303,9 +306,9 @@ class LibraryUpdateNotifier(private val context: Context) {
 
     fun showQueueSizeWarningNotification() {
         val notification = context.notificationBuilder(Notifications.CHANNEL_LIBRARY_PROGRESS) {
-            setContentTitle(context.getString(R.string.warning))
+            setContentTitle(context.getString(MR.strings.warning))
             setSmallIcon(R.drawable.ic_warning_white_24dp)
-            setStyle(NotificationCompat.BigTextStyle().bigText(context.getString(R.string.notification_size_warning)))
+            setStyle(NotificationCompat.BigTextStyle().bigText(context.getString(MR.strings.notification_size_warning)))
             setContentIntent(NotificationHandler.openUrl(context, HELP_WARNING_URL))
             setTimeoutAfter(30000)
         }

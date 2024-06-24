@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.source.online.english
 
 import android.net.Uri
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
@@ -20,6 +19,8 @@ import okhttp3.FormBody
 import okhttp3.Request
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 open class FoolSlide(override val domainName: String, private val urlModifier: String = "") :
     DelegatedHttpSource
@@ -72,7 +73,7 @@ open class FoolSlide(override val domainName: String, private val urlModifier: S
             val chapters = deferredChapters.await()
             val context = Injekt.get<PreferencesHelper>().context
             val trueChapter = chapters?.find { it.url == chapterUrl }?.toChapter() ?: error(
-                context.getString(R.string.chapter_not_found),
+                context.getString(MR.strings.chapter_not_found),
             )
             if (manga != null) Triple(trueChapter, manga, chapters) else null
         }

@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.SortTextViewBinding
 import eu.kanade.tachiyomi.util.view.setVectorCompat
 

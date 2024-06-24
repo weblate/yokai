@@ -1,7 +1,11 @@
 package eu.kanade.tachiyomi.data.preference
 
 import androidx.annotation.StringRes
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 
 // Library
 const val MANGA_NON_COMPLETED = "manga_ongoing"
@@ -14,23 +18,23 @@ const val DEVICE_CHARGING = "ac"
 const val DEVICE_BATTERY_NOT_LOW = "battery_not_low"
 
 object PreferenceValues {
-    enum class SecureScreenMode(val titleResId: Int) {
-        ALWAYS(R.string.always),
-        INCOGNITO(R.string.incognito_mode),
-        NEVER(R.string.never),
+    enum class SecureScreenMode(val titleResId: StringResource) {
+        ALWAYS(MR.strings.always),
+        INCOGNITO(MR.strings.incognito_mode),
+        NEVER(MR.strings.never),
     }
 
-    enum class ReaderHideThreshold(val titleResId: Int, val threshold: Int) {
-        HIGHEST(R.string.pref_highest, 5),
-        HIGH(R.string.pref_high, 13),
-        LOW(R.string.pref_low, 31),
-        LOWEST(R.string.pref_lowest, 47),
+    enum class ReaderHideThreshold(val titleResId: StringResource, val threshold: Int) {
+        HIGHEST(MR.strings.pref_highest, 5),
+        HIGH(MR.strings.pref_high, 13),
+        LOW(MR.strings.pref_low, 31),
+        LOWEST(MR.strings.pref_lowest, 47),
     }
 
-    enum class MigrationSourceOrder(val value: Int, @StringRes val titleResId: Int) {
-        Alphabetically(0, R.string.alphabetically),
-        MostEntries(1, R.string.most_entries),
-        Obsolete(2, R.string.obsolete),
+    enum class MigrationSourceOrder(val value: Int, val titleResId: StringResource) {
+        Alphabetically(0, MR.strings.alphabetically),
+        MostEntries(1, MR.strings.most_entries),
+        Obsolete(2, MR.strings.obsolete),
         ;
 
         companion object {

@@ -7,10 +7,10 @@ import android.content.pm.PackageInstaller
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.getParcelableCompat
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.toast
+import yokai.i18n.MR
 
 class AppUpdateBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -37,7 +37,7 @@ class AppUpdateBroadcast : BroadcastReceiver() {
                 }
                 PackageInstaller.STATUS_FAILURE, PackageInstaller.STATUS_FAILURE_ABORTED, PackageInstaller.STATUS_FAILURE_BLOCKED, PackageInstaller.STATUS_FAILURE_CONFLICT, PackageInstaller.STATUS_FAILURE_INCOMPATIBLE, PackageInstaller.STATUS_FAILURE_INVALID, PackageInstaller.STATUS_FAILURE_STORAGE -> {
                     if (status != PackageInstaller.STATUS_FAILURE_ABORTED) {
-                        context.toast(R.string.could_not_install_update)
+                        context.toast(MR.strings.could_not_install_update)
                         val uri = intent.getStringExtra(AppDownloadInstallJob.EXTRA_FILE_URI) ?: return
                         val appUpdateNotifier = AppUpdateNotifier(context.localeContext)
                         appUpdateNotifier.cancelInstallNotification()

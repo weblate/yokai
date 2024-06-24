@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.ui.download
 
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.download.model.Download

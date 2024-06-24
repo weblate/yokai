@@ -15,7 +15,6 @@ import androidx.preference.PreferenceScreen
 import co.touchlab.kermit.Logger
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import eu.kanade.tachiyomi.BuildConfig
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.data.updater.AppUpdateChecker
 import eu.kanade.tachiyomi.data.updater.AppUpdateNotifier
@@ -27,18 +26,23 @@ import eu.kanade.tachiyomi.ui.setting.add
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes
 import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.lang.toTimestampString
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.view.setNegativeButton
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.snack
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -59,11 +63,11 @@ class AboutController : SettingsLegacyController() {
     private val isUpdaterEnabled = BuildConfig.INCLUDE_UPDATER
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.about
+        titleMRes = MR.strings.about
 
         preference {
             key = "pref_whats_new"
-            titleRes = R.string.whats_new_this_release
+            titleMRes = MR.strings.whats_new_this_release
             onClick {
                 val intent = Intent(
                     Intent.ACTION_VIEW,
@@ -79,19 +83,19 @@ class AboutController : SettingsLegacyController() {
         if (isUpdaterEnabled) {
             preference {
                 key = "pref_check_for_updates"
-                titleRes = R.string.check_for_updates
+                titleMRes = MR.strings.check_for_updates
                 onClick {
                     if (activity!!.isOnline()) {
                         checkVersion()
                     } else {
-                        activity!!.toast(R.string.no_network_connection)
+                        activity!!.toast(MR.strings.no_network_connection)
                     }
                 }
             }
         }
         preference {
             key = "pref_version"
-            titleRes = R.string.version
+            titleMRes = MR.strings.version
             summary = if (BuildConfig.DEBUG || BuildConfig.BETA) {
                 "r" + BuildConfig.COMMIT_COUNT
             } else {
@@ -102,24 +106,24 @@ class AboutController : SettingsLegacyController() {
                 activity?.let {
                     val deviceInfo = CrashLogUtil(it.localeContext).getDebugInfo()
                     val clipboard = it.getSystemService<ClipboardManager>()!!
-                    val appInfo = it.getString(R.string.app_info)
+                    val appInfo = it.getString(MR.strings.app_info)
                     clipboard.setPrimaryClip(ClipData.newPlainText(appInfo, deviceInfo))
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        view?.snack(context.getString(R.string._copied_to_clipboard, appInfo))
+                        view?.snack(context.getString(MR.strings._copied_to_clipboard, appInfo))
                     }
                 }
             }
         }
         preference {
             key = "pref_build_time"
-            titleRes = R.string.build_time
+            titleMRes = MR.strings.build_time
             summary = getFormattedBuildTime(dateFormat)
         }
 
         preferenceCategory {
             preference {
                 key = "pref_oss"
-                titleRes = R.string.open_source_licenses
+                titleMRes = MR.strings.open_source_licenses
 
                 onClick {
                     startActivity(Intent(activity, OssLicensesMenuActivity::class.java))
@@ -135,7 +139,7 @@ class AboutController : SettingsLegacyController() {
     private fun checkVersion() {
         val activity = activity ?: return
 
-        activity.toast(R.string.searching_for_updates)
+        activity.toast(MR.strings.searching_for_updates)
         viewScope.launch {
             val result = try {
                 updateChecker.checkForUpdate(activity, true)
@@ -159,7 +163,7 @@ class AboutController : SettingsLegacyController() {
                 }
                 is AppUpdateResult.NoNewUpdate -> {
                     withContext(Dispatchers.Main) {
-                        activity.toast(R.string.no_new_updates_available)
+                        activity.toast(MR.strings.no_new_updates_available)
                     }
                 }
             }
@@ -186,13 +190,13 @@ class AboutController : SettingsLegacyController() {
             return activity!!.materialAlertDialog()
                 .setTitle(
                     if (isBeta) {
-                        R.string.new_beta_version_available
+                        MR.strings.new_beta_version_available
                     } else {
-                        R.string.new_version_available
+                        MR.strings.new_version_available
                     },
                 )
                 .setMessage(info)
-                .setPositiveButton(if (isOnA12) R.string.update else R.string.download) { _, _ ->
+                .setPositiveButton(if (isOnA12) MR.strings.update else MR.strings.download) { _, _ ->
                     val appContext = applicationContext
                     if (appContext != null) {
                         // Start download
@@ -200,7 +204,7 @@ class AboutController : SettingsLegacyController() {
                         AppDownloadInstallJob.start(appContext, url, true)
                     }
                 }
-                .setNegativeButton(R.string.ignore, null)
+                .setNegativeButton(MR.strings.ignore, null)
                 .create()
         }
 

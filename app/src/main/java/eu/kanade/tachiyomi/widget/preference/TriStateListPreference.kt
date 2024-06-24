@@ -8,7 +8,11 @@ import androidx.core.content.edit
 import androidx.core.text.buildSpannedString
 import androidx.preference.Preference.SummaryProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.setTriStateItems
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import android.R as AR
@@ -21,7 +25,7 @@ class TriStateListPreference @JvmOverloads constructor(
 ) :
     ListMatPreference(activity, context, attrs) {
 
-    var allSelectionRes: Int? = null
+    var allSelectionRes: StringResource? = null
     var excludeKey: String? = null
 
     /** All item is always selected and uncheckabele */
@@ -71,11 +75,11 @@ class TriStateListPreference @JvmOverloads constructor(
                 entryValues.indexOf(value).takeUnless { it == -1 }
             }
         }?.toIntArray()?.sorted()?.map { entries[it] }?.takeIf { it.isNotEmpty() }
-            ?: listOf(context.getString(R.string.none))
+            ?: listOf(context.getString(MR.strings.none))
         buildSpannedString {
-            append(context.getString(R.string.include_, includedStrings.joinToString()))
+            append(context.getString(MR.strings.include_, includedStrings.joinToString()))
             appendLine()
-            append(context.getString(R.string.exclude_, excludedStrings.joinToString()))
+            append(context.getString(MR.strings.exclude_, excludedStrings.joinToString()))
         }
     }
 

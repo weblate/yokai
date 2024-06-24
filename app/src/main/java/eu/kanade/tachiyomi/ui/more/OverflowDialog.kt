@@ -12,6 +12,9 @@ import androidx.core.view.updateLayoutParams
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.toggle
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.TachiOverflowLayoutBinding
@@ -42,17 +45,17 @@ class OverflowDialog(activity: MainActivity) : Dialog(activity, R.style.Overflow
         binding.touchOutside.setOnClickListener {
             cancel()
         }
-        val incogText = context.getString(R.string.incognito_mode)
+        val incogText = context.getString(MR.strings.incognito_mode)
         with(binding.incognitoModeItem) {
             val titleText = context.getString(
                 if (preferences.incognitoMode().get()) {
-                    R.string.turn_off_
+                    MR.strings.turn_off_
                 } else {
-                    R.string.turn_on_
+                    MR.strings.turn_on_
                 },
                 incogText,
             )
-            val subtitleText = context.getString(R.string.pauses_reading_history)
+            val subtitleText = context.getString(MR.strings.pauses_reading_history)
             text = titleText.withSubtitle(context, subtitleText)
             setIcon(
                 if (preferences.incognitoMode().get()) {
@@ -66,9 +69,9 @@ class OverflowDialog(activity: MainActivity) : Dialog(activity, R.style.Overflow
                 val incog = preferences.incognitoMode().get()
                 val newTitle = context.getString(
                     if (incog) {
-                        R.string.turn_off_
+                        MR.strings.turn_off_
                     } else {
-                        R.string.turn_on_
+                        MR.strings.turn_on_
                     },
                     incogText,
                 )
@@ -105,7 +108,7 @@ class OverflowDialog(activity: MainActivity) : Dialog(activity, R.style.Overflow
             }
         }
 
-        binding.aboutItem.text = context.getString(R.string.about).withSubtitle(newVName)
+        binding.aboutItem.text = context.getString(MR.strings.about).withSubtitle(newVName)
 
         binding.aboutItem.setOnClickListener {
             activity.showAbout()

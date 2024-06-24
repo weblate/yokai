@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
@@ -32,8 +35,7 @@ class Kavita(private val context: Context, id: Int) : TrackService(id), Enhanced
 
     private val sourceManager: SourceManager by injectLazy()
 
-    @StringRes
-    override fun nameRes() = R.string.kavita
+    override fun nameRes() = MR.strings.kavita
 
     override fun getLogo(): Int = R.drawable.ic_tracker_kavita
 
@@ -47,18 +49,18 @@ class Kavita(private val context: Context, id: Int) : TrackService(id), Enhanced
 
     override fun getStatus(status: Int): String = with(context) {
         when (status) {
-            UNREAD -> getString(R.string.unread)
-            READING -> getString(R.string.reading)
-            COMPLETED -> getString(R.string.completed)
+            UNREAD -> getString(MR.strings.unread)
+            READING -> getString(MR.strings.reading)
+            COMPLETED -> getString(MR.strings.completed)
             else -> ""
         }
     }
 
     override fun getGlobalStatus(status: Int): String = with(context) {
         when (status) {
-            UNREAD -> getString(R.string.plan_to_read)
-            READING -> getString(R.string.reading)
-            COMPLETED -> getString(R.string.completed)
+            UNREAD -> getString(MR.strings.plan_to_read)
+            READING -> getString(MR.strings.reading)
+            COMPLETED -> getString(MR.strings.completed)
             else -> ""
         }
     }

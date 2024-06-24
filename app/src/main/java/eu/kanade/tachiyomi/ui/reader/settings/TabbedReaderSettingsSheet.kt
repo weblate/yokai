@@ -7,7 +7,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayout
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.ReaderColorFilterBinding
 import eu.kanade.tachiyomi.ui.main.SearchActivity
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
@@ -60,10 +64,10 @@ class TabbedReaderSettingsSheet(
         filterView,
     )
 
-    override fun getTabTitles(): List<Int> = listOf(
-        R.string.general,
-        if (showWebtoonView) R.string.long_strip else R.string.paged,
-        R.string.filter,
+    override fun getTabTitles(): List<StringResource> = listOf(
+        MR.strings.general,
+        if (showWebtoonView) MR.strings.long_strip else MR.strings.paged,
+        MR.strings.filter,
     )
 
     init {
@@ -83,7 +87,7 @@ class TabbedReaderSettingsSheet(
 
         binding.menu.isVisible = true
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            binding.menu.tooltipText = context.getString(R.string.reader_settings)
+            binding.menu.tooltipText = context.getString(MR.strings.reader_settings)
         }
         binding.menu.setImageDrawable(
             ContextCompat.getDrawable(

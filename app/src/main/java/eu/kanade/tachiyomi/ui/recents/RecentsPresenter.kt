@@ -1,6 +1,9 @@
 package eu.kanade.tachiyomi.ui.recents
 
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
@@ -675,7 +678,7 @@ class RecentsPresenter(
         presenterScope.launchIO {
             db.deleteHistory().executeAsBlocking()
             withUIContext {
-                view?.activity?.toast(R.string.clear_history_completed)
+                view?.activity?.toast(MR.strings.clear_history_completed)
                 getRecents()
             }
         }

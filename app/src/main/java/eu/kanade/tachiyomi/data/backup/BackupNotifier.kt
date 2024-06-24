@@ -12,6 +12,8 @@ import eu.kanade.tachiyomi.util.storage.getUriCompat
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.File
 import java.util.concurrent.*
 
@@ -38,7 +40,7 @@ class BackupNotifier(private val context: Context) {
 
     fun showBackupProgress() {
         val builder = with(progressNotificationBuilder) {
-            setContentTitle(context.getString(R.string.creating_backup))
+            setContentTitle(context.getString(MR.strings.creating_backup))
 
             setProgress(0, 0, true)
             setOnlyAlertOnce(true)
@@ -51,7 +53,7 @@ class BackupNotifier(private val context: Context) {
         context.notificationManager.cancel(Notifications.ID_BACKUP_PROGRESS)
 
         with(completeNotificationBuilder) {
-            setContentTitle(context.getString(R.string.backup_failed))
+            setContentTitle(context.getString(MR.strings.backup_failed))
             setContentText(error)
 
             show(Notifications.ID_BACKUP_COMPLETE)
@@ -62,7 +64,7 @@ class BackupNotifier(private val context: Context) {
         context.notificationManager.cancel(Notifications.ID_BACKUP_PROGRESS)
 
         with(completeNotificationBuilder) {
-            setContentTitle(context.getString(R.string.backup_created))
+            setContentTitle(context.getString(MR.strings.backup_created))
             setContentText(unifile.filePath ?: unifile.name)
 
             // Clear old actions if they exist
@@ -70,7 +72,7 @@ class BackupNotifier(private val context: Context) {
 
             addAction(
                 R.drawable.ic_share_24dp,
-                context.getString(R.string.share),
+                context.getString(MR.strings.share),
                 NotificationReceiver.shareBackupPendingBroadcast(context, unifile.uri, Notifications.ID_BACKUP_COMPLETE),
             )
 
@@ -80,7 +82,7 @@ class BackupNotifier(private val context: Context) {
 
     fun showRestoreProgress(content: String = "", progress: Int = 0, maxAmount: Int = 100): NotificationCompat.Builder {
         val builder = with(progressNotificationBuilder) {
-            setContentTitle(context.getString(R.string.restoring_backup))
+            setContentTitle(context.getString(MR.strings.restoring_backup))
 
             if (!preferences.hideNotificationContent().get()) {
                 setContentText(content)
@@ -94,7 +96,7 @@ class BackupNotifier(private val context: Context) {
 
             addAction(
                 R.drawable.ic_close_24dp,
-                context.getString(R.string.stop),
+                context.getString(MR.strings.stop),
                 NotificationReceiver.cancelRestorePendingBroadcast(context, Notifications.ID_RESTORE_PROGRESS),
             )
         }
@@ -110,7 +112,7 @@ class BackupNotifier(private val context: Context) {
         context.notificationManager.cancel(Notifications.ID_RESTORE_PROGRESS)
 
         with(completeNotificationBuilder) {
-            setContentTitle(context.getString(R.string.restore_error))
+            setContentTitle(context.getString(MR.strings.restore_error))
             setContentText(error)
 
             show(Notifications.ID_RESTORE_COMPLETE)
@@ -121,7 +123,7 @@ class BackupNotifier(private val context: Context) {
         context.notificationManager.cancel(Notifications.ID_RESTORE_PROGRESS)
 
         val timeString = context.getString(
-            R.string.restore_duration,
+            MR.strings.restore_duration,
             TimeUnit.MILLISECONDS.toMinutes(time),
             TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(
                 TimeUnit.MILLISECONDS.toMinutes(time),
@@ -129,8 +131,8 @@ class BackupNotifier(private val context: Context) {
         )
 
         with(completeNotificationBuilder) {
-            setContentTitle(context.getString(R.string.restore_completed))
-            setContentText(context.resources.getQuantityString(R.plurals.restore_completed_message, errorCount, timeString, errorCount))
+            setContentTitle(context.getString(MR.strings.restore_completed))
+            setContentText(context.getString(MR.plurals.restore_completed_message, errorCount, timeString, errorCount))
 
             // Clear old actions if they exist
             clearActions()
@@ -141,7 +143,7 @@ class BackupNotifier(private val context: Context) {
 
                 addAction(
                     R.drawable.ic_eye_24dp,
-                    context.getString(R.string.open_log),
+                    context.getString(MR.strings.open_log),
                     NotificationReceiver.openErrorOrSkippedLogPendingActivity(context, uri),
                 )
             }

@@ -2,12 +2,13 @@ package eu.kanade.tachiyomi.data.backup
 
 import android.content.Context
 import android.net.Uri
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.BackupUtil
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class BackupFileValidator(
     private val sourceManager: SourceManager = Injekt.get(),
@@ -28,7 +29,7 @@ class BackupFileValidator(
         }
 
         if (backup.backupManga.isEmpty()) {
-            throw IllegalStateException(context.getString(R.string.backup_has_no_manga))
+            throw IllegalStateException(context.getString(MR.strings.backup_has_no_manga))
         }
 
         val sources = backup.backupSources.map { it.sourceId to it.name }.toMap()

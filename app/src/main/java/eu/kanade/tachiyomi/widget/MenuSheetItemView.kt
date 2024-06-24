@@ -11,7 +11,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.isGone
 import androidx.core.widget.TextViewCompat
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.MenuSheetItemBinding
 import eu.kanade.tachiyomi.util.system.getResourceColor
 
@@ -66,6 +70,10 @@ class MenuSheetItemView constructor(context: Context, attrs: AttributeSet?) :
         set(value) {
             binding?.itemTextView?.textSize = value
         }
+
+    fun setText(res: StringResource) {
+        text = context.getString(res)
+    }
 
     fun setText(@StringRes res: Int) {
         text = context.getString(res)

@@ -18,7 +18,6 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.ExpandedFilterSheetBinding
 import eu.kanade.tachiyomi.ui.main.MainActivity
@@ -27,8 +26,12 @@ import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.view.checkHeightThen
 import eu.kanade.tachiyomi.util.view.expand
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class ExpandedFilterSheet(
@@ -107,7 +110,7 @@ class ExpandedFilterSheet(
                         item.filter.activeFilter = index
                         v.isActivated = true
                         when (filters[position].headerName) {
-                            context.getString(R.string.tracking) -> {
+                            context.getString(MR.strings.tracking) -> {
                                 if (index == 0 && trackerItem != null && itemAdapter.adapterItems.contains(
                                         trackerItem,
                                     )
@@ -121,13 +124,13 @@ class ExpandedFilterSheet(
                                 }
                             }
 
-                            context.getString(R.string.read_progress), context.getString(R.string.unread) -> {
+                            context.getString(MR.strings.read_progress), context.getString(MR.strings.unread) -> {
                                 if (index != 0) {
                                     val otherName =
-                                        if (filters[position].headerName == context.getString(R.string.read_progress)) {
-                                            context.getString(R.string.unread)
+                                        if (filters[position].headerName == context.getString(MR.strings.read_progress)) {
+                                            context.getString(MR.strings.unread)
                                         } else {
-                                            context.getString(R.string.read_progress)
+                                            context.getString(MR.strings.read_progress)
                                         }
                                     val otherFilter =
                                         filters.find { it.headerName == otherName } ?: return
@@ -146,7 +149,7 @@ class ExpandedFilterSheet(
                 },
             )
         itemAdapter.set(filters.map(::ExpandedFilterItem))
-        val trackingFilter = filters.find { it.headerName == context.getString(R.string.tracking) }
+        val trackingFilter = filters.find { it.headerName == context.getString(MR.strings.tracking) }
         if ((trackingFilter?.activeFilter ?: 0) > 0 && trackerItem != null) {
             itemAdapter.add(filters.indexOf(trackingFilter) + 1, trackerItem)
         }
@@ -176,10 +179,10 @@ class ExpandedFilterSheet(
         adapter.isHandleDragEnabled = true
         adapter.isLongPressDragEnabled = true
         context.materialAlertDialog()
-            .setTitle(R.string.reorder_filters)
+            .setTitle(MR.strings.reorder_filters)
             .setView(recycler)
             .setNegativeButton(AR.string.cancel, null)
-            .setPositiveButton(R.string.reorder) { _, _ ->
+            .setPositiveButton(MR.strings.reorder) { _, _ ->
                 val order = adapter.currentItems.map { it.char }.joinToString("")
                 preferences.filterOrder().set(order)
                 recycler.adapter = null
@@ -234,7 +237,7 @@ class ExpandedFilterSheet(
         clearFilterCallback()
     }
     private fun applyFilters() {
-        val trackingFilter = filters.find { it.headerName == context.getString(R.string.tracking) }
+        val trackingFilter = filters.find { it.headerName == context.getString(MR.strings.tracking) }
         if (trackingFilter?.activeFilter == 0 && trackerItem != null) {
             trackerItem.filter.activeFilter = 0
         }

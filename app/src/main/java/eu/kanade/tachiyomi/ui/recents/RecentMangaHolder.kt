@@ -16,6 +16,9 @@ import androidx.core.view.updatePaddingRelative
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
@@ -186,28 +189,28 @@ class RecentMangaHolder(
 
         binding.body.isVisible = !isSmallUpdates
         binding.body.text = when {
-            item.mch.chapter.id == null -> context.timeSpanFromNow(R.string.added_, item.mch.manga.date_added)
+            item.mch.chapter.id == null -> context.timeSpanFromNow(MR.strings.added_, item.mch.manga.date_added)
             isSmallUpdates -> ""
             item.mch.history.id == null -> {
                 if (isUpdates) {
                     if (adapter.sortByFetched) {
-                        context.timeSpanFromNow(R.string.fetched_, item.chapter.date_fetch)
+                        context.timeSpanFromNow(MR.strings.fetched_, item.chapter.date_fetch)
                     } else {
-                        context.timeSpanFromNow(R.string.updated_, item.chapter.date_upload)
+                        context.timeSpanFromNow(MR.strings.updated_, item.chapter.date_upload)
                     }
                 } else {
-                    context.timeSpanFromNow(R.string.fetched_, item.chapter.date_fetch) + "\n" +
-                        context.timeSpanFromNow(R.string.updated_, item.chapter.date_upload)
+                    context.timeSpanFromNow(MR.strings.fetched_, item.chapter.date_fetch) + "\n" +
+                        context.timeSpanFromNow(MR.strings.updated_, item.chapter.date_upload)
                 }
             }
             item.chapter.id != item.mch.chapter.id -> readLastText(!moreVisible)
-            item.chapter.pages_left > 0 && !item.chapter.read -> context.timeSpanFromNow(R.string.read_, item.mch.history.last_read) +
-                "\n" + itemView.resources.getQuantityString(
-                R.plurals.pages_left,
+            item.chapter.pages_left > 0 && !item.chapter.read -> context.timeSpanFromNow(MR.strings.read_, item.mch.history.last_read) +
+                "\n" + itemView.context.getString(
+                MR.plurals.pages_left,
                 item.chapter.pages_left,
                 item.chapter.pages_left,
             )
-            else -> context.timeSpanFromNow(R.string.read_, item.mch.history.last_read)
+            else -> context.timeSpanFromNow(MR.strings.read_, item.mch.history.last_read)
         }
         if ((context as? Activity)?.isDestroyed != true) {
             binding.coverThumbnail.loadManga(item.mch.manga)
@@ -283,8 +286,8 @@ class RecentMangaHolder(
     private fun addMoreUpdatesText(add: Boolean, originalItem: RecentMangaItem? = null) {
         val item = originalItem ?: adapter.getItem(bindingAdapterPosition) as? RecentMangaItem ?: return
         val originalText = binding.body.text.toString()
-        val andMoreText = itemView.context.resources.getQuantityString(
-            R.plurals.notification_and_n_more,
+        val andMoreText = itemView.context.getString(
+            MR.plurals.notification_and_n_more,
             (item.mch.extraChapters.size),
             (item.mch.extraChapters.size),
         )
@@ -303,11 +306,11 @@ class RecentMangaHolder(
         val notValidNum = item.mch.chapter.chapter_number <= 0
         return if (item.chapter.id != item.mch.chapter.id) {
             if (show) {
-                itemView.context.timeSpanFromNow(R.string.read_, item.mch.history.last_read) + "\n"
+                itemView.context.timeSpanFromNow(MR.strings.read_, item.mch.history.last_read) + "\n"
             } else {
                 ""
             } + itemView.context.getString(
-                if (notValidNum) R.string.last_read_ else R.string.last_read_chapter_,
+                if (notValidNum) MR.strings.last_read_ else MR.strings.last_read_chapter_,
                 if (notValidNum) item.mch.chapter.name else adapter.decimalFormat.format(item.mch.chapter.chapter_number),
             )
         } else { "" }
@@ -344,7 +347,7 @@ class RecentMangaHolder(
     private fun RecentSubChapterItemBinding.configureBlankView(count: Int) {
         val context = itemView.context
         title.text =
-            context.resources.getQuantityString(R.plurals.notification_and_n_more, count, count)
+            context.getString(MR.plurals.notification_and_n_more, count, count)
         downloadButton.root.isVisible = false
         downloadButton.root.tag = null
         title.textSize = 13f
@@ -377,7 +380,7 @@ class RecentMangaHolder(
         ChapterUtil.setTextViewForChapter(title, chapter)
         val notReadYet = item.chapter.id != item.mch.chapter.id && item.mch.history.id != null
         subtitle.text = chapter.history?.let { history ->
-            context.timeSpanFromNow(R.string.read_, history.last_read)
+            context.timeSpanFromNow(MR.strings.read_, history.last_read)
                 .takeIf {
                     Date().time - history.last_read < TimeUnit.DAYS.toMillis(1) || notReadYet ||
                         adapter.dateFormat.run {

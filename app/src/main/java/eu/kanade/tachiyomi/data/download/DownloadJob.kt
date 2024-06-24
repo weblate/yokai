@@ -13,7 +13,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
@@ -27,6 +26,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * This worker is used to manage the downloader. The system can decide to stop the worker, in
@@ -81,11 +82,11 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
             if (isOnline()) {
                 val noWifi = preferences.downloadOnlyOverWifi().get() && !isConnectedToWifi()
                 if (noWifi) {
-                    downloadManager.stopDownloads(applicationContext.getString(R.string.no_wifi_connection))
+                    downloadManager.stopDownloads(applicationContext.getString(MR.strings.no_wifi_connection))
                 }
                 !noWifi
             } else {
-                downloadManager.stopDownloads(applicationContext.getString(R.string.no_network_connection))
+                downloadManager.stopDownloads(applicationContext.getString(MR.strings.no_network_connection))
                 false
             }
         }

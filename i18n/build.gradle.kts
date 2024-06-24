@@ -12,14 +12,13 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(libs.moko.resources)
                 api(libs.moko.resources.compose)
             }
         }
-        val androidMain by getting {
-            dependsOn(commonMain)
+        androidMain {
         }
     }
 }

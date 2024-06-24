@@ -4,8 +4,12 @@ import android.view.ActionMode
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
+import dev.icerock.moko.resources.StringResource
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.manga.chapter.BaseChapterAdapter
 import eu.kanade.tachiyomi.ui.manga.chapter.ChapterItem
@@ -78,16 +82,16 @@ class MangaDetailsAdapter(
 
     override fun onCreateBubbleText(position: Int): String {
         val chapter =
-            getItem(position) as? ChapterItem ?: return recyclerView.context.getString(R.string.top)
+            getItem(position) as? ChapterItem ?: return recyclerView.context.getString(MR.strings.top)
         return when (val scrollType = presenter.scrollType) {
             MangaDetailsPresenter.MULTIPLE_VOLUMES, MangaDetailsPresenter.MULTIPLE_SEASONS -> {
                 val volume = ChapterUtil.getGroupNumber(chapter)
                 if (volume != null) {
                     recyclerView.context.getString(
                         if (scrollType == MangaDetailsPresenter.MULTIPLE_SEASONS) {
-                            R.string.season_
+                            MR.strings.season_
                         } else {
-                            R.string.volume_
+                            MR.strings.volume_
                         },
                         volume,
                     )
@@ -96,7 +100,7 @@ class MangaDetailsAdapter(
                 }
             }
             MangaDetailsPresenter.TENS_OF_CHAPTERS -> recyclerView.context.getString(
-                R.string.chapters_,
+                MR.strings.chapters_,
                 get10sRange(chapter.chapter_number),
             )
             else -> getChapterName(chapter)
@@ -106,7 +110,7 @@ class MangaDetailsAdapter(
     private fun getChapterName(item: ChapterItem): String {
         return if (item.chapter_number > 0) {
             recyclerView.context.getString(
-                R.string.chapter_,
+                MR.strings.chapter_,
                 decimalFormat.format(item.chapter_number),
             )
         } else {
@@ -138,6 +142,7 @@ class MangaDetailsAdapter(
         fun showFloatingActionMode(view: TextView, content: String? = null, isTag: Boolean = false)
         fun showChapterFilter()
         fun favoriteManga(longPress: Boolean)
+        fun copyContentToClipboard(content: String, label: StringResource, useToast: Boolean = false)
         fun copyContentToClipboard(content: String, label: Int, useToast: Boolean = false)
         fun customActionMode(view: TextView): ActionMode.Callback
         fun copyContentToClipboard(content: String, label: String?, useToast: Boolean = false)

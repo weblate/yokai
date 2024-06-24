@@ -1,10 +1,9 @@
 package yokai.presentation.extension.repo
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eu.kanade.tachiyomi.R
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.collections.immutable.ImmutableList
@@ -21,6 +20,7 @@ import yokai.domain.extension.repo.interactor.GetExtensionRepo
 import yokai.domain.extension.repo.interactor.ReplaceExtensionRepo
 import yokai.domain.extension.repo.interactor.UpdateExtensionRepo
 import yokai.domain.extension.repo.model.ExtensionRepo
+import yokai.i18n.MR
 
 class ExtensionRepoViewModel :
     ViewModel() {
@@ -90,9 +90,9 @@ sealed class RepoDialog {
 }
 
 sealed class ExtensionRepoEvent {
-    sealed class LocalizedMessage(@StringRes val stringRes: Int) : ExtensionRepoEvent()
-    data object InvalidUrl : LocalizedMessage(R.string.invalid_repo_url)
-    data object RepoAlreadyExists : LocalizedMessage(R.string.repo_already_exists)
+    sealed class LocalizedMessage(val stringRes: StringResource) : ExtensionRepoEvent()
+    data object InvalidUrl : LocalizedMessage(MR.strings.invalid_repo_url)
+    data object RepoAlreadyExists : LocalizedMessage(MR.strings.repo_already_exists)
     data class ShowDialog(val dialog: RepoDialog) : ExtensionRepoEvent()
     data object NoOp : ExtensionRepoEvent()
     data object Success : ExtensionRepoEvent()

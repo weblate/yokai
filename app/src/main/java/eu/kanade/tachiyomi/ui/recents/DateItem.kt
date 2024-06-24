@@ -14,7 +14,9 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.spToPx
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
-import java.util.Date
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import java.util.*
 
 class DateItem(val date: Date, val addedString: Boolean = false) : AbstractHeaderItem<DateItem.Holder>() {
 
@@ -56,14 +58,14 @@ class DateItem(val date: Date, val addedString: Boolean = false) : AbstractHeade
         fun bind(item: DateItem) {
             val dateString = DateUtils.getRelativeTimeSpanString(item.date.time, now, DateUtils.DAY_IN_MILLIS)
             sectionText.text =
-                if (item.addedString) itemView.context.getString(R.string.fetched_, dateString) else dateString
+                if (item.addedString) itemView.context.getString(MR.strings.fetched_, dateString) else dateString
             lastUpdatedText.isVisible = false
             if (bindingAdapterPosition == 0) {
                 sectionText.updatePadding(
                     top = if (adapter.lastUpdatedTime > 0L) {
                         lastUpdatedText.isVisible = true
                         lastUpdatedText.text = lastUpdatedText.context.timeSpanFromNow(
-                            R.string.updates_last_update_info,
+                            MR.strings.updates_last_update_info,
                             adapter.lastUpdatedTime,
                         )
                         18.spToPx + 8.dpToPx

@@ -14,6 +14,9 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
@@ -41,7 +44,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
     /**
      * Returns the toolbar title to show when this controller is attached.
      */
-    override fun getTitle() = resources?.getString(R.string.statistics)
+    override fun getTitle() = activity?.getString(MR.strings.statistics)
 
     override fun createBinding(inflater: LayoutInflater) = StatsControllerBinding.inflate(inflater)
 
@@ -68,7 +71,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
             statsChaptersReadText.text = mangaDistinct.sumOf { it.read }.toString()
             statsMangaMeanScoreText.text = if (scoresList.isEmpty()) {
                 statsMangaMeanScoreText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                activity?.getString(R.string.none)
+                activity?.getString(MR.strings.none)
             } else {
                 scoresList.average().roundToTwoDecimal().toString()
             }
@@ -80,7 +83,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
             statsSourcesText.text = presenter.getSources().count().toString()
             statsTrackersText.text = presenter.getLoggedTrackers().count().toString()
             statsReadDurationText.text = presenter.getReadDuration()
-            statsReadDurationLayout.compatToolTipText = activity?.getString(R.string.read_duration_info)
+            statsReadDurationLayout.compatToolTipText = activity?.getString(MR.strings.read_duration_info)
         }
     }
 
@@ -109,7 +112,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
             StatusDistributionItem(activity!!.mapStatus(status), libraryCount, color)
         }
 
-        val pieDataSet = PieDataSet(pieEntries, activity!!.getString(R.string.manga_status_distribution))
+        val pieDataSet = PieDataSet(pieEntries, activity!!.getString(MR.strings.manga_status_distribution))
         pieDataSet.colors = mangaStatusDistributionList.map { it.color }
         showMangaStatsStatusChart(pieDataSet)
         binding.mangaStatsStatusRecyclerView.adapter =
@@ -144,7 +147,7 @@ class StatsController : BaseLegacyController<StatsControllerBinding>() {
         val barEntries = scoreMap.map { (score, _) ->
             BarEntry(score.toFloat(), userScoreList[score]?.toFloat() ?: 0f)
         }
-        val barDataSet = BarDataSet(barEntries, activity!!.getString(R.string.manga_score_distribution))
+        val barDataSet = BarDataSet(barEntries, activity!!.getString(MR.strings.manga_score_distribution))
         barDataSet.colors = scoreMap.values.toList()
         showMangaStatsScoreChart(barDataSet)
     }

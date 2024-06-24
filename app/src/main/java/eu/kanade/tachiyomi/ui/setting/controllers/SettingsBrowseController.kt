@@ -8,6 +8,9 @@ import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.changesIn
@@ -26,10 +29,11 @@ import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.lang.addBetaTag
+import eu.kanade.tachiyomi.util.view.setAction
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.injectLazy
@@ -42,24 +46,24 @@ class SettingsBrowseController : SettingsLegacyController() {
     var updatedExtNotifPref: SwitchPreferenceCompat? = null
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.browse
+        titleRes = MR.strings.browse
 
         preferenceCategory {
             switchPreference {
                 bindTo(preferences.hideInLibraryItems())
-                titleRes = R.string.hide_in_library_items
+                titleRes = MR.strings.hide_in_library_items
             }
         }
 
         preferenceCategory {
-            titleRes = R.string.extensions
+            titleRes = MR.strings.extensions
             preference {
-                title = context.getString(R.string.source_repos).addBetaTag(context)
+                title = context.getString(MR.strings.source_repos).addBetaTag(context)
                 onClick { router.pushController(ExtensionRepoController().withFadeTransaction()) }
             }
             switchPreference {
                 key = PreferenceKeys.automaticExtUpdates
-                titleRes = R.string.check_for_extension_updates
+                titleRes = MR.strings.check_for_extension_updates
                 defaultValue = true
 
                 onChange {
@@ -71,17 +75,17 @@ class SettingsBrowseController : SettingsLegacyController() {
             if (ExtensionManager.canAutoInstallUpdates()) {
                 val intPref = intListPreference(activity) {
                     key = PreferenceKeys.autoUpdateExtensions
-                    titleRes = R.string.auto_update_extensions
+                    titleRes = MR.strings.auto_update_extensions
                     entryRange = 0..2
                     entriesRes = arrayOf(
-                        R.string.over_any_network,
-                        R.string.over_wifi_only,
-                        R.string.dont_auto_update,
+                        MR.strings.over_any_network,
+                        MR.strings.over_wifi_only,
+                        MR.strings.dont_auto_update,
                     )
                     defaultValue = AppDownloadInstallJob.ONLY_ON_UNMETERED
                 }
                 val infoPref = if (basePreferences.extensionInstaller().get() != ExtensionInstaller.SHIZUKU) {
-                    infoPreference(R.string.some_extensions_may_not_update)
+                    infoPreference(MR.strings.some_extensions_may_not_update)
                 } else {
                     null
                 }
@@ -89,7 +93,7 @@ class SettingsBrowseController : SettingsLegacyController() {
                     switchPreference {
                         key = "notify_ext_updated"
                         isPersistent = false
-                        titleRes = R.string.notify_extension_updated
+                        titleRes = MR.strings.notify_extension_updated
                         isChecked = Notifications.isNotificationChannelEnabled(
                             context,
                             Notifications.CHANNEL_EXT_UPDATED,
@@ -120,19 +124,19 @@ class SettingsBrowseController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.pref_global_search
+            titleRes = MR.strings.pref_global_search
             switchPreference {
                 key = PreferenceKeys.onlySearchPinned
-                titleRes = R.string.only_search_pinned_when
+                titleRes = MR.strings.only_search_pinned_when
             }
         }
 
         preferenceCategory {
-            titleRes = R.string.migration
+            titleRes = MR.strings.migration
             // Only show this if someone has mass migrated manga once
 
             preference {
-                titleRes = R.string.source_migration
+                titleRes = MR.strings.source_migration
                 onClick { router.pushController(MigrationController().withFadeTransaction()) }
             }
             if (preferences.skipPreMigration().get() || preferences.migrationSources()
@@ -140,15 +144,15 @@ class SettingsBrowseController : SettingsLegacyController() {
             ) {
                 switchPreference {
                     key = PreferenceKeys.skipPreMigration
-                    titleRes = R.string.skip_pre_migration
-                    summaryRes = R.string.use_last_saved_migration_preferences
+                    titleRes = MR.strings.skip_pre_migration
+                    summaryRes = MR.strings.use_last_saved_migration_preferences
                     defaultValue = false
                 }
             }
             preference {
                 key = "match_pinned_sources"
-                titleRes = R.string.match_pinned_sources
-                summaryRes = R.string.only_enable_pinned_for_migration
+                titleRes = MR.strings.match_pinned_sources
+                summaryRes = MR.strings.only_enable_pinned_for_migration
                 onClick {
                     val ogSources = preferences.migrationSources().get()
                     val pinnedSources =
@@ -156,9 +160,9 @@ class SettingsBrowseController : SettingsLegacyController() {
                     preferences.migrationSources().set(pinnedSources)
                     (activity as? MainActivity)?.setUndoSnackBar(
                         view?.snack(
-                            R.string.migration_sources_changed,
+                            MR.strings.migration_sources_changed,
                         ) {
-                            setAction(R.string.undo) {
+                            setAction(MR.strings.undo) {
                                 preferences.migrationSources().set(ogSources)
                             }
                         },
@@ -168,8 +172,8 @@ class SettingsBrowseController : SettingsLegacyController() {
 
             preference {
                 key = "match_enabled_sources"
-                titleRes = R.string.match_enabled_sources
-                summaryRes = R.string.only_enable_enabled_for_migration
+                titleRes = MR.strings.match_enabled_sources
+                summaryRes = MR.strings.only_enable_enabled_for_migration
                 onClick {
                     val ogSources = preferences.migrationSources().get()
                     val languages = preferences.enabledLanguages().get()
@@ -182,9 +186,9 @@ class SettingsBrowseController : SettingsLegacyController() {
                     preferences.migrationSources().set(enabledSources)
                     (activity as? MainActivity)?.setUndoSnackBar(
                         view?.snack(
-                            R.string.migration_sources_changed,
+                            MR.strings.migration_sources_changed,
                         ) {
-                            setAction(R.string.undo) {
+                            setAction(MR.strings.undo) {
                                 preferences.migrationSources().set(ogSources)
                             }
                         },
@@ -192,19 +196,19 @@ class SettingsBrowseController : SettingsLegacyController() {
                 }
             }
 
-            infoPreference(R.string.you_can_migrate_in_library)
+            infoPreference(MR.strings.you_can_migrate_in_library)
         }
 
         preferenceCategory {
-            titleRes = R.string.nsfw_sources
+            titleRes = MR.strings.nsfw_sources
 
             switchPreference {
                 key = PreferenceKeys.showNsfwSource
-                titleRes = R.string.show_in_sources_and_extensions
-                summaryRes = R.string.requires_app_restart
+                titleRes = MR.strings.show_in_sources_and_extensions
+                summaryRes = MR.strings.requires_app_restart
                 defaultValue = true
             }
-            infoPreference(R.string.does_not_prevent_unofficial_nsfw)
+            infoPreference(MR.strings.does_not_prevent_unofficial_nsfw)
         }
     }
 

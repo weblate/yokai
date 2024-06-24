@@ -34,6 +34,9 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.component.Gap
 import yokai.presentation.theme.Size
 
@@ -83,11 +86,11 @@ internal class PermissionStep : OnboardingStep {
         Column(
             modifier = Modifier.padding(vertical = Size.medium),
         ) {
-            SectionHeader(stringResource(R.string.onboarding_permission_type_required))
+            SectionHeader(stringResource(MR.strings.onboarding_permission_type_required))
 
             PermissionItem(
-                title = stringResource(R.string.onboarding_permission_install_apps),
-                subtitle = stringResource(R.string.onboarding_permission_install_apps_description),
+                title = stringResource(MR.strings.onboarding_permission_install_apps),
+                subtitle = stringResource(MR.strings.onboarding_permission_install_apps_description),
                 granted = installGranted,
                 onButtonClick = {
                     val intent =
@@ -104,7 +107,7 @@ internal class PermissionStep : OnboardingStep {
 
             Gap(Size.medium)
 
-            SectionHeader(stringResource(R.string.onboarding_permission_type_optional))
+            SectionHeader(stringResource(MR.strings.onboarding_permission_type_optional))
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 val permissionRequester =
@@ -113,9 +116,9 @@ internal class PermissionStep : OnboardingStep {
                         onResult = { /* No-op, handled on resume */ },
                     )
                 PermissionItem(
-                    title = stringResource(R.string.onboarding_permission_notifications),
+                    title = stringResource(MR.strings.onboarding_permission_notifications),
                     subtitle =
-                    stringResource(R.string.onboarding_permission_notifications_description),
+                    stringResource(MR.strings.onboarding_permission_notifications_description),
                     granted = notificationGranted,
                     onButtonClick = {
                         permissionRequester.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -124,9 +127,9 @@ internal class PermissionStep : OnboardingStep {
             }
 
             PermissionItem(
-                title = stringResource(R.string.onboarding_permission_ignore_battery_opts),
+                title = stringResource(MR.strings.onboarding_permission_ignore_battery_opts),
                 subtitle =
-                stringResource(R.string.onboarding_permission_ignore_battery_opts_description),
+                stringResource(MR.strings.onboarding_permission_ignore_battery_opts_description),
                 granted = batteryGranted,
                 onButtonClick = {
                     @SuppressLint("BatteryLife")
@@ -176,7 +179,7 @@ internal class PermissionStep : OnboardingStep {
                             tint = MaterialTheme.colorScheme.primary,
                         )
                     } else {
-                        Text(stringResource(R.string.onboarding_permission_action_grant))
+                        Text(stringResource(MR.strings.onboarding_permission_action_grant))
                     }
                 }
             },

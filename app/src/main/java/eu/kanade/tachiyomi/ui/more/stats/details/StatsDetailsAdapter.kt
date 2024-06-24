@@ -11,6 +11,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.ListStatsDetailsBinding
 import eu.kanade.tachiyomi.ui.more.stats.StatsHelper.getReadDuration
 import eu.kanade.tachiyomi.ui.more.stats.details.StatsDetailsPresenter.Stats
@@ -84,7 +87,7 @@ class StatsDetailsAdapter(
             val label = item.label?.let {
                 if (stat == Stats.LENGTH) {
                     val max = item.id?.toInt() ?: 0
-                    root.resources.getQuantityString(R.plurals.chapters_plural, max, it)
+                    root.context.getString(MR.plurals.chapters_plural, max, it)
                 } else {
                     it
                 }
@@ -108,7 +111,7 @@ class StatsDetailsAdapter(
             statsMeanScoreLayout.isVisible = score.isNotBlank()
             statsScoreText.text = score
             statsReadDurationText.text =
-                item.readDuration.getReadDuration(context.getString(R.string.none))
+                item.readDuration.getReadDuration(context.getString(MR.strings.none))
         }
     }
 
@@ -132,7 +135,7 @@ class StatsDetailsAdapter(
             statsProgressText.text = getProgressText(item)
             statsProgressPercentageText.text = getProgressPercentageString(item)
             statsReadDurationText.text =
-                item.readDuration.getReadDuration(context.getString(R.string.none))
+                item.readDuration.getReadDuration(context.getString(MR.strings.none))
         }
     }
 
@@ -166,7 +169,7 @@ class StatsDetailsAdapter(
             statsMeanScoreLayout.isVisible = score.isNotBlank()
             statsScoreText.text = score
             statsReadDurationText.text =
-                item.readDuration.getReadDuration(context.getString(R.string.none))
+                item.readDuration.getReadDuration(context.getString(MR.strings.none))
         }
     }
 
@@ -185,7 +188,7 @@ class StatsDetailsAdapter(
             )
             statsLabelText.text = item.label?.uppercase()
             statsScoreText.text =
-                item.readDuration.getReadDuration(context.getString(R.string.none))
+                item.readDuration.getReadDuration(context.getString(MR.strings.none))
             statsSublabelText.isVisible = !item.subLabel.isNullOrBlank()
             statsSublabelText.text = item.subLabel
         }

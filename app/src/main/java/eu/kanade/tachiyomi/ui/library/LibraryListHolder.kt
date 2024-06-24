@@ -6,6 +6,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import coil3.dispose
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.MangaListItemBinding
 import eu.kanade.tachiyomi.util.lang.highlightText
@@ -49,9 +52,9 @@ class LibraryListHolder(
             } else {
                 binding.title.text = itemView.context.getString(
                     if (adapter.hasActiveFilters && item.manga.realMangaCount >= 1) {
-                        R.string.no_matches_for_filters_short
+                        MR.strings.no_matches_for_filters_short
                     } else {
-                        R.string.category_is_empty
+                        MR.strings.category_is_empty
                     },
                 )
             }

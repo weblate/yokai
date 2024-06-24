@@ -12,6 +12,9 @@ import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -61,18 +64,18 @@ class ReaderTransitionView @JvmOverloads constructor(context: Context, attrs: At
             val isPrevDownloaded = downloadManager.isChapterDownloaded(prevChapter.chapter, manga)
             val isCurrentDownloaded = downloadManager.isChapterDownloaded(transition.from.chapter, manga)
             binding.upperText.text = buildSpannedString {
-                bold { append(context.getString(R.string.previous_title)) }
+                bold { append(context.getString(MR.strings.previous_title)) }
                 append("\n${prevChapter.chapter.preferredChapterName(context, manga, preferences)}")
                 if (isPrevDownloaded != isCurrentDownloaded) addDLImageSpan(isPrevDownloaded)
             }
             binding.lowerText.text = buildSpannedString {
-                bold { append(context.getString(R.string.current_chapter)) }
+                bold { append(context.getString(MR.strings.current_chapter)) }
                 val name = transition.from.chapter.preferredChapterName(context, manga, preferences)
                 append("\n$name")
             }
         } else {
             binding.upperText.textAlignment = TEXT_ALIGNMENT_CENTER
-            binding.upperText.text = context.getString(R.string.theres_no_previous_chapter)
+            binding.upperText.text = context.getString(MR.strings.theres_no_previous_chapter)
         }
     }
 
@@ -92,18 +95,18 @@ class ReaderTransitionView @JvmOverloads constructor(context: Context, attrs: At
             val isCurrentDownloaded = downloadManager.isChapterDownloaded(transition.from.chapter, manga)
             val isNextDownloaded = downloadManager.isChapterDownloaded(nextChapter.chapter, manga)
             binding.upperText.text = buildSpannedString {
-                bold { append(context.getString(R.string.finished_chapter)) }
+                bold { append(context.getString(MR.strings.finished_chapter)) }
                 val name = transition.from.chapter.preferredChapterName(context, manga, preferences)
                 append("\n$name")
             }
             binding.lowerText.text = buildSpannedString {
-                bold { append(context.getString(R.string.next_title)) }
+                bold { append(context.getString(MR.strings.next_title)) }
                 append("\n${nextChapter.chapter.preferredChapterName(context, manga, preferences)}")
                 if (isNextDownloaded != isCurrentDownloaded) addDLImageSpan(isNextDownloaded)
             }
         } else {
             binding.upperText.textAlignment = TEXT_ALIGNMENT_CENTER
-            binding.upperText.text = context.getString(R.string.theres_no_next_chapter)
+            binding.upperText.text = context.getString(MR.strings.theres_no_next_chapter)
         }
     }
 
@@ -148,7 +151,7 @@ class ReaderTransitionView @JvmOverloads constructor(context: Context, attrs: At
             is ChapterTransition.Next -> calculateChapterDifference(transition.to, transition.from)
         }
 
-        binding.warningText.text = resources.getQuantityString(R.plurals.missing_chapters_warning, chapterDifference.toInt(), chapterDifference.toInt())
+        binding.warningText.text = context.getString(MR.plurals.missing_chapters_warning, chapterDifference.toInt(), chapterDifference.toInt())
         binding.warning.isVisible = true
     }
 }

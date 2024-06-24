@@ -19,6 +19,8 @@ import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.util.regex.*
 import android.R as AR
 
@@ -82,7 +84,7 @@ internal class DownloadNotifier(private val context: Context) {
                 // Pause action
                 addAction(
                     R.drawable.ic_pause_24dp,
-                    context.getString(R.string.pause),
+                    context.getString(MR.strings.pause),
                     NotificationReceiver.pauseDownloadsPendingBroadcast(context),
                 )
             }
@@ -97,9 +99,9 @@ internal class DownloadNotifier(private val context: Context) {
                     "",
                 )
                 setContentTitle("$title - $chapter".chop(30))
-                setContentText(context.getString(R.string.downloading))
+                setContentText(context.getString(MR.strings.downloading))
             } else {
-                setContentTitle(context.getString(R.string.downloading))
+                setContentTitle(context.getString(MR.strings.downloading))
                 setContentText(null)
             }
             setProgress(0, 0, true)
@@ -129,13 +131,13 @@ internal class DownloadNotifier(private val context: Context) {
                 // Pause action
                 addAction(
                     R.drawable.ic_pause_24dp,
-                    context.getString(R.string.pause),
+                    context.getString(MR.strings.pause),
                     NotificationReceiver.pauseDownloadsPendingBroadcast(context),
                 )
             }
 
             val downloadingProgressText =
-                context.localeContext.getString(R.string.downloading_progress)
+                context.localeContext.getString(MR.strings.downloading_progress)
                     .format(download.downloadedImages, download.pages!!.size)
 
             if (preferences.hideNotificationContent().get()) {
@@ -164,8 +166,8 @@ internal class DownloadNotifier(private val context: Context) {
     fun onDownloadPaused() {
         val context = context.localeContext
         with(notification) {
-            setContentTitle(context.getString(R.string.paused))
-            setContentText(context.getString(R.string.download_paused))
+            setContentTitle(context.getString(MR.strings.paused))
+            setContentText(context.getString(MR.strings.download_paused))
             setSmallIcon(R.drawable.ic_pause_24dp)
             setAutoCancel(false)
             setOngoing(false)
@@ -177,13 +179,13 @@ internal class DownloadNotifier(private val context: Context) {
             // Resume action
             addAction(
                 R.drawable.ic_play_arrow_24dp,
-                context.getString(R.string.resume),
+                context.getString(MR.strings.resume),
                 NotificationReceiver.resumeDownloadsPendingBroadcast(context),
             )
             // Clear action
             addAction(
                 R.drawable.ic_close_24dp,
-                context.getString(R.string.cancel_all),
+                context.getString(MR.strings.cancel_all),
                 NotificationReceiver.clearDownloadsPendingBroadcast(context),
             )
             show()
@@ -201,7 +203,7 @@ internal class DownloadNotifier(private val context: Context) {
     fun onWarning(reason: String) {
         val context = context.localeContext
         with(notification) {
-            setContentTitle(context.getString(R.string.downloads))
+            setContentTitle(context.getString(MR.strings.downloads))
             setContentText(reason)
             color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)
             setSmallIcon(R.drawable.ic_warning_white_24dp)
@@ -223,11 +225,11 @@ internal class DownloadNotifier(private val context: Context) {
     fun massDownloadWarning() {
         val context = context.localeContext
         val notification = context.notificationBuilder(Notifications.CHANNEL_DOWNLOADER) {
-            setContentTitle(context.getString(R.string.warning))
+            setContentTitle(context.getString(MR.strings.warning))
             setSmallIcon(R.drawable.ic_warning_white_24dp)
             setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText(context.getString(R.string.download_queue_size_warning)),
+                    .bigText(context.getString(MR.strings.download_queue_size_warning)),
             )
             setContentIntent(
                 NotificationHandler.openUrl(
@@ -262,12 +264,12 @@ internal class DownloadNotifier(private val context: Context) {
         val context = context.localeContext
         with(notification) {
             setContentTitle(
-                mangaTitle?.plus(": $chapter") ?: context.getString(R.string.download_error),
+                mangaTitle?.plus(": $chapter") ?: context.getString(MR.strings.download_error),
             )
-            setContentText(error ?: context.getString(R.string.could_not_download_unexpected_error))
+            setContentText(error ?: context.getString(MR.strings.could_not_download_unexpected_error))
             setStyle(
                 NotificationCompat.BigTextStyle().bigText(
-                    error ?: context.getString(R.string.could_not_download_unexpected_error),
+                    error ?: context.getString(MR.strings.could_not_download_unexpected_error),
                 ),
             )
             setSmallIcon(AR.drawable.stat_sys_warning)

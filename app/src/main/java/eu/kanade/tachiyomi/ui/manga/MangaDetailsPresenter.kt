@@ -10,8 +10,12 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -497,7 +501,7 @@ class MangaDetailsPresenter(
             } else {
                 e.message
             }
-            ) ?: view?.view?.context?.getString(R.string.unknown_error) ?: ""
+            ) ?: view?.view?.context?.getString(MR.strings.unknown_error) ?: ""
     }
 
     /**
@@ -678,14 +682,14 @@ class MangaDetailsPresenter(
     private fun isScanlatorFiltered() = manga.filtered_scanlators?.isNotEmpty() == true
 
     fun currentFilters(): String {
-        val filtersId = mutableListOf<Int?>()
-        filtersId.add(if (manga.readFilter(preferences) == Manga.CHAPTER_SHOW_READ) R.string.read else null)
-        filtersId.add(if (manga.readFilter(preferences) == Manga.CHAPTER_SHOW_UNREAD) R.string.unread else null)
-        filtersId.add(if (manga.downloadedFilter(preferences) == Manga.CHAPTER_SHOW_DOWNLOADED) R.string.downloaded else null)
-        filtersId.add(if (manga.downloadedFilter(preferences) == Manga.CHAPTER_SHOW_NOT_DOWNLOADED) R.string.not_downloaded else null)
-        filtersId.add(if (manga.bookmarkedFilter(preferences) == Manga.CHAPTER_SHOW_BOOKMARKED) R.string.bookmarked else null)
-        filtersId.add(if (manga.bookmarkedFilter(preferences) == Manga.CHAPTER_SHOW_NOT_BOOKMARKED) R.string.not_bookmarked else null)
-        filtersId.add(if (isScanlatorFiltered()) R.string.scanlators else null)
+        val filtersId = mutableListOf<StringResource?>()
+        filtersId.add(if (manga.readFilter(preferences) == Manga.CHAPTER_SHOW_READ) MR.strings.read else null)
+        filtersId.add(if (manga.readFilter(preferences) == Manga.CHAPTER_SHOW_UNREAD) MR.strings.unread else null)
+        filtersId.add(if (manga.downloadedFilter(preferences) == Manga.CHAPTER_SHOW_DOWNLOADED) MR.strings.downloaded else null)
+        filtersId.add(if (manga.downloadedFilter(preferences) == Manga.CHAPTER_SHOW_NOT_DOWNLOADED) MR.strings.not_downloaded else null)
+        filtersId.add(if (manga.bookmarkedFilter(preferences) == Manga.CHAPTER_SHOW_BOOKMARKED) MR.strings.bookmarked else null)
+        filtersId.add(if (manga.bookmarkedFilter(preferences) == Manga.CHAPTER_SHOW_NOT_BOOKMARKED) MR.strings.not_bookmarked else null)
+        filtersId.add(if (isScanlatorFiltered()) MR.strings.scanlators else null)
         return filtersId.filterNotNull()
             .joinToString(", ") { view?.view?.context?.getString(it) ?: "" }
     }

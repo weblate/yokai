@@ -1,6 +1,9 @@
 package eu.kanade.tachiyomi.ui.library
 
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -809,7 +812,7 @@ class LibraryPresenter(
             return headerItem
         }
 
-        val unknown = context.getString(R.string.unknown)
+        val unknown = context.getString(MR.strings.unknown)
         val removedManga = mutableListOf<LibraryItem>()
         val items = libraryMangaList.mapNotNull map@ { manga ->
             when (groupType) {
@@ -845,7 +848,7 @@ class LibraryPresenter(
                             service.getStatus(track.status)
                         }
                     } else {
-                        view?.view?.context?.getString(R.string.not_tracked) ?: ""
+                        view?.view?.context?.getString(MR.strings.not_tracked) ?: ""
                     }
                     val header = makeOrGetHeader(status)
                     val item = LibraryItem(manga, header, viewContext)
@@ -1167,7 +1170,7 @@ class LibraryPresenter(
             return headerItem
         }
 
-        val unknown = context.getString(R.string.unknown)
+        val unknown = context.getString(MR.strings.unknown)
         val items = libraryManga.map { manga ->
             when (groupType) {
                 BY_TAG -> {
@@ -1196,7 +1199,7 @@ class LibraryPresenter(
                             service.getStatus(track.status)
                         }
                     } else {
-                        view?.view?.context?.getString(R.string.not_tracked) ?: ""
+                        view?.view?.context?.getString(MR.strings.not_tracked) ?: ""
                     }
                     listOf(LibraryItem(manga, makeOrGetHeader(status), viewContext))
                 }
@@ -1320,12 +1323,12 @@ class LibraryPresenter(
     private fun mapTrackingOrder(status: String): String {
         with(context) {
             return when (status) {
-                getString(R.string.reading), getString(R.string.currently_reading) -> "1"
-                getString(R.string.rereading) -> "2"
-                getString(R.string.plan_to_read), getString(R.string.want_to_read) -> "3"
-                getString(R.string.on_hold), getString(R.string.paused) -> "4"
-                getString(R.string.completed) -> "5"
-                getString(R.string.dropped) -> "6"
+                getString(MR.strings.reading), getString(MR.strings.currently_reading) -> "1"
+                getString(MR.strings.rereading) -> "2"
+                getString(MR.strings.plan_to_read), getString(MR.strings.want_to_read) -> "3"
+                getString(MR.strings.on_hold), getString(MR.strings.paused) -> "4"
+                getString(MR.strings.completed) -> "5"
+                getString(MR.strings.dropped) -> "6"
                 else -> "7"
             }
         }

@@ -15,6 +15,8 @@ import androidx.core.view.isVisible
 import androidx.preference.Preference.SummaryProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.util.view.setNeutralButton
+import yokai.i18n.MR
 import android.R as AR
 
 class EditTextResetPreference @JvmOverloads constructor(
@@ -66,7 +68,7 @@ class EditTextResetPreference @JvmOverloads constructor(
             // Place cursor at the end
             textView.setSelection(textView.text.length)
             this.setView(view)
-            this.setNeutralButton(R.string.reset) { _, _ ->
+            this.setNeutralButton(MR.strings.reset) { _, _ ->
                 if (callChangeListener(defValue)) {
                     if (preferenceDataStore != null) {
                         preferenceDataStore?.putString(key, null)

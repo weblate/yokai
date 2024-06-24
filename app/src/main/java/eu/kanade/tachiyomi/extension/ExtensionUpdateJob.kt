@@ -39,6 +39,8 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences
 import yokai.domain.base.BasePreferences.ExtensionInstaller
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.util.concurrent.*
 
 class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParameters) :
@@ -121,8 +123,8 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
                 context.notification(Notifications.CHANNEL_UPDATES_TO_EXTS) {
                     val context = context.localeContext
                     setContentTitle(
-                        context.resources.getQuantityString(
-                            R.plurals.extension_updates_available,
+                        context.getString(
+                            MR.plurals.extension_updates_available,
                             extensions.size,
                             extensions.size,
                         ),
@@ -144,7 +146,7 @@ class ExtensionUpdateJob(private val context: Context, workerParams: WorkerParam
                             NotificationReceiver.startExtensionUpdatePendingJob(context, extensions)
                         addAction(
                             R.drawable.ic_file_download_24dp,
-                            context.getString(R.string.update_all),
+                            context.getString(MR.strings.update_all),
                             pendingIntent,
                         )
                     }

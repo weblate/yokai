@@ -12,6 +12,9 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.snackbar.Snackbar
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.SourceGlobalSearchControllerBinding
@@ -134,7 +137,7 @@ open class GlobalSearchController(
                     holder?.updateManga(oldMangaIndex)
                 }
                 adapter.notifyItemChanged(position)
-                snack = view.snack(R.string.added_to_library)
+                snack = view.snack(MR.strings.added_to_library)
             },
             onMangaMoved = { adapter.notifyItemChanged(position) },
             onMangaDeleted = { presenter.confirmDeletion(manga) },
@@ -160,7 +163,7 @@ open class GlobalSearchController(
         inflater.inflate(R.menu.catalogue_new_list, menu)
 
         // Initialize search menu
-        activityBinding?.searchToolbar?.setQueryHint(view?.context?.getString(R.string.global_search), false)
+        activityBinding?.searchToolbar?.setQueryHint(view?.context?.getString(MR.strings.global_search), false)
         activityBinding?.searchToolbar?.searchItem?.expandActionView()
         activityBinding?.searchToolbar?.searchView?.setQuery(presenter.query, false)
 
@@ -229,7 +232,7 @@ open class GlobalSearchController(
         binding.recycler.adapter = adapter
         scrollViewWith(binding.recycler, padBottom = true)
         if (extensionFilter != null) {
-            customTitle = view.context?.getString(R.string.loading)
+            customTitle = view.context?.getString(MR.strings.loading)
             setTitle()
         }
 

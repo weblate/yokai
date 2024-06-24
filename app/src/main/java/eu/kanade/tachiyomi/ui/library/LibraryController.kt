@@ -51,12 +51,16 @@ import com.bluelinelabs.conductor.ControllerChangeType
 import com.github.florent37.viewtooltip.ViewTooltip
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dev.icerock.moko.resources.StringResource
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.items.IHeader
 import eu.davidea.flexibleadapter.items.ISectionable
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
@@ -116,10 +120,15 @@ import eu.kanade.tachiyomi.util.view.isExpanded
 import eu.kanade.tachiyomi.util.view.isHidden
 import eu.kanade.tachiyomi.util.view.isSettling
 import eu.kanade.tachiyomi.util.view.scrollViewWith
+import eu.kanade.tachiyomi.util.view.setAction
+import eu.kanade.tachiyomi.util.view.setMessage
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
+import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setStyle
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.smoothScrollToTop
 import eu.kanade.tachiyomi.util.view.snack
+import eu.kanade.tachiyomi.util.view.text
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.EmptyView
 import kotlinx.coroutines.delay
@@ -259,7 +268,7 @@ open class LibraryController(
     private var showAllCategoriesView: ImageView? = null
     override fun getTitle(): String? {
         setSubtitle()
-        return view?.context?.getString(R.string.library)
+        return view?.context?.getString(MR.strings.library)
     }
 
     override fun getSearchTitle(): String? {
@@ -270,7 +279,7 @@ open class LibraryController(
             ) {
                 "\"${preferences.librarySearchSuggestion().get()}\""
             } else {
-                view?.context?.getString(R.string.your_library)?.lowercase(Locale.ROOT)
+                view?.context?.getString(MR.strings.your_library)?.lowercase(Locale.ROOT)
             },
         )
     }
@@ -501,7 +510,7 @@ open class LibraryController(
         filterTooltip =
             ViewTooltip.on(activity, icon).autoHide(false, 0L).align(ViewTooltip.ALIGN.START)
                 .position(ViewTooltip.Position.TOP)
-                .text(R.string.tap_library_to_show_filters)
+                .text(MR.strings.tap_library_to_show_filters)
                 .textColor(activity.getResourceColor(R.attr.colorOnSecondary))
                 .color(activity.getResourceColor(R.attr.colorSecondary))
                 .textSize(TypedValue.COMPLEX_UNIT_SP, 15f).withShadow(false)
@@ -537,7 +546,7 @@ open class LibraryController(
         MaterialMenuSheet(
             activity!!,
             items,
-            activity!!.getString(R.string.group_library_by),
+            activity!!.getString(MR.strings.group_library_by),
             presenter.groupType,
         ) { _, item ->
             if (!isSubClass) {
@@ -742,7 +751,7 @@ open class LibraryController(
             MaterialMenuSheet(
                 activity!!,
                 items,
-                it.context.getString(R.string.jump_to_category),
+                it.context.getString(MR.strings.jump_to_category),
                 activeCategory,
                 300.dpToPx,
             ) { _, item ->
@@ -948,10 +957,10 @@ open class LibraryController(
     private fun updateLibrary(category: Category? = null) {
         val view = view ?: return
         LibraryUpdateJob.startNow(view.context, category)
-        snack = view.snack(R.string.updating_library) {
+        snack = view.snack(MR.strings.updating_library) {
             anchorView = anchorView()
             this.view.elevation = 15f.dpToPx
-            setAction(R.string.cancel) {
+            setAction(MR.strings.cancel) {
                 LibraryUpdateJob.stop(context)
                 viewScope.launchUI {
                     NotificationReceiver.dismissNotification(
@@ -1116,13 +1125,13 @@ open class LibraryController(
             binding.emptyView.show(
                 R.drawable.ic_heart_off_24dp,
                 if (hasActiveFilters) {
-                    R.string.no_matches_for_filters
+                    MR.strings.no_matches_for_filters
                 } else {
-                    R.string.library_is_empty_add_from_browse
+                    MR.strings.library_is_empty_add_from_browse
                 },
                 if (!hasActiveFilters) {
                     listOf(
-                        EmptyView.Action(R.string.getting_started_guide) {
+                        EmptyView.Action(MR.strings.getting_started_guide) {
                             activity?.openInBrowser("https://tachiyomi.org/docs/guides/getting-started#_2-adding-sources")
                         },
                     )
@@ -1681,7 +1690,7 @@ open class LibraryController(
         } else {
             if (presenter.mangaIsInCategory(item.manga, newHeader?.category?.id)) {
                 adapter.moveItem(position, lastItemPosition!!)
-                snack = view?.snack(R.string.already_in_category) {
+                snack = view?.snack(MR.strings.already_in_category) {
                     anchorView = anchorView()
                     view.elevation = 15f.dpToPx
                 }
@@ -1719,11 +1728,11 @@ open class LibraryController(
         presenter.moveMangaToCategory(manga, category.id, mangaIds)
         snack?.dismiss()
         snack = view?.snack(
-            resources!!.getString(R.string.moved_to_, category.name),
+            view!!.context!!.getString(MR.strings.moved_to_, category.name),
         ) {
             anchorView = anchorView()
             view.elevation = 15f.dpToPx
-            setAction(R.string.undo) {
+            setAction(MR.strings.undo) {
                 manga.category = category.id!!
                 presenter.moveMangaToCategory(manga, oldCatId, mangaIds)
             }
@@ -1735,11 +1744,11 @@ open class LibraryController(
         val inQueue = LibraryUpdateJob.categoryInQueue(category.id)
         snack?.dismiss()
         snack = view?.snack(
-            resources!!.getString(
+            view!!.context!!.getString(
                 when {
-                    inQueue -> R.string._already_in_queue
-                    LibraryUpdateJob.isRunning(view!!.context) -> R.string.adding_category_to_queue
-                    else -> R.string.updating_
+                    inQueue -> MR.strings._already_in_queue
+                    LibraryUpdateJob.isRunning(view!!.context) -> MR.strings.adding_category_to_queue
+                    else -> MR.strings.updating_
                 },
                 category.name,
             ),
@@ -1747,7 +1756,7 @@ open class LibraryController(
         ) {
             anchorView = anchorView()
             view.elevation = 15f.dpToPx
-            setAction(R.string.cancel) {
+            setAction(MR.strings.cancel) {
                 LibraryUpdateJob.stop(context)
                 viewScope.launchUI {
                     NotificationReceiver.dismissNotification(
@@ -1882,7 +1891,7 @@ open class LibraryController(
 
         val searchItem = activityBinding?.searchToolbar?.searchItem
         val searchView = activityBinding?.searchToolbar?.searchView
-        activityBinding?.searchToolbar?.setQueryHint(resources?.getString(R.string.library_search_hint), query.isEmpty())
+        activityBinding?.searchToolbar?.setQueryHint(view?.context?.getString(MR.strings.library_search_hint), query.isEmpty())
 
         showAllCategoriesView = showAllCategoriesView ?: (searchView as? MiniSearchView)?.addSearchModifierIcon { context ->
             ImageView(context).apply {
@@ -1898,7 +1907,7 @@ open class LibraryController(
                 setImageResource(R.drawable.ic_show_all_categories_24dp)
                 background = context.getResourceDrawable(R.attr.selectableItemBackgroundBorderless)
                 imageTintList = ColorStateList.valueOf(context.getResourceColor(R.attr.actionBarTintColor))
-                compatToolTipText = resources?.getText(R.string.show_all_categories)
+                compatToolTipText = view?.context?.getString(MR.strings.show_all_categories)
             }
         }!!
 
@@ -2014,7 +2023,7 @@ open class LibraryController(
         if (count == 0) {
             destroyActionModeIfNeeded()
         } else {
-            mode.title = resources?.getString(R.string.selected_, count)
+            mode.title = view?.context?.getString(MR.strings.selected_, count)
         }
         return false
     }
@@ -2026,12 +2035,12 @@ open class LibraryController(
             R.id.action_share -> shareManga()
             R.id.action_delete -> {
                 val options = arrayOf(
-                    R.string.remove_downloads,
-                    R.string.remove_from_library,
+                    MR.strings.remove_downloads,
+                    MR.strings.remove_from_library,
                 )
                     .map { activity!!.getString(it) }
                 activity!!.materialAlertDialog()
-                    .setTitle(R.string.remove)
+                    .setTitle(MR.strings.remove)
                     .setMultiChoiceItems(
                         options.toTypedArray(),
                         options.map { true }.toBooleanArray(),
@@ -2041,7 +2050,7 @@ open class LibraryController(
                             listView.setItemChecked(position, true)
                         }
                     }
-                    .setPositiveButton(R.string.remove) { dialog, _ ->
+                    .setPositiveButton(MR.strings.remove) { dialog, _ ->
                         val listView = (dialog as AlertDialog).listView
                         if (listView.isItemChecked(1)) {
                             deleteMangasFromLibrary()
@@ -2060,18 +2069,18 @@ open class LibraryController(
             }
             R.id.action_mark_as_read -> {
                 activity!!.materialAlertDialog()
-                    .setMessage(R.string.mark_all_chapters_as_read)
-                    .setPositiveButton(R.string.mark_as_read) { _, _ ->
-                        markReadStatus(R.string.marked_as_read, true)
+                    .setMessage(MR.strings.mark_all_chapters_as_read)
+                    .setPositiveButton(MR.strings.mark_as_read) { _, _ ->
+                        markReadStatus(MR.strings.marked_as_read, true)
                     }
                     .setNegativeButton(AR.string.cancel, null)
                     .show()
             }
             R.id.action_mark_as_unread -> {
                 activity!!.materialAlertDialog()
-                    .setMessage(R.string.mark_all_chapters_as_unread)
-                    .setPositiveButton(R.string.mark_as_unread) { _, _ ->
-                        markReadStatus(R.string.marked_as_unread, false)
+                    .setMessage(MR.strings.mark_all_chapters_as_unread)
+                    .setPositiveButton(MR.strings.mark_as_unread) { _, _ ->
+                        markReadStatus(MR.strings.marked_as_unread, false)
                     }
                     .setNegativeButton(AR.string.cancel, null)
                     .show()
@@ -2090,7 +2099,7 @@ open class LibraryController(
         return true
     }
 
-    private fun markReadStatus(resource: Int, markRead: Boolean) {
+    private fun markReadStatus(resource: StringResource, markRead: Boolean) {
         val mapMangaChapters = presenter.markReadStatus(selectedMangas.toList(), markRead)
         destroyActionModeIfNeeded()
         snack?.dismiss()
@@ -2098,7 +2107,7 @@ open class LibraryController(
             anchorView = anchorView()
             view.elevation = 15f.dpToPx
             var undoing = false
-            setAction(R.string.undo) {
+            setAction(MR.strings.undo) {
                 presenter.undoMarkReadStatus(mapMangaChapters)
                 undoing = true
             }
@@ -2132,7 +2141,7 @@ open class LibraryController(
             type = "text/*"
             putExtra(Intent.EXTRA_TEXT, urls)
         }
-        startActivity(Intent.createChooser(intent, context.getString(R.string.share)))
+        startActivity(Intent.createChooser(intent, context.getString(MR.strings.share)))
     }
 
     open fun deleteMangasFromLibrary() {
@@ -2141,13 +2150,13 @@ open class LibraryController(
         destroyActionModeIfNeeded()
         snack?.dismiss()
         snack = view?.snack(
-            activity?.getString(R.string.removed_from_library) ?: "",
+            activity?.getString(MR.strings.removed_from_library) ?: "",
             Snackbar.LENGTH_INDEFINITE,
         ) {
             anchorView = anchorView()
             view.elevation = 15f.dpToPx
             var undoing = false
-            setAction(R.string.undo) {
+            setAction(MR.strings.undo) {
                 presenter.reAddMangas(mangas)
                 undoing = true
             }

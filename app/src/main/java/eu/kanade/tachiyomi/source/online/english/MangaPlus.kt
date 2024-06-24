@@ -2,6 +2,9 @@ package eu.kanade.tachiyomi.source.online.english
 
 import android.net.Uri
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.toChapter
@@ -59,7 +62,7 @@ class MangaPlus : DelegatedHttpSource() {
             val chapters = deferredChapters.await()
             val context = Injekt.get<PreferencesHelper>().context
             val trueChapter = chapters?.find { it.url == url }?.toChapter() ?: error(
-                context.getString(R.string.chapter_not_found),
+                context.getString(MR.strings.chapter_not_found),
             )
             if (manga != null) {
                 Triple(

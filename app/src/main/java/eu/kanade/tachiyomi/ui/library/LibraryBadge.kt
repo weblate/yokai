@@ -10,6 +10,9 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.MaterialShapeDrawable
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.UnreadDownloadBadgeBinding
 import eu.kanade.tachiyomi.util.system.contextCompatColor
 import eu.kanade.tachiyomi.util.system.dpToPx
@@ -67,7 +70,7 @@ class LibraryBadge @JvmOverloads constructor(context: Context, attrs: AttributeS
                 return@with
             }
             text = if (downloads == -2) {
-                resources.getString(R.string.local)
+                context.getString(MR.strings.local)
             } else {
                 downloads.toString()
             }
@@ -171,7 +174,7 @@ class LibraryBadge @JvmOverloads constructor(context: Context, attrs: AttributeS
         binding.unreadAngle.isVisible = false
         binding.unreadText.updatePaddingRelative(start = 5.dpToPx)
         binding.unreadText.isVisible = inLibrary
-        binding.unreadText.text = resources.getText(R.string.in_library)
+        binding.unreadText.text = context.getString(MR.strings.in_library)
         binding.unreadText.background =
             MaterialShapeDrawable(makeShapeCorners(radius, radius)).apply {
                 this.fillColor =

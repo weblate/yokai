@@ -16,7 +16,11 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceManager
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.startAuthentication
@@ -103,6 +107,18 @@ inline fun PreferenceScreen.switchPreference(block: (@DSL SwitchPreferenceCompat
     return initThenAdd(SwitchPreferenceCompat(context), block)
 }
 
+fun PreferenceGroup.infoPreference(infoRes: StringResource): Preference {
+    return initThenAdd(
+        Preference(context),
+    ) {
+        iconRes = R.drawable.ic_info_outline_24dp
+        iconTint = context.getResourceColor(AR.attr.textColorSecondary)
+        summaryMRes = infoRes
+        isSelectable = false
+    }
+}
+
+@Deprecated("Use moko-resources instead!")
 fun PreferenceGroup.infoPreference(@StringRes infoRes: Int): Preference {
     return initThenAdd(
         Preference(context),
@@ -242,16 +258,30 @@ var Preference.defaultValue: Any?
     get() = null // set only
     set(value) { setDefaultValue(value) }
 
+var Preference.titleMRes: StringResource
+    get() = throw UnsupportedOperationException("Set only!")
+    set(value) {
+        title = context.getString(value)
+    }
+
+@Deprecated("Use moko-resources instead!")
 var Preference.titleRes: Int
-    get() = 0 // set only
+    get() = throw UnsupportedOperationException("Set only!")
     set(value) { setTitle(value) }
 
 var Preference.iconRes: Int
     get() = 0 // set only
     set(value) { icon = AppCompatResources.getDrawable(context, value) }
 
+var Preference.summaryMRes: StringResource
+    get() = throw UnsupportedOperationException("Set only!")
+    set(value) {
+        summary = context.getString(value)
+    }
+
+@Deprecated("Use moko-resources instead!")
 var Preference.summaryRes: Int
-    get() = 0 // set only
+    get() = throw UnsupportedOperationException("Set only!")
     set(value) { setSummary(value) }
 
 var Preference.iconTint: Int

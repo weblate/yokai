@@ -9,6 +9,9 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.source.SourceManager
@@ -18,7 +21,7 @@ import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.onChange
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.system.LocaleHelper
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
@@ -42,11 +45,11 @@ class SettingsSourcesController : SettingsLegacyController(), FloatingSearchInte
     private var sorting = SourcesSort.Alpha
 
     override fun getSearchTitle(): String? {
-        return view?.context?.getString(R.string.search)
+        return view?.context?.getString(MR.strings.search)
     }
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.filter
+        titleRes = MR.strings.filter
         sorting = SourcesSort.from(preferences.sourceSorting().get()) ?: SourcesSort.Alpha
         activity?.invalidateOptionsMenu()
         // Get the list of active language codes.
@@ -103,7 +106,7 @@ class SettingsSourcesController : SettingsLegacyController(), FloatingSearchInte
         val hiddenCatalogues = preferences.hiddenSources().get()
 
         val selectAllPreference = CheckBoxPreference(group.context).apply {
-            title = "\t\t${context.getString(R.string.all_sources)}"
+            title = "\t\t${context.getString(MR.strings.all_sources)}"
             key = "all_${sources.first().lang}"
             isPersistent = false
             isChecked = sources.all { it.id.toString() !in hiddenCatalogues }

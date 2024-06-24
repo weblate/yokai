@@ -6,7 +6,6 @@ import android.os.Looper
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import com.jakewharton.rxrelay.PublishRelay
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -52,6 +51,8 @@ import yokai.core.metadata.COMIC_INFO_FILE
 import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.getComicInfo
 import yokai.domain.download.DownloadPreferences
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.BufferedOutputStream
 import java.io.File
 import java.util.zip.*
@@ -336,7 +337,7 @@ class Downloader(
         val chapName = download.chapter.preferredChapterName(context, download.manga, preferences)
         if (availSpace != -1L && availSpace < MIN_DISK_SPACE) {
             download.status = Download.State.ERROR
-            notifier.onError(context.getString(R.string.couldnt_download_low_space), chapName)
+            notifier.onError(context.getString(MR.strings.couldnt_download_low_space), chapName)
             return
         }
         val chapterDirname = provider.getChapterDirName(download.chapter, includeId = downloadPreferences.downloadWithId().get())
@@ -349,7 +350,7 @@ class Downloader(
                 val pages = download.source.getPageList(download.chapter)
 
                 if (pages.isEmpty()) {
-                    throw Exception(context.getString(R.string.no_pages_found))
+                    throw Exception(context.getString(MR.strings.no_pages_found))
                 }
                 // Don't trust index from source
                 val reIndexedPages = pages.mapIndexed { index, page ->
@@ -549,9 +550,9 @@ class Downloader(
 
         val filename = String.format("%03d", page.number)
         val imageFile = tmpDir.listFiles()?.find { it.name.orEmpty().startsWith(filename) }
-            ?: throw Error(context.getString(R.string.download_notifier_split_page_not_found, page.number))
+            ?: throw Error(context.getString(MR.strings.download_notifier_split_page_not_found, page.number))
         val imageFilePath = imageFile.filePath
-            ?: throw Error(context.getString(R.string.download_notifier_split_page_not_found, page.number))
+            ?: throw Error(context.getString(MR.strings.download_notifier_split_page_not_found, page.number))
 
         // check if the original page was previously split before then skip.
         if (imageFile.name.orEmpty().contains("__")) return true

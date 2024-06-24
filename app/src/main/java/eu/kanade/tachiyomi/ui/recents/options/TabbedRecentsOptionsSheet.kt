@@ -4,7 +4,11 @@ import android.view.View
 import android.view.View.inflate
 import androidx.annotation.IntRange
 import androidx.core.view.isVisible
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.recents.RecentsController
 import eu.kanade.tachiyomi.widget.TabbedBottomSheetDialog
 
@@ -35,9 +39,9 @@ class TabbedRecentsOptionsSheet(val controller: RecentsController, @IntRange(fro
         updatesView,
     )
 
-    override fun getTabTitles(): List<Int> = listOf(
-        R.string.general,
-        R.string.history,
-        R.string.updates,
+    override fun getTabTitles(): List<StringResource> = listOf(
+        MR.strings.general,
+        MR.strings.history,
+        MR.strings.updates,
     )
 }

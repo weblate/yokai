@@ -25,6 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import com.google.android.material.color.DynamicColors
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.Themes
@@ -92,7 +95,7 @@ internal class ThemeStep : OnboardingStep {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = stringResource(id = R.string.follow_system_theme))
+                Text(text = stringResource(MR.strings.follow_system_theme))
                 Switch(
                     checked = nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
                     colors = SwitchDefaults.colors(

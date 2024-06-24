@@ -26,6 +26,9 @@ import androidx.core.graphics.scale
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import okio.Buffer
 import okio.BufferedSource
 import tachiyomi.decoder.Format

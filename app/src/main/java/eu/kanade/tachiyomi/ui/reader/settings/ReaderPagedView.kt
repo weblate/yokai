@@ -7,6 +7,9 @@ import android.util.AttributeSet
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.ReaderPagedLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.bindToPreference
@@ -35,7 +38,7 @@ class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: Attribu
             pagerNav.bindToPreference(preferences.navigationModePager())
             pagerInvert.bindToPreference(preferences.pagerNavInverted())
             extendPastCutout.bindToPreference(readerPreferences.pagerCutoutBehavior())
-            extendPastCutoutLandscape.title = binding.extendPastCutoutLandscape.title.toString() + "(${context.getString(R.string.landscape)})"
+            extendPastCutoutLandscape.title = binding.extendPastCutoutLandscape.title.toString() + "(${context.getString(MR.strings.landscape)})"
             extendPastCutoutLandscape.bindToPreference(readerPreferences.landscapeCutoutBehavior()) {
                 needsActivityRecreate = true
             }

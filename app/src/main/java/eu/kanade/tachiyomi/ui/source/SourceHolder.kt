@@ -4,6 +4,9 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.SourceItemBinding
 import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.source.icon
@@ -48,7 +51,7 @@ class SourceHolder(view: View, val adapter: SourceAdapter) :
                     },
                 ),
             )
-            compatToolTipText = context.getString(if (isPinned) R.string.unpin else R.string.pin)
+            compatToolTipText = context.getString(if (isPinned) MR.strings.unpin else MR.strings.pin)
             setImageResource(
                 if (isPinned) {
                     R.drawable.ic_pin_24dp

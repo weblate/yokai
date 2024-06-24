@@ -18,6 +18,9 @@ import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
@@ -51,9 +54,9 @@ import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.e
@@ -65,6 +68,9 @@ import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.setDefaultSettings
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.view.openInBrowser
+import eu.kanade.tachiyomi.util.view.setMessage
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -100,18 +106,18 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
     @SuppressLint("BatteryLife")
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.advanced
+        titleRes = MR.strings.advanced
 
         switchPreference {
             bindTo(basePreferences.crashReport())
-            titleRes = R.string.send_crash_report
-            summaryRes = R.string.helps_fix_bugs
+            titleRes = MR.strings.send_crash_report
+            summaryRes = MR.strings.helps_fix_bugs
         }
 
         preference {
             key = "dump_crash_logs"
-            titleRes = R.string.dump_crash_logs
-            summaryRes = R.string.saves_error_logs
+            titleRes = MR.strings.dump_crash_logs
+            summaryRes = MR.strings.saves_error_logs
 
             onClick {
                 (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
@@ -122,7 +128,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
         preference {
             key = "debug_info"
-            titleRes = R.string.pref_debug_info
+            titleRes = MR.strings.pref_debug_info
 
             onClick {
                 router.pushController(DebugController().withFadeTransaction())
@@ -130,13 +136,13 @@ class SettingsAdvancedController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.label_background_activity
+            titleRes = MR.strings.label_background_activity
             val pm = context.getSystemService(Context.POWER_SERVICE) as? PowerManager?
             if (pm != null) {
                 preference {
                     key = "disable_batt_opt"
-                    titleRes = R.string.disable_battery_optimization
-                    summaryRes = R.string.disable_if_issues_with_updating
+                    titleRes = MR.strings.disable_battery_optimization
+                    summaryRes = MR.strings.disable_if_issues_with_updating
 
                     onClick {
                         val packageName: String = context.packageName
@@ -147,7 +153,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                             }
                             startActivity(intent)
                         } else {
-                            context.toast(R.string.battery_optimization_disabled)
+                            context.toast(MR.strings.battery_optimization_disabled)
                         }
                     }
                 }
@@ -156,7 +162,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
             preference {
                 key = "pref_dont_kill_my_app"
                 title = "Don't kill my app!"
-                summaryRes = R.string.about_dont_kill_my_app
+                summaryRes = MR.strings.about_dont_kill_my_app
 
                 onClick {
                     openInBrowser("https://dontkillmyapp.com/")
@@ -166,16 +172,16 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
         if (isUpdaterEnabled) {
             switchPreference {
-                titleRes = R.string.check_for_beta_releases
-                summaryRes = R.string.try_new_features
+                titleRes = MR.strings.check_for_beta_releases
+                summaryRes = MR.strings.try_new_features
                 bindTo(preferences.checkForBetas())
 
                 onChange {
                     it as Boolean
                     if (it != BuildConfig.BETA) {
                         activity!!.materialAlertDialog()
-                            .setTitle(R.string.warning)
-                            .setMessage(if (it) R.string.warning_enroll_into_beta else R.string.warning_unenroll_from_beta)
+                            .setTitle(MR.strings.warning)
+                            .setMessage(if (it) MR.strings.warning_enroll_into_beta else MR.strings.warning_unenroll_from_beta)
                             .setPositiveButton(AR.string.ok) { _, _ -> isChecked = it }
                             .setNegativeButton(AR.string.cancel, null)
                             .show()
@@ -188,23 +194,23 @@ class SettingsAdvancedController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.data_management
+            titleRes = MR.strings.data_management
 
             preference {
-                titleRes = R.string.force_download_cache_refresh
-                summaryRes = R.string.force_download_cache_refresh_summary
+                titleRes = MR.strings.force_download_cache_refresh
+                summaryRes = MR.strings.force_download_cache_refresh_summary
                 onClick { downloadManager.refreshCache() }
             }
 
             preference {
                 key = "clean_downloaded_chapters"
-                titleRes = R.string.clean_up_downloaded_chapters
+                titleRes = MR.strings.clean_up_downloaded_chapters
 
-                summaryRes = R.string.delete_unused_chapters
+                summaryRes = MR.strings.delete_unused_chapters
 
                 onClick {
                     activity!!.materialAlertDialog()
-                        .setTitle(R.string.clean_up_downloaded_chapters)
+                        .setTitle(MR.strings.clean_up_downloaded_chapters)
                         .setMultiChoiceItems(
                             R.array.clean_up_downloads,
                             booleanArrayOf(true, true, true),
@@ -222,48 +228,48 @@ class SettingsAdvancedController : SettingsLegacyController() {
                         }
                         .setNegativeButton(AR.string.cancel, null)
                         .show().apply {
-                            disableItems(arrayOf(activity!!.getString(R.string.clean_orphaned_downloads)))
+                            disableItems(arrayOf(activity!!.getString(MR.strings.clean_orphaned_downloads)))
                         }
                 }
             }
             preference {
                 key = "pref_clear_webview_data"
-                titleRes = R.string.pref_clear_webview_data
+                titleRes = MR.strings.pref_clear_webview_data
 
                 onClick { clearWebViewData() }
             }
             preference {
                 key = "clear_database"
-                titleRes = R.string.clear_database
-                summaryRes = R.string.clear_database_summary
+                titleRes = MR.strings.clear_database
+                summaryRes = MR.strings.clear_database_summary
                 onClick { router.pushController(ClearDatabaseController().withFadeTransaction()) }
             }
         }
 
         preferenceCategory {
-            titleRes = R.string.network
+            titleRes = MR.strings.network
             preference {
                 key = "clear_cookies"
-                titleRes = R.string.clear_cookies
+                titleRes = MR.strings.clear_cookies
 
                 onClick {
                     network.cookieJar.removeAll()
-                    activity?.toast(R.string.cookies_cleared)
+                    activity?.toast(MR.strings.cookies_cleared)
                 }
             }
             intListPreference(activity) {
                 key = PreferenceKeys.dohProvider
-                titleRes = R.string.doh
+                titleRes = MR.strings.doh
                 entriesRes = arrayOf(
-                    R.string.disabled,
-                    R.string.cloudflare,
-                    R.string.google,
-                    R.string.ad_guard,
-                    R.string.quad9,
-                    R.string.aliDNS,
-                    R.string.dnsPod,
-                    R.string.dns_360,
-                    R.string.quad_101,
+                    MR.strings.disabled,
+                    MR.strings.cloudflare,
+                    MR.strings.google,
+                    MR.strings.ad_guard,
+                    MR.strings.quad9,
+                    MR.strings.aliDNS,
+                    MR.strings.dnsPod,
+                    MR.strings.dns_360,
+                    MR.strings.quad_101,
                 )
                 entryValues = listOf(
                     -1,
@@ -279,13 +285,13 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
                 defaultValue = -1
                 onChange {
-                    activity?.toast(R.string.requires_app_restart)
+                    activity?.toast(MR.strings.requires_app_restart)
                     true
                 }
             }
             editTextPreference(activity) {
                 bindTo(networkPreferences.defaultUserAgent())
-                titleRes = R.string.user_agent_string
+                titleRes = MR.strings.user_agent_string
 
                 onChange {
                     it as String
@@ -293,7 +299,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                         // OkHttp checks for valid values internally
                         Headers.Builder().add("User-Agent", it)
                     } catch (_: IllegalArgumentException) {
-                        context.toast(R.string.error_user_agent_string_invalid)
+                        context.toast(MR.strings.error_user_agent_string_invalid)
                         return@onChange false
                     }
                     true
@@ -302,11 +308,11 @@ class SettingsAdvancedController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.extensions
+            titleRes = MR.strings.extensions
 
             listPreference(activity) {
                 bindTo(basePreferences.extensionInstaller())
-                titleRes = R.string.ext_installer_pref
+                titleRes = MR.strings.ext_installer_pref
 
                 val values = ExtensionInstaller.entries.toList()
                 entriesRes = values.map { it.titleResId }.toTypedArray()
@@ -316,9 +322,9 @@ class SettingsAdvancedController : SettingsLegacyController() {
                     if (it == ExtensionInstaller.SHIZUKU) {
                         return@onChange if (!context.isPackageInstalled(ShizukuInstaller.shizukuPkgName) && !Sui.isSui()) {
                             context.materialAlertDialog()
-                                .setTitle(R.string.ext_installer_shizuku)
-                                .setMessage(R.string.ext_installer_shizuku_unavailable_dialog)
-                                .setPositiveButton(R.string.download) { _, _ ->
+                                .setTitle(MR.strings.ext_installer_shizuku)
+                                .setMessage(MR.strings.ext_installer_shizuku_unavailable_dialog)
+                                .setPositiveButton(MR.strings.download) { _, _ ->
                                     openInBrowser(ShizukuInstaller.downloadLink)
                                 }
                                 .setNegativeButton(AR.string.cancel, null)
@@ -331,21 +337,21 @@ class SettingsAdvancedController : SettingsLegacyController() {
                     true
                 }
             }
-            infoPreference(R.string.ext_installer_summary).apply {
+            infoPreference(MR.strings.ext_installer_summary).apply {
                 basePreferences.extensionInstaller().changesIn(viewScope) {
                     isVisible =
                         it != ExtensionInstaller.PACKAGEINSTALLER && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
                 }
             }
             preference {
-                titleRes = R.string.action_revoke_all_extensions
+                titleRes = MR.strings.action_revoke_all_extensions
 
                 onClick {
                     activity?.materialAlertDialog()
-                        ?.setTitle(R.string.confirm_revoke_all_extensions)
+                        ?.setTitle(MR.strings.confirm_revoke_all_extensions)
                         ?.setPositiveButton(AR.string.ok) { _, _ ->
                             trustExtension.revokeAll()
-                            activity?.toast(R.string.requires_app_restart)
+                            activity?.toast(MR.strings.requires_app_restart)
                         }
                         ?.setNegativeButton(AR.string.cancel, null)?.show()
                 }
@@ -353,18 +359,18 @@ class SettingsAdvancedController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.library
+            titleRes = MR.strings.library
             preference {
                 key = "refresh_lib_meta"
-                titleRes = R.string.refresh_library_metadata
-                summaryRes = R.string.updates_covers_genres_desc
+                titleRes = MR.strings.refresh_library_metadata
+                summaryRes = MR.strings.updates_covers_genres_desc
 
                 onClick { LibraryUpdateJob.startNow(context, target = Target.DETAILS) }
             }
             preference {
                 key = "refresh_teacking_meta"
-                titleRes = R.string.refresh_tracking_metadata
-                summaryRes = R.string.updates_tracking_details
+                titleRes = MR.strings.refresh_tracking_metadata
+                summaryRes = MR.strings.updates_tracking_details
 
                 onClick { LibraryUpdateJob.startNow(context, target = Target.TRACKING) }
             }
@@ -372,11 +378,11 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             preferenceCategory {
-                titleRes = R.string.reader
+                titleRes = MR.strings.reader
 
                 preference {
                     key = "pref_display_profile"
-                    titleRes = R.string.pref_display_profile
+                    titleRes = MR.strings.pref_display_profile
                     onClick {
                         (activity as? MainActivity)?.showColourProfilePicker()
                     }
@@ -394,7 +400,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
             summary = "To test crashes"
             onClick {
                 activity!!.materialAlertDialog()
-                    .setTitle(R.string.warning)
+                    .setTitle(MR.strings.warning)
                     .setMessage("I told you this would crash the app, why would you want that?")
                     .setPositiveButton("Crash it anyway") { _, _ -> throw RuntimeException("Fell into the void") }
                     .setNegativeButton("Nevermind", null)
@@ -406,7 +412,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
     @OptIn(DelicateCoroutinesApi::class)
     private fun cleanupDownloads(removeRead: Boolean, removeNonFavorite: Boolean) {
         if (job?.isActive == true) return
-        activity?.toast(R.string.starting_cleanup)
+        activity?.toast(MR.strings.starting_cleanup)
         job = GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT) {
             val mangaList = getManga.awaitAll()
             val sourceManager: SourceManager = Injekt.get()
@@ -436,10 +442,10 @@ class SettingsAdvancedController : SettingsLegacyController() {
                 val activity = activity ?: return@launchUI
                 val cleanupString =
                     if (foldersCleared == 0) {
-                        activity.getString(R.string.no_folders_to_cleanup)
+                        activity.getString(MR.strings.no_folders_to_cleanup)
                     } else {
-                        resources!!.getQuantityString(
-                            R.plurals.cleanup_done,
+                        activity.getString(
+                            MR.plurals.cleanup_done,
                             foldersCleared,
                             foldersCleared,
                         )
@@ -460,10 +466,10 @@ class SettingsAdvancedController : SettingsLegacyController() {
             webview.clearSslPreferences()
             WebStorage.getInstance().deleteAllData()
             activity?.applicationInfo?.dataDir?.let { File("$it/app_webview/").deleteRecursively() }
-            activity?.toast(R.string.webview_data_deleted)
+            activity?.toast(MR.strings.webview_data_deleted)
         } catch (e: Throwable) {
             Logger.e(e)
-            activity?.toast(R.string.cache_delete_error)
+            activity?.toast(MR.strings.cache_delete_error)
         }
     }
 

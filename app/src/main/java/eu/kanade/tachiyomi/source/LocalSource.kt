@@ -6,6 +6,9 @@ import co.touchlab.kermit.Logger
 import com.github.junrar.Archive
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.source.model.Filter
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
@@ -117,7 +120,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     private val xml: XML by injectLazy()
 
     override val id = ID
-    override val name = context.getString(R.string.local_source)
+    override val name = context.getString(MR.strings.local_source)
     override val lang = "other"
     override val supportsLatest = true
 
@@ -329,7 +332,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             ?.findFile(mangaDirName)
             ?.findFile(chapterName)
         if (chapFile == null || !chapFile.exists())
-            throw Exception(context.getString(R.string.chapter_not_found))
+            throw Exception(context.getString(MR.strings.chapter_not_found))
 
         return getFormat(chapFile)
     }
@@ -340,7 +343,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             extension.equals("zip", true) || extension.equals("cbz", true) -> Format.Zip(this)
             extension.equals("rar", true) || extension.equals("cbr", true) -> Format.Rar(this)
             extension.equals("epub", true) -> Format.Epub(this)
-            else -> throw Exception(context.getString(R.string.local_invalid_format))
+            else -> throw Exception(context.getString(MR.strings.local_invalid_format))
         }
     }
 
@@ -432,8 +435,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     private val latestFilters = FilterList(OrderBy(context).apply { state = Filter.Sort.Selection(1, false) })
 
     private class OrderBy(context: Context) : Filter.Sort(
-        context.getString(R.string.order_by),
-        arrayOf(context.getString(R.string.title), context.getString(R.string.date)),
+        context.getString(MR.strings.order_by),
+        arrayOf(context.getString(MR.strings.title), context.getString(MR.strings.date)),
         Selection(0, true),
     )
 

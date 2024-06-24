@@ -3,6 +3,9 @@ package eu.kanade.tachiyomi.ui.library.display
 import android.content.Context
 import android.util.AttributeSet
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.LibraryCategoryLayoutBinding
 import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.lang.withSubtitle
@@ -24,8 +27,8 @@ class LibraryCategoryView @JvmOverloads constructor(context: Context, attrs: Att
             categoryShow.bindToPreference(preferences.showCategoryInTitle()) {
                 controller?.showMiniBar()
             }
-            dynamicToBottom.text = context.getString(R.string.move_dynamic_to_bottom)
-                .withSubtitle(context, R.string.when_grouping_by_sources_tags)
+            dynamicToBottom.text = context.getString(MR.strings.move_dynamic_to_bottom)
+                .withSubtitle(context, MR.strings.when_grouping_by_sources_tags)
             dynamicToBottom.bindToPreference(preferences.collapsedDynamicAtBottom()) {
                 controller?.presenter?.getLibrary()
             }

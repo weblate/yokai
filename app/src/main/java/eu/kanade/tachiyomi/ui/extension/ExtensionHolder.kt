@@ -24,6 +24,9 @@ import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
+import eu.kanade.tachiyomi.util.view.setText
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.util.*
 import android.R as AR
 
@@ -54,7 +57,7 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
                     ExtensionLoader.extensionUpdateDate(itemView.context, extension)
                         .takeUnless { it == 0L }?.let {
                             binding.date.isVisible = true
-                            binding.date.text = itemView.context.timeSpanFromNow(R.string.updated_, it)
+                            binding.date.text = itemView.context.timeSpanFromNow(MR.strings.updated_, it)
                             infoText.add("")
                         }
                 }
@@ -65,9 +68,9 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
                             binding.date.text =
                                 itemView.context.timeSpanFromNow(
                                     if (extension.isShared) {
-                                        R.string.installed_
+                                        MR.strings.installed_
                                     } else {
-                                        R.string.added_
+                                        MR.strings.added_
                                     },
                                     it,
                                 )
@@ -96,7 +99,7 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
         binding.version.text = infoText.joinToString(" • ")
         binding.lang.text = LocaleHelper.getDisplayName(extension.lang)
         binding.warning.text = when {
-            extension.isNsfw -> itemView.context.getString(R.string.nsfw_short)
+            extension.isNsfw -> itemView.context.getString(MR.strings.nsfw_short)
             else -> ""
         }.plusRepo(extension).uppercase(Locale.ROOT)
         binding.installProgress.progress = item.sessionProgress ?: 0
@@ -125,8 +128,8 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
 
     private fun String.plusRepo(extension: Extension): String {
         val repoText = when {
-            extension is Extension.Untrusted -> itemView.context.getString(R.string.untrusted)
-            extension is Extension.Installed && extension.isObsolete -> itemView.context.getString(R.string.obsolete)
+            extension is Extension.Untrusted -> itemView.context.getString(MR.strings.untrusted)
+            extension is Extension.Installed && extension.isObsolete -> itemView.context.getString(MR.strings.obsolete)
             else -> ""
         }
 
@@ -157,12 +160,12 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
         if (installStep != null) {
             setText(
                 when (installStep) {
-                    InstallStep.Pending -> R.string.pending
-                    InstallStep.Downloading -> R.string.downloading
-                    InstallStep.Loading -> R.string.loading
-                    InstallStep.Installing -> R.string.installing
-                    InstallStep.Installed -> R.string.installed
-                    InstallStep.Error -> R.string.retry
+                    InstallStep.Pending -> MR.strings.pending
+                    InstallStep.Downloading -> MR.strings.downloading
+                    InstallStep.Loading -> MR.strings.loading
+                    InstallStep.Installing -> MR.strings.installing
+                    InstallStep.Installed -> MR.strings.installed
+                    InstallStep.Error -> MR.strings.retry
                     else -> return@with
                 },
             )
@@ -176,18 +179,18 @@ class ExtensionHolder(view: View, val adapter: ExtensionAdapter) :
                     isActivated = true
                     stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.icon_btn_state_list_anim)
                     rippleColor = ColorStateList.valueOf(context.getColor(R.color.on_secondary_highlight))
-                    setText(R.string.update)
+                    setText(MR.strings.update)
                 }
                 else -> {
-                    setText(R.string.settings)
+                    setText(MR.strings.settings)
                 }
             }
         } else if (extension is Extension.Untrusted) {
             resetStrokeColor()
-            setText(R.string.trust)
+            setText(MR.strings.trust)
         } else {
             resetStrokeColor()
-            setText(if (adapter.installPrivately) R.string.add else R.string.install)
+            setText(if (adapter.installPrivately) MR.strings.add else MR.strings.install)
         }
     }
 }

@@ -6,7 +6,9 @@ import androidx.compose.ui.unit.DpSize
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.appwidget.cornerRadius
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.util.lang.getString
 
 fun GlanceModifier.appWidgetBackgroundRadius(): GlanceModifier {
     return this.cornerRadius(R.dimen.appwidget_background_radius)
@@ -14,6 +16,11 @@ fun GlanceModifier.appWidgetBackgroundRadius(): GlanceModifier {
 
 fun GlanceModifier.appWidgetInnerRadius(): GlanceModifier {
     return this.cornerRadius(R.dimen.appwidget_inner_radius)
+}
+
+@Composable
+fun stringResource(id: StringResource): String {
+    return LocalContext.current.getString(id)
 }
 
 @Composable

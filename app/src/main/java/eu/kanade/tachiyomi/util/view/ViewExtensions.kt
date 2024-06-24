@@ -36,6 +36,7 @@ import androidx.annotation.Dimension
 import androidx.annotation.FloatRange
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.animation.addListener
@@ -59,8 +60,11 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.florent37.viewtooltip.ViewTooltip
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.math.MathUtils
 import com.google.android.material.navigation.NavigationBarItemView
 import com.google.android.material.navigation.NavigationBarMenuView
@@ -68,7 +72,11 @@ import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.snackbar.Snackbar
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.lang.tintText
 import eu.kanade.tachiyomi.util.system.ThemeUtil
 import eu.kanade.tachiyomi.util.system.dpToPx
@@ -127,6 +135,17 @@ fun View.snack(
 ): Snackbar {
     return snack(context.getString(resource), length, f)
 }
+
+fun View.snack(
+    resource: StringResource,
+    length: Int = Snackbar.LENGTH_SHORT,
+    f: (Snackbar.() -> Unit)? = null,
+): Snackbar {
+    return snack(context.getString(resource), length, f)
+}
+
+fun Snackbar.setAction(resource: StringResource, listener: View.OnClickListener?) =
+    setAction(context.getString(resource), listener)
 
 fun Snackbar.getText(): CharSequence {
     val textView: TextView = view.findViewById(com.google.android.material.R.id.snackbar_text)
@@ -353,15 +372,18 @@ var View.compatToolTipText: CharSequence?
         ViewCompat.setTooltipText(this, value)
     }
 
+fun TextView.setText(id: StringResource) =
+    setText(context.getString(id))
+
 @SuppressLint("RestrictedApi")
 inline fun View.popupMenu(
-    items: List<Pair<Int, Int>>,
+    items: List<Pair<Int, StringResource>>,
     selectedItemId: Int? = null,
     noinline onMenuItemClick: MenuItem.() -> Unit,
 ): PopupMenu {
     val popup = PopupMenu(context, this, Gravity.NO_GRAVITY)
     items.forEach { (id, stringRes) ->
-        popup.menu.add(0, id, 0, stringRes)
+        popup.menu.add(0, id, 0, context.getString(stringRes))
     }
 
     if (selectedItemId != null) {
@@ -444,6 +466,21 @@ inline fun <reified T> ViewGroup.findChild(): T? {
 inline fun <reified T> ViewGroup.findDescendant(): T? {
     return descendants.find { it is T } as? T
 }
+
+fun AlertDialog.Builder.setTitle(id: StringResource) =
+    setTitle(context.getString(id))
+
+fun AlertDialog.Builder.setMessage(id: StringResource) =
+    setMessage(context.getString(id))
+
+fun AlertDialog.Builder.setNeutralButton(id: StringResource, listener: DialogInterface.OnClickListener?) =
+    setNeutralButton(context.getString(id), listener)
+
+fun AlertDialog.Builder.setNegativeButton(id: StringResource, listener: DialogInterface.OnClickListener?) =
+    setNegativeButton(context.getString(id), listener)
+
+fun AlertDialog.Builder.setPositiveButton(id: StringResource, listener: DialogInterface.OnClickListener?) =
+    setPositiveButton(context.getString(id), listener)
 
 fun Dialog.blurBehindWindow(
     window: Window?,
@@ -603,3 +640,10 @@ fun RecyclerView.onAnimationsFinished(callback: (RecyclerView) -> Unit) = post(
         }
     }
 )
+
+// FIXME: Replace ViewTooltip with KMM compatible one, compose hopefully
+fun ViewTooltip.text(id: StringResource) = text(id.resourceId)
+
+// FIXME: Replace with KMM compatible, hopefully compose
+fun <S> MaterialDatePicker.Builder<S>.setTitleText(id: StringResource) =
+    setTitleText(id.resourceId)

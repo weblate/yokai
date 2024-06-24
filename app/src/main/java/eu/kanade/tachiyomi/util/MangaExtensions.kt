@@ -11,6 +11,9 @@ import com.bluelinelabs.conductor.Controller
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -34,6 +37,10 @@ import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.setCustomTitleAndMessage
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
+import eu.kanade.tachiyomi.util.view.setAction
+import eu.kanade.tachiyomi.util.view.setNegativeButton
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
@@ -197,8 +204,8 @@ fun Manga.addOrRemoveToFavorites(
                 db.setMangaCategories(listOf(mc), listOf(this))
                 (activity as? MainActivity)?.showNotificationPermissionPrompt()
                 onMangaMoved()
-                return view.snack(activity.getString(R.string.added_to_, defaultCategory.name)) {
-                    setAction(R.string.change) {
+                return view.snack(activity.getString(MR.strings.added_to_, defaultCategory.name)) {
+                    setAction(MR.strings.change) {
                         moveCategories(db, activity, onMangaMoved)
                     }
                 }
@@ -219,19 +226,19 @@ fun Manga.addOrRemoveToFavorites(
                 onMangaMoved()
                 return view.snack(
                     activity.getString(
-                        R.string.added_to_,
+                        MR.strings.added_to_,
                         when (lastUsedCategories.size) {
-                            0 -> activity.getString(R.string.default_category).lowercase(Locale.ROOT)
+                            0 -> activity.getString(MR.strings.default_category).lowercase(Locale.ROOT)
                             1 -> lastUsedCategories.firstOrNull()?.name ?: ""
-                            else -> activity.resources.getQuantityString(
-                                R.plurals.category_plural,
+                            else -> activity.getString(
+                                MR.plurals.category_plural,
                                 lastUsedCategories.size,
                                 lastUsedCategories.size,
                             )
                         },
                     ),
                 ) {
-                    setAction(R.string.change) {
+                    setAction(MR.strings.change) {
                         moveCategories(db, activity, onMangaMoved)
                     }
                 }
@@ -245,13 +252,13 @@ fun Manga.addOrRemoveToFavorites(
                 onMangaMoved()
                 (activity as? MainActivity)?.showNotificationPermissionPrompt()
                 return if (categories.isNotEmpty()) {
-                    view.snack(activity.getString(R.string.added_to_, activity.getString(R.string.default_value))) {
-                        setAction(R.string.change) {
+                    view.snack(activity.getString(MR.strings.added_to_, activity.getString(MR.strings.default_value))) {
+                        setAction(MR.strings.change) {
                             moveCategories(db, activity, onMangaMoved)
                         }
                     }
                 } else {
-                    view.snack(R.string.added_to_library)
+                    view.snack(MR.strings.added_to_library)
                 }
             }
             else -> { // Always ask
@@ -264,8 +271,8 @@ fun Manga.addOrRemoveToFavorites(
         date_added = 0
         db.insertManga(this).executeAsBlocking()
         onMangaMoved()
-        return view.snack(view.context.getString(R.string.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
-            setAction(R.string.undo) {
+        return view.snack(view.context.getString(MR.strings.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
+            setAction(MR.strings.undo) {
                 favorite = true
                 date_added = lastAddedDate
                 db.insertManga(this@addOrRemoveToFavorites).executeAsBlocking()
@@ -343,12 +350,12 @@ private fun showAddDuplicateDialog(
     }
 
     activity.materialAlertDialog().apply {
-        setCustomTitleAndMessage(0, activity.getString(R.string.confirm_manga_add_duplicate, source.name))
+        setCustomTitleAndMessage(0, activity.getString(MR.strings.confirm_manga_add_duplicate, source.name))
         setItems(
             arrayOf(
-                activity.getString(R.string.show_, libraryManga.seriesType(activity, sourceManager)).asButton(activity),
-                activity.getString(R.string.add_to_library).asButton(activity),
-                activity.getString(R.string.migrate).asButton(activity, !newManga.initialized),
+                activity.getString(MR.strings.show_, libraryManga.seriesType(activity, sourceManager)).asButton(activity),
+                activity.getString(MR.strings.add_to_library).asButton(activity),
+                activity.getString(MR.strings.migrate).asButton(activity, !newManga.initialized),
             ),
         ) { dialog, i ->
             when (i) {
@@ -359,20 +366,20 @@ private fun showAddDuplicateDialog(
                 1 -> addManga()
                 2 -> {
                     if (!newManga.initialized) {
-                        activity.toast(R.string.must_view_details_before_migration, Toast.LENGTH_LONG)
+                        activity.toast(MR.strings.must_view_details_before_migration, Toast.LENGTH_LONG)
                         return@setItems
                     }
                     activity.materialAlertDialog().apply {
-                        setTitle(R.string.migration)
+                        setTitle(MR.strings.migration)
                         setMultiChoiceItems(
                             titles,
                             titles.map { true }.toBooleanArray(),
                             null,
                         )
-                        setPositiveButton(R.string.migrate) { mDialog, _ ->
+                        setPositiveButton(MR.strings.migrate) { mDialog, _ ->
                             migrateManga(mDialog, true)
                         }
-                        setNegativeButton(R.string.copy) { mDialog, _ ->
+                        setNegativeButton(AR.string.copy) { mDialog, _ ->
                             migrateManga(mDialog, false)
                         }
                         setNeutralButton(AR.string.cancel, null)
@@ -393,7 +400,7 @@ private fun showAddDuplicateDialog(
                 view?.setOnClickListener {
                     if (!newManga.initialized) {
                         activity.toast(
-                            R.string.must_view_details_before_migration,
+                            MR.strings.must_view_details_before_migration,
                             Toast.LENGTH_LONG,
                         )
                     }
@@ -432,13 +439,13 @@ fun Manga.autoAddTrack(db: DatabaseHelper, onMangaMoved: () -> Unit) {
 fun Context.mapStatus(status: Int): String {
     return getString(
         when (status) {
-            SManga.ONGOING -> R.string.ongoing
-            SManga.COMPLETED -> R.string.completed
-            SManga.LICENSED -> R.string.licensed
-            SManga.PUBLISHING_FINISHED -> R.string.publishing_finished
-            SManga.CANCELLED -> R.string.cancelled
-            SManga.ON_HIATUS -> R.string.on_hiatus
-            else -> R.string.unknown
+            SManga.ONGOING -> MR.strings.ongoing
+            SManga.COMPLETED -> MR.strings.completed
+            SManga.LICENSED -> MR.strings.licensed
+            SManga.PUBLISHING_FINISHED -> MR.strings.publishing_finished
+            SManga.CANCELLED -> MR.strings.cancelled
+            SManga.ON_HIATUS -> MR.strings.on_hiatus
+            else -> MR.strings.unknown
         },
     )
 }
@@ -446,12 +453,12 @@ fun Context.mapStatus(status: Int): String {
 fun Context.mapSeriesType(seriesType: Int): String {
     return getString(
         when (seriesType) {
-            Manga.TYPE_MANGA -> R.string.manga
-            Manga.TYPE_MANHWA -> R.string.manhwa
-            Manga.TYPE_MANHUA -> R.string.manhua
-            Manga.TYPE_COMIC -> R.string.comic
-            Manga.TYPE_WEBTOON -> R.string.webtoon
-            else -> R.string.unknown
+            Manga.TYPE_MANGA -> MR.strings.manga
+            Manga.TYPE_MANHWA -> MR.strings.manhwa
+            Manga.TYPE_MANHUA -> MR.strings.manhua
+            Manga.TYPE_COMIC -> MR.strings.comic
+            Manga.TYPE_WEBTOON -> MR.strings.webtoon
+            else -> MR.strings.unknown
         },
     )
 }

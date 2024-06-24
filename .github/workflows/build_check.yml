@@ -33,8 +33,7 @@ jobs:
           cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
 
       - name: Build and run tests
-        if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
-        run: ./gradlew assembleDevDebug testDevDebugUnitTest assembleStandardRelease
+        run: ./gradlew assembleStandardRelease testStandardReleaseUnitTest
 
       - name: Publish test report
         uses: mikepenz/action-junit-report@v4
@@ -43,15 +42,6 @@ jobs:
           include_passed: true
           detailed_summary: true
           report_paths: '**/build/test-results/test*/TEST-*.xml'
-
-      - name: Run tests against release variant
-        if: startsWith(env.VERSION_TAG, 'r') != true && startsWith(env.VERSION_TAG, 'v') != true
-        run: ./gradlew testStandardReleaseUnitTest
-
-      - name: Upload debug APK to artifact
-        uses: actions/upload-artifact@v4
-        with:
-          path: app/build/outputs/apk/dev/debug/app*-arm64-v8a-*.apk
 
       - name: Upload R8 APK to artifact
         uses: actions/upload-artifact@v4

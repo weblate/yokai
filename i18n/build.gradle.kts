@@ -32,11 +32,10 @@ multiplatformResources {
 }
 
 tasks {
-    // FIXME: Migrate fully to MR
-//    val localesConfigTask = registerLocalesConfigTask(project)
-//    preBuild {
-//        dependsOn(localesConfigTask)
-//    }
+   val localesConfigTask = registerLocalesConfigTask(project)
+   preBuild {
+       dependsOn(localesConfigTask)
+   }
 
     withType<KotlinCompile> {
         compilerOptions.freeCompilerArgs.addAll(

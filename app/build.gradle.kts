@@ -167,16 +167,10 @@ dependencies {
     // Android X libraries
     implementation(androidx.bundles.androidx)
 
-    // Firebase
-    val firebaseCrashlytics = listOf(
-        libs.firebase.analytics,
-        libs.firebase.crashlytics,
-    )
     implementation(platform(libs.firebase))
-    firebaseCrashlytics.forEach {
-        releaseImplementation(it)
-        "nightlyImplementation"(it)
-    }
+
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
     // ReactiveX
     implementation(libs.rxandroid)

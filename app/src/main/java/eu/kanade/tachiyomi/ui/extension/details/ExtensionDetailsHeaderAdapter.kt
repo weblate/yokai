@@ -13,6 +13,10 @@ import eu.kanade.tachiyomi.ui.extension.getApplicationIcon
 import eu.kanade.tachiyomi.util.system.LocaleHelper
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.view.inflate
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setText
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class ExtensionDetailsHeaderAdapter(private val presenter: ExtensionDetailsPresenter) :
@@ -45,8 +49,8 @@ class ExtensionDetailsHeaderAdapter(private val presenter: ExtensionDetailsPrese
 
             extension.getApplicationIcon(context)?.let { binding.extensionIcon.setImageDrawable(it) }
             binding.extensionTitle.text = extension.name
-            binding.extensionVersion.text = context.getString(R.string.version_, extension.versionName)
-            binding.extensionLang.text = context.getString(R.string.language_, LocaleHelper.getSourceDisplayName(extension.lang, context))
+            binding.extensionVersion.text = context.getString(MR.strings.version_, extension.versionName)
+            binding.extensionLang.text = context.getString(MR.strings.language_, LocaleHelper.getSourceDisplayName(extension.lang, context))
             binding.extensionNsfw.isVisible = extension.isNsfw
             binding.extensionPkg.text = extension.pkgName
 
@@ -56,7 +60,7 @@ class ExtensionDetailsHeaderAdapter(private val presenter: ExtensionDetailsPrese
                 } else {
                     context.materialAlertDialog()
                         .setTitle(extension.name)
-                        .setPositiveButton(R.string.remove) { _, _ ->
+                        .setPositiveButton(MR.strings.remove) { _, _ ->
                             presenter.uninstallExtension()
                         }
                         .setNegativeButton(AR.string.cancel, null)
@@ -73,12 +77,12 @@ class ExtensionDetailsHeaderAdapter(private val presenter: ExtensionDetailsPrese
 
             binding.extensionAppInfoButton.isVisible = extension.isShared
             if (!extension.isShared) {
-                binding.extensionUninstallButton.text = context.getString(R.string.remove)
+                binding.extensionUninstallButton.text = context.getString(MR.strings.remove)
             }
 
             if (extension.isObsolete) {
                 binding.extensionWarningBanner.isVisible = true
-                binding.extensionWarningBanner.setText(R.string.obsolete_extension_message)
+                binding.extensionWarningBanner.setText(MR.strings.obsolete_extension_message)
             }
         }
     }

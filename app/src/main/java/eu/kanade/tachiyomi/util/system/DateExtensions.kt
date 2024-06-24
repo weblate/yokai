@@ -2,22 +2,23 @@ package eu.kanade.tachiyomi.util.system
 
 import android.content.Context
 import android.text.format.DateUtils
-import eu.kanade.tachiyomi.R
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import dev.icerock.moko.resources.StringResource
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import java.util.*
 
 val Long.timeSpanFromNow: String
     get() = DateUtils.getRelativeTimeSpanString(this).toString()
 
 fun Long.timeSpanFromNow(context: Context): String {
     return if (this == 0L) {
-        context.getString(R.string.a_while_ago).lowercase(Locale.ROOT)
+        context.getString(MR.strings.a_while_ago).lowercase(Locale.ROOT)
     } else {
         DateUtils.getRelativeTimeSpanString(this).toString()
     }
 }
 
+fun Context.timeSpanFromNow(res: StringResource, time: Long) = getString(res, time.timeSpanFromNow(this))
 fun Context.timeSpanFromNow(res: Int, time: Long) = getString(res, time.timeSpanFromNow(this))
 
 /**

@@ -8,7 +8,6 @@ import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.databinding.ChapterSortBottomSheetBinding
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
@@ -19,8 +18,12 @@ import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.system.setNegativeStateItems
 import eu.kanade.tachiyomi.util.view.checkHeightThen
 import eu.kanade.tachiyomi.util.view.setBottomEdge
+import eu.kanade.tachiyomi.util.view.setNeutralButton
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
 import eu.kanade.tachiyomi.widget.SortTextView
+import yokai.i18n.MR
 import kotlin.math.max
 import android.R as AR
 
@@ -170,7 +173,6 @@ class ChaptersSortBottomSheet(controller: MangaDetailsController) :
             val preselected = scanlators.map { it in filteredScanlators }.toBooleanArray()
             var alertDialog: AlertDialog? = null
             activity.materialAlertDialog()
-                .setTitle(R.string.filter_groups)
                 .setNegativeStateItems(scanlators, preselected) { _, pos, checked ->
                     if (checked) {
                         filteredScanlators.add(scanlators[pos])
@@ -180,11 +182,12 @@ class ChaptersSortBottomSheet(controller: MangaDetailsController) :
                     alertDialog?.getButton(BUTTON_POSITIVE)?.isEnabled =
                         scanlators.size != filteredScanlators.size
                 }
+                .setTitle(MR.strings.filter_groups)
                 .setNegativeButton(AR.string.cancel, null)
-                .setPositiveButton(R.string.filter) { _, _ ->
+                .setPositiveButton(MR.strings.filter) { _, _ ->
                     presenter.setScanlatorFilter(filteredScanlators)
                 }
-                .setNeutralButton(R.string.reset) { _, _ ->
+                .setNeutralButton(MR.strings.reset) { _, _ ->
                     presenter.setScanlatorFilter(emptySet())
                 }
                 .show().apply {

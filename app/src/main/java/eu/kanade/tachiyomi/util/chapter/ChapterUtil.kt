@@ -15,6 +15,8 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.dpToPxEnd
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -167,7 +169,7 @@ class ChapterUtil {
         fun Chapter.preferredChapterName(context: Context, manga: Manga, preferences: PreferencesHelper): String {
             return if (manga.hideChapterTitle(preferences) && isRecognizedNumber) {
                 val number = decimalFormat.format(chapter_number.toDouble())
-                context.getString(R.string.chapter_, number)
+                context.getString(MR.strings.chapter_, number)
             } else {
                 name
             }

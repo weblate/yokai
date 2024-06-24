@@ -5,6 +5,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
@@ -114,7 +117,7 @@ sealed class Preference {
                     v.map { e[it] }
                         .takeIf { it.isNotEmpty() }
                         ?.joinToString()
-                } ?: stringResource(R.string.none)
+                } ?: stringResource(MR.strings.none)
                 subtitle?.format(combined)
             },
             override val icon: ImageVector? = null,

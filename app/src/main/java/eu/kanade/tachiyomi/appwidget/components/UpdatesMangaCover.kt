@@ -11,6 +11,8 @@ import androidx.glance.layout.ContentScale
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.size
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import eu.kanade.tachiyomi.appwidget.util.appWidgetInnerRadius
 
 val CoverWidth = 58.dp

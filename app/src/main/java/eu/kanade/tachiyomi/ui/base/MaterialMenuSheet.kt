@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.BottomMenuSheetBinding
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -149,7 +153,7 @@ class MaterialMenuSheet(
     data class MenuSheetItem(
         val id: Int,
         @DrawableRes val drawable: Int = 0,
-        @StringRes val textRes: Int = 0,
+        val textRes: StringResource = StringResource(0),
         val text: String? = null,
         var endDrawableRes: Int = 0,
     )

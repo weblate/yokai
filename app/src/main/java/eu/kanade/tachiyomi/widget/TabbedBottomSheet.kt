@@ -10,10 +10,12 @@ import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.widget.NestedScrollView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.databinding.TabbedBottomSheetBinding
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.view.expand
+import yokai.util.lang.getString
 import kotlin.math.max
 
 abstract class TabbedBottomSheetDialog(private val activity: Activity) :
@@ -66,7 +68,7 @@ abstract class TabbedBottomSheetDialog(private val activity: Activity) :
 
     abstract fun getTabViews(): List<View>
 
-    abstract fun getTabTitles(): List<Int>
+    abstract fun getTabTitles(): List<StringResource>
 
     private inner class TabbedSheetAdapter : ViewPagerAdapter() {
 
@@ -79,7 +81,7 @@ abstract class TabbedBottomSheetDialog(private val activity: Activity) :
         }
 
         override fun getPageTitle(position: Int): CharSequence {
-            return activity.resources!!.getString(getTabTitles()[position])
+            return activity.getString(getTabTitles()[position])
         }
     }
 }

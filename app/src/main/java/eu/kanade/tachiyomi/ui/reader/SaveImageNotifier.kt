@@ -10,6 +10,9 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.notification.NotificationHandler
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -57,7 +60,7 @@ class SaveImageNotifier(private val context: Context) {
 
     private fun showCompleteNotification(file: UniFile, image: Bitmap) {
         with(notificationBuilder) {
-            setContentTitle(context.getString(R.string.picture_saved))
+            setContentTitle(context.getString(MR.strings.picture_saved))
             setSmallIcon(R.drawable.ic_photo_24dp)
             setStyle(NotificationCompat.BigPictureStyle().bigPicture(image))
             setLargeIcon(image)
@@ -70,13 +73,13 @@ class SaveImageNotifier(private val context: Context) {
             // Share action
             addAction(
                 R.drawable.ic_share_24dp,
-                context.getString(R.string.share),
+                context.getString(MR.strings.share),
                 NotificationReceiver.shareImagePendingBroadcast(context, file.filePath!!, notificationId),
             )
             // Delete action
             addAction(
                 R.drawable.ic_delete_24dp,
-                context.getString(R.string.delete),
+                context.getString(MR.strings.delete),
                 NotificationReceiver.deleteImagePendingBroadcast(context, file.filePath!!, notificationId),
             )
 
@@ -103,8 +106,8 @@ class SaveImageNotifier(private val context: Context) {
     fun onError(error: String?) {
         // Create notification
         with(notificationBuilder) {
-            setContentTitle(context.getString(R.string.download_error))
-            setContentText(error ?: context.getString(R.string.unknown_error))
+            setContentTitle(context.getString(MR.strings.download_error))
+            setContentText(error ?: context.getString(MR.strings.unknown_error))
             setSmallIcon(AR.drawable.ic_menu_report_image)
         }
         updateNotification()

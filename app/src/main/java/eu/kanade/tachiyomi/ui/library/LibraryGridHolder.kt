@@ -14,6 +14,9 @@ import coil3.dispose
 import coil3.size.Precision
 import coil3.size.Scale
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.MangaGridItemBinding

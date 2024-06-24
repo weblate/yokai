@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -49,7 +52,9 @@ import eu.kanade.tachiyomi.util.view.RecyclerWindowInsetsListener
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.liftAppbarWith
+import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTextColorAlpha
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -98,7 +103,7 @@ class MigrationListController(bundle: Bundle? = null) :
     override fun createBinding(inflater: LayoutInflater) = MigrationListControllerBinding.inflate(inflater)
     override fun getTitle(): String {
         val progress = adapter?.items?.count { it.manga.migrationStatus != MigrationStatus.RUNNUNG }
-        return resources?.getString(R.string.migration) + " ($progress/${adapter?.itemCount})"
+        return activity?.getString(MR.strings.migration) + " ($progress/${adapter?.itemCount})"
     }
 
     override fun onViewCreated(view: View) {
@@ -312,11 +317,10 @@ class MigrationListController(bundle: Bundle? = null) :
 
     override fun noMigration() {
         launchUI {
-            val res = resources
-            if (res != null) {
-                activity?.toast(
-                    res.getQuantityString(
-                        R.plurals.manga_migrated,
+            if (activity != null) {
+                activity!!.toast(
+                    activity!!.getString(
+                        MR.plurals.manga_migrated,
                         manaulMigrations,
                         manaulMigrations,
                     ),
@@ -394,7 +398,7 @@ class MigrationListController(bundle: Bundle? = null) :
                 adapter?.notifyItemChanged(firstIndex)
             } else {
                 migratingManga.manga.migrationStatus = MigrationStatus.MANGA_NOT_FOUND
-                activity?.toast(R.string.no_chapters_found_for_migration, Toast.LENGTH_LONG)
+                activity?.toast(MR.strings.no_chapters_found_for_migration, Toast.LENGTH_LONG)
                 adapter?.notifyItemChanged(firstIndex)
             }
         }
@@ -460,8 +464,8 @@ class MigrationListController(bundle: Bundle? = null) :
             }
         }
         activity?.materialAlertDialog()
-            ?.setTitle(R.string.stop_migrating)
-            ?.setPositiveButton(R.string.stop) { _, _ ->
+            ?.setTitle(MR.strings.stop_migrating)
+            ?.setPositiveButton(MR.strings.stop) { _, _ ->
                 router.popCurrentController()
                 migrationsJob?.cancel()
             }
@@ -517,10 +521,10 @@ class MigrationListController(bundle: Bundle? = null) :
 
     private fun showCopyMigrateDialog(copy: Boolean, totalManga: Int, mangaSkipped: Int) {
         val activity = activity ?: return
-        val confirmRes = if (copy) R.plurals.copy_manga else R.plurals.migrate_manga
-        val skipping by lazy { activity.getString(R.string.skipping_, mangaSkipped) }
+        val confirmRes = if (copy) MR.plurals.copy_manga else MR.plurals.migrate_manga
+        val skipping by lazy { activity.getString(MR.strings.skipping_, mangaSkipped) }
         val additionalString = if (mangaSkipped > 0) " $skipping" else ""
-        val confirmString = activity.resources.getQuantityString(
+        val confirmString = activity.getString(
             confirmRes,
             totalManga,
             totalManga,
@@ -528,7 +532,7 @@ class MigrationListController(bundle: Bundle? = null) :
         )
         activity.materialAlertDialog()
             .setMessage(confirmString)
-            .setPositiveButton(if (copy) R.string.copy_value else R.string.migrate) { _, _ ->
+            .setPositiveButton(if (copy) MR.strings.copy_value else MR.strings.migrate) { _, _ ->
                 if (copy) {
                     copyMangas()
                 } else {
@@ -542,8 +546,8 @@ class MigrationListController(bundle: Bundle? = null) :
     override fun canChangeTabs(block: () -> Unit): Boolean {
         if (migrationsJob?.isCancelled == false || adapter?.allMangasDone() == true) {
             activity?.materialAlertDialog()
-                ?.setTitle(R.string.stop_migrating)
-                ?.setPositiveButton(R.string.stop) { _, _ ->
+                ?.setTitle(MR.strings.stop_migrating)
+                ?.setPositiveButton(MR.strings.stop) { _, _ ->
                     block()
                     migrationsJob?.cancel()
                 }

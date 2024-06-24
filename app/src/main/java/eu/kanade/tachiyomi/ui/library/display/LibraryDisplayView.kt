@@ -5,6 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import com.google.android.material.slider.Slider
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.LibraryDisplayLayoutBinding
 import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.lang.addBetaTag
@@ -30,7 +33,7 @@ class LibraryDisplayView @JvmOverloads constructor(context: Context, attrs: Attr
             binding.staggeredGrid.isEnabled = !it
         }
         binding.outlineOnCovers.bindToPreference(uiPreferences.outlineOnCovers())
-        binding.staggeredGrid.text = context.getString(R.string.use_staggered_grid).addBetaTag(context)
+        binding.staggeredGrid.text = context.getString(MR.strings.use_staggered_grid).addBetaTag(context)
         binding.staggeredGrid.isEnabled = !uiPreferences.uniformGrid().get()
         binding.staggeredGrid.bindToPreference(preferences.useStaggeredGrid())
         binding.gridSeekbar.value = ((preferences.gridSize().get() + .5f) * 2f).roundToInt().toFloat()
@@ -43,9 +46,9 @@ class LibraryDisplayView @JvmOverloads constructor(context: Context, attrs: Attr
             val mainText = (mainView ?: this@LibraryDisplayView).rowsForValue(it).toString()
             val mainOrientation = context.getString(
                 if (context.isLandscape()) {
-                    R.string.landscape
+                    MR.strings.landscape
                 } else {
-                    R.string.portrait
+                    MR.strings.portrait
                 },
             )
             val alt = (
@@ -60,9 +63,9 @@ class LibraryDisplayView @JvmOverloads constructor(context: Context, attrs: Attr
             val altText = alt.numberOfRowsForValue(it).toString()
             val altOrientation = context.getString(
                 if (context.isLandscape()) {
-                    R.string.portrait
+                    MR.strings.portrait
                 } else {
-                    R.string.landscape
+                    MR.strings.landscape
                 },
             )
             "$mainOrientation: $mainText • $altOrientation: $altText"
@@ -95,8 +98,8 @@ class LibraryDisplayView @JvmOverloads constructor(context: Context, attrs: Attr
     private fun setGridText(progress: Float) {
         with(binding.gridSizeText) {
             val rows = (mainView ?: this@LibraryDisplayView).rowsForValue(progress)
-            val titleText = context.getString(R.string.grid_size)
-            val subtitleText = context.getString(R.string._per_row, rows)
+            val titleText = context.getString(MR.strings.grid_size)
+            val subtitleText = context.getString(MR.strings._per_row, rows)
             text = titleText.withSubtitle(context, subtitleText)
         }
     }

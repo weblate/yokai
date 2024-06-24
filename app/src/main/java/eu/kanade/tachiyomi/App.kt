@@ -67,6 +67,8 @@ import yokai.core.di.PreferenceModule
 import yokai.core.migration.Migrator
 import yokai.core.migration.migrations.migrations
 import yokai.domain.base.BasePreferences
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.security.Security
 
 open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factory {
@@ -130,9 +132,9 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
                     disableIncognitoReceiver.register()
                     val nContext = localeContext
                     val notification = nContext.notification(Notifications.CHANNEL_INCOGNITO_MODE) {
-                        val incogText = nContext.getString(R.string.incognito_mode)
+                        val incogText = nContext.getString(MR.strings.incognito_mode)
                         setContentTitle(incogText)
-                        setContentText(nContext.getString(R.string.turn_off_, incogText))
+                        setContentText(nContext.getString(MR.strings.turn_off_, incogText))
                         setSmallIcon(R.drawable.ic_incognito_24dp)
                         setOngoing(true)
 

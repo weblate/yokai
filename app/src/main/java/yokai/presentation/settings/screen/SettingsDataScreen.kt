@@ -25,7 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import co.touchlab.kermit.Logger
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
@@ -60,7 +64,7 @@ import yokai.presentation.settings.screen.data.storageLocationPicker
 
 object SettingsDataScreen : ComposableSettings {
     @Composable
-    override fun getTitleRes(): Int = R.string.data_and_storage
+    override fun getTitleRes(): StringResource = MR.strings.data_and_storage
 
     @Composable
     override fun getPreferences(): List<Preference> {
@@ -80,13 +84,13 @@ object SettingsDataScreen : ComposableSettings {
         val pickStoragePicker = storageLocationPicker(storagePreferences.baseStorageDirectory())
 
         return Preference.PreferenceItem.TextPreference(
-            title = stringResource(R.string.storage_location),
+            title = stringResource(MR.strings.storage_location),
             subtitle = storageLocationText(storagePreferences.baseStorageDirectory()),
             onClick = {
                 try {
                     pickStoragePicker.launch(null)
                 } catch (e: ActivityNotFoundException) {
-                    context.toast(R.string.file_picker_error)
+                    context.toast(MR.strings.file_picker_error)
                 }
             }
         )
@@ -105,7 +109,7 @@ object SettingsDataScreen : ComposableSettings {
                 override fun createIntent(context: Context, input: String): Intent {
                     val intent = super.createIntent(context, input)
                     intent.addCategory(Intent.CATEGORY_OPENABLE)
-                    return Intent.createChooser(intent, context.getString(R.string.select_backup_file))
+                    return Intent.createChooser(intent, context.getString(MR.strings.select_backup_file))
                 }
             },
         ) {
@@ -130,10 +134,10 @@ object SettingsDataScreen : ComposableSettings {
         }
 
         return Preference.PreferenceGroup(
-            title = stringResource(R.string.backup_and_restore),
+            title = stringResource(MR.strings.backup_and_restore),
             preferenceItems = persistentListOf(
                 Preference.PreferenceItem.CustomPreference(
-                    title = stringResource(R.string.backup_and_restore),
+                    title = stringResource(MR.strings.backup_and_restore),
                 ) {
                     BasePreferenceWidget(
                         subcomponent = {
@@ -149,12 +153,12 @@ object SettingsDataScreen : ComposableSettings {
                                     onCheckedChange = {
                                         if (!BackupRestoreJob.isRunning(context)) {
                                             if (DeviceUtil.isMiui && DeviceUtil.isMiuiOptimizationDisabled()) {
-                                                context.toast(R.string.restore_miui_warning, Toast.LENGTH_LONG)
+                                                context.toast(MR.strings.restore_miui_warning, Toast.LENGTH_LONG)
                                             }
 
                                             val dir = storageManager.getBackupsDirectory()
                                             if (dir == null) {
-                                                context.toast(R.string.invalid_location_generic)
+                                                context.toast(MR.strings.invalid_location_generic)
                                                 return@SegmentedButton
                                             }
 
@@ -166,12 +170,12 @@ object SettingsDataScreen : ComposableSettings {
                                                 )
                                             }
                                         } else {
-                                            context.toast(R.string.backup_in_progress)
+                                            context.toast(MR.strings.backup_in_progress)
                                         }
                                     },
                                     shape = SegmentedButtonDefaults.itemShape(0, 2),
                                 ) {
-                                    Text(stringResource(R.string.create_backup))
+                                    Text(stringResource(MR.strings.create_backup))
                                 }
                                 SegmentedButton(
                                     modifier = Modifier.fillMaxHeight(),
@@ -179,18 +183,18 @@ object SettingsDataScreen : ComposableSettings {
                                     onCheckedChange = {
                                         if (!BackupRestoreJob.isRunning(context)) {
                                             if (DeviceUtil.isMiui && DeviceUtil.isMiuiOptimizationDisabled()) {
-                                                context.toast(R.string.restore_miui_warning, Toast.LENGTH_LONG)
+                                                context.toast(MR.strings.restore_miui_warning, Toast.LENGTH_LONG)
                                             }
 
                                             scope.launch { extensionManager.getExtensionUpdates(true) }
                                             chooseBackup.launch("*/*")
                                         } else {
-                                            context.toast(R.string.restore_in_progress)
+                                            context.toast(MR.strings.restore_in_progress)
                                         }
                                     },
                                     shape = SegmentedButtonDefaults.itemShape(1, 2),
                                 ) {
-                                    Text(stringResource(R.string.restore_backup))
+                                    Text(stringResource(MR.strings.restore_backup))
                                 }
                             }
                         },
@@ -200,14 +204,14 @@ object SettingsDataScreen : ComposableSettings {
                 // Automatic backups
                 Preference.PreferenceItem.ListPreference(
                     pref = preferences.backupInterval(),
-                    title = stringResource(R.string.backup_frequency),
+                    title = stringResource(MR.strings.backup_frequency),
                     entries = persistentMapOf(
-                        0 to stringResource(R.string.manual),
-                        6 to stringResource(R.string.every_6_hours),
-                        12 to stringResource(R.string.every_12_hours),
-                        24 to stringResource(R.string.daily),
-                        48 to stringResource(R.string.every_2_days),
-                        168 to stringResource(R.string.weekly),
+                        0 to stringResource(MR.strings.manual),
+                        6 to stringResource(MR.strings.every_6_hours),
+                        12 to stringResource(MR.strings.every_12_hours),
+                        24 to stringResource(MR.strings.daily),
+                        48 to stringResource(MR.strings.every_2_days),
+                        168 to stringResource(MR.strings.weekly),
                     ),
                     onValueChanged = {
                         BackupCreatorJob.setupTask(context, it)
@@ -215,8 +219,8 @@ object SettingsDataScreen : ComposableSettings {
                     },
                 ),
                 Preference.PreferenceItem.InfoPreference(
-                    stringResource(R.string.backup_info)
-                    /*+ "\n\n" + stringResource(R.string.last_auto_backup_info, relativeTimeSpanString(lastAutoBackup))*/,
+                    stringResource(MR.strings.backup_info)
+                    /*+ "\n\n" + stringResource(MR.strings.last_auto_backup_info, relativeTimeSpanString(lastAutoBackup))*/,
                 ),
             ),
         )
@@ -235,10 +239,10 @@ object SettingsDataScreen : ComposableSettings {
         val cacheReadableSize = remember(cacheReadableSizeSema) { chapterCache.readableSize }
 
         return Preference.PreferenceGroup(
-            title = stringResource(R.string.storage_usage),
+            title = stringResource(MR.strings.storage_usage),
             preferenceItems = persistentListOf(
                 Preference.PreferenceItem.CustomPreference(
-                    title = stringResource(R.string.storage_usage),
+                    title = stringResource(MR.strings.storage_usage),
                 ) {
                     BasePreferenceWidget(
                         subcomponent = {
@@ -250,15 +254,15 @@ object SettingsDataScreen : ComposableSettings {
                 },
 
                 Preference.PreferenceItem.TextPreference(
-                    title = stringResource(R.string.clear_chapter_cache),
-                    subtitle = stringResource(R.string.used_, cacheReadableSize),
+                    title = stringResource(MR.strings.clear_chapter_cache),
+                    subtitle = stringResource(MR.strings.used_, cacheReadableSize),
                     onClick = {
                         scope.launchNonCancellableIO {
                             try {
                                 val deletedFiles = chapterCache.clear()
                                 withUIContext {
-                                    context.toast(context.resources?.getQuantityString(
-                                        R.plurals.cache_cleared,
+                                    context.toast(context.getString(
+                                        MR.plurals.cache_cleared,
                                         deletedFiles,
                                         deletedFiles,
                                     ))
@@ -266,32 +270,32 @@ object SettingsDataScreen : ComposableSettings {
                                 }
                             } catch (e: Throwable) {
                                 Logger.e(e)
-                                withUIContext { context.toast(R.string.cache_delete_error) }
+                                withUIContext { context.toast(MR.strings.cache_delete_error) }
                             }
                         }
                     },
                 ),
                 Preference.PreferenceItem.TextPreference(
-                    title = stringResource(R.string.clear_cached_covers_non_library),
+                    title = stringResource(MR.strings.clear_cached_covers_non_library),
                     subtitle = stringResource(
-                        R.string.delete_all_covers__not_in_library_used_,
+                        MR.strings.delete_all_covers__not_in_library_used_,
                         coverCache.getOnlineCoverCacheSize(),
                     ),
                     onClick = {
-                        context.toast(R.string.starting_cleanup)
+                        context.toast(MR.strings.starting_cleanup)
                         scope.launchNonCancellableIO {
                             coverCache.deleteAllCachedCovers()
                         }
                     }
                 ),
                 Preference.PreferenceItem.TextPreference(
-                    title = stringResource(R.string.clean_up_cached_covers),
+                    title = stringResource(MR.strings.clean_up_cached_covers),
                     subtitle = stringResource(
-                        R.string.delete_old_covers_in_library_used_,
+                        MR.strings.delete_old_covers_in_library_used_,
                         coverCache.getChapterCacheSize(),
                     ),
                     onClick = {
-                        context.toast(R.string.starting_cleanup)
+                        context.toast(MR.strings.starting_cleanup)
                         scope.launchNonCancellableIO {
                             coverCache.deleteOldCovers()
                         }

@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
@@ -28,8 +31,7 @@ class Komga(private val context: Context, id: Int) : TrackService(id), EnhancedT
 
     val api by lazy { KomgaApi(client) }
 
-    @StringRes
-    override fun nameRes() = R.string.komga
+    override fun nameRes() = MR.strings.komga
 
     override fun getLogo() = R.drawable.ic_tracker_komga
 
@@ -43,18 +45,18 @@ class Komga(private val context: Context, id: Int) : TrackService(id), EnhancedT
 
     override fun getStatus(status: Int): String = with(context) {
         when (status) {
-            UNREAD -> getString(R.string.unread)
-            READING -> getString(R.string.currently_reading)
-            COMPLETED -> getString(R.string.completed)
+            UNREAD -> getString(MR.strings.unread)
+            READING -> getString(MR.strings.currently_reading)
+            COMPLETED -> getString(MR.strings.completed)
             else -> ""
         }
     }
 
     override fun getGlobalStatus(status: Int): String = with(context) {
         when (status) {
-            UNREAD -> getString(R.string.plan_to_read)
-            READING -> getString(R.string.reading)
-            COMPLETED -> getString(R.string.completed)
+            UNREAD -> getString(MR.strings.plan_to_read)
+            READING -> getString(MR.strings.reading)
+            COMPLETED -> getString(MR.strings.completed)
             else -> ""
         }
     }

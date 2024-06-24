@@ -4,7 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
 import br.com.simplepass.loadingbutton.animatedDrawables.ProgressType
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.util.system.toast
@@ -13,19 +17,19 @@ import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
-class TrackLoginDialog(@StringRes usernameLabelRes: Int? = null, bundle: Bundle? = null) :
+class TrackLoginDialog(usernameLabelRes: StringResource? = null, bundle: Bundle? = null) :
     LoginDialogPreference(usernameLabelRes, bundle) {
 
     private val service = Injekt.get<TrackManager>().getService(args.getInt("key"))!!
 
     override var canLogout = true
 
-    constructor(service: TrackService, @StringRes usernameLabelRes: Int?) :
+    constructor(service: TrackService, usernameLabelRes: StringResource?) :
         this(usernameLabelRes, Bundle().apply { putInt("key", service.id) })
 
     override fun setCredentialsOnView(view: View) = with(view) {
         val serviceName = context.getString(service.nameRes())
-        binding.dialogTitle.text = context.getString(R.string.log_in_to_, serviceName)
+        binding.dialogTitle.text = context.getString(MR.strings.log_in_to_, serviceName)
         binding.username.setText(service.getUsername())
         binding.password.setText(service.getPassword())
     }
@@ -38,7 +42,7 @@ class TrackLoginDialog(@StringRes usernameLabelRes: Int? = null, bundle: Bundle?
             }
             if (binding.username.text.isNullOrBlank() || binding.password.text.isNullOrBlank()) {
                 errorResult()
-                context.toast(R.string.username_must_not_be_blank)
+                context.toast(MR.strings.username_must_not_be_blank)
                 return
             }
 
@@ -51,7 +55,7 @@ class TrackLoginDialog(@StringRes usernameLabelRes: Int? = null, bundle: Bundle?
                     val result = withIOContext { service.login(user, pass) }
                     if (result) {
                         dialog?.dismiss()
-                        context.toast(R.string.successfully_logged_in)
+                        context.toast(MR.strings.successfully_logged_in)
                     } else {
                         errorResult()
                     }
@@ -68,7 +72,7 @@ class TrackLoginDialog(@StringRes usernameLabelRes: Int? = null, bundle: Bundle?
             dialog?.setCancelable(true)
             dialog?.setCanceledOnTouchOutside(true)
             binding.login.revertAnimation {
-                binding.login.text = activity!!.getText(R.string.unknown_error)
+                binding.login.text = activity!!.getString(MR.strings.unknown_error)
             }
         }
     }

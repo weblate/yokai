@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.mangaupdates.dto.ListItem
@@ -31,10 +34,9 @@ class MangaUpdates(private val context: Context, id: Int) : TrackService(id) {
 
     private val api by lazy { MangaUpdatesApi(interceptor, client) }
 
-    @StringRes
-    override fun nameRes(): Int = R.string.manga_updates
+    override fun nameRes() = MR.strings.manga_updates
 
-    override fun getLogo(): Int = R.drawable.ic_tracker_manga_updates
+    override fun getLogo() = R.drawable.ic_tracker_manga_updates
 
     override fun getTrackerColor() = Color.rgb(251, 148, 46)
 
@@ -52,22 +54,22 @@ class MangaUpdates(private val context: Context, id: Int) : TrackService(id) {
 
     override fun getStatus(status: Int): String = with(context) {
         when (status) {
-            READING_LIST -> getString(R.string.reading_list)
-            WISH_LIST -> getString(R.string.wish_list)
-            COMPLETE_LIST -> getString(R.string.complete_list)
-            ON_HOLD_LIST -> getString(R.string.on_hold_list)
-            UNFINISHED_LIST -> getString(R.string.unfinished_list)
+            READING_LIST -> getString(MR.strings.reading_list)
+            WISH_LIST -> getString(MR.strings.wish_list)
+            COMPLETE_LIST -> getString(MR.strings.complete_list)
+            ON_HOLD_LIST -> getString(MR.strings.on_hold_list)
+            UNFINISHED_LIST -> getString(MR.strings.unfinished_list)
             else -> ""
         }
     }
 
     override fun getGlobalStatus(status: Int) = with(context) {
         when (status) {
-            READING_LIST -> getString(R.string.reading)
-            COMPLETE_LIST -> getString(R.string.completed)
-            ON_HOLD_LIST -> getString(R.string.on_hold)
-            UNFINISHED_LIST -> getString(R.string.dropped)
-            WISH_LIST -> getString(R.string.plan_to_read)
+            READING_LIST -> getString(MR.strings.reading)
+            COMPLETE_LIST -> getString(MR.strings.completed)
+            ON_HOLD_LIST -> getString(MR.strings.on_hold)
+            UNFINISHED_LIST -> getString(MR.strings.dropped)
+            WISH_LIST -> getString(MR.strings.plan_to_read)
             else -> ""
         }
     }

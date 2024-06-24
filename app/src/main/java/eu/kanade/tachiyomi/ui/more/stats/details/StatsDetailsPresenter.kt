@@ -3,7 +3,11 @@ package eu.kanade.tachiyomi.ui.more.stats.details
 import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.History
@@ -83,21 +87,21 @@ class StatsDetailsPresenter(
     var currentStats: ArrayList<StatsData>? = null
     val seriesTypeStats by lazy {
         arrayOf(
-            context.getString(R.string.manga),
-            context.getString(R.string.manhwa),
-            context.getString(R.string.manhua),
-            context.getString(R.string.comic),
-            context.getString(R.string.webtoon),
+            context.getString(MR.strings.manga),
+            context.getString(MR.strings.manhwa),
+            context.getString(MR.strings.manhua),
+            context.getString(MR.strings.comic),
+            context.getString(MR.strings.webtoon),
         )
     }
     val statusStats by lazy {
         arrayOf(
-            context.getString(R.string.ongoing),
-            context.getString(R.string.completed),
-            context.getString(R.string.licensed),
-            context.getString(R.string.publishing_finished),
-            context.getString(R.string.cancelled),
-            context.getString(R.string.on_hiatus),
+            context.getString(MR.strings.ongoing),
+            context.getString(MR.strings.completed),
+            context.getString(MR.strings.licensed),
+            context.getString(MR.strings.publishing_finished),
+            context.getString(MR.strings.cancelled),
+            context.getString(MR.strings.on_hiatus),
         )
     }
     private val defaultCategory by lazy {
@@ -192,7 +196,7 @@ class StatsDetailsPresenter(
                     meanScore = score?.toDouble() ?: 0.0,
                     chaptersRead = mangaList?.sumOf { it.read } ?: 0,
                     totalChapters = mangaList?.sumOf { it.totalChapters } ?: 0,
-                    label = score?.toString() ?: context.getString(R.string.not_rated),
+                    label = score?.toString() ?: context.getString(MR.strings.not_rated),
                     readDuration = mangaList?.getReadDuration() ?: 0L,
                     id = score?.toLong(),
                 ),
@@ -258,7 +262,7 @@ class StatsDetailsPresenter(
 
         serviceWithTrackedManga.forEach { (serviceId, mangaAndTrack) ->
             val service = loggedServices.find { it.id == serviceId }
-            val label = context.getString(service?.nameRes() ?: R.string.not_tracked)
+            val label = context.getString(service?.nameRes() ?: MR.strings.not_tracked)
             currentStats?.add(
                 StatsData(
                     color = service?.getTrackerColor() ?: pieColorList.first(),
@@ -306,7 +310,7 @@ class StatsDetailsPresenter(
         val categories = getCategories()
 
         libraryFormat.forEach { (category, mangaList) ->
-            val label = categories.find { it.id == category }?.name ?: context.getString(R.string.default_value)
+            val label = categories.find { it.id == category }?.name ?: context.getString(MR.strings.default_value)
             currentStats?.add(
                 StatsData(
                     color = pieColorList[currentStats?.size!! % pieColorList.size],
@@ -362,7 +366,7 @@ class StatsDetailsPresenter(
                     meanScore = mangaList.getMeanScoreRounded(),
                     chaptersRead = mangaList.sumOf { it.read },
                     totalChapters = mangaList.sumOf { it.totalChapters },
-                    label = year?.toString() ?: context.getString(R.string.not_started),
+                    label = year?.toString() ?: context.getString(MR.strings.not_started),
                     readDuration = mangaList.getReadDuration(),
                     id = year?.toLong(),
                 ),
@@ -489,7 +493,7 @@ class StatsDetailsPresenter(
             LocalSource.getMangaLang(this)
         } else {
             sourceManager.get(source)?.lang
-        } ?: return context.getString(R.string.unknown)
+        } ?: return context.getString(MR.strings.unknown)
         return LocaleHelper.getDisplayName(code)
     }
 
@@ -596,7 +600,7 @@ class StatsDetailsPresenter(
                 Calendar.SHORT,
                 Locale.getDefault(),
             )
-        } ?: context.getString(R.string.unknown)
+        } ?: context.getString(MR.strings.unknown)
     }
 
     fun changeReadDurationPeriod(toAdd: Int) {
@@ -657,24 +661,24 @@ class StatsDetailsPresenter(
         return "$startDateString - $endDateString"
     }
 
-    enum class Stats(val resourceId: Int) {
-        SERIES_TYPE(R.string.series_type),
-        STATUS(R.string.status),
-        READ_DURATION(R.string.read_duration),
-        SCORE(R.string.score),
-        LENGTH(R.string.length),
-        LANGUAGE(R.string.language),
-        SOURCE(R.string.source),
-        TRACKER(R.string.tracker),
-        CATEGORY(R.string.category),
-        TAG(R.string.tag),
-        START_YEAR(R.string.start_year),
+    enum class Stats(val resourceId: StringResource) {
+        SERIES_TYPE(MR.strings.series_type),
+        STATUS(MR.strings.status),
+        READ_DURATION(MR.strings.read_duration),
+        SCORE(MR.strings.score),
+        LENGTH(MR.strings.length),
+        LANGUAGE(MR.strings.language),
+        SOURCE(MR.strings.source),
+        TRACKER(MR.strings.tracker),
+        CATEGORY(MR.strings.category),
+        TAG(MR.strings.tag),
+        START_YEAR(MR.strings.start_year),
     }
 
-    enum class StatsSort(val resourceId: Int) {
-        COUNT_DESC(R.string.most_entries),
-        PROGRESS_DESC(R.string.chapters_read),
-        MEAN_SCORE_DESC(R.string.mean_tracking_score),
+    enum class StatsSort(val resourceId: StringResource) {
+        COUNT_DESC(MR.strings.most_entries),
+        PROGRESS_DESC(MR.strings.chapters_read),
+        MEAN_SCORE_DESC(MR.strings.mean_tracking_score),
     }
 
     class StatsData(

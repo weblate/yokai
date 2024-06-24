@@ -9,6 +9,9 @@ import androidx.core.content.edit
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.PreferenceManager
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.reader.settings.ReaderBackgroundColor

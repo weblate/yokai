@@ -14,6 +14,8 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.databinding.ExpandedFilterItemBinding
 import eu.kanade.tachiyomi.databinding.ExpandedFilterItemTextViewBinding
 import eu.kanade.tachiyomi.util.system.dpToPx
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class ExpandedFilterItem(val filter: LibraryFilter) : AbstractItem<FastAdapter.ViewHolder<ExpandedFilterItem>>() {
 
@@ -43,7 +45,7 @@ class ExpandedFilterItem(val filter: LibraryFilter) : AbstractItem<FastAdapter.V
             val allTextView =
                 ExpandedFilterItemTextViewBinding.inflate(LayoutInflater.from(itemView.context)).root
             binding.filterLinearLayout.addView(allTextView)
-            allTextView.text = itemView.context.getString(R.string.all)
+            allTextView.text = itemView.context.getString(MR.strings.all)
             for (i in 0..<item.filter.filters.size) {
                 val divider = MaterialDivider(itemView.context)
                 binding.filterLinearLayout.addView(divider)

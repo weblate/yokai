@@ -12,16 +12,18 @@ import androidx.appcompat.widget.AppCompatCheckedTextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.databinding.CustomDialogTitleMessageBinding
 import eu.kanade.tachiyomi.databinding.DialogQuadstateBinding
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import eu.kanade.tachiyomi.widget.materialdialogs.TriStateMultiChoiceDialogAdapter
 import eu.kanade.tachiyomi.widget.materialdialogs.TriStateMultiChoiceListener
+import yokai.util.lang.getString
 
 fun Context.materialAlertDialog() = MaterialAlertDialogBuilder(withOriginalWidth())
 
 fun MaterialAlertDialogBuilder.addCheckBoxPrompt(
-    @StringRes stringRes: Int,
+    stringRes: StringResource,
     isChecked: Boolean = false,
     listener: MaterialAlertDialogBuilderOnCheckClickListener? = null,
 ): MaterialAlertDialogBuilder {
@@ -57,6 +59,19 @@ fun AlertDialog.disableItems(items: Array<String>) {
 
             override fun onChildViewRemoved(view: View?, view1: View?) {}
         },
+    )
+}
+
+fun MaterialAlertDialogBuilder.setCustomTitleAndMessage(title: StringResource, message: String): MaterialAlertDialogBuilder {
+    return setCustomTitle(
+        (CustomDialogTitleMessageBinding.inflate(LayoutInflater.from(context))).apply {
+            if (title.resourceId != 0) {
+                alertTitle.text = context.getString(title)
+            } else {
+                alertTitle.isVisible = false
+            }
+            this.message.text = message
+        }.root,
     )
 }
 

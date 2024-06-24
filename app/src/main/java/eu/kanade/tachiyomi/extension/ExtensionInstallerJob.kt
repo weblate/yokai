@@ -14,7 +14,6 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import co.touchlab.kermit.Logger
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -40,6 +39,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
 import java.lang.ref.WeakReference
 import kotlin.math.max
 
@@ -78,7 +78,7 @@ class ExtensionInstallerJob(val context: Context, workerParams: WorkerParameters
         val reRunUpdateCheck = showUpdated > 0
 
         if (!showUpdatedNotification && !preferences.hasPromptedBeforeUpdateAll().get()) {
-            context.toast(R.string.some_extensions_may_prompt)
+            context.toast(MR.strings.some_extensions_may_prompt)
             preferences.hasPromptedBeforeUpdateAll().set(true)
         }
 

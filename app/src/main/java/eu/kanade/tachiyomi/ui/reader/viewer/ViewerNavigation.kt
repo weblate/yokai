@@ -3,16 +3,20 @@ package eu.kanade.tachiyomi.ui.reader.viewer
 import android.graphics.PointF
 import android.graphics.RectF
 import androidx.annotation.StringRes
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 
 abstract class ViewerNavigation {
 
-    sealed class NavigationRegion(@StringRes val nameRes: Int, val colorRes: Int) {
-        object MENU : NavigationRegion(R.string.menu, R.color.navigation_menu)
-        object PREV : NavigationRegion(R.string.previous, R.color.navigation_prev)
-        object NEXT : NavigationRegion(R.string.next, R.color.navigation_next)
-        object LEFT : NavigationRegion(R.string.left, R.color.navigation_next)
-        object RIGHT : NavigationRegion(R.string.right, R.color.navigation_prev)
+    sealed class NavigationRegion(val nameRes: StringResource, val colorRes: Int) {
+        object MENU : NavigationRegion(MR.strings.menu, R.color.navigation_menu)
+        object PREV : NavigationRegion(MR.strings.previous, R.color.navigation_prev)
+        object NEXT : NavigationRegion(MR.strings.next, R.color.navigation_next)
+        object LEFT : NavigationRegion(MR.strings.left, R.color.navigation_next)
+        object RIGHT : NavigationRegion(MR.strings.right, R.color.navigation_prev)
 
         fun directionalRegion(LTR: Boolean): NavigationRegion {
             return if (this === LEFT || this === RIGHT) {

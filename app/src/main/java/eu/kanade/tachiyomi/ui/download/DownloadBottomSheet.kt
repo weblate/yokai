@@ -30,6 +30,8 @@ import eu.kanade.tachiyomi.util.view.isExpanded
 import eu.kanade.tachiyomi.util.view.isHidden
 import eu.kanade.tachiyomi.util.view.toolbarHeight
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class DownloadBottomSheet @JvmOverloads constructor(
     context: Context,
@@ -124,8 +126,8 @@ class DownloadBottomSheet @JvmOverloads constructor(
     private fun updateDLTitle() {
         val extCount = presenter.downloadQueue.firstOrNull()
         binding.titleText.text = if (extCount != null) {
-            resources.getString(
-                R.string.downloading_,
+            context.getString(
+                MR.strings.downloading_,
                 extCount.chapter.preferredChapterName(context, extCount.manga, preferences),
             )
         } else {
@@ -211,7 +213,7 @@ class DownloadBottomSheet @JvmOverloads constructor(
         if (presenter.downloadQueue.isEmpty()) {
             binding.emptyView.show(
                 R.drawable.ic_download_off_24dp,
-                R.string.nothing_is_downloading,
+                MR.strings.nothing_is_downloading,
             )
         } else {
             binding.emptyView.hide()
@@ -229,7 +231,7 @@ class DownloadBottomSheet @JvmOverloads constructor(
     }
 
     private fun updateFab() {
-        binding.downloadFab.text = context.getString(if (isRunning) R.string.pause else R.string.resume)
+        binding.downloadFab.text = context.getString(if (isRunning) MR.strings.pause else MR.strings.resume)
         binding.downloadFab.setIconResource(if (isRunning) R.drawable.ic_pause_24dp else R.drawable.ic_play_arrow_24dp)
     }
 

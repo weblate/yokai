@@ -19,6 +19,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
 import uy.kohesive.injekt.injectLazy
@@ -49,8 +52,8 @@ internal class StorageStep : OnboardingStep {
         ) {
             Text(
                 stringResource(
-                    R.string.onboarding_storage_info,
-                    stringResource(R.string.app_name),
+                    MR.strings.onboarding_storage_info,
+                    stringResource(MR.strings.app_name),
                     storageLocationText(storagePref.baseStorageDirectory()),
                 ),
             )
@@ -61,11 +64,11 @@ internal class StorageStep : OnboardingStep {
                     try {
                         pickStorageLocation.launch(null)
                     } catch (e: ActivityNotFoundException) {
-                        context.toast(R.string.file_picker_error)
+                        context.toast(MR.strings.file_picker_error)
                     }
                 },
             ) {
-                Text(stringResource(R.string.onboarding_storage_action_select))
+                Text(stringResource(MR.strings.onboarding_storage_action_select))
             }
 
             HorizontalDivider(
@@ -73,7 +76,7 @@ internal class StorageStep : OnboardingStep {
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
-            Text(stringResource(R.string.onboarding_storage_help_info))
+            Text(stringResource(MR.strings.onboarding_storage_help_info))
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -82,7 +85,7 @@ internal class StorageStep : OnboardingStep {
                     )
                 },
             ) {
-                Text(stringResource(R.string.onboarding_storage_help_action))
+                Text(stringResource(MR.strings.onboarding_storage_help_action))
             }
         }
 

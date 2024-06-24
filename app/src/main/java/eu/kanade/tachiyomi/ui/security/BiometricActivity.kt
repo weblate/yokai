@@ -3,12 +3,12 @@ package eu.kanade.tachiyomi.ui.security
 import android.os.Bundle
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.base.activity.BaseThemedActivity
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
-import java.util.Date
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import java.util.*
+import java.util.concurrent.*
 
 class BiometricActivity : BaseThemedActivity() {
     private val executor: ExecutorService = Executors.newSingleThreadExecutor()
@@ -44,7 +44,7 @@ class BiometricActivity : BaseThemedActivity() {
         )
 
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.unlock_library))
+            .setTitle(getString(MR.strings.unlock_library))
             .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL or BiometricManager.Authenticators.BIOMETRIC_WEAK)
             .build()
 

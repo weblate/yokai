@@ -69,6 +69,9 @@ import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Ints.max
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
@@ -130,6 +133,9 @@ import eu.kanade.tachiyomi.util.view.findChild
 import eu.kanade.tachiyomi.util.view.getItemView
 import eu.kanade.tachiyomi.util.view.isCompose
 import eu.kanade.tachiyomi.util.view.mainRecyclerView
+import eu.kanade.tachiyomi.util.view.setAction
+import eu.kanade.tachiyomi.util.view.setMessage
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeInTransaction
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
@@ -197,8 +203,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
                 materialAlertDialog()
-                    .setTitle(R.string.warning)
-                    .setMessage(R.string.allow_notifications_recommended)
+                    .setTitle(MR.strings.warning)
+                    .setMessage(MR.strings.allow_notifications_recommended)
                     .setPositiveButton(AR.string.ok, null)
                     .show()
             }
@@ -376,9 +382,9 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         nav.getItemView(R.id.nav_library)?.setOnLongClickListener {
             if (!LibraryUpdateJob.isRunning(this)) {
                 LibraryUpdateJob.startNow(this)
-                binding.mainContent.snack(R.string.updating_library) {
+                binding.mainContent.snack(MR.strings.updating_library) {
                     anchorView = binding.bottomNav
-                    setAction(R.string.cancel) {
+                    setAction(MR.strings.cancel) {
                         LibraryUpdateJob.stop(context)
                         lifecycleScope.launchUI {
                             NotificationReceiver.dismissNotification(
@@ -960,8 +966,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                 this,
                 TapTarget.forView(
                     recentsItem,
-                    getString(R.string.manage_whats_downloading),
-                    getString(R.string.visit_recents_for_download_queue),
+                    getString(MR.strings.manage_whats_downloading),
+                    getString(MR.strings.visit_recents_for_download_queue),
                 ).outerCircleColorInt(getResourceColor(R.attr.colorSecondary)).outerCircleAlpha(0.95f)
                     .titleTextSize(
                         20,
@@ -1520,16 +1526,16 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         listOf(
             MaterialMenuSheet.MenuSheetItem(
                 0,
-                textRes = R.string.whats_new_this_release,
+                textRes = MR.strings.whats_new_this_release,
                 drawable = R.drawable.ic_new_releases_24dp,
             ),
             MaterialMenuSheet.MenuSheetItem(
                 1,
-                textRes = R.string.close,
+                textRes = MR.strings.close,
                 drawable = R.drawable.ic_close_24dp,
             ),
         ),
-        title = getString(R.string.updated_to_, BuildConfig.VERSION_NAME),
+        title = getString(MR.strings.updated_to_, BuildConfig.VERSION_NAME),
         showDivider = true,
         selectedId = 0,
         onMenuItemClicked = { _, item ->
@@ -1650,7 +1656,7 @@ interface SearchControllerInterface : FloatingSearchInterface, SmallToolbarInter
 interface FloatingSearchInterface {
     fun searchTitle(title: String?): String? {
         if (this is Controller) {
-            return activity?.getString(R.string.search_, title)
+            return activity?.getString(MR.strings.search_, title ?: "")
         }
         return title
     }

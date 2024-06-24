@@ -18,7 +18,11 @@ import androidx.core.text.inSpans
 import androidx.core.text.parseAsHtml
 import androidx.core.text.scale
 import androidx.core.text.superscript
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import net.greypanther.natsort.CaseInsensitiveSimpleNaturalComparator
 import java.net.URI
@@ -158,6 +162,9 @@ fun String.indexesOf(substr: String, ignoreCase: Boolean = true): List<Int> {
 fun String.withColor(@ColorInt colorInt: Int) =
     buildSpannedString { color(colorInt) { append(this@withColor) } }
 
+fun String.withSubtitle(context: Context, subtitleRes: StringResource) =
+    withSubtitle(context, context.getString(subtitleRes))
+
 fun String.withSubtitle(context: Context, @StringRes subtitleRes: Int) =
     withSubtitle(context, context.getString(subtitleRes))
 
@@ -176,7 +183,7 @@ fun String.withSubtitle(context: Context, subtitle: String): Spanned {
 }
 
 fun String.addBetaTag(context: Context, useSuperScript: Boolean = true): Spanned {
-    val betaText = context.getString(R.string.beta)
+    val betaText = context.getString(MR.strings.beta)
     val colorS = context.getResourceColor(R.attr.colorSecondary)
     return buildSpannedString {
         append(this@addBetaTag)

@@ -4,6 +4,9 @@ import android.content.ComponentName
 import android.content.Intent
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
@@ -22,9 +25,9 @@ import eu.kanade.tachiyomi.ui.setting.multiSelectListPreferenceMat
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.isTablet
@@ -40,13 +43,13 @@ class SettingsReaderController : SettingsLegacyController() {
     private val readerPreferences: ReaderPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.reader
+        titleRes = MR.strings.reader
 
         preferenceCategory {
-            titleRes = R.string.general
+            titleRes = MR.strings.general
             intListPreference(activity) {
                 key = Keys.defaultReadingMode
-                titleRes = R.string.default_reading_mode
+                titleRes = MR.strings.default_reading_mode
                 entriesRes = ReadingModeType.entries.drop(1)
                     .map { value -> value.stringRes }.toTypedArray()
                 entryValues = ReadingModeType.entries.drop(1)
@@ -55,13 +58,13 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             intListPreference(activity) {
                 key = Keys.doubleTapAnimationSpeed
-                titleRes = R.string.double_tap_anim_speed
+                titleRes = MR.strings.double_tap_anim_speed
                 entries = listOf(
-                    context.getString(R.string.no_animation),
+                    context.getString(MR.strings.no_animation),
                     context.getString(
-                        R.string.fast,
+                        MR.strings.fast,
                     ),
-                    context.getString(R.string.normal),
+                    context.getString(MR.strings.normal),
                 )
                 entryValues = listOf(1, 250, 500) // using a value of 0 breaks the image viewer, so
                 // min is 1
@@ -69,24 +72,24 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             switchPreference {
                 key = Keys.enableTransitions
-                titleRes = R.string.animate_page_transitions
+                titleRes = MR.strings.animate_page_transitions
                 defaultValue = true
             }
             intListPreference(activity) {
                 key = Keys.preloadSize
-                titleRes = R.string.page_preload_amount
+                titleRes = MR.strings.page_preload_amount
                 entryValues = listOf(4, 6, 8, 10, 12, 14, 16, 20)
-                entries = entryValues.map { context.resources.getQuantityString(R.plurals.pages_plural, it, it) }
+                entries = entryValues.map { context.getString(MR.plurals.pages_plural, it, it) }
                 defaultValue = 6
-                summaryRes = R.string.amount_of_pages_to_preload
+                summaryRes = MR.strings.amount_of_pages_to_preload
             }
             multiSelectListPreferenceMat(activity) {
                 key = Keys.readerBottomButtons
-                titleRes = R.string.display_buttons_bottom_reader
+                titleRes = MR.strings.display_buttons_bottom_reader
                 val enumConstants = ReaderBottomButton.entries
                 entriesRes = ReaderBottomButton.entries.map { it.stringRes }.toTypedArray()
                 entryValues = enumConstants.map { it.value }
-                allSelectionRes = R.string.display_options
+                allSelectionRes = MR.strings.display_options
                 allIsAlwaysSelected = true
                 showAllLast = true
                 val defaults = ReaderBottomButton.BUTTONS_DEFAULTS.toMutableList()
@@ -95,15 +98,15 @@ class SettingsReaderController : SettingsLegacyController() {
                 }
                 defaultValue = defaults
             }
-            infoPreference(R.string.certain_buttons_can_be_found)
+            infoPreference(MR.strings.certain_buttons_can_be_found)
         }
 
         preferenceCategory {
-            titleRes = R.string.display
+            titleRes = MR.strings.display
 
             intListPreference(activity) {
                 key = Keys.defaultOrientationType
-                titleRes = R.string.default_orientation
+                titleRes = MR.strings.default_orientation
                 val enumConstants = OrientationType.entries.drop(1)
                 entriesRes = enumConstants.map { it.stringRes }.toTypedArray()
                 entryValues = enumConstants.map { value -> value.flagValue }
@@ -111,7 +114,7 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             intListPreference(activity) {
                 key = Keys.readerTheme
-                titleRes = R.string.background_color
+                titleRes = MR.strings.background_color
                 val enumConstants = ReaderBackgroundColor.entries
                 entriesRes = enumConstants.map { it.longStringRes ?: it.stringRes }.toTypedArray()
                 entryValues = enumConstants.map { it.prefValue }
@@ -119,13 +122,13 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             switchPreference {
                 key = Keys.fullscreen
-                titleRes = R.string.fullscreen
+                titleRes = MR.strings.fullscreen
                 defaultValue = true
             }
             switchPreference {
                 bindTo(readerPreferences.cutoutShort())
                 // FIXME: Transition from reader to homepage is broken when cutout short is disabled
-                title = context.getString(R.string.pref_cutout_short).addBetaTag(context)
+                title = context.getString(MR.strings.pref_cutout_short).addBetaTag(context)
 
                 preferences.fullscreen().changesIn(viewScope) {
                     isVisible = DeviceUtil.hasCutout(activity).ordinal >= DeviceUtil.CutoutSupport.MODERN.ordinal && it
@@ -133,8 +136,8 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             if (DeviceUtil.isVivo && DeviceUtil.hasCutout(activity) == DeviceUtil.CutoutSupport.LEGACY) {
                 preference {
-                    title = context.getString(R.string.pref_legacy_cutout).addBetaTag(context)
-                    summaryRes = R.string.pref_legacy_cutout_info
+                    title = context.getString(MR.strings.pref_legacy_cutout).addBetaTag(context)
+                    summaryRes = MR.strings.pref_legacy_cutout_info
 
                     onClick {
                         val intent = Intent().apply {
@@ -146,7 +149,7 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             listPreference(activity) {
                 bindTo(readerPreferences.landscapeCutoutBehavior())
-                title = "${context.getString(R.string.cutout_area_behavior)} (${context.getString(R.string.landscape)})"
+                title = "${context.getString(MR.strings.cutout_area_behavior)} (${context.getString(MR.strings.landscape)})"
                 val values = LandscapeCutoutBehaviour.entries
                 entriesRes = values.map { it.titleResId }.toTypedArray()
                 entryValues = values.map { it.name }
@@ -157,47 +160,47 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             switchPreference {
                 key = Keys.keepScreenOn
-                titleRes = R.string.keep_screen_on
+                titleRes = MR.strings.keep_screen_on
                 defaultValue = true
             }
             switchPreference {
                 key = Keys.showPageNumber
-                titleRes = R.string.show_page_number
+                titleRes = MR.strings.show_page_number
                 defaultValue = true
             }
         }
 
         preferenceCategory {
-            titleRes = R.string.reading
+            titleRes = MR.strings.reading
 
             switchPreference {
                 key = Keys.skipRead
-                titleRes = R.string.skip_read_chapters
+                titleRes = MR.strings.skip_read_chapters
                 defaultValue = false
             }
             switchPreference {
                 key = Keys.skipFiltered
-                titleRes = R.string.skip_filtered_chapters
+                titleRes = MR.strings.skip_filtered_chapters
                 defaultValue = true
             }
             switchPreference {
                 bindTo(preferences.skipDupe())
-                titleRes = R.string.skip_dupe_chapters
+                titleRes = MR.strings.skip_dupe_chapters
             }
             switchPreference {
                 key = Keys.alwaysShowChapterTransition
-                titleRes = R.string.always_show_chapter_transition
-                summaryRes = R.string.if_disabled_transition_will_skip
+                titleRes = MR.strings.always_show_chapter_transition
+                summaryRes = MR.strings.if_disabled_transition_will_skip
                 defaultValue = true
             }
         }
 
         preferenceCategory {
-            titleRes = R.string.paged
+            titleRes = MR.strings.paged
 
             intListPreference(activity) {
                 key = Keys.navigationModePager
-                titleRes = R.string.tap_zones
+                titleRes = MR.strings.tap_zones
                 entries = context.resources.getStringArray(R.array.reader_nav).also { values ->
                     entryRange = 0..values.size
                 }.toList()
@@ -205,12 +208,12 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             listPreference(activity) {
                 key = Keys.pagerNavInverted
-                titleRes = R.string.invert_tapping
+                titleRes = MR.strings.invert_tapping
                 entriesRes = arrayOf(
-                    R.string.none,
-                    R.string.horizontally,
-                    R.string.vertically,
-                    R.string.both_axes,
+                    MR.strings.none,
+                    MR.strings.horizontally,
+                    MR.strings.vertically,
+                    MR.strings.both_axes,
                 )
                 entryValues = listOf(
                     ViewerNavigation.TappingInvertMode.NONE.name,
@@ -223,14 +226,14 @@ class SettingsReaderController : SettingsLegacyController() {
 
             intListPreference(activity) {
                 key = Keys.imageScaleType
-                titleRes = R.string.scale_type
+                titleRes = MR.strings.scale_type
                 entriesRes = arrayOf(
-                    R.string.fit_screen,
-                    R.string.stretch,
-                    R.string.fit_width,
-                    R.string.fit_height,
-                    R.string.original_size,
-                    R.string.smart_fit,
+                    MR.strings.fit_screen,
+                    MR.strings.stretch,
+                    MR.strings.fit_width,
+                    MR.strings.fit_height,
+                    MR.strings.original_size,
+                    MR.strings.smart_fit,
                 )
                 entryRange = 1..6
                 defaultValue = 1
@@ -238,7 +241,7 @@ class SettingsReaderController : SettingsLegacyController() {
 
             listPreference(activity) {
                 bindTo(readerPreferences.pagerCutoutBehavior())
-                titleRes = R.string.cutout_area_behavior
+                titleRes = MR.strings.cutout_area_behavior
                 val values = CutoutBehaviour.entries
                 entriesRes = values.map { it.titleResId }.toTypedArray()
                 entryValues = values.map { it.name }
@@ -256,61 +259,61 @@ class SettingsReaderController : SettingsLegacyController() {
 
             switchPreference {
                 bindTo(preferences.landscapeZoom())
-                titleRes = R.string.zoom_double_page_spreads
+                titleRes = MR.strings.zoom_double_page_spreads
                 visibleIf(preferences.imageScaleType()) { it == 1 }
             }
             intListPreference(activity) {
                 key = Keys.zoomStart
-                titleRes = R.string.zoom_start_position
+                titleRes = MR.strings.zoom_start_position
                 entriesRes = arrayOf(
-                    R.string.automatic,
-                    R.string.left,
-                    R.string.right,
-                    R.string.center,
+                    MR.strings.automatic,
+                    MR.strings.left,
+                    MR.strings.right,
+                    MR.strings.center,
                 )
                 entryRange = 1..4
                 defaultValue = 1
             }
             switchPreference {
                 key = Keys.cropBorders
-                titleRes = R.string.crop_borders
+                titleRes = MR.strings.crop_borders
                 defaultValue = false
             }
             switchPreference {
                 bindTo(preferences.navigateToPan())
-                titleRes = R.string.navigate_pan
+                titleRes = MR.strings.navigate_pan
             }
             intListPreference(activity) {
                 key = Keys.pageLayout
-                title = context.getString(R.string.page_layout).addBetaTag(context)
-                dialogTitleRes = R.string.page_layout
+                title = context.getString(MR.strings.page_layout).addBetaTag(context)
+                dialogTitleRes = MR.strings.page_layout
                 val enumConstants = PageLayout.entries
                 entriesRes = enumConstants.map { it.fullStringRes }.toTypedArray()
                 entryValues = enumConstants.map { it.value }
                 defaultValue = PageLayout.AUTOMATIC.value
             }
-            infoPreference(R.string.automatic_can_still_switch).apply {
+            infoPreference(MR.strings.automatic_can_still_switch).apply {
                 preferences.pageLayout().changesIn(viewScope) { isVisible = it == PageLayout.AUTOMATIC.value }
             }
             switchPreference {
                 key = Keys.automaticSplitsPage
-                titleRes = R.string.split_double_pages_portrait
+                titleRes = MR.strings.split_double_pages_portrait
                 defaultValue = false
                 preferences.pageLayout().changesIn(viewScope) { isVisible = it == PageLayout.AUTOMATIC.value }
             }
             switchPreference {
                 key = Keys.invertDoublePages
-                titleRes = R.string.invert_double_pages
+                titleRes = MR.strings.invert_double_pages
                 defaultValue = false
                 preferences.pageLayout().changesIn(viewScope) { isVisible = it != PageLayout.SINGLE_PAGE.value }
             }
         }
         preferenceCategory {
-            titleRes = R.string.long_strip
+            titleRes = MR.strings.long_strip
 
             intListPreference(activity) {
                 key = Keys.navigationModeWebtoon
-                titleRes = R.string.tap_zones
+                titleRes = MR.strings.tap_zones
                 entries = context.resources.getStringArray(R.array.reader_nav).also { values ->
                     entryRange = 0..values.size
                 }.toList()
@@ -318,12 +321,12 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             listPreference(activity) {
                 key = Keys.webtoonNavInverted
-                titleRes = R.string.invert_tapping
+                titleRes = MR.strings.invert_tapping
                 entriesRes = arrayOf(
-                    R.string.none,
-                    R.string.horizontally,
-                    R.string.vertically,
-                    R.string.both_axes,
+                    MR.strings.none,
+                    MR.strings.horizontally,
+                    MR.strings.vertically,
+                    MR.strings.both_axes,
                 )
                 entryValues = listOf(
                     ViewerNavigation.TappingInvertMode.NONE.name,
@@ -335,27 +338,27 @@ class SettingsReaderController : SettingsLegacyController() {
             }
             listPreference(activity) {
                 bindTo(preferences.webtoonReaderHideThreshold())
-                titleRes = R.string.pref_hide_threshold
+                titleRes = MR.strings.pref_hide_threshold
                 val enumValues = PreferenceValues.ReaderHideThreshold.entries
                 entriesRes = enumValues.map { it.titleResId }.toTypedArray()
                 entryValues = enumValues.map { it.name }
             }
             switchPreference {
                 key = Keys.cropBordersWebtoon
-                titleRes = R.string.crop_borders
+                titleRes = MR.strings.crop_borders
                 defaultValue = false
             }
 
             intListPreference(activity) {
                 key = Keys.webtoonSidePadding
-                titleRes = R.string.pref_long_strip_side_padding
+                titleRes = MR.strings.pref_long_strip_side_padding
                 entriesRes = arrayOf(
-                    R.string.long_strip_side_padding_0,
-                    R.string.long_strip_side_padding_5,
-                    R.string.long_strip_side_padding_10,
-                    R.string.long_strip_side_padding_15,
-                    R.string.long_strip_side_padding_20,
-                    R.string.long_strip_side_padding_25,
+                    MR.strings.long_strip_side_padding_0,
+                    MR.strings.long_strip_side_padding_5,
+                    MR.strings.long_strip_side_padding_10,
+                    MR.strings.long_strip_side_padding_15,
+                    MR.strings.long_strip_side_padding_20,
+                    MR.strings.long_strip_side_padding_25,
                 )
                 entryValues = listOf(0, 5, 10, 15, 20, 25)
                 defaultValue = "0"
@@ -363,8 +366,8 @@ class SettingsReaderController : SettingsLegacyController() {
 
             intListPreference(activity) {
                 key = Keys.webtoonPageLayout
-                title = context.getString(R.string.page_layout)
-                dialogTitleRes = R.string.page_layout
+                title = context.getString(MR.strings.page_layout)
+                dialogTitleRes = MR.strings.page_layout
                 val enumConstants = arrayOf(PageLayout.SINGLE_PAGE, PageLayout.SPLIT_PAGES)
                 entriesRes = enumConstants.map { it.fullStringRes }.toTypedArray()
                 entryValues = enumConstants.map { it.webtoonValue }
@@ -373,27 +376,27 @@ class SettingsReaderController : SettingsLegacyController() {
 
             switchPreference {
                 key = Keys.webtoonInvertDoublePages
-                titleRes = R.string.invert_double_pages
+                titleRes = MR.strings.invert_double_pages
                 defaultValue = false
             }
 
             switchPreference {
                 key = Keys.webtoonEnableZoomOut
-                titleRes = R.string.enable_zoom_out
+                titleRes = MR.strings.enable_zoom_out
                 defaultValue = false
             }
         }
         preferenceCategory {
-            titleRes = R.string.navigation
+            titleRes = MR.strings.navigation
 
             switchPreference {
                 key = Keys.readWithVolumeKeys
-                titleRes = R.string.volume_keys
+                titleRes = MR.strings.volume_keys
                 defaultValue = false
             }
             switchPreference {
                 key = Keys.readWithVolumeKeysInverted
-                titleRes = R.string.invert_volume_keys
+                titleRes = MR.strings.invert_volume_keys
                 defaultValue = false
 
                 preferences.readWithVolumeKeys().changesIn(viewScope) { isVisible = it }
@@ -401,17 +404,17 @@ class SettingsReaderController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.actions
+            titleRes = MR.strings.actions
 
             switchPreference {
                 key = Keys.readWithLongTap
-                titleRes = R.string.show_on_long_press
+                titleRes = MR.strings.show_on_long_press
                 defaultValue = true
             }
             switchPreference {
                 bindTo(preferences.folderPerManga())
-                titleRes = R.string.save_pages_separately
-                summaryRes = R.string.create_folders_by_manga_title
+                titleRes = MR.strings.save_pages_separately
+                summaryRes = MR.strings.create_folders_by_manga_title
             }
         }
     }

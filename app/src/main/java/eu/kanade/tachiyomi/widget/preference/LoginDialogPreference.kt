@@ -6,6 +6,7 @@ import android.view.View
 import androidx.annotation.StringRes
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.PrefAccountLoginBinding
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
@@ -16,9 +17,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import rx.Subscription
 import uy.kohesive.injekt.injectLazy
+import yokai.util.lang.getString
 
 abstract class LoginDialogPreference(
-    @StringRes private val usernameLabelRes: Int? = null,
+    private val usernameLabelRes: StringResource? = null,
     bundle: Bundle? = null,
 ) :
     DialogController(bundle) {

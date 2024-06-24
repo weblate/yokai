@@ -12,7 +12,6 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.backup.BackupConst
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -21,6 +20,8 @@ import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.tryToSetForeground
 import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.CancellationException
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
 
@@ -47,11 +48,11 @@ class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : C
         withIOContext {
             try {
                 if (!restorer.restoreBackup(uri)) {
-                    notifier.showRestoreError(context.getString(R.string.restoring_backup_canceled))
+                    notifier.showRestoreError(context.getString(MR.strings.restoring_backup_canceled))
                 }
             } catch (exception: Exception) {
                 if (exception is CancellationException) {
-                    notifier.showRestoreError(context.getString(R.string.restoring_backup_canceled))
+                    notifier.showRestoreError(context.getString(MR.strings.restoring_backup_canceled))
                 } else {
                     restorer.writeErrorLog()
                     notifier.showRestoreError(exception.message)

@@ -8,6 +8,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 
 @Composable
@@ -18,11 +21,11 @@ fun storageLocationText(
     val storageDir by storageDirPref.collectAsState()
 
     if (storageDir == storageDirPref.defaultValue()) {
-        return stringResource(R.string.no_location_set)
+        return stringResource(MR.strings.no_location_set)
     }
 
     return remember(storageDir) {
         val file = UniFile.fromUri(context, storageDir.toUri())
         file?.filePath
-    } ?: stringResource(R.string.invalid_location, storageDir)
+    } ?: stringResource(MR.strings.invalid_location, storageDir)
 }

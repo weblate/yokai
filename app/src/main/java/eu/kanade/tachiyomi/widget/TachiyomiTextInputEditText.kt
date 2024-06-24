@@ -6,6 +6,9 @@ import android.widget.EditText
 import androidx.core.view.inputmethod.EditorInfoCompat
 import com.google.android.material.textfield.TextInputEditText
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.changesIn
 import kotlinx.coroutines.CoroutineScope

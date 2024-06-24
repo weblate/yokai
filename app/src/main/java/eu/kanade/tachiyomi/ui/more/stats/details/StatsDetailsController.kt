@@ -27,7 +27,12 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
+import dev.icerock.moko.resources.PluralsResource
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.databinding.StatsDetailsChartBinding
 import eu.kanade.tachiyomi.databinding.StatsDetailsControllerBinding
@@ -56,7 +61,10 @@ import eu.kanade.tachiyomi.util.view.compatToolTipText
 import eu.kanade.tachiyomi.util.view.doOnApplyWindowInsetsCompat
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.liftAppbarWith
+import eu.kanade.tachiyomi.util.view.setNegativeButton
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
+import eu.kanade.tachiyomi.util.view.setTitle
+import eu.kanade.tachiyomi.util.view.setTitleText
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -91,7 +99,7 @@ class StatsDetailsController :
     /**
      * Returns the toolbar title to show when this controller is attached.
      */
-    override fun getTitle() = resources?.getString(R.string.statistics_details)
+    override fun getTitle() = activity?.getString(MR.strings.statistics_details)
 
     override fun createBinding(inflater: LayoutInflater) = StatsDetailsControllerBinding.inflate(inflater)
 
@@ -114,7 +122,7 @@ class StatsDetailsController :
             }
             chartLinearLayout?.statSort?.isVisible = false
 
-            statsClearButtonContainer.compatToolTipText = activity?.getString(R.string.clear_filters)
+            statsClearButtonContainer.compatToolTipText = activity?.getString(MR.strings.clear_filters)
             statsClearButtonContainer.setOnClickListener {
                 resetFilters()
                 searchView.clearFocus()
@@ -126,7 +134,7 @@ class StatsDetailsController :
             chipStat.setOnClickListener {
                 searchView.clearFocus()
                 activity?.materialAlertDialog()
-                    ?.setTitle(R.string.stat)
+                    ?.setTitle(MR.strings.stat)
                     ?.setSingleChoiceItems(
                         presenter.getStatsArray(),
                         Stats.entries.indexOf(presenter.selectedStat),
@@ -151,14 +159,14 @@ class StatsDetailsController :
                 (it as Chip).setMultiChoiceItemsDialog(
                     presenter.seriesTypeStats,
                     presenter.selectedSeriesType,
-                    R.string.series_type,
-                    R.plurals._series_types,
+                    MR.strings.series_type,
+                    MR.plurals._series_types,
                 )
             }
             chipSeriesType.setOnCloseIconClickListener {
                 if (presenter.selectedSeriesType.isNotEmpty()) {
                     presenter.selectedSeriesType = mutableSetOf()
-                    chipSeriesType.reset(R.string.series_type)
+                    chipSeriesType.reset(MR.strings.series_type)
                 } else {
                     chipSeriesType.callOnClick()
                 }
@@ -167,14 +175,14 @@ class StatsDetailsController :
                 (it as Chip).setMultiChoiceItemsDialog(
                     presenter.sources.toTypedArray(),
                     presenter.selectedSource,
-                    R.string.source,
-                    R.plurals._sources,
+                    MR.strings.source,
+                    MR.plurals._sources,
                 )
             }
             chipSource.setOnCloseIconClickListener {
                 if (presenter.selectedSource.isNotEmpty()) {
                     presenter.selectedSource = mutableSetOf()
-                    chipSource.reset(R.string.source)
+                    chipSource.reset(MR.strings.source)
                 } else {
                     chipSource.callOnClick()
                 }
@@ -183,14 +191,14 @@ class StatsDetailsController :
                 (it as Chip).setMultiChoiceItemsDialog(
                     presenter.statusStats,
                     presenter.selectedStatus,
-                    R.string.status,
-                    R.plurals._statuses,
+                    MR.strings.status,
+                    MR.plurals._statuses,
                 )
             }
             chipStatus.setOnCloseIconClickListener {
                 if (presenter.selectedStatus.isNotEmpty()) {
                     presenter.selectedStatus = mutableSetOf()
-                    chipStatus.reset(R.string.status)
+                    chipStatus.reset(MR.strings.status)
                 } else {
                     chipStatus.callOnClick()
                 }
@@ -199,14 +207,14 @@ class StatsDetailsController :
                 (it as Chip).setMultiChoiceItemsDialog(
                     presenter.languagesStats.values.toTypedArray(),
                     presenter.selectedLanguage,
-                    R.string.language,
-                    R.plurals._languages,
+                    MR.strings.language,
+                    MR.plurals._languages,
                 )
             }
             chipLanguage.setOnCloseIconClickListener {
                 if (presenter.selectedLanguage.isNotEmpty()) {
                     presenter.selectedLanguage = mutableSetOf()
-                    chipLanguage.reset(R.string.language)
+                    chipLanguage.reset(MR.strings.language)
                 } else {
                     chipLanguage.callOnClick()
                 }
@@ -215,14 +223,14 @@ class StatsDetailsController :
                 (it as Chip).setMultiChoiceItemsDialog(
                     presenter.categoriesStats,
                     presenter.selectedCategory,
-                    R.string.category,
-                    R.plurals.category_plural,
+                    MR.strings.category,
+                    MR.plurals.category_plural,
                 )
             }
             chipCategory.setOnCloseIconClickListener {
                 if (presenter.selectedCategory.isNotEmpty()) {
                     presenter.selectedCategory = mutableSetOf()
-                    chipCategory.reset(R.string.category)
+                    chipCategory.reset(MR.strings.category)
                 } else {
                     chipCategory.callOnClick()
                 }
@@ -278,20 +286,20 @@ class StatsDetailsController :
             chipStat.setColors((presenter.selectedStat != defaultStat).toInt())
             chipSeriesType.setState(
                 presenter.selectedSeriesType,
-                R.string.series_type,
-                R.plurals._series_types,
+                MR.strings.series_type,
+                MR.plurals._series_types,
             )
-            chipSource.setState(presenter.selectedSource, R.string.source, R.plurals._sources)
-            chipStatus.setState(presenter.selectedStatus, R.string.status, R.plurals._statuses)
+            chipSource.setState(presenter.selectedSource, MR.strings.source, MR.plurals._sources)
+            chipStatus.setState(presenter.selectedStatus, MR.strings.status, MR.plurals._statuses)
             chipLanguage.setState(
                 presenter.selectedLanguage,
-                R.string.language,
-                R.plurals._languages,
+                MR.strings.language,
+                MR.plurals._languages,
             )
             chipCategory.setState(
                 presenter.selectedCategory,
-                R.string.category,
-                R.plurals.category_plural,
+                MR.strings.category,
+                MR.plurals.category_plural,
             )
             statsSortTextView?.text = activity?.getString(
                 presenter.selectedStatsSort?.resourceId ?: defaultSort.resourceId,
@@ -336,7 +344,7 @@ class StatsDetailsController :
         inflater.inflate(R.menu.stats_bar, menu)
         searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
-        searchView.queryHint = activity?.getString(R.string.search_, activity?.getString(R.string.statistics)?.lowercase(Locale.ROOT))
+        searchView.queryHint = activity?.getString(MR.strings.search_, activity?.getString(MR.strings.statistics)?.lowercase(Locale.ROOT) ?: "")
         if (query.isNotBlank() && (!searchItem.isActionViewExpanded || searchView.query != query)) {
             searchItem.expandActionView()
             setSearchViewListener(searchView)
@@ -370,8 +378,8 @@ class StatsDetailsController :
     private fun <T> Chip.setMultiChoiceItemsDialog(
         statsList: Array<T>,
         selectedValues: MutableSet<T>,
-        resourceId: Int,
-        @PluralsRes resourceIdPlural: Int,
+        resourceId: StringResource,
+        resourceIdPlural: PluralsResource,
     ) {
         val tempValues = selectedValues.toMutableSet()
         val items = statsList.map {
@@ -425,7 +433,7 @@ class StatsDetailsController :
      * Reset the text of the chip selected and reset layout
      * @param resourceId string resource of the stat name
      */
-    private fun Chip.reset(resourceId: Int) {
+    private fun Chip.reset(resourceId: StringResource) {
         resetAndSetup(keepAdapter = true)
         this.setColors(0)
         this.text = activity?.getString(resourceId)
@@ -454,7 +462,7 @@ class StatsDetailsController :
         with(binding ?: headerBinding) {
             val hasNoData = currentStats.isNullOrEmpty() || currentStats.all { it.count == 0 }
             if (hasNoData) {
-                this@StatsDetailsController.binding.noChartData.show(R.drawable.ic_heart_off_24dp, R.string.no_data_for_filters)
+                this@StatsDetailsController.binding.noChartData.show(R.drawable.ic_heart_off_24dp, MR.strings.no_data_for_filters)
                 presenter.currentStats?.removeAll { it.count == 0 }
                 handleNoChartLayout()
                 this?.statsPieChart?.isVisible = false
@@ -509,9 +517,8 @@ class StatsDetailsController :
      */
     private fun <T> Chip.setState(
         selectedValues: MutableSet<T>,
-        resourceId: Int,
-        @PluralsRes
-        resourceIdPlural: Int,
+        resourceId: StringResource,
+        resourceIdPlural: PluralsResource,
     ) {
         this.setColors(selectedValues.size)
         this.text = when (selectedValues.size) {
@@ -526,7 +533,7 @@ class StatsDetailsController :
                     else -> firstValue.toString()
                 }
             }
-            else -> activity?.resources?.getQuantityString(resourceIdPlural, selectedValues.size, selectedValues.size)
+            else -> activity?.getString(resourceIdPlural, selectedValues.size, selectedValues.size)
         }
     }
 
@@ -542,15 +549,15 @@ class StatsDetailsController :
                 statsSortTextView?.text = activity?.getString(defaultSort.resourceId)
             }
             presenter.selectedSeriesType = mutableSetOf()
-            chipSeriesType.text = activity?.getString(R.string.series_type)
+            chipSeriesType.text = activity?.getString(MR.strings.series_type)
             presenter.selectedSource = mutableSetOf()
-            chipSource.text = activity?.getString(R.string.source)
+            chipSource.text = activity?.getString(MR.strings.source)
             presenter.selectedStatus = mutableSetOf()
-            chipStatus.text = activity?.getString(R.string.status)
+            chipStatus.text = activity?.getString(MR.strings.status)
             presenter.selectedLanguage = mutableSetOf()
-            chipLanguage.text = activity?.getString(R.string.language)
+            chipLanguage.text = activity?.getString(MR.strings.language)
             presenter.selectedCategory = mutableSetOf()
-            chipCategory.text = activity?.getString(R.string.category)
+            chipCategory.text = activity?.getString(MR.strings.category)
         }
     }
 
@@ -710,7 +717,7 @@ class StatsDetailsController :
                 }
                 router.pushController(
                     FilteredLibraryController(
-                        binding.root.resources.getQuantityString(R.plurals.chapters_plural, range.last, name),
+                        binding.root.context.getString(MR.plurals.chapters_plural, range.last, name),
                         filterMangaType = seriesTypes,
                         filterStatus = statuses,
                         filterSources = sources,
@@ -773,7 +780,7 @@ class StatsDetailsController :
     override fun onSortClicked(binding: StatsDetailsChartBinding?) {
         searchView.clearFocus()
         activity!!.materialAlertDialog()
-            .setTitle(R.string.sort_by)
+            .setTitle(MR.strings.sort_by)
             .setSingleChoiceItems(
                 presenter.getSortDataArray(),
                 StatsSort.entries.indexOf(presenter.selectedStatsSort),
@@ -794,7 +801,7 @@ class StatsDetailsController :
 
     override fun onDateTextClicked(statsDateText: TextView, barChart: BarChart) {
         val dialog = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText(R.string.read_duration)
+            .setTitleText(MR.strings.read_duration)
             .setSelection(
                 Pair(
                     presenter.startDate.timeInMillis.toUtcCalendar()?.timeInMillis,
@@ -818,7 +825,7 @@ class StatsDetailsController :
                 presenter.getStatisticData()
             }
         }
-        dialog.show((activity as AppCompatActivity).supportFragmentManager, activity?.getString(R.string.read_duration))
+        dialog.show((activity as AppCompatActivity).supportFragmentManager, activity?.getString(MR.strings.read_duration))
     }
 
     /**

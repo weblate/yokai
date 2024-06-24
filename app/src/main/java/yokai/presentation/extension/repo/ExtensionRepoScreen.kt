@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import eu.kanade.tachiyomi.R
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
@@ -33,6 +33,7 @@ import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
 import yokai.domain.ComposableAlertDialog
 import yokai.domain.extension.repo.model.ExtensionRepo
+import yokai.i18n.MR
 import yokai.presentation.AppBarType
 import yokai.presentation.YokaiScaffold
 import yokai.presentation.component.EmptyScreen
@@ -64,7 +65,7 @@ fun ExtensionRepoScreen(
         ),
         actions = {
             ToolTipButton(
-                toolTipLabel = stringResource(R.string.refresh),
+                toolTipLabel = stringResource(MR.strings.refresh),
                 icon = Icons.Outlined.Refresh,
                 buttonClicked = {
                     context.toast("Refreshing...")  // TODO: Should be loading animation instead
@@ -88,7 +89,7 @@ fun ExtensionRepoScreen(
             item {
                 ExtensionRepoInput(
                     inputText = inputText,
-                    inputHint = stringResource(R.string.label_add_repo),
+                    inputHint = stringResource(MR.strings.label_add_repo),
                     onInputChange = { inputText = it },
                     onAddClick = { viewModel.addRepo(it) },
                 )
@@ -99,7 +100,7 @@ fun ExtensionRepoScreen(
                     EmptyScreen(
                         modifier = Modifier.fillParentMaxSize(),
                         image = Icons.Filled.ExtensionOff,
-                        message = stringResource(R.string.information_empty_repos),
+                        message = stringResource(MR.strings.information_empty_repos),
                     )
                 }
                 return@LazyColumn
@@ -159,7 +160,7 @@ fun ExtensionRepoReplacePrompt(
                     onDismissRequest()
                 },
             ) {
-                Text(text = stringResource(R.string.action_replace_repo))
+                Text(text = stringResource(MR.strings.action_replace_repo))
             }
         },
         dismissButton = {
@@ -168,10 +169,10 @@ fun ExtensionRepoReplacePrompt(
             }
         },
         title = {
-            Text(text = stringResource(R.string.action_replace_repo_title))
+            Text(text = stringResource(MR.strings.action_replace_repo_title))
         },
         text = {
-            Text(text = stringResource(R.string.action_replace_repo_message, newRepo.name, oldRepo.name))
+            Text(text = stringResource(MR.strings.action_replace_repo_message, newRepo.name, oldRepo.name))
         },
     )
 }
@@ -182,7 +183,7 @@ fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlert
         containerColor = MaterialTheme.colorScheme.surface,
         title = {
             Text(
-                text = stringResource(R.string.confirm_delete_repo_title),
+                text = stringResource(MR.strings.confirm_delete_repo_title),
                 fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 24.sp,
@@ -190,7 +191,7 @@ fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlert
         },
         text = {
             Text(
-                text = stringResource(R.string.confirm_delete_repo, repoToDelete),
+                text = stringResource(MR.strings.confirm_delete_repo, repoToDelete),
                 fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 14.sp,
@@ -205,7 +206,7 @@ fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlert
                 }
             ) {
                 Text(
-                    text = stringResource(R.string.delete),
+                    text = stringResource(MR.strings.delete),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                 )
@@ -214,7 +215,7 @@ fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlert
         dismissButton = {
             TextButton(onClick = { alertDialog.content = null }) {
                 Text(
-                    text = stringResource(R.string.cancel),
+                    text = stringResource(MR.strings.cancel),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                 )

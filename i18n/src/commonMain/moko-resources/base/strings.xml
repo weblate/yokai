@@ -136,6 +136,8 @@
     <string name="library">Library</string>
     <string name="your_library">Your library</string>
     <string name="updating_library">Updating library</string>
+    <string name="not_selected">Not selected</string>
+    <string name="selected">Selected</string>
     <string name="selected_">Selected: %1$d</string>
     <string name="local">Local</string>
     <string name="library_search_hint">Search title, tags, source</string>

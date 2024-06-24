@@ -72,6 +72,8 @@ import eu.kanade.tachiyomi.util.system.toInt
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.widget.StatefulNestedScrollView
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
@@ -797,7 +799,7 @@ fun Controller.withFadeInTransaction(): RouterTransaction {
 
 fun Controller.openInBrowser(url: String?) {
     if (url == null) {
-        activity?.toast(R.string.open_in_browser_fail)
+        activity?.toast(MR.strings.open_in_browser_fail)
         return
     }
 
@@ -821,10 +823,10 @@ fun Controller.copyToClipboard(content: String, label: String?, useToast: Boolea
     label ?: return null
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) return null
     return if (useToast) {
-        activity.toast(view.context.getString(R.string._copied_to_clipboard, label))
+        activity.toast(view.context.getString(MR.strings._copied_to_clipboard, label))
         null
     } else {
-        view.snack(view.context.getString(R.string._copied_to_clipboard, label))
+        view.snack(view.context.getString(MR.strings._copied_to_clipboard, label))
     }
 }
 

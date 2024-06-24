@@ -30,6 +30,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
@@ -80,7 +83,9 @@ import eu.kanade.tachiyomi.util.view.isHidden
 import eu.kanade.tachiyomi.util.view.moveRecyclerViewUp
 import eu.kanade.tachiyomi.util.view.onAnimationsFinished
 import eu.kanade.tachiyomi.util.view.scrollViewWith
+import eu.kanade.tachiyomi.util.view.setAction
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
+import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setStyle
 import eu.kanade.tachiyomi.util.view.smoothScrollToTop
 import eu.kanade.tachiyomi.util.view.snack
@@ -139,16 +144,16 @@ class RecentsController(bundle: Bundle? = null) :
         get() = binding.recycler
 
     override fun getTitle(): String? {
-        return view?.context?.getString(R.string.recents)
+        return view?.context?.getString(MR.strings.recents)
     }
 
     override fun getSearchTitle(): String? {
         return searchTitle(
             view?.context?.getString(
                 when (presenter.viewType) {
-                    RecentsViewType.History -> R.string.history
-                    RecentsViewType.Updates -> R.string.updates
-                    else -> R.string.updates_and_history
+                    RecentsViewType.History -> MR.strings.history
+                    RecentsViewType.Updates -> MR.strings.updates
+                    else -> MR.strings.updates_and_history
                 },
             )?.lowercase(Locale.ROOT),
         )
@@ -392,14 +397,14 @@ class RecentsController(bundle: Bundle? = null) :
         binding.swipeRefresh.setOnRefreshListener {
             if (!LibraryUpdateJob.isRunning(view.context)) {
                 snack?.dismiss()
-                snack = view.snack(R.string.updating_library) {
+                snack = view.snack(MR.strings.updating_library) {
                     anchorView =
                         if (binding.downloadBottomSheet.root.sheetBehavior.isCollapsed()) {
                             binding.downloadBottomSheet.root
                         } else {
                             activityBinding?.bottomNav ?: binding.downloadBottomSheet.root
                         }
-                    setAction(R.string.cancel) {
+                    setAction(MR.strings.cancel) {
                         LibraryUpdateJob.stop(context)
                         viewScope.launchUI {
                             NotificationReceiver.dismissNotification(
@@ -423,7 +428,7 @@ class RecentsController(bundle: Bundle? = null) :
     }
 
     private fun setSheetToolbar() {
-        binding.downloadBottomSheet.sheetToolbar.title = view?.context?.getString(R.string.download_queue)
+        binding.downloadBottomSheet.sheetToolbar.title = view?.context?.getString(MR.strings.download_queue)
         binding.downloadBottomSheet.sheetToolbar.overflowIcon?.setTint(view?.context?.getResourceColor(R.attr.actionBarTintColor) ?: Color.BLACK)
         binding.downloadBottomSheet.sheetToolbar.setOnMenuItemClickListener { item ->
             return@setOnMenuItemClickListener binding.downloadBottomSheet.dlBottomSheet.onOptionsItemSelected(item)
@@ -596,12 +601,12 @@ class RecentsController(bundle: Bundle? = null) :
                     R.drawable.ic_search_off_24dp
                 },
                 if (isSearching()) {
-                    R.string.no_results_found
+                    MR.strings.no_results_found
                 } else {
                     when (presenter.viewType) {
-                        RecentsViewType.Updates -> R.string.no_recent_chapters
-                        RecentsViewType.History -> R.string.no_recently_read_manga
-                        else -> R.string.no_recent_read_updated_manga
+                        RecentsViewType.Updates -> MR.strings.no_recent_chapters
+                        RecentsViewType.History -> MR.strings.no_recently_read_manga
+                        else -> MR.strings.no_recent_read_updated_manga
                     }
                 },
             )
@@ -801,20 +806,20 @@ class RecentsController(bundle: Bundle? = null) :
         if (history.id != null) {
             activity.materialAlertDialog()
                 .setCustomTitleAndMessage(
-                    R.string.reset_chapter_question,
+                    MR.strings.reset_chapter_question,
                     activity.getString(
-                        R.string.this_will_remove_the_read_date_for_x_question,
+                        MR.strings.this_will_remove_the_read_date_for_x_question,
                         chapter.name,
                     ),
                 )
                 .addCheckBoxPrompt(
                     activity.getString(
-                        R.string.reset_all_chapters_for_this_,
+                        MR.strings.reset_all_chapters_for_this_,
                         manga.seriesType(activity),
                     ),
                 )
                 .setNegativeButton(AR.string.cancel, null)
-                .setPositiveButton(R.string.reset) { dialog, _ ->
+                .setPositiveButton(MR.strings.reset) { dialog, _ ->
                     removeHistory(manga, history, dialog.isPromptChecked)
                 }
                 .show()
@@ -853,15 +858,15 @@ class RecentsController(bundle: Bundle? = null) :
         presenter.markChapterRead(chapter, !wasRead)
         snack = view?.snack(
             if (wasRead) {
-                R.string.marked_as_unread
+                MR.strings.marked_as_unread
             } else {
-                R.string.marked_as_read
+                MR.strings.marked_as_read
             },
             Snackbar.LENGTH_INDEFINITE,
         ) {
             anchorView = activityBinding?.bottomNav
             var undoing = false
-            setAction(R.string.undo) {
+            setAction(MR.strings.undo) {
                 presenter.markChapterRead(chapter, wasRead, lastRead, pagesLeft)
                 undoing = true
             }
@@ -894,7 +899,7 @@ class RecentsController(bundle: Bundle? = null) :
 
         val searchItem = activityBinding?.searchToolbar?.searchItem
         val searchView = activityBinding?.searchToolbar?.searchView
-        activityBinding?.searchToolbar?.setQueryHint(view?.context?.getString(R.string.search_recents), !isSearching())
+        activityBinding?.searchToolbar?.setQueryHint(view?.context?.getString(MR.strings.search_recents), !isSearching())
         if (isSearching()) {
             searchItem?.expandActionView()
             searchView?.setQuery(query, true)
@@ -922,7 +927,7 @@ class RecentsController(bundle: Bundle? = null) :
                     val selectedTab = presenter.viewType
                     RecentsViewType.entries.forEach { viewType ->
                         tabs.addTab(
-                            tabs.newTab().setText(viewType.stringRes).also { tab ->
+                            tabs.newTab().setText(activity?.getString(viewType.stringRes)).also { tab ->
                                 tab.view.compatToolTipText = null
                             },
                             viewType == selectedTab,

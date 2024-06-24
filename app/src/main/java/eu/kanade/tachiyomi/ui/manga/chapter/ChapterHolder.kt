@@ -18,6 +18,8 @@ import eu.kanade.tachiyomi.util.chapter.ChapterUtil.Companion.preferredChapterNa
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getResourceColor
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class ChapterHolder(
@@ -55,8 +57,8 @@ class ChapterHolder(
 
         if (showPagesLeft && chapter.pages_left > 0) {
             statuses.add(
-                itemView.resources.getQuantityString(
-                    R.plurals.pages_left,
+                itemView.context.getString(
+                    MR.plurals.pages_left,
                     chapter.pages_left,
                     chapter.pages_left,
                 ),
@@ -64,7 +66,7 @@ class ChapterHolder(
         } else if (showPagesLeft) {
             statuses.add(
                 itemView.context.getString(
-                    R.string.page_,
+                    MR.strings.page_,
                     chapter.last_page_read + 1,
                 ),
             )

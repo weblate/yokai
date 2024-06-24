@@ -1,5 +1,6 @@
 package yokai.presentation.component
 
+import android.R as AR
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -38,6 +39,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.themeadapter.material3.createMdc3Theme
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.Themes
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import yokai.presentation.theme.HalfAlpha
@@ -97,7 +101,7 @@ private fun ThemeItemNaive(contextTheme: ContextTheme, selected: Boolean, onClic
         )
 
         Text(
-            text = stringResource(id = if (contextTheme.isDarkTheme) contextTheme.theme.darkNameRes else contextTheme.theme.nameRes),
+            text = stringResource(if (contextTheme.isDarkTheme) contextTheme.theme.darkNameRes else contextTheme.theme.nameRes),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodySmall
         )
@@ -163,8 +167,8 @@ fun ThemePreviewItem(
                     if (selected) {
                         Icon(
                             imageVector = Icons.Filled.CheckCircle,
-                            contentDescription = stringResource(R.string.selected),
-                            tint = selectedColor,
+                            contentDescription = stringResource(MR.strings.selected),
+                            tint = selectedColor
                         )
                     }
                 }

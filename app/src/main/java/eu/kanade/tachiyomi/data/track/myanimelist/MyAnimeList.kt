@@ -5,6 +5,9 @@ import android.graphics.Color
 import androidx.annotation.StringRes
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
@@ -20,8 +23,7 @@ class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
     private val interceptor by lazy { MyAnimeListInterceptor(this) }
     private val api by lazy { MyAnimeListApi(client, interceptor) }
 
-    @StringRes
-    override fun nameRes() = R.string.myanimelist
+    override fun nameRes() = MR.strings.myanimelist
 
     override val supportsReadingDates: Boolean = true
 
@@ -33,22 +35,22 @@ class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
 
     override fun getStatus(status: Int): String = with(context) {
         when (status) {
-            READING -> getString(R.string.reading)
-            COMPLETED -> getString(R.string.completed)
-            ON_HOLD -> getString(R.string.on_hold)
-            DROPPED -> getString(R.string.dropped)
-            PLAN_TO_READ -> getString(R.string.plan_to_read)
+            READING -> getString(MR.strings.reading)
+            COMPLETED -> getString(MR.strings.completed)
+            ON_HOLD -> getString(MR.strings.on_hold)
+            DROPPED -> getString(MR.strings.dropped)
+            PLAN_TO_READ -> getString(MR.strings.plan_to_read)
             else -> ""
         }
     }
 
     override fun getGlobalStatus(status: Int): String = with(context) {
         when (status) {
-            READING -> getString(R.string.reading)
-            PLAN_TO_READ -> getString(R.string.plan_to_read)
-            COMPLETED -> getString(R.string.completed)
-            ON_HOLD -> getString(R.string.on_hold)
-            DROPPED -> getString(R.string.dropped)
+            READING -> getString(MR.strings.reading)
+            PLAN_TO_READ -> getString(MR.strings.plan_to_read)
+            COMPLETED -> getString(MR.strings.completed)
+            ON_HOLD -> getString(MR.strings.on_hold)
+            DROPPED -> getString(MR.strings.dropped)
             else -> ""
         }
     }

@@ -15,13 +15,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.R
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator.Results
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
 import eu.kanade.tachiyomi.data.backup.create.BackupOptions
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.util.system.toast
+import yokai.i18n.MR
 import yokai.presentation.component.LabeledCheckbox
 import android.R as AR
 
@@ -34,16 +35,16 @@ fun RestoreBackup(
 ) {
     val (results, e) = pair
     if (results != null) {
-        var message = stringResource(R.string.restore_content_full)
+        var message = stringResource(MR.strings.restore_content_full)
         if (results.missingSources.isNotEmpty()) {
-            message += "\n\n${stringResource(R.string.restore_missing_sources)}\n${
+            message += "\n\n${stringResource(MR.strings.restore_missing_sources)}\n${
                 results.missingSources.joinToString(
                     "\n",
                 ) { "- $it" }
             }"
         }
         if (results.missingTrackers.isNotEmpty()) {
-            message += "\n\n${stringResource(R.string.restore_missing_trackers)}\n${
+            message += "\n\n${stringResource(MR.strings.restore_missing_trackers)}\n${
                 results.missingTrackers.joinToString(
                     "\n",
                 ) { "- $it" }
@@ -55,12 +56,12 @@ fun RestoreBackup(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        context.toast(R.string.restoring_backup)
+                        context.toast(MR.strings.restoring_backup)
                         BackupRestoreJob.start(context, uri)
                         onDismissRequest()
                     },
                 ) {
-                    Text(text = stringResource(R.string.restore))
+                    Text(text = stringResource(MR.strings.restore))
                 }
             },
             dismissButton = {
@@ -68,7 +69,7 @@ fun RestoreBackup(
                     Text(text = stringResource(AR.string.cancel))
                 }
             },
-            title = { Text(text = stringResource(R.string.restore_backup)) },
+            title = { Text(text = stringResource(MR.strings.restore_backup)) },
             text = { Text(text = message) },
         )
     } else {
@@ -79,7 +80,7 @@ fun RestoreBackup(
                     Text(text = stringResource(AR.string.cancel))
                 }
             },
-            title = { Text(text = stringResource(R.string.invalid_backup_file)) },
+            title = { Text(text = stringResource(MR.strings.invalid_backup_file)) },
             text = { e?.message?.let { Text(text = it) } }
         )
     }
@@ -99,19 +100,19 @@ fun CreateBackup(
             TextButton(onClick = {
                 val actualUri =
                     UniFile.fromUri(context, uri)?.createFile(Backup.getBackupFilename())?.uri ?: return@TextButton
-                context.toast(R.string.creating_backup)
+                context.toast(MR.strings.creating_backup)
                 BackupCreatorJob.startNow(context, actualUri, options)
                 onDismissRequest()
             }) {
-                Text(stringResource(R.string.create))
+                Text(stringResource(MR.strings.create))
             }
         },
         dismissButton = {
             TextButton(onClick = { onDismissRequest() }) {
-                Text(stringResource(R.string.cancel))
+                Text(stringResource(MR.strings.cancel))
             }
         },
-        title = { Text(text = stringResource(R.string.create_backup)) },
+        title = { Text(text = stringResource(MR.strings.create_backup)) },
         text = {
             Box {
                 val state = rememberLazyListState()

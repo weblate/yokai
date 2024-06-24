@@ -12,10 +12,14 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderTransitionView
 import eu.kanade.tachiyomi.util.system.dpToPx
+import eu.kanade.tachiyomi.util.view.setText
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
@@ -113,7 +117,7 @@ class WebtoonTransitionHolder(
 
         val textView = AppCompatTextView(context).apply {
             wrapContent()
-            setText(R.string.loading_pages)
+            setText(MR.strings.loading_pages)
         }
 
         pagesContainer.addView(progress)
@@ -133,12 +137,12 @@ class WebtoonTransitionHolder(
     private fun setError(error: Throwable, transition: ChapterTransition) {
         val textView = AppCompatTextView(context).apply {
             wrapContent()
-            text = context.getString(R.string.failed_to_load_pages_, error.message)
+            text = context.getString(MR.strings.failed_to_load_pages_, error.message ?: "")
         }
 
         val retryBtn = AppCompatButton(context).apply {
             wrapContent()
-            setText(R.string.retry)
+            setText(MR.strings.retry)
             setOnClickListener {
                 val toChapter = transition.to
                 if (toChapter != null) {

@@ -35,6 +35,9 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.google.android.material.shape.CornerFamily
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.FullCoverDialogBinding
 import eu.kanade.tachiyomi.util.system.dpToPx

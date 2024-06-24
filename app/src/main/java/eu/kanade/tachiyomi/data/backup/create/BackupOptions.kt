@@ -1,8 +1,8 @@
 package eu.kanade.tachiyomi.data.backup.create
 
-import androidx.annotation.StringRes
-import eu.kanade.tachiyomi.R
+import dev.icerock.moko.resources.StringResource
 import kotlinx.collections.immutable.persistentListOf
+import yokai.i18n.MR
 
 data class BackupOptions(
     val libraryEntries: Boolean = true,
@@ -31,72 +31,72 @@ data class BackupOptions(
 
     companion object {
         fun getOptions() = persistentListOf(
-            R.string.library_entries,
-            R.string.categories,
-            R.string.chapters,
-            R.string.tracking,
-            R.string.history,
-            R.string.app_settings,
-            R.string.source_settings,
-            R.string.custom_manga_info,
-            R.string.all_read_manga,
-            R.string.backup_private_pref,
+            MR.strings.library_entries,
+            MR.strings.categories,
+            MR.strings.chapters,
+            MR.strings.tracking,
+            MR.strings.history,
+            MR.strings.app_settings,
+            MR.strings.source_settings,
+            MR.strings.custom_manga_info,
+            MR.strings.all_read_manga,
+            MR.strings.backup_private_pref,
         )
 
         fun getEntries() = persistentListOf(
             Entry(
-                label = R.string.library_entries,
+                label = MR.strings.library_entries,
                 getter = BackupOptions::libraryEntries,
                 setter = { options, enabled -> options.copy(libraryEntries = enabled) },
             ),
             Entry(
-                label = R.string.categories,
+                label = MR.strings.categories,
                 getter = BackupOptions::categories,
                 setter = { options, enabled -> options.copy(categories = enabled) },
                 enabled = { it.libraryEntries },
             ),
             Entry(
-                label = R.string.chapters,
+                label = MR.strings.chapters,
                 getter = BackupOptions::chapters,
                 setter = { options, enabled -> options.copy(chapters = enabled) },
                 enabled = { it.libraryEntries },
             ),
             Entry(
-                label = R.string.tracking,
+                label = MR.strings.tracking,
                 getter = BackupOptions::tracking,
                 setter = { options, enabled -> options.copy(tracking = enabled) },
                 enabled = { it.libraryEntries },
             ),
             Entry(
-                label = R.string.history,
+                label = MR.strings.history,
                 getter = BackupOptions::history,
                 setter = { options, enabled -> options.copy(history = enabled) },
                 enabled = { it.libraryEntries },
             ),
             Entry(
-                label = R.string.custom_manga_info,
+                label = MR.strings.custom_manga_info,
                 getter = BackupOptions::customInfo,
                 setter = { options, enabled -> options.copy(customInfo = enabled) },
                 enabled = { it.libraryEntries },
             ),
             Entry(
-                label = R.string.all_read_manga,
+                label = MR.strings.all_read_manga,
                 getter = BackupOptions::readManga,
                 setter = { options, enabled -> options.copy(readManga = enabled) },
                 enabled = { it.libraryEntries },
             ),
             Entry(
-                label = R.string.app_settings,
+                label = MR.strings.app_settings,
                 getter = BackupOptions::appPrefs,
                 setter = { options, enabled -> options.copy(appPrefs = enabled) },
             ),
             Entry(
-                label = R.string.source_settings,
+                label = MR.strings.source_settings,
                 getter = BackupOptions::sourcePrefs,
                 setter = { options, enabled -> options.copy(sourcePrefs = enabled) },
             ),
             Entry(
-                label = R.string.backup_private_pref,
+                label = MR.strings.backup_private_pref,
                 getter = BackupOptions::includePrivate,
                 setter = { options, enabled -> options.copy(includePrivate = enabled) },
             ),
@@ -117,7 +117,7 @@ data class BackupOptions(
     }
 
     data class Entry(
-        @StringRes val label: Int,
+        val label: StringResource,
         val getter: (BackupOptions) -> Boolean,
         val setter: (BackupOptions, Boolean) -> BackupOptions,
         val enabled: (BackupOptions) -> Boolean = { true },

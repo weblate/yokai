@@ -10,6 +10,9 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -290,7 +293,7 @@ class ReaderViewModel(
     fun intentPageNumber(url: Uri): Int? {
         val host = url.host ?: return null
         val delegatedSource = sourceManager.getDelegatedSource(host) ?: error(
-            preferences.context.getString(R.string.source_not_installed),
+            preferences.context.getString(MR.strings.source_not_installed),
         )
         return delegatedSource.pageNumber(url)?.minus(1)
     }
@@ -299,11 +302,11 @@ class ReaderViewModel(
         val host = url.host ?: return
         val context = Injekt.get<Application>()
         val delegatedSource = sourceManager.getDelegatedSource(host) ?: error(
-            context.getString(R.string.source_not_installed),
+            context.getString(MR.strings.source_not_installed),
         )
         val chapterUrl = delegatedSource.chapterUrl(url)
         val sourceId = delegatedSource.delegate?.id ?: error(
-            context.getString(R.string.source_not_installed),
+            context.getString(MR.strings.source_not_installed),
         )
         if (chapterUrl != null) {
             val dbChapter = db.getChapters(chapterUrl).executeOnIO().find {
@@ -341,11 +344,11 @@ class ReaderViewModel(
                         delegatedSource.delegate!!,
                     ).first
                     chapterId = newChapters.find { it.url == chapter.url }?.id
-                        ?: error(context.getString(R.string.chapter_not_found))
+                        ?: error(context.getString(MR.strings.chapter_not_found))
                 } else {
                     chapter.date_fetch = Date().time
                     chapterId = db.insertChapter(chapter).executeOnIO().insertedId() ?: error(
-                        context.getString(R.string.unknown_error),
+                        context.getString(MR.strings.unknown_error),
                     )
                 }
                 withContext(Dispatchers.Main) {
@@ -353,7 +356,7 @@ class ReaderViewModel(
                 }
             }
         } else {
-            error(context.getString(R.string.unknown_error))
+            error(context.getString(MR.strings.unknown_error))
         }
     }
 
@@ -918,7 +921,7 @@ class ReaderViewModel(
                     val context = Injekt.get<Application>()
                     coverCache.deleteFromCache(manga)
                     LocalSource.updateCover(manga, stream())
-                    R.string.cover_updated
+                    MR.strings.cover_updated
                     SetAsCoverResult.Success
                 } else {
                     if (manga.favorite) {

@@ -77,6 +77,9 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.toggle
 import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -141,6 +144,8 @@ import eu.kanade.tachiyomi.util.view.hide
 import eu.kanade.tachiyomi.util.view.isCollapsed
 import eu.kanade.tachiyomi.util.view.isExpanded
 import eu.kanade.tachiyomi.util.view.popupMenu
+import eu.kanade.tachiyomi.util.view.setAction
+import eu.kanade.tachiyomi.util.view.setMessage
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.widget.doOnEnd
 import eu.kanade.tachiyomi.widget.doOnStart
@@ -599,9 +604,9 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             compatToolTipText =
                 getString(
                     if (enabled) {
-                        R.string.remove_crop
+                        MR.strings.remove_crop
                     } else {
-                        R.string.crop_borders
+                        MR.strings.crop_borders
                     },
                 )
         }
@@ -788,7 +793,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
 
         with(binding.chaptersSheet) {
             with(doublePage) {
-                compatToolTipText = getString(R.string.page_layout)
+                compatToolTipText = getString(MR.strings.page_layout)
                 setOnClickListener {
                     if (preferences.pageLayout().get() == PageLayout.AUTOMATIC.value) {
                         (viewer as? PagerViewer)?.config?.let { config ->
@@ -817,7 +822,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             }
 
             with(rotationSheetButton) {
-                compatToolTipText = getString(R.string.rotation)
+                compatToolTipText = getString(MR.strings.rotation)
 
                 setOnClickListener {
                     popupMenu(
@@ -1052,9 +1057,9 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             } else {
                 toast(
                     if (getNextChapter) {
-                        R.string.theres_no_next_chapter
+                        MR.strings.theres_no_next_chapter
                     } else {
-                        R.string.theres_no_previous_chapter
+                        MR.strings.theres_no_previous_chapter
                     },
                 )
             }
@@ -1228,19 +1233,19 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         ) {
             snackbar = binding.readerLayout.snack(
                 getString(
-                    R.string.reading_,
+                    MR.strings.reading_,
                     getString(
                         when (mangaViewer) {
-                            ReadingModeType.RIGHT_TO_LEFT.flagValue -> R.string.right_to_left_viewer
-                            ReadingModeType.VERTICAL.flagValue -> R.string.vertical_viewer
-                            ReadingModeType.LONG_STRIP.flagValue -> R.string.long_strip
-                            else -> R.string.left_to_right_viewer
+                            ReadingModeType.RIGHT_TO_LEFT.flagValue -> MR.strings.right_to_left_viewer
+                            ReadingModeType.VERTICAL.flagValue -> MR.strings.vertical_viewer
+                            ReadingModeType.LONG_STRIP.flagValue -> MR.strings.long_strip
+                            else -> MR.strings.left_to_right_viewer
                         },
                     ).lowercase(Locale.getDefault()),
                 ),
                 4000,
             ) {
-                setAction(R.string.use_default) {
+                setAction(MR.strings.use_default) {
                     viewModel.setMangaReadingMode(0)
                 }
             }
@@ -1266,11 +1271,11 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         binding.viewerContainer.addView(newViewer.getView())
 
         if (newViewer is R2LPagerViewer) {
-            binding.readerNav.leftChapter.compatToolTipText = getString(R.string.next_chapter)
-            binding.readerNav.rightChapter.compatToolTipText = getString(R.string.previous_chapter)
+            binding.readerNav.leftChapter.compatToolTipText = getString(MR.strings.next_chapter)
+            binding.readerNav.rightChapter.compatToolTipText = getString(MR.strings.previous_chapter)
         } else {
-            binding.readerNav.leftChapter.compatToolTipText = getString(R.string.previous_chapter)
-            binding.readerNav.rightChapter.compatToolTipText = getString(R.string.next_chapter)
+            binding.readerNav.leftChapter.compatToolTipText = getString(MR.strings.previous_chapter)
+            binding.readerNav.rightChapter.compatToolTipText = getString(MR.strings.next_chapter)
         }
 
         if (newViewer is PagerViewer) {
@@ -1536,42 +1541,42 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                 MaterialMenuSheet.MenuSheetItem(
                     3,
                     R.drawable.ic_outline_share_24dp,
-                    R.string.share_second_page,
+                    MR.strings.share_second_page,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     4,
                     R.drawable.ic_outline_save_24dp,
-                    R.string.save_second_page,
+                    MR.strings.save_second_page,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     5,
                     R.drawable.ic_outline_photo_24dp,
-                    R.string.set_second_page_as_cover,
+                    MR.strings.set_second_page_as_cover,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     0,
                     R.drawable.ic_share_24dp,
-                    R.string.share_first_page,
+                    MR.strings.share_first_page,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     1,
                     R.drawable.ic_save_24dp,
-                    R.string.save_first_page,
+                    MR.strings.save_first_page,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     2,
                     R.drawable.ic_photo_24dp,
-                    R.string.set_first_page_as_cover,
+                    MR.strings.set_first_page_as_cover,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     6,
                     R.drawable.ic_share_all_outline_24dp,
-                    R.string.share_combined_pages,
+                    MR.strings.share_combined_pages,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     7,
                     R.drawable.ic_save_all_outline_24dp,
-                    R.string.save_combined_pages,
+                    MR.strings.save_combined_pages,
                 ),
             )
         } else {
@@ -1579,17 +1584,17 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
                 MaterialMenuSheet.MenuSheetItem(
                     0,
                     R.drawable.ic_share_24dp,
-                    R.string.share,
+                    MR.strings.share,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     1,
                     R.drawable.ic_save_24dp,
-                    R.string.save,
+                    MR.strings.save,
                 ),
                 MaterialMenuSheet.MenuSheetItem(
                     2,
                     R.drawable.ic_photo_24dp,
-                    R.string.set_as_cover,
+                    MR.strings.set_as_cover,
                 ),
             )
         }
@@ -1659,7 +1664,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         if (page.status != Page.State.READY) return
 
         materialAlertDialog()
-            .setMessage(R.string.use_image_as_cover)
+            .setMessage(MR.strings.use_image_as_cover)
             .setPositiveButton(AR.string.ok) { _, _ ->
                 setAsCover(page)
             }
@@ -1679,12 +1684,12 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             DecimalFormat("#.###", DecimalFormatSymbols().apply { decimalSeparator = '.' })
 
         val pageNumber = if (secondPage != null) {
-            getString(R.string.pages_, if (resources.isLTR) "${page.number}-${page.number + 1}" else "${page.number + 1}-${page.number}")
+            getString(MR.strings.pages_, if (resources.isLTR) "${page.number}-${page.number + 1}" else "${page.number + 1}-${page.number}")
         } else {
-            getString(R.string.page_, page.number)
+            getString(MR.strings.page_, page.number)
         }
         val text = "${manga.title}: ${if (chapter.isRecognizedNumber) {
-            getString(R.string.chapter_, decimalFormat.format(chapter.chapter_number))
+            getString(MR.strings.chapter_, decimalFormat.format(chapter.chapter_number))
         } else {
             chapter.preferredChapterName(this, manga, preferences)
         }
@@ -1698,7 +1703,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
             clipData = ClipData.newRawUri(null, stream)
             type = "image/*"
         }
-        startActivity(Intent.createChooser(intent, getString(R.string.share)))
+        startActivity(Intent.createChooser(intent, getString(MR.strings.share)))
     }
 
     override fun onProvideAssistContent(outContent: AssistContent) {
@@ -1722,7 +1727,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
     private fun onSaveImageResult(result: ReaderViewModel.SaveImageResult) {
         when (result) {
             is ReaderViewModel.SaveImageResult.Success -> {
-                toast(R.string.picture_saved)
+                toast(MR.strings.picture_saved)
             }
             is ReaderViewModel.SaveImageResult.Error -> {
                 Logger.e(result.error)
@@ -1745,9 +1750,9 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
     private fun onSetAsCoverResult(result: ReaderViewModel.SetAsCoverResult) {
         toast(
             when (result) {
-                Success -> R.string.cover_updated
-                AddToLibraryFirst -> R.string.must_be_in_library_to_edit
-                Error -> R.string.failed_to_update_cover
+                Success -> MR.strings.cover_updated
+                AddToLibraryFirst -> MR.strings.must_be_in_library_to_edit
+                Error -> MR.strings.failed_to_update_cover
             },
         )
     }
@@ -1756,7 +1761,7 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         if (errors.isEmpty()) return
         snackbar?.dismiss()
         val errorText = if (errors.size > 1) {
-            getString(R.string.failed_to_update_, errors.joinToString(", ") { getString(it.first.nameRes()) })
+            getString(MR.strings.failed_to_update_, errors.joinToString(", ") { getString(it.first.nameRes()) })
         } else {
             val (service, errorMessage) = errors.first()
             buildSpannedString {

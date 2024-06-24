@@ -14,6 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import yokai.presentation.core.util.secondaryItemAlpha
 import yokai.presentation.theme.Size
@@ -57,7 +60,7 @@ private fun StorageInfo(
         )
 
         Text(
-            text = stringResource(R.string.available_disk_space_info, availableText, totalText),
+            text = stringResource(MR.strings.available_disk_space_info, availableText, totalText),
             modifier = Modifier.secondaryItemAlpha(),
             style = MaterialTheme.typography.bodySmall,
         )

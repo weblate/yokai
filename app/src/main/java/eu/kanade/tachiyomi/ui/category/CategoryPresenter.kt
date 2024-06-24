@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.category
 
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.ui.library.LibrarySort
@@ -12,6 +11,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * Presenter of [CategoryController]. Used to manage the categories of the library.
@@ -48,7 +49,7 @@ class CategoryPresenter(
 
     private fun newCategory(): Category {
         val default =
-            Category.create(controller.view?.context?.getString(R.string.create_new_category) ?: "")
+            Category.create(controller.view?.context?.getString(MR.strings.create_new_category) ?: "")
         default.order = CREATE_CATEGORY_ORDER
         default.id = Int.MIN_VALUE
         return default

@@ -2,6 +2,9 @@ package eu.kanade.tachiyomi.data.database.models
 
 import android.content.Context
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.SourceManager
@@ -138,11 +141,11 @@ interface Manga : SManga {
     fun seriesType(context: Context, sourceManager: SourceManager? = null): String {
         return context.getString(
             when (seriesType(sourceManager = sourceManager)) {
-                TYPE_WEBTOON -> R.string.webtoon
-                TYPE_MANHWA -> R.string.manhwa
-                TYPE_MANHUA -> R.string.manhua
-                TYPE_COMIC -> R.string.comic
-                else -> R.string.manga
+                TYPE_WEBTOON -> MR.strings.webtoon
+                TYPE_MANHWA -> MR.strings.manhwa
+                TYPE_MANHUA -> MR.strings.manhua
+                TYPE_COMIC -> MR.strings.comic
+                else -> MR.strings.manga
             },
         ).lowercase(Locale.getDefault())
     }

@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.track
 import androidx.annotation.CallSuper
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
@@ -21,8 +22,7 @@ abstract class TrackService(val id: Int) {
         get() = networkService.client
 
     // Name of the manga sync service to display
-    @StringRes
-    abstract fun nameRes(): Int
+    abstract fun nameRes(): StringResource
 
     // Application and remote support for reading dates
     open val supportsReadingDates: Boolean = false

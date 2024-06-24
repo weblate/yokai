@@ -3,7 +3,8 @@ package eu.kanade.tachiyomi.core.storage
 import android.content.Context
 import android.os.Environment
 import androidx.core.net.toUri
-import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.File
 
 class AndroidStorageFolderProvider(
@@ -13,7 +14,7 @@ class AndroidStorageFolderProvider(
     override fun directory(): File {
         return File(
             Environment.getExternalStorageDirectory().absolutePath + File.separator +
-                context.getString(R.string.app_normalized_name),
+                context.getString(MR.strings.app_normalized_name),
         )
     }
 

@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.databinding.FilterTagGroupBinding
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getResourceColor
+import yokai.util.lang.getString
 
 class FilterTagGroup@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout
 (context, attrs) {
@@ -56,6 +58,12 @@ class FilterTagGroup@JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     fun nameOf(index: Int): String? = buttons.getOrNull(index)?.text as? String
+
+    fun setup(root: ViewGroup, firstText: StringResource, vararg extra: StringResource?) {
+        val text1 = context.getString(firstText)
+        val strings = extra.mapNotNull { if (it != null) context.getString(it) else null }
+        setup(root, text1, extra = strings.toTypedArray())
+    }
 
     fun setup(root: ViewGroup, firstText: Int, vararg extra: Int?) {
         val text1 = context.getString(firstText)

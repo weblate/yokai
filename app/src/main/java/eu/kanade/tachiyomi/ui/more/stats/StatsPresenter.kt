@@ -1,6 +1,9 @@
 package eu.kanade.tachiyomi.ui.more.stats
 
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -83,6 +86,6 @@ class StatsPresenter(
 
     fun getReadDuration(): String {
         val chaptersTime = db.getTotalReadDuration()
-        return chaptersTime.getReadDuration(prefs.context.getString(R.string.none))
+        return chaptersTime.getReadDuration(prefs.context.getString(MR.strings.none))
     }
 }

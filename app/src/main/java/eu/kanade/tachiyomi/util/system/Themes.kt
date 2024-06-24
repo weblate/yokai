@@ -3,78 +3,81 @@ package eu.kanade.tachiyomi.util.system
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatDelegate
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 
 @Suppress("unused")
-enum class Themes(@StyleRes val styleRes: Int, val nightMode: Int, @StringRes val nameRes: Int, @StringRes altNameRes: Int? = null) {
+enum class Themes(@StyleRes val styleRes: Int, val nightMode: Int, val nameRes: StringResource, altNameRes: StringResource? = null) {
     MONET(
         R.style.Theme_Tachiyomi_Monet,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.a_brighter_you,
-        R.string.a_calmer_you,
+        MR.strings.a_brighter_you,
+        MR.strings.a_calmer_you,
     ),
     DEFAULT(
         R.style.Theme_Tachiyomi,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.white_theme,
-        R.string.dark,
+        MR.strings.white_theme,
+        MR.strings.dark,
     ),
     SPRING_AND_DUSK(
         R.style.Theme_Tachiyomi_MidnightDusk,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.spring_blossom,
-        R.string.midnight_dusk,
+        MR.strings.spring_blossom,
+        MR.strings.midnight_dusk,
     ),
     STRAWBERRIES(
         R.style.Theme_Tachiyomi_Strawberries,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.strawberry_daiquiri,
-        R.string.chocolate_strawberries,
+        MR.strings.strawberry_daiquiri,
+        MR.strings.chocolate_strawberries,
     ),
     TEAL_AND_SAPPHIRE(
         R.style.Theme_Tachiyomi_SapphireDusk,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.teal_ocean,
-        R.string.sapphire_dusk,
+        MR.strings.teal_ocean,
+        MR.strings.sapphire_dusk,
     ),
     LAVENDER(
         R.style.Theme_Tachiyomi_Lavender,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.lavender,
-        R.string.violet,
+        MR.strings.lavender,
+        MR.strings.violet,
     ),
     TAKO(
         R.style.Theme_Tachiyomi_Tako,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.tako,
+        MR.strings.tako,
     ),
     YIN_AND_YANG(
         R.style.Theme_Tachiyomi_YinYang,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.yang,
-        R.string.yin,
+        MR.strings.yang,
+        MR.strings.yin,
     ),
     LIME(
         R.style.Theme_Tachiyomi_FlatLime,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        R.string.lime_time,
-        R.string.flat_lime,
+        MR.strings.lime_time,
+        MR.strings.flat_lime,
     ),
     YOTSUBA(
         R.style.Theme_Tachiyomi_Yotsuba,
         AppCompatDelegate.MODE_NIGHT_NO,
-        R.string.yotsuba,
+        MR.strings.yotsuba,
     ),
     DOKI(
         R.style.Theme_Tachiyomi_Doki,
         AppCompatDelegate.MODE_NIGHT_YES,
-        R.string.doki,
+        MR.strings.doki,
     )
     ;
 
     val isDarkTheme = nightMode == AppCompatDelegate.MODE_NIGHT_YES
     val followsSystem = nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
-    @StringRes
-    val darkNameRes: Int = altNameRes ?: nameRes
+    val darkNameRes: StringResource = altNameRes ?: nameRes
 }

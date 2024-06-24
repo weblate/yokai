@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.util.ExtensionInstallBroadcast.Companion.EXTRA_SESSION_ID
 import eu.kanade.tachiyomi.extension.util.ExtensionInstallBroadcast.Companion.PACKAGE_INSTALLED_ACTION
@@ -22,6 +21,7 @@ import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.getParcelableCompat
 import eu.kanade.tachiyomi.util.system.toast
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
 
 /**
  * Broadcast used to install extensions, that receives callbacks from package installer.
@@ -103,9 +103,9 @@ class ExtensionInstallBroadcast : BroadcastReceiver() {
                         extensionManager.setInstallationResult(downloadId, false)
                         if (status != PackageInstaller.STATUS_FAILURE_ABORTED) {
                             if (DeviceUtil.isMiui) {
-                                context.toast(R.string.extensions_miui_warning, Toast.LENGTH_LONG)
+                                context.toast(MR.strings.extensions_miui_warning, Toast.LENGTH_LONG)
                             } else {
-                                context.toast(R.string.could_not_install_extension)
+                                context.toast(MR.strings.could_not_install_extension)
                             }
                         }
                     }

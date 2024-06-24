@@ -7,12 +7,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.StringRes
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.isVisible
 import androidx.core.view.updatePaddingRelative
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -34,6 +34,7 @@ import eu.kanade.tachiyomi.util.view.inflate
 import eu.kanade.tachiyomi.util.view.isCollapsed
 import eu.kanade.tachiyomi.util.view.isExpanded
 import eu.kanade.tachiyomi.util.view.isHidden
+import eu.kanade.tachiyomi.util.view.setText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
@@ -44,6 +45,8 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -236,7 +239,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
             },
             trackers?.let {
                 LibraryFilter(
-                    activity.getString(R.string.trackers),
+                    activity.getString(MR.strings.trackers),
                     it.items,
                     it,
                     it.state + 1,
@@ -291,9 +294,9 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
         allExpanded ?: return
         binding.expandCategories.setText(
             if (!allExpanded) {
-                R.string.expand_all_categories
+                MR.strings.expand_all_categories
             } else {
-                R.string.collapse_all_categories
+                MR.strings.collapse_all_categories
             },
         )
         if (animated) {
@@ -331,27 +334,27 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
 
     private fun createTags() {
         downloaded = inflate(R.layout.filter_tag_group) as FilterTagGroup
-        downloaded.setup(this, R.string.downloaded, R.string.not_downloaded)
+        downloaded.setup(this, MR.strings.downloaded, MR.strings.not_downloaded)
 
         completed = inflate(R.layout.filter_tag_group) as FilterTagGroup
-        completed.setup(this, R.string.completed, R.string.ongoing)
+        completed.setup(this, MR.strings.completed, MR.strings.ongoing)
 
         unreadProgress = inflate(R.layout.filter_tag_group) as FilterTagGroup
-        unreadProgress.setup(this, R.string.not_started, R.string.in_progress)
+        unreadProgress.setup(this, MR.strings.not_started, MR.strings.in_progress)
 
         unread = inflate(R.layout.filter_tag_group) as FilterTagGroup
-        unread.setup(this, R.string.unread, R.string.read)
+        unread.setup(this, MR.strings.unread, MR.strings.read)
 
         bookmarked = inflate(R.layout.filter_tag_group) as FilterTagGroup
-        bookmarked.setup(this, R.string.bookmarked, R.string.not_bookmarked)
+        bookmarked.setup(this, MR.strings.bookmarked, MR.strings.not_bookmarked)
 
         if (hasTracking) {
             tracked = inflate(R.layout.filter_tag_group) as FilterTagGroup
-            tracked?.setup(this, R.string.tracked, R.string.not_tracked)
+            tracked?.setup(this, MR.strings.tracked, MR.strings.not_tracked)
         }
 
         contentType = inflate(R.layout.filter_tag_group) as FilterTagGroup
-        contentType.setup(this, R.string.sfw, R.string.nsfw)
+        contentType.setup(this, MR.strings.sfw, MR.strings.nsfw)
 
         reSortViews()
 
@@ -366,23 +369,23 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
         withIOContext {
             val libraryManga = controller?.presenter?.allLibraryItems ?: return@withIOContext
             checked = true
-            var types = mutableSetOf<Int>()
+            var types = mutableSetOf<StringResource>()
             libraryManga.forEach {
                 when (it.manga.seriesType(sourceManager = sourceManager)) {
-                    Manga.TYPE_MANHWA, Manga.TYPE_WEBTOON -> types.add(R.string.manhwa)
-                    Manga.TYPE_MANHUA -> types.add(R.string.manhua)
-                    Manga.TYPE_COMIC -> types.add(R.string.comic)
+                    Manga.TYPE_MANHWA, Manga.TYPE_WEBTOON -> types.add(MR.strings.manhwa)
+                    Manga.TYPE_MANHUA -> types.add(MR.strings.manhua)
+                    Manga.TYPE_COMIC -> types.add(MR.strings.comic)
                 }
                 if (types.size == 3) return@forEach
             }
-            val sortedTypes = arrayOf(R.string.manhwa, R.string.manhua, R.string.comic)
+            val sortedTypes = arrayOf(MR.strings.manhwa, MR.strings.manhua, MR.strings.comic)
             types = types.sortedBy { sortedTypes.indexOf(it) }.toMutableSet()
             if (types.isNotEmpty()) {
                 launchUI {
                     val mangaType = inflate(R.layout.filter_tag_group) as FilterTagGroup
                     mangaType.setup(
                         this@FilterBottomSheet,
-                        R.string.manga,
+                        MR.strings.manga,
                         *types.toTypedArray(),
                     )
                     this@FilterBottomSheet.mangaType = mangaType
@@ -393,10 +396,10 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
             withUIContext {
                 mangaType?.setState(
                     when (preferences.filterMangaType().get()) {
-                        Manga.TYPE_MANGA -> context.getString(R.string.manga)
-                        Manga.TYPE_MANHUA -> context.getString(R.string.manhua)
-                        Manga.TYPE_MANHWA -> context.getString(R.string.manhwa)
-                        Manga.TYPE_COMIC -> context.getString(R.string.comic)
+                        Manga.TYPE_MANGA -> context.getString(MR.strings.manga)
+                        Manga.TYPE_MANHUA -> context.getString(MR.strings.manhua)
+                        Manga.TYPE_MANHWA -> context.getString(MR.strings.manhwa)
+                        Manga.TYPE_COMIC -> context.getString(MR.strings.comic)
                         else -> ""
                     },
                 )
@@ -530,10 +533,10 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
             tracked -> preferences.filterTracked()
             mangaType -> {
                 val newIndex = when (view.nameOf(index)) {
-                    context.getString(R.string.manga) -> Manga.TYPE_MANGA
-                    context.getString(R.string.manhua) -> Manga.TYPE_MANHUA
-                    context.getString(R.string.manhwa) -> Manga.TYPE_MANHWA
-                    context.getString(R.string.comic) -> Manga.TYPE_COMIC
+                    context.getString(MR.strings.manga) -> Manga.TYPE_MANGA
+                    context.getString(MR.strings.manhua) -> Manga.TYPE_MANHUA
+                    context.getString(MR.strings.manhwa) -> Manga.TYPE_MANHWA
+                    context.getString(MR.strings.comic) -> Manga.TYPE_COMIC
                     else -> 0
                 }
                 preferences.filterMangaType().set(newIndex)
@@ -625,15 +628,15 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
         var FILTER_TRACKER = ""
     }
 
-    enum class Filters(val value: Char, @StringRes val stringRes: Int) {
-        UnreadProgress('u', R.string.read_progress),
-        Unread('r', R.string.unread),
-        Downloaded('d', R.string.downloaded),
-        Completed('c', R.string.status),
-        SeriesType('m', R.string.series_type),
-        Bookmarked('b', R.string.bookmarked),
-        Tracked('t', R.string.tracking),
-        ContentType('s', R.string.content_type);
+    enum class Filters(val value: Char, val stringRes: StringResource) {
+        UnreadProgress('u', MR.strings.read_progress),
+        Unread('r', MR.strings.unread),
+        Downloaded('d', MR.strings.downloaded),
+        Completed('c', MR.strings.status),
+        SeriesType('m', MR.strings.series_type),
+        Bookmarked('b', MR.strings.bookmarked),
+        Tracked('t', MR.strings.tracking),
+        ContentType('s', MR.strings.content_type);
         ;
 
         companion object {

@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.preference.PreferenceScreen
 import androidx.webkit.WebViewCompat
 import eu.kanade.tachiyomi.BuildConfig
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.more.AboutController
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.onClick
@@ -12,11 +11,12 @@ import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import yokai.i18n.MR
 import java.text.DateFormat
 
 class DebugController : SettingsLegacyController() {
 
-    override fun getTitleRes() = R.string.pref_debug_info
+    override fun getTitleRes() = MR.strings.pref_debug_info
 
     private val dateFormat: DateFormat by lazy {
         preferences.dateFormat()

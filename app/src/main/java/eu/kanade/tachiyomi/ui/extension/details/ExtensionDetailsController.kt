@@ -43,6 +43,7 @@ import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.util.system.LocaleHelper
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.scrollViewWith
+import eu.kanade.tachiyomi.util.view.setAction
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import eu.kanade.tachiyomi.widget.TachiyomiTextInputEditText.Companion.setIncognito
@@ -55,6 +56,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 @SuppressLint("RestrictedApi")
 class ExtensionDetailsController(bundle: Bundle? = null) :
@@ -85,7 +88,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
     override val presenter = ExtensionDetailsPresenter(args.getString(PKGNAME_KEY)!!)
 
     override fun getTitle(): String? {
-        return resources?.getString(R.string.extension_info)
+        return view?.context?.getString(MR.strings.extension_info)
     }
 
     @SuppressLint("PrivateResource")
@@ -193,7 +196,7 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
 
         Logger.d { "Cleared $cleared cookies for: ${urls.joinToString()}" }
         val context = view?.context ?: return
-        binding.coordinator.snack(context.getString(R.string.cookies_cleared))
+        binding.coordinator.snack(context.getString(MR.strings.cookies_cleared))
     }
 
     private fun addPreferencesForSource(screen: PreferenceScreen, source: Source, isMultiSource: Boolean, isMultiLangSingleSource: Boolean) {
@@ -218,12 +221,12 @@ class ExtensionDetailsController(bundle: Bundle? = null) :
                 } else {
                     binding.coordinator.snack(
                         context.getString(
-                            R.string._must_be_enabled_first,
-                            title,
+                            MR.strings._must_be_enabled_first,
+                            title?.toString() ?: "",
                         ),
                         Snackbar.LENGTH_LONG,
                     ) {
-                        setAction(R.string.enable) {
+                        setAction(MR.strings.enable) {
                             preferences.enabledLanguages() += source.lang
                             isChecked = true
                             toggleSource(source, true)

@@ -13,6 +13,9 @@ import androidx.activity.addCallback
 import androidx.core.graphics.ColorUtils
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.online.HttpSource
@@ -197,7 +200,7 @@ open class WebViewActivity : BaseWebViewActivity() {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, binding.webview.url)
             }
-            startActivity(Intent.createChooser(intent, getString(R.string.share)))
+            startActivity(Intent.createChooser(intent, getString(MR.strings.share)))
         } catch (e: Exception) {
             toast(e.message)
         }

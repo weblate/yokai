@@ -1,6 +1,10 @@
 package eu.kanade.tachiyomi.ui.library
 
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 
 object LibraryGroup {
 
@@ -13,16 +17,16 @@ object LibraryGroup {
     const val BY_LANGUAGE = 7
     const val UNGROUPED = 5
 
-    fun groupTypeStringRes(type: Int, hasCategories: Boolean = true): Int {
+    fun groupTypeStringRes(type: Int, hasCategories: Boolean = true): StringResource {
         return when (type) {
-            BY_STATUS -> R.string.status
-            BY_TAG -> R.string.tag
-            BY_SOURCE -> R.string.sources
-            BY_TRACK_STATUS -> R.string.tracking_status
-            BY_AUTHOR -> R.string.author
-            BY_LANGUAGE -> R.string.language
-            UNGROUPED -> R.string.ungrouped
-            else -> if (hasCategories) R.string.categories else R.string.ungrouped
+            BY_STATUS -> MR.strings.status
+            BY_TAG -> MR.strings.tag
+            BY_SOURCE -> MR.strings.sources
+            BY_TRACK_STATUS -> MR.strings.tracking_status
+            BY_AUTHOR -> MR.strings.author
+            BY_LANGUAGE -> MR.strings.language
+            UNGROUPED -> MR.strings.ungrouped
+            else -> if (hasCategories) MR.strings.categories else MR.strings.ungrouped
         }
     }
 

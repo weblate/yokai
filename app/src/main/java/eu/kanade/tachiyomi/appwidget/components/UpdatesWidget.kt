@@ -18,6 +18,8 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import eu.kanade.tachiyomi.appwidget.ContainerModifier
 import eu.kanade.tachiyomi.appwidget.util.calculateRowAndColumnCount
 import eu.kanade.tachiyomi.appwidget.util.stringResource
@@ -37,7 +39,7 @@ fun UpdatesWidget(data: List<Pair<Long, Bitmap?>>?) {
         if (data == null) {
             CircularProgressIndicator()
         } else if (data.isEmpty()) {
-            Text(text = stringResource(R.string.no_recent_read_updated_manga))
+            Text(text = stringResource(MR.strings.no_recent_read_updated_manga))
         } else {
             (0 until rowCount).forEach { i ->
                 val coverRow = (0 until columnCount).mapNotNull { j ->

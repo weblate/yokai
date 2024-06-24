@@ -16,14 +16,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import eu.kanade.tachiyomi.R
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.system.setThemeByPref
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
 import yokai.presentation.onboarding.InfoScreen
 import yokai.presentation.theme.Size
 import yokai.presentation.theme.YokaiTheme
@@ -43,16 +43,16 @@ class CrashActivity : AppCompatActivity() {
             YokaiTheme {
                 InfoScreen(
                     icon = Icons.Outlined.BugReport,
-                    headingText = stringResource(R.string.crash_screen_title),
-                    subtitleText = stringResource(R.string.crash_screen_description, stringResource(id = R.string.app_name)),
-                    acceptText = stringResource(id = R.string.dump_crash_logs),
+                    headingText = stringResource(MR.strings.crash_screen_title),
+                    subtitleText = stringResource(MR.strings.crash_screen_description, stringResource(MR.strings.app_name)),
+                    acceptText = stringResource(MR.strings.dump_crash_logs),
                     onAcceptClick = {
                         scope.launch {
                             CrashLogUtil(context).dumpLogs()
                         }
                     },
                     canAccept = true,
-                    rejectText = stringResource(R.string.crash_screen_restart_application),
+                    rejectText = stringResource(MR.strings.crash_screen_restart_application),
                     onRejectClick = {
                         finishAffinity()
                         startActivity(Intent(this@CrashActivity, MainActivity::class.java))

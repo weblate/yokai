@@ -21,6 +21,9 @@ import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -349,7 +352,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             val skippedFile = writeErrorFile(
                 skippedUpdates,
                 "skipped",
-                context.getString(R.string.learn_why) + " - " + LibraryUpdateNotifier.HELP_SKIPPED_URL,
+                context.getString(MR.strings.learn_why) + " - " + LibraryUpdateNotifier.HELP_SKIPPED_URL,
             ).getUriCompat(context)
             notifier.showUpdateSkippedNotification(skippedUpdates.map { it.key.title }, skippedFile)
         }
@@ -454,16 +457,16 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         return mangaToAdd.filter { manga ->
             when {
                 MANGA_NON_COMPLETED in restrictions && manga.status == SManga.COMPLETED -> {
-                    skippedUpdates[manga] = context.getString(R.string.skipped_reason_completed)
+                    skippedUpdates[manga] = context.getString(MR.strings.skipped_reason_completed)
                 }
                 MANGA_HAS_UNREAD in restrictions && manga.unread != 0 -> {
-                    skippedUpdates[manga] = context.getString(R.string.skipped_reason_not_caught_up)
+                    skippedUpdates[manga] = context.getString(MR.strings.skipped_reason_not_caught_up)
                 }
                 MANGA_NON_READ in restrictions && manga.totalChapters > 0 && !manga.hasRead -> {
-                    skippedUpdates[manga] = context.getString(R.string.skipped_reason_not_started)
+                    skippedUpdates[manga] = context.getString(MR.strings.skipped_reason_not_started)
                 }
                 manga.update_strategy != UpdateStrategy.ALWAYS_UPDATE -> {
-                    skippedUpdates[manga] = context.getString(R.string.skipped_reason_not_always_update)
+                    skippedUpdates[manga] = context.getString(MR.strings.skipped_reason_not_always_update)
                 }
                 else -> {
                     return@filter true

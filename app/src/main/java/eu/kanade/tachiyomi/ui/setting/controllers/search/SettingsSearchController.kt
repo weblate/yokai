@@ -9,6 +9,9 @@ import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.SettingsSearchControllerBinding
 import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
 import eu.kanade.tachiyomi.ui.main.SearchControllerInterface
@@ -54,7 +57,7 @@ class SettingsSearchController :
         val searchItem = activityBinding?.searchToolbar?.searchItem
         searchView = activityBinding?.searchToolbar?.searchView
 
-        activityBinding?.searchToolbar?.setQueryHint(applicationContext?.getString(R.string.search_settings), false)
+        activityBinding?.searchToolbar?.setQueryHint(applicationContext?.getString(MR.strings.search_settings), false)
 
         searchItem?.expandActionView()
         setItems(getResultSet())

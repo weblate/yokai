@@ -29,6 +29,8 @@ import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.fullAppBarHeight
 import eu.kanade.tachiyomi.util.view.scrollViewWith
 import eu.kanade.tachiyomi.util.view.snack
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import kotlin.math.max
 import kotlin.math.roundToInt
 import android.R as AR
@@ -48,7 +50,7 @@ class ClearDatabaseController :
     override val presenter = ClearDatabasePresenter()
 
     override fun getTitle(): String? {
-        return activity?.getString(R.string.clear_database)
+        return activity?.getString(MR.strings.clear_database)
     }
 
     override fun onViewCreated(view: View) {
@@ -116,10 +118,10 @@ class ClearDatabaseController :
         binding.fab.isInvisible = true
         binding.fab.setOnClickListener {
             if (adapter!!.selectedItemCount > 0) {
-                val item = arrayOf(activity!!.getString(R.string.clear_db_exclude_read))
+                val item = arrayOf(activity!!.getString(MR.strings.clear_db_exclude_read))
                 val selected = booleanArrayOf(true)
                 activity!!.materialAlertDialog()
-                    .setCustomTitleAndMessage(0, activity!!.getString(R.string.clear_database_confirmation))
+                    .setCustomTitleAndMessage(0, activity!!.getString(MR.strings.clear_database_confirmation))
                     .setMultiChoiceItems(item, selected) { _, which, checked ->
                         selected[which] = checked
                     }
@@ -192,7 +194,7 @@ class ClearDatabaseController :
         } else {
             binding.emptyView.show(
                 R.drawable.ic_book_24dp,
-                R.string.database_clean,
+                MR.strings.database_clean,
             )
         }
         menu?.forEach { menuItem -> menuItem.isVisible = size > 0 }
@@ -246,6 +248,6 @@ class ClearDatabaseController :
         binding.fab.isVisible = false
         adapter.clearSelection()
         adapter.notifyDataSetChanged()
-        view?.snack(R.string.clear_database_completed)
+        view?.snack(MR.strings.clear_database_completed)
     }
 }

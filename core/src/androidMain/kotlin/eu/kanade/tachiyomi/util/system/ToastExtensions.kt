@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import dev.icerock.moko.resources.StringResource
 import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 
 /**
  * Display a toast in this context.

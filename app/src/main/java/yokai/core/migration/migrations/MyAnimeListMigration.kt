@@ -2,6 +2,9 @@ package yokai.core.migration.migrations
 
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.util.system.toast
 import yokai.core.migration.Migration
@@ -21,7 +24,7 @@ class MyAnimeListMigration : Migration {
 
         if (trackManager.myAnimeList.isLogged) {
             trackManager.myAnimeList.logout()
-            context.toast(R.string.myanimelist_relogin)
+            context.toast(MR.strings.myanimelist_relogin)
         }
         return true
     }

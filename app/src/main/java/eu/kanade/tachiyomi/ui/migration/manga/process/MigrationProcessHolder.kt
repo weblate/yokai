@@ -8,6 +8,9 @@ import androidx.core.view.isVisible
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.coil.CoverViewTarget
@@ -120,7 +123,7 @@ class MigrationProcessHolder(
                         binding.migrationMangaCardTo.coverThumbnail.setImageDrawable(null)
                         binding.migrationMangaCardTo.progress.isVisible = false
                         binding.migrationMangaCardTo.title.text =
-                            view.context.getString(R.string.no_alternatives_found)
+                            view.context.getString(MR.strings.no_alternatives_found)
                     }
                     binding.migrationMenu.isVisible = true
                     binding.skipManga.isVisible = false
@@ -155,7 +158,7 @@ class MigrationProcessHolder(
         compactTitle.isVisible = true
         gradient.isVisible = true
         compactTitle.text = if (manga.title.isBlank()) {
-            view.context.getString(R.string.unknown)
+            view.context.getString(MR.strings.unknown)
         } else {
             manga.title
         }
@@ -169,13 +172,13 @@ class MigrationProcessHolder(
 
         if (latestChapter > 0f) {
             subtitle.text = root.context.getString(
-                R.string.latest_,
+                MR.strings.latest_,
                 DecimalFormat("#.#").format(latestChapter),
             )
         } else {
             subtitle.text = root.context.getString(
-                R.string.latest_,
-                root.context.getString(R.string.unknown),
+                MR.strings.latest_,
+                root.context.getString(MR.strings.unknown),
             )
         }
     }

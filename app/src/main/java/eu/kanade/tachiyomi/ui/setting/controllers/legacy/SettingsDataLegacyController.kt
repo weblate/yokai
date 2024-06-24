@@ -15,6 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceScreen
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
 import eu.kanade.tachiyomi.data.backup.create.BackupOptions
@@ -32,8 +35,8 @@ import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryRes
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.launchIO
@@ -42,6 +45,8 @@ import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
 import eu.kanade.tachiyomi.util.system.withUIContext
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
@@ -64,56 +69,56 @@ class SettingsDataLegacyController : SettingsLegacyController() {
     private val chapterCache: ChapterCache by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.data_and_storage
+        titleRes = MR.strings.data_and_storage
 
         preference {
             key = "pref_storage_location"
             bindTo(storagePreferences.baseStorageDirectory())
-            titleRes = R.string.storage_location
+            titleRes = MR.strings.storage_location
 
             onClick {
                 try {
                     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
                     startActivityForResult(intent, CODE_DATA_DIR)
                 } catch (e: ActivityNotFoundException) {
-                    activity?.toast(R.string.file_picker_error)
+                    activity?.toast(MR.strings.file_picker_error)
                 }
             }
 
             storagePreferences.baseStorageDirectory().changes()
                 .onEach { path ->
                     summary = UniFile.fromUri(context, path.toUri())?.let { dir ->
-                        dir.filePath ?: context.getString(R.string.invalid_location, dir.uri)
-                    } ?: context.getString(R.string.invalid_location_generic)
+                        dir.filePath ?: context.getString(MR.strings.invalid_location, dir.uri)
+                    } ?: context.getString(MR.strings.invalid_location_generic)
                 }
                 .launchIn(viewScope)
         }
 
         preference {
             key = "pref_create_backup"
-            titleRes = R.string.create_backup
-            summaryRes = R.string.can_be_used_to_restore
+            titleRes = MR.strings.create_backup
+            summaryRes = MR.strings.can_be_used_to_restore
 
             onClick {
                 if (DeviceUtil.isMiui && DeviceUtil.isMiuiOptimizationDisabled()) {
-                    context.toast(R.string.restore_miui_warning, Toast.LENGTH_LONG)
+                    context.toast(MR.strings.restore_miui_warning, Toast.LENGTH_LONG)
                 }
 
                 if (!BackupCreatorJob.isManualJobRunning(context)) {
                     showBackupCreateDialog()
                 } else {
-                    context.toast(R.string.backup_in_progress)
+                    context.toast(MR.strings.backup_in_progress)
                 }
             }
         }
         preference {
             key = "pref_restore_backup"
-            titleRes = R.string.restore_backup
-            summaryRes = R.string.restore_from_backup_file
+            titleRes = MR.strings.restore_backup
+            summaryRes = MR.strings.restore_from_backup_file
 
             onClick {
                 if (DeviceUtil.isMiui && DeviceUtil.isMiuiOptimizationDisabled()) {
-                    context.toast(R.string.restore_miui_warning, Toast.LENGTH_LONG)
+                    context.toast(MR.strings.restore_miui_warning, Toast.LENGTH_LONG)
                 }
 
                 if (!BackupRestoreJob.isRunning(context)) {
@@ -125,28 +130,28 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                     storageManager.getBackupsDirectory()?.let {
                         intent.setDataAndType(it.uri, "*/*")
                     }
-                    val title = resources?.getString(R.string.select_backup_file)
+                    val title = activity?.getString(MR.strings.select_backup_file)
                     val chooser = Intent.createChooser(intent, title)
                     startActivityForResult(chooser, CODE_BACKUP_RESTORE)
                 } else {
-                    context.toast(R.string.restore_in_progress)
+                    context.toast(MR.strings.restore_in_progress)
                 }
             }
         }
 
         preferenceCategory {
-            titleRes = R.string.automatic_backups
+            titleRes = MR.strings.automatic_backups
 
             intListPreference(activity) {
                 bindTo(preferences.backupInterval())
-                titleRes = R.string.backup_frequency
+                titleRes = MR.strings.backup_frequency
                 entriesRes = arrayOf(
-                    R.string.manual,
-                    R.string.every_6_hours,
-                    R.string.every_12_hours,
-                    R.string.daily,
-                    R.string.every_2_days,
-                    R.string.weekly,
+                    MR.strings.manual,
+                    MR.strings.every_6_hours,
+                    MR.strings.every_12_hours,
+                    MR.strings.daily,
+                    MR.strings.every_2_days,
+                    MR.strings.weekly,
                 )
                 entryValues = listOf(0, 6, 12, 24, 48, 168)
 
@@ -158,7 +163,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
             }
             intListPreference(activity) {
                 bindTo(preferences.numberOfBackups())
-                titleRes = R.string.max_auto_backups
+                titleRes = MR.strings.max_auto_backups
                 entries = (1..5).map(Int::toString)
                 entryRange = 1..5
 
@@ -166,29 +171,29 @@ class SettingsDataLegacyController : SettingsLegacyController() {
             }
         }
 
-        infoPreference(R.string.backup_info)
+        infoPreference(MR.strings.backup_info)
 
         preferenceCategory {
-            titleRes = R.string.storage_usage
+            titleRes = MR.strings.storage_usage
 
             preference {
                 key = CLEAR_CACHE_KEY
-                titleRes = R.string.clear_chapter_cache
-                summary = context.getString(R.string.used_, chapterCache.readableSize)
+                titleRes = MR.strings.clear_chapter_cache
+                summary = context.getString(MR.strings.used_, chapterCache.readableSize)
 
                 onClick { clearChapterCache() }
             }
 
             preference {
                 key = "clear_cached_not_library"
-                titleRes = R.string.clear_cached_covers_non_library
+                titleRes = MR.strings.clear_cached_covers_non_library
                 summary = context.getString(
-                    R.string.delete_all_covers__not_in_library_used_,
+                    MR.strings.delete_all_covers__not_in_library_used_,
                     coverCache.getOnlineCoverCacheSize(),
                 )
 
                 onClick {
-                    context.toast(R.string.starting_cleanup)
+                    context.toast(MR.strings.starting_cleanup)
                     (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
                         coverCache.deleteAllCachedCovers()
                     }
@@ -197,14 +202,14 @@ class SettingsDataLegacyController : SettingsLegacyController() {
 
             preference {
                 key = "clean_cached_covers"
-                titleRes = R.string.clean_up_cached_covers
+                titleRes = MR.strings.clean_up_cached_covers
                 summary = context.getString(
-                    R.string.delete_old_covers_in_library_used_,
+                    MR.strings.delete_old_covers_in_library_used_,
                     coverCache.getChapterCacheSize(),
                 )
 
                 onClick {
-                    context.toast(R.string.starting_cleanup)
+                    context.toast(MR.strings.starting_cleanup)
                     (activity as? AppCompatActivity)?.lifecycleScope?.launchIO {
                         coverCache.deleteOldCovers()
                     }
@@ -230,7 +235,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
             val uri = data.data
 
             if (uri == null) {
-                activity.toast(R.string.backup_restore_invalid_uri)
+                activity.toast(MR.strings.backup_restore_invalid_uri)
                 return
             }
 
@@ -270,7 +275,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
             } else {
                 UniFile.fromUri(activity, uri)?.createFile(Backup.getBackupFilename())?.uri
             } ?: return
-        activity.toast(R.string.creating_backup)
+        activity.toast(MR.strings.creating_backup)
         BackupCreatorJob.startNow(activity, actualUri, options)
     }
 
@@ -279,7 +284,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
 
         val dir = storageManager.getBackupsDirectory()
         if (dir == null) {
-            activity?.toast(R.string.invalid_location_generic)
+            activity?.toast(MR.strings.invalid_location_generic)
             return
         }
 
@@ -297,7 +302,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
 
             startActivityForResult(intent, CODE_BACKUP_CREATE)
         } catch (e: ActivityNotFoundException) {
-            activity?.toast(R.string.file_picker_error)
+            activity?.toast(MR.strings.file_picker_error)
         }
     }
 
@@ -306,7 +311,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
         val options = BackupOptions.getOptions().map { activity.getString(it) }
 
         activity.materialAlertDialog()
-            .setTitle(R.string.what_should_backup)
+            .setTitle(MR.strings.what_should_backup)
             .setMultiChoiceItems(
                 options.toTypedArray(),
                 BackupOptions().asBooleanArray(),
@@ -316,7 +321,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                     listView.setItemChecked(position, true)
                 }
             }
-            .setPositiveButton(R.string.create) { dialog, _ ->
+            .setPositiveButton(MR.strings.create) { dialog, _ ->
                 val listView = (dialog as AlertDialog).listView
                 val booleanArrayList = arrayListOf(true)
                 // TODO: Allow library_entries to be disabled
@@ -337,16 +342,16 @@ class SettingsDataLegacyController : SettingsLegacyController() {
         try {
             val results = BackupFileValidator().validate(activity, uri)
 
-            var message = activity.getString(R.string.restore_content_full)
+            var message = activity.getString(MR.strings.restore_content_full)
             if (results.missingSources.isNotEmpty()) {
-                message += "\n\n${activity.getString(R.string.restore_missing_sources)}\n${
+                message += "\n\n${activity.getString(MR.strings.restore_missing_sources)}\n${
                 results.missingSources.joinToString(
                     "\n",
                 ) { "- $it" }
                 }"
             }
             if (results.missingTrackers.isNotEmpty()) {
-                message += "\n\n${activity.getString(R.string.restore_missing_trackers)}\n${
+                message += "\n\n${activity.getString(MR.strings.restore_missing_trackers)}\n${
                 results.missingTrackers.joinToString(
                     "\n",
                 ) { "- $it" }
@@ -354,18 +359,18 @@ class SettingsDataLegacyController : SettingsLegacyController() {
             }
 
             activity.materialAlertDialog()
-                .setTitle(R.string.restore_backup)
+                .setTitle(MR.strings.restore_backup)
                 .setMessage(message)
-                .setPositiveButton(R.string.restore) { _, _ ->
+                .setPositiveButton(MR.strings.restore) { _, _ ->
                     val context = applicationContext
                     if (context != null) {
-                        activity.toast(R.string.restoring_backup)
+                        activity.toast(MR.strings.restoring_backup)
                         BackupRestoreJob.start(context, uri)
                     }
                 }.show()
         } catch (e: Exception) {
             activity.materialAlertDialog()
-                .setTitle(R.string.invalid_backup_file)
+                .setTitle(MR.strings.invalid_backup_file)
                 .setMessage(e.message)
                 .setPositiveButton(AR.string.cancel, null)
                 .show()
@@ -379,18 +384,18 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                 val deletedFiles = chapterCache.clear()
                 withUIContext {
                     activity?.toast(
-                        resources?.getQuantityString(
-                            R.plurals.cache_cleared,
+                        activity?.getString(
+                            MR.plurals.cache_cleared,
                             deletedFiles,
                             deletedFiles,
                         ),
                     )
                     findPreference(CLEAR_CACHE_KEY)?.summary =
-                        resources?.getString(R.string.used_, chapterCache.readableSize)
+                        activity?.getString(MR.strings.used_, chapterCache.readableSize)
                 }
             } catch (_: Exception) {
                 withUIContext {
-                    activity?.toast(R.string.cache_delete_error)
+                    activity?.toast(MR.strings.cache_delete_error)
                 }
             }
         }

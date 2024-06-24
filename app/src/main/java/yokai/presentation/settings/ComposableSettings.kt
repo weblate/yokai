@@ -1,17 +1,16 @@
 package yokai.presentation.settings
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.res.stringResource
+import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.component.preference.Preference
 
 interface ComposableSettings {
     @Composable
     @ReadOnlyComposable
-    @StringRes
-    fun getTitleRes(): Int
+    fun getTitleRes(): StringResource
 
     @Composable
     fun getPreferences(): List<Preference>

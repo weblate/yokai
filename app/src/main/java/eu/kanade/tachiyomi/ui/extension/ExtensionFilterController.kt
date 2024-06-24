@@ -2,22 +2,22 @@ package eu.kanade.tachiyomi.ui.extension
 
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.onChange
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes
 import eu.kanade.tachiyomi.util.system.LocaleHelper
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
 
 class ExtensionFilterController : SettingsLegacyController() {
 
     private val extensionManager: ExtensionManager by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.extensions
+        titleMRes = MR.strings.extensions
 
         val activeLangs = preferences.enabledLanguages().get()
 

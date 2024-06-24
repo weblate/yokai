@@ -8,6 +8,7 @@ import androidx.glance.appwidget.cornerRadius
 import dev.icerock.moko.resources.StringResource
 import yokai.presentation.widget.R
 import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 
 fun GlanceModifier.appWidgetBackgroundRadius(): GlanceModifier {
     return this.cornerRadius(R.dimen.appwidget_background_radius)

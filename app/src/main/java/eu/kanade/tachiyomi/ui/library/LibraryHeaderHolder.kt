@@ -18,6 +18,9 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.github.florent37.viewtooltip.ViewTooltip
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -29,6 +32,8 @@ import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.compatToolTipText
+import eu.kanade.tachiyomi.util.view.setText
+import eu.kanade.tachiyomi.util.view.text
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -60,7 +65,7 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
             }
         }
         binding.categorySort.setOnClickListener { it.post { showCatSortOptions() } }
-        binding.categorySort.compatToolTipText = view.context.getString(R.string.sort)
+        binding.categorySort.compatToolTipText = view.context.getString(MR.strings.sort)
         binding.checkbox.setOnClickListener { selectAll() }
 
         runningDrawable.setStyle(CircularProgressDrawable.DEFAULT)
@@ -128,7 +133,7 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
         if (!tutorial.get()) {
             ViewTooltip.on(itemView.context as? Activity, binding.categoryTitle).autoHide(true, 5000L)
                 .align(ViewTooltip.ALIGN.START).position(ViewTooltip.Position.TOP)
-                .text(R.string.long_press_category)
+                .text(MR.strings.long_press_category)
                 .color(itemView.context.getResourceColor(R.attr.colorSecondary))
                 .textSize(TypedValue.COMPLEX_UNIT_SP, 15f).textColor(Color.WHITE)
                 .withShadow(false).corner(30).arrowWidth(15).arrowHeight(15).distanceWithView(0)
@@ -282,7 +287,7 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
             val sheet = MaterialMenuSheet(
                 activity,
                 items,
-                activity.getString(R.string.sort_by),
+                activity.getString(MR.strings.sort_by),
                 sortingMode?.mainValue,
             ) { sheet, item ->
                 onCatSortClicked(category, item)

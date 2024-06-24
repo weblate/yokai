@@ -8,6 +8,9 @@ import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
 import eu.kanade.tachiyomi.ui.setting.ThemePreference
@@ -17,10 +20,10 @@ import eu.kanade.tachiyomi.ui.setting.infoPreference
 import eu.kanade.tachiyomi.ui.setting.intListPreference
 import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryRes
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.ui.setting.themePreference
-import eu.kanade.tachiyomi.ui.setting.titleRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.system.SideNavMode
 import eu.kanade.tachiyomi.util.system.appDelegateNightMode
 import eu.kanade.tachiyomi.util.system.dpToPx
@@ -41,14 +44,14 @@ class SettingsAppearanceController : SettingsLegacyController() {
 
     @SuppressLint("NotifyDataSetChanged")
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
-        titleRes = R.string.appearance
+        titleRes = MR.strings.appearance
 
         preferenceCategory {
-            titleRes = R.string.app_theme
+            titleRes = MR.strings.app_theme
 
             themePreference = themePreference {
                 key = "theme_preference"
-                titleRes = R.string.app_theme
+                titleRes = MR.strings.app_theme
                 lastScrollPostionLight = lastThemeXLight
                 lastScrollPostionDark = lastThemeXDark
                 summary = context.getString(context.getPrefTheme(preferences).nameRes)
@@ -58,7 +61,7 @@ class SettingsAppearanceController : SettingsLegacyController() {
             switchPreference {
                 key = "night_mode_switch"
                 isPersistent = false
-                titleRes = R.string.follow_system_theme
+                titleRes = MR.strings.follow_system_theme
                 isChecked =
                     preferences.nightMode().get() == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
@@ -80,7 +83,7 @@ class SettingsAppearanceController : SettingsLegacyController() {
 
             switchPreference {
                 key = Keys.themeDarkAmoled
-                titleRes = R.string.pure_black_dark_mode
+                titleRes = MR.strings.pure_black_dark_mode
                 defaultValue = false
 
                 preferences.nightMode().changesIn(viewScope) { mode ->
@@ -101,8 +104,8 @@ class SettingsAppearanceController : SettingsLegacyController() {
         preferenceCategory {
             switchPreference {
                 bindTo(preferences.useLargeToolbar())
-                titleRes = R.string.expanded_toolbar
-                summaryRes = R.string.show_larger_toolbar
+                titleRes = MR.strings.expanded_toolbar
+                summaryRes = MR.strings.show_larger_toolbar
 
                 onChange {
                     val useLarge = it as Boolean
@@ -127,28 +130,28 @@ class SettingsAppearanceController : SettingsLegacyController() {
         }
 
         preferenceCategory {
-            titleRes = R.string.details_page
+            titleRes = MR.strings.details_page
             switchPreference {
                 key = Keys.themeMangaDetails
-                titleRes = R.string.theme_buttons_based_on_cover
+                titleRes = MR.strings.theme_buttons_based_on_cover
                 defaultValue = true
             }
         }
 
         preferenceCategory {
-            titleRes = R.string.navigation
+            titleRes = MR.strings.navigation
 
             switchPreference {
                 key = Keys.hideBottomNavOnScroll
-                titleRes = R.string.hide_bottom_nav
-                summaryRes = R.string.hides_on_scroll
+                titleRes = MR.strings.hide_bottom_nav
+                summaryRes = MR.strings.hides_on_scroll
                 defaultValue = true
             }
 
             intListPreference(activity) {
                 key = Keys.sideNavIconAlignment
-                titleRes = R.string.side_nav_icon_alignment
-                entriesRes = arrayOf(R.string.top, R.string.center, R.string.bottom)
+                titleRes = MR.strings.side_nav_icon_alignment
+                entriesRes = arrayOf(MR.strings.top, MR.strings.center, MR.strings.bottom)
                 entryRange = 0..2
                 defaultValue = 1
                 isVisible = max(
@@ -159,7 +162,7 @@ class SettingsAppearanceController : SettingsLegacyController() {
 
             intListPreference(activity) {
                 key = Keys.sideNavMode
-                titleRes = R.string.use_side_navigation
+                titleRes = MR.strings.use_side_navigation
                 val values = SideNavMode.entries
                 entriesRes = values.map { it.stringRes }.toTypedArray()
                 entryValues = values.map { it.prefValue }
@@ -171,7 +174,7 @@ class SettingsAppearanceController : SettingsLegacyController() {
                 }
             }
 
-            infoPreference(R.string.by_default_side_nav_info)
+            infoPreference(MR.strings.by_default_side_nav_info)
         }
     }
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackService
 import yokai.presentation.core.util.clickableNoIndication
 
@@ -43,7 +44,7 @@ fun TrackLogoIcon(
     ) {
         Image(
             painter = painterResource(tracker.getLogo()),
-            contentDescription = stringResource(id = tracker.nameRes()),
+            contentDescription = stringResource(tracker.nameRes()),
         )
     }
 }

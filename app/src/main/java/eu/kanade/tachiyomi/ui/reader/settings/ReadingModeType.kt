@@ -2,18 +2,22 @@ package eu.kanade.tachiyomi.ui.reader.settings
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.lang.next
 
 private const val SHIFT = 0x00000000
 
-enum class ReadingModeType(val prefValue: Int, @StringRes val stringRes: Int, @DrawableRes val iconRes: Int) {
-    DEFAULT(0, R.string.default_value, R.drawable.ic_reader_default_24dp),
-    LEFT_TO_RIGHT(1, R.string.left_to_right_viewer, R.drawable.ic_reader_ltr_24dp),
-    RIGHT_TO_LEFT(2, R.string.right_to_left_viewer, R.drawable.ic_reader_rtl_24dp),
-    VERTICAL(3, R.string.vertical_viewer, R.drawable.ic_reader_vertical_24dp),
-    LONG_STRIP(4, R.string.long_strip, R.drawable.ic_reader_webtoon_24dp),
-    CONTINUOUS_VERTICAL(5, R.string.continuous_vertical, R.drawable.ic_reader_continuous_vertical_24dp),
+enum class ReadingModeType(val prefValue: Int, val stringRes: StringResource, @DrawableRes val iconRes: Int) {
+    DEFAULT(0, MR.strings.default_value, R.drawable.ic_reader_default_24dp),
+    LEFT_TO_RIGHT(1, MR.strings.left_to_right_viewer, R.drawable.ic_reader_ltr_24dp),
+    RIGHT_TO_LEFT(2, MR.strings.right_to_left_viewer, R.drawable.ic_reader_rtl_24dp),
+    VERTICAL(3, MR.strings.vertical_viewer, R.drawable.ic_reader_vertical_24dp),
+    LONG_STRIP(4, MR.strings.long_strip, R.drawable.ic_reader_webtoon_24dp),
+    CONTINUOUS_VERTICAL(5, MR.strings.continuous_vertical, R.drawable.ic_reader_continuous_vertical_24dp),
     ;
 
     val flagValue = prefValue shl SHIFT

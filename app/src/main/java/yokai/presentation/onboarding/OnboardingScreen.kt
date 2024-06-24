@@ -19,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import soup.compose.material.motion.animation.materialSharedAxisX
 import soup.compose.material.motion.animation.rememberSlideDistance
 import yokai.presentation.onboarding.steps.PermissionStep
@@ -46,14 +49,14 @@ fun OnboardingScreen(
 
     InfoScreen(
         icon = Icons.Outlined.RocketLaunch,
-        headingText = stringResource(R.string.onboarding_heading),
-        subtitleText = stringResource(R.string.onboarding_description),
+        headingText = stringResource(MR.strings.onboarding_heading),
+        subtitleText = stringResource(MR.strings.onboarding_description),
         tint = MaterialTheme.colorScheme.primary,
         acceptText = stringResource(
             if (isLastStep)
-                R.string.onboarding_finish
+                MR.strings.onboarding_finish
             else {
-                R.string.next
+                MR.strings.next
             }
         ),
         canAccept = steps[currentStep].isComplete,

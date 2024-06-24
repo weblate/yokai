@@ -9,6 +9,9 @@ import android.os.Build
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.extension.util.ExtensionInstaller.Companion.EXTRA_DOWNLOAD_ID
 import eu.kanade.tachiyomi.util.system.getUriSize
 import eu.kanade.tachiyomi.util.system.isPackageInstalled
@@ -69,7 +72,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
         Shizuku.addBinderDeadListener(shizukuDeadListener)
         require(Shizuku.pingBinder() && (context.isPackageInstalled(shizukuPkgName) || Sui.isSui())) {
             finishedQueue(this)
-            context.getString(R.string.ext_installer_shizuku_stopped)
+            context.getString(MR.strings.ext_installer_shizuku_stopped)
         }
         ready = if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
             true

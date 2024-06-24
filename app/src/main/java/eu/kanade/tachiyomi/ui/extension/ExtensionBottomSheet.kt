@@ -14,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.ExtensionsBottomSheetBinding
 import eu.kanade.tachiyomi.databinding.RecyclerWithScrollerBinding
@@ -39,6 +38,11 @@ import eu.kanade.tachiyomi.util.view.doOnApplyWindowInsetsCompat
 import eu.kanade.tachiyomi.util.view.expand
 import eu.kanade.tachiyomi.util.view.isExpanded
 import eu.kanade.tachiyomi.util.view.popupMenu
+import eu.kanade.tachiyomi.util.view.setMessage
+import eu.kanade.tachiyomi.util.view.setNegativeButton
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setText
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.smoothScrollToTop
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import uy.kohesive.injekt.Injekt
@@ -46,6 +50,8 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences
 import yokai.domain.base.BasePreferences.ExtensionInstaller
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
@@ -230,8 +236,8 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
             !presenter.preferences.hasPromptedBeforeUpdateAll().get()
         ) {
             controller.activity!!.materialAlertDialog()
-                .setTitle(R.string.update_all)
-                .setMessage(R.string.some_extensions_may_prompt)
+                .setTitle(MR.strings.update_all)
+                .setMessage(MR.strings.some_extensions_may_prompt)
                 .setPositiveButton(AR.string.ok) { _, _ ->
                     presenter.preferences.hasPromptedBeforeUpdateAll().set(true)
                     updateAllExtensions(position)
@@ -329,12 +335,12 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
     private fun openTrustDialog(extension: Extension.Untrusted) {
         val activity = controller.activity ?: return
         activity.materialAlertDialog()
-            .setTitle(R.string.untrusted_extension)
-            .setMessage(R.string.untrusted_extension_message)
-            .setPositiveButton(R.string.trust) { _, _ ->
+            .setTitle(MR.strings.untrusted_extension)
+            .setMessage(MR.strings.untrusted_extension_message)
+            .setPositiveButton(MR.strings.trust) { _, _ ->
                 trustExtension(extension.pkgName, extension.versionCode, extension.signatureHash)
             }
-            .setNegativeButton(R.string.uninstall) { _, _ ->
+            .setNegativeButton(MR.strings.uninstall) { _, _ ->
                 uninstallExtension(extension.pkgName)
             }.show()
     }
@@ -433,7 +439,7 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
         } else {
             controller.activity!!.materialAlertDialog()
                 .setTitle(extName)
-                .setPositiveButton(R.string.remove) { _, _ ->
+                .setPositiveButton(MR.strings.remove) { _, _ ->
                     presenter.uninstallExtension(pkgName)
                 }
                 .setNegativeButton(AR.string.cancel, null)
@@ -458,8 +464,8 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
         override fun getPageTitle(position: Int): CharSequence {
             return context.getString(
                 when (position) {
-                    0 -> R.string.extensions
-                    else -> R.string.migration
+                    0 -> MR.strings.extensions
+                    else -> MR.strings.migration
                 },
             )
         }

@@ -25,6 +25,8 @@ import coil3.size.Precision
 import coil3.size.Scale
 import coil3.transform.RoundedCornersTransformation
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import eu.kanade.tachiyomi.appwidget.components.CoverHeight
 import eu.kanade.tachiyomi.appwidget.components.CoverWidth
 import eu.kanade.tachiyomi.appwidget.components.LockedWidget

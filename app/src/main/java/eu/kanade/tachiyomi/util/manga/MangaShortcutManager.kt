@@ -11,6 +11,9 @@ import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
@@ -82,11 +85,11 @@ class MangaShortcutManager(
                             )
                                 .setShortLabel(
                                     item.title.takeUnless { it.isBlank() }
-                                        ?: context.getString(R.string.manga),
+                                        ?: context.getString(MR.strings.manga),
                                 )
                                 .setLongLabel(
                                     item.title.takeUnless { it.isBlank() }
-                                        ?: context.getString(R.string.manga),
+                                        ?: context.getString(MR.strings.manga),
                                 )
                                 .setIcon(
                                     if (bitmap != null) if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

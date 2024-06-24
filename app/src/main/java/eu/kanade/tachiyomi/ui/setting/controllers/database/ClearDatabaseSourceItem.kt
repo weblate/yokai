@@ -12,6 +12,8 @@ import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.icon
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 data class ClearDatabaseSourceItem(val source: Source, val mangaCount: Int) : AbstractFlexibleItem<ClearDatabaseSourceItem.Holder>() {
 
@@ -35,7 +37,7 @@ data class ClearDatabaseSourceItem(val source: Source, val mangaCount: Int) : Ab
 
         fun bind(source: Source, count: Int) {
             binding.title.text = source.toString()
-            binding.description.text = itemView.context.getString(R.string.clear_database_source_item_count, count)
+            binding.description.text = itemView.context.getString(MR.strings.clear_database_source_item_count, count)
 
             itemView.post {
                 when {

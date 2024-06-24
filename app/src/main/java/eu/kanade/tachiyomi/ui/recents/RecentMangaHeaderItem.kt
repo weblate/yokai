@@ -6,9 +6,13 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.RecentsHeaderItemBinding
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.ui.library.LibraryHeaderItem
+import eu.kanade.tachiyomi.util.view.setText
 
 class RecentMangaHeaderItem(val recentsType: Int) :
     AbstractHeaderItem<RecentMangaHeaderItem.Holder>() {
@@ -64,10 +68,10 @@ class RecentMangaHeaderItem(val recentsType: Int) :
         fun bind(recentsType: Int) {
             binding.title.setText(
                 when (recentsType) {
-                    CONTINUE_READING -> R.string.continue_reading
-                    NEW_CHAPTERS -> R.string.new_chapters
-                    NEWLY_ADDED -> R.string.newly_added
-                    else -> R.string.continue_reading
+                    CONTINUE_READING -> MR.strings.continue_reading
+                    NEW_CHAPTERS -> MR.strings.new_chapters
+                    NEWLY_ADDED -> MR.strings.newly_added
+                    else -> MR.strings.continue_reading
                 },
             )
         }

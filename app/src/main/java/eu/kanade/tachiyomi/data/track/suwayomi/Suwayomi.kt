@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
@@ -14,8 +17,7 @@ import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
 class Suwayomi(private val context: Context, id: Int) : TrackService(id), EnhancedTrackService {
     val api by lazy { TachideskApi() }
 
-    @StringRes
-    override fun nameRes() = R.string.suwayomi
+    override fun nameRes() = MR.strings.suwayomi
 
     override fun getLogo() = R.drawable.ic_tracker_suwayomi
 
@@ -35,18 +37,18 @@ class Suwayomi(private val context: Context, id: Int) : TrackService(id), Enhanc
 
     override fun getStatus(status: Int): String = with(context) {
         when (status) {
-            UNREAD -> getString(R.string.unread)
-            READING -> getString(R.string.reading)
-            COMPLETED -> getString(R.string.completed)
+            UNREAD -> getString(MR.strings.unread)
+            READING -> getString(MR.strings.reading)
+            COMPLETED -> getString(MR.strings.completed)
             else -> ""
         }
     }
 
     override fun getGlobalStatus(status: Int): String = with(context) {
         when (status) {
-            UNREAD -> getString(R.string.plan_to_read)
-            READING -> getString(R.string.reading)
-            COMPLETED -> getString(R.string.completed)
+            UNREAD -> getString(MR.strings.plan_to_read)
+            READING -> getString(MR.strings.reading)
+            COMPLETED -> getString(MR.strings.completed)
             else -> ""
         }
     }

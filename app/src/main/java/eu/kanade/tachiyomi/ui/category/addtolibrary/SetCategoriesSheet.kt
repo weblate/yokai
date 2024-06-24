@@ -14,6 +14,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Manga
@@ -96,11 +99,11 @@ class SetCategoriesSheet(
 
     init {
         binding.toolbarTitle.text = context.getString(
-            if (addingToLibrary) R.string.add_x_to else R.string.move_x_to,
+            if (addingToLibrary) MR.strings.add_x_to else MR.strings.move_x_to,
             if (listManga.size == 1) {
                 listManga.first().seriesType(context)
             } else {
-                context.getString(R.string.selection).lowercase(Locale.ROOT)
+                context.getString(MR.strings.selection).lowercase(Locale.ROOT)
             },
         )
 
@@ -186,16 +189,16 @@ class SetCategoriesSheet(
         }
         binding.addToCategoriesButton.text = context.getString(
             when {
-                addingToLibrary || (addingMore && !nothingChanged) -> R.string.add_to_
-                removing -> R.string.remove_from_
-                nothingChanged -> R.string.keep_in_
-                else -> R.string.move_to_
+                addingToLibrary || (addingMore && !nothingChanged) -> MR.strings.add_to_
+                removing -> MR.strings.remove_from_
+                nothingChanged -> MR.strings.keep_in_
+                else -> MR.strings.move_to_
             },
             when (items.size) {
-                0 -> context.getString(R.string.default_category).lowercase(Locale.ROOT)
+                0 -> context.getString(MR.strings.default_category).lowercase(Locale.ROOT)
                 1 -> items.firstOrNull()?.name ?: ""
-                else -> context.resources.getQuantityString(
-                    R.plurals.category_plural,
+                else -> context.getString(
+                    MR.plurals.category_plural,
                     items.size,
                     items.size,
                 )

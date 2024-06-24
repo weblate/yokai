@@ -57,6 +57,7 @@ import eu.kanade.tachiyomi.util.view.isCompose
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.onAnimationsFinished
 import eu.kanade.tachiyomi.util.view.scrollViewWith
+import eu.kanade.tachiyomi.util.view.setAction
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.toolbarHeight
@@ -70,7 +71,9 @@ import kotlinx.parcelize.Parcelize
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences
 import yokai.domain.base.BasePreferences.ExtensionInstaller
+import yokai.i18n.MR
 import yokai.presentation.extension.repo.ExtensionRepoController
+import yokai.util.lang.getString
 import java.util.*
 import kotlin.math.max
 
@@ -122,10 +125,10 @@ class BrowseController :
         setHasOptionsMenu(true)
     }
 
-    override fun getTitle(): String? = view?.context?.getString(R.string.browse)
+    override fun getTitle(): String? = view?.context?.getString(MR.strings.browse)
 
     override fun getSearchTitle(): String? {
-        return searchTitle(view?.context?.getString(R.string.sources)?.lowercase(Locale.ROOT))
+        return searchTitle(view?.context?.getString(MR.strings.sources)?.lowercase(Locale.ROOT))
     }
 
     val presenter = SourcePresenter(this)
@@ -292,9 +295,9 @@ class BrowseController :
         binding.bottomSheet.sheetToolbar.title =
             if (binding.bottomSheet.tabs.selectedTabPosition != 0) {
                 binding.bottomSheet.root.currentSourceTitle
-                    ?: view?.context?.getString(R.string.source_migration)
+                    ?: view?.context?.getString(MR.strings.source_migration)
             } else {
-                view?.context?.getString(R.string.extensions)
+                view?.context?.getString(MR.strings.extensions)
             }
         val onExtensionTab = binding.bottomSheet.tabs.selectedTabPosition == 0
         if (binding.bottomSheet.sheetToolbar.menu.findItem(if (onExtensionTab) R.id.action_search else R.id.action_migration_guide) != null) {
@@ -323,7 +326,7 @@ class BrowseController :
             val searchView = searchItem.actionView as SearchView
 
             // Change hint to show global search.
-            searchView.queryHint = view?.context?.getString(R.string.search_extensions)
+            searchView.queryHint = view?.context?.getString(MR.strings.search_extensions)
             if (extQuery.isNotEmpty()) {
                 searchView.setOnQueryTextListener(null)
                 searchItem.expandActionView()
@@ -594,9 +597,9 @@ class BrowseController :
 
         presenter.updateSources()
 
-        snackbar = view?.snack(R.string.source_hidden, Snackbar.LENGTH_INDEFINITE) {
+        snackbar = view?.snack(MR.strings.source_hidden, Snackbar.LENGTH_INDEFINITE) {
             anchorView = binding.bottomSheet.root
-            setAction(R.string.undo) {
+            setAction(MR.strings.undo) {
                 val newCurrent = preferences.hiddenSources().get()
                 preferences.hiddenSources().set(newCurrent - source.id.toString())
                 presenter.updateSources()
@@ -675,7 +678,7 @@ class BrowseController :
         val searchView = activityBinding?.searchToolbar?.searchView
 
         // Change hint to show global search.
-        activityBinding?.searchToolbar?.searchQueryHint = view?.context?.getString(R.string.global_search)
+        activityBinding?.searchToolbar?.searchQueryHint = view?.context?.getString(MR.strings.global_search)
 
         // Create query listener which opens the global search view.
         setOnQueryTextChangeListener(searchView, true) {

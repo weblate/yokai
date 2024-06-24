@@ -8,6 +8,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -17,6 +20,8 @@ import eu.kanade.tachiyomi.databinding.MangaCategoryDialogBinding
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
 import eu.kanade.tachiyomi.ui.library.LibrarySort
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
+import eu.kanade.tachiyomi.util.view.setPositiveButton
+import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import uy.kohesive.injekt.injectLazy
@@ -52,11 +57,11 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
 
     fun dialog(activity: Activity): MaterialAlertDialogBuilder {
         return activity.materialAlertDialog().apply {
-            setTitle(if (category == null) R.string.new_category else R.string.manage_category)
+            setTitle(if (category == null) MR.strings.new_category else MR.strings.manage_category)
             binding = MangaCategoryDialogBinding.inflate(activity.layoutInflater)
             setView(binding.root)
             setNegativeButton(AR.string.cancel, null)
-            setPositiveButton(R.string.save) { dialog, _ ->
+            setPositiveButton(MR.strings.save) { dialog, _ ->
                 if (onPositiveButtonClick()) {
                     dialog.dismiss()
                 }
@@ -94,11 +99,11 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
                 }
             } else if (categoryExists) {
                 binding.categoryTextLayout.error =
-                    binding.categoryTextLayout.context.getString(R.string.category_with_name_exists)
+                    binding.categoryTextLayout.context.getString(MR.strings.category_with_name_exists)
                 return false
             } else if (text.isBlank()) {
                 binding.categoryTextLayout.error =
-                    binding.categoryTextLayout.context.getString(R.string.category_cannot_be_blank)
+                    binding.categoryTextLayout.context.getString(MR.strings.category_cannot_be_blank)
                 return false
             }
         }
@@ -149,7 +154,7 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
             binding.categoryTextLayout.error = null
         }
         binding.title.hint =
-            category?.name ?: binding.editCategories.context.getString(R.string.category)
+            category?.name ?: binding.editCategories.context.getString(MR.strings.category)
         binding.title.append(category?.name ?: "")
         val downloadNew = preferences.downloadNewChapters().get()
         setCheckbox(

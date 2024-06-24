@@ -7,8 +7,12 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.CategoriesItemBinding
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
+import eu.kanade.tachiyomi.util.view.setText
 
 /**
  * Category item for a recycler view.
@@ -83,7 +87,9 @@ class ManageFilterItem(val char: Char) : AbstractFlexibleItem<ManageFilterItem.H
         }
 
         fun bind(char: Char) {
-            binding.title.setText(FilterBottomSheet.Filters.filterOf(char)?.stringRes ?: 0)
+            FilterBottomSheet.Filters.filterOf(char)?.stringRes?.let {
+                binding.title.setText(it)
+            } ?: binding.title.setText("")
         }
     }
 }

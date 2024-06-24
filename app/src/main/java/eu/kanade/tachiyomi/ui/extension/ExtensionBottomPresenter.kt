@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.ui.extension
 
 import android.content.pm.PackageInstaller
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
 import eu.kanade.tachiyomi.data.download.model.DownloadQueue
@@ -22,6 +21,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 typealias ExtensionTuple =
     Triple<List<Extension.Installed>, List<Extension.Untrusted>, List<Extension.Available>>
@@ -158,8 +159,8 @@ class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>(),
 
         if (updatesSorted.isNotEmpty()) {
             val header = ExtensionGroupItem(
-                context.resources.getQuantityString(
-                    R.plurals._updates_pending,
+                context.getString(
+                    MR.plurals._updates_pending,
                     updatesSorted.size,
                     updatesSorted.size,
                 ),
@@ -171,7 +172,7 @@ class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>(),
             }
         }
         if (installedSorted.isNotEmpty() || untrustedSorted.isNotEmpty()) {
-            val header = ExtensionGroupItem(context.getString(R.string.installed), installedSorted.size + untrustedSorted.size, installedSorting = preferences.installedExtensionsOrder().get())
+            val header = ExtensionGroupItem(context.getString(MR.strings.installed), installedSorted.size + untrustedSorted.size, installedSorting = preferences.installedExtensionsOrder().get())
             items += installedSorted.map { extension ->
                 ExtensionItem(extension, header, currentDownloads[extension.pkgName])
             }

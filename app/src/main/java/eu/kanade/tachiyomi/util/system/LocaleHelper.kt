@@ -3,6 +3,9 @@ package eu.kanade.tachiyomi.util.system
 import android.content.Context
 import androidx.core.os.LocaleListCompat
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.source.SourcePresenter
 import java.util.Locale
 
@@ -16,10 +19,10 @@ object LocaleHelper {
      */
     fun getSourceDisplayName(lang: String?, context: Context): String {
         return when (lang) {
-            "", "other" -> context.getString(R.string.other)
-            SourcePresenter.LAST_USED_KEY -> context.getString(R.string.last_used)
-            SourcePresenter.PINNED_KEY -> context.getString(R.string.pinned)
-            "all" -> context.getString(R.string.all)
+            "", "other" -> context.getString(MR.strings.other)
+            SourcePresenter.LAST_USED_KEY -> context.getString(MR.strings.last_used)
+            SourcePresenter.PINNED_KEY -> context.getString(MR.strings.pinned)
+            "all" -> context.getString(MR.strings.all)
             else -> getDisplayName(lang)
         }
     }

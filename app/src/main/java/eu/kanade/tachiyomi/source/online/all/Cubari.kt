@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.source.online.all
 
 import android.net.Uri
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.toChapter
@@ -14,6 +13,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.util.*
 
 class Cubari : DelegatedHttpSource() {
@@ -48,7 +49,7 @@ class Cubari : DelegatedHttpSource() {
             val context = Injekt.get<PreferencesHelper>().context
             val trueChapter = findChapter(chapters, cubariType, chapterNumber)?.toChapter()
                 ?: error(
-                    context.getString(R.string.chapter_not_found),
+                    context.getString(MR.strings.chapter_not_found),
                 )
             if (manga != null) {
                 Triple(trueChapter, manga, chapters.orEmpty())

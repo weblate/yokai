@@ -6,6 +6,9 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.SourceHeaderItemBinding
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 
@@ -43,7 +46,7 @@ class SelectionHeader : AbstractHeaderItem<SelectionHeader.Holder>() {
     class Holder(view: View, adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>) : BaseFlexibleViewHolder(view, adapter) {
         init {
             val binding = SourceHeaderItemBinding.bind(view)
-            binding.title.text = view.context.getString(R.string.select_a_source_then_item_to_migrate)
+            binding.title.text = view.context.getString(MR.strings.select_a_source_then_item_to_migrate)
         }
     }
 

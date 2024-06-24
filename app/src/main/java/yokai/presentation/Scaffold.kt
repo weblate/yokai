@@ -28,6 +28,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowInsetsControllerCompat
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.component.ToolTipButton
 
 @Composable
@@ -38,7 +41,7 @@ fun YokaiScaffold(
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(state = rememberTopAppBarState()),
     fab: @Composable () -> Unit = {},
     navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    navigationIconLabel: String = stringResource(id = R.string.back),
+    navigationIconLabel: String = stringResource(MR.strings.back),
     actions: @Composable RowScope.() -> Unit = {},
     appBarType: AppBarType = AppBarType.LARGE,
     content: @Composable (PaddingValues) -> Unit,

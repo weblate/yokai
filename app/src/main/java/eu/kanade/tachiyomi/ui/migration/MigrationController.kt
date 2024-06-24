@@ -9,6 +9,9 @@ import androidx.core.view.doOnNextLayout
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -149,7 +152,7 @@ class MigrationController :
     }
 
     override fun setMigrationSources(sources: List<SourceItem>) {
-        title = resources?.getString(R.string.source_migration)
+        title = activity?.getString(MR.strings.source_migration)
         if (adapter !is SourceAdapter) {
             adapter = SourceAdapter(this)
             binding.migrationRecycler.adapter = adapter

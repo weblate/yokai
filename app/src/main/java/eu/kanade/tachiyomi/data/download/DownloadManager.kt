@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.data.download
 import android.content.Context
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.download.model.Download
@@ -18,6 +17,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.download.DownloadPreferences
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * This class is used to manage chapter downloads in the application. It must be instantiated once
@@ -182,7 +183,7 @@ class DownloadManager(val context: Context) {
             .filter { "image" in it.type.orEmpty() }
 
         if (files.isEmpty()) {
-            throw Exception(context.getString(R.string.no_pages_found))
+            throw Exception(context.getString(MR.strings.no_pages_found))
         }
 
         return files.sortedBy { it.name }

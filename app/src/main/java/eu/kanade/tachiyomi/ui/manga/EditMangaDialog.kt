@@ -35,10 +35,13 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
+import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.widget.TachiyomiTextInputEditText
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class EditMangaDialog : DialogController {
@@ -76,7 +79,7 @@ class EditMangaDialog : DialogController {
         val dialog = activity!!.materialAlertDialog().apply {
             setView(binding.root)
             setNegativeButton(AR.string.cancel, null)
-            setPositiveButton(R.string.save) { _, _ -> onPositiveButtonClick() }
+            setPositiveButton(MR.strings.save) { _, _ -> onPositiveButtonClick() }
         }
         onViewCreated()
         val updateScrollIndicators = {
@@ -92,6 +95,8 @@ class EditMangaDialog : DialogController {
     }
 
     fun onViewCreated() {
+        val context = binding.root.context
+
         binding.mangaCover.loadManga(manga)
         val isLocal = manga.isLocal()
 
@@ -100,7 +105,7 @@ class EditMangaDialog : DialogController {
             if (manga.title != manga.url) {
                 binding.title.append(manga.title)
             }
-            binding.title.hint = "${resources?.getString(R.string.title)}: ${manga.url}"
+            binding.title.hint = "${context.getString(MR.strings.title)}: ${manga.url}"
             binding.mangaAuthor.append(manga.author ?: "")
             binding.mangaArtist.append(manga.artist ?: "")
             binding.mangaDescription.append(manga.description ?: "")
@@ -145,16 +150,16 @@ class EditMangaDialog : DialogController {
             binding.mangaAuthor.appendOriginalTextOnLongClick(manga.originalAuthor)
             binding.mangaArtist.appendOriginalTextOnLongClick(manga.originalArtist)
             binding.mangaDescription.appendOriginalTextOnLongClick(manga.originalDescription)
-            binding.title.hint = "${resources?.getString(R.string.title)}: ${manga.originalTitle}"
+            binding.title.hint = "${context.getString(MR.strings.title)}: ${manga.originalTitle}"
             if (manga.originalAuthor != null) {
-                binding.mangaAuthor.hint = "${resources?.getString(R.string.author)}: ${manga.originalAuthor}"
+                binding.mangaAuthor.hint = "${context.getString(MR.strings.author)}: ${manga.originalAuthor}"
             }
             if (manga.originalArtist != null) {
-                binding.mangaArtist.hint = "${resources?.getString(R.string.artist)}: ${manga.originalArtist}"
+                binding.mangaArtist.hint = "${context.getString(MR.strings.artist)}: ${manga.originalArtist}"
             }
             if (manga.originalDescription != null) {
                 binding.mangaDescription.hint =
-                    "${resources?.getString(R.string.description)}: ${manga.originalDescription?.replace(
+                    "${context.getString(MR.strings.description)}: ${manga.originalDescription?.replace(
                         "\n",
                         " ",
                     )?.chop(20)}"
@@ -181,11 +186,11 @@ class EditMangaDialog : DialogController {
             infoController.changeCover()
         }
         binding.resetTags.setOnClickListener { resetTags() }
-        binding.resetTags.text = resources?.getString(
+        binding.resetTags.text = context.getString(
             if (manga.originalGenre.isNullOrBlank() || isLocal) {
-                R.string.clear_tags
+                MR.strings.clear_tags
             } else {
-                R.string.reset_tags
+                MR.strings.reset_tags
             },
         )
         binding.addTagChip.setOnClickListener {

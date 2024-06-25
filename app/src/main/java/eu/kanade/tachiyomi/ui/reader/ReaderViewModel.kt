@@ -9,10 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
@@ -81,6 +77,8 @@ import yokai.domain.download.DownloadPreferences
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.storage.StorageManager
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.util.*
 import java.util.concurrent.*
 
@@ -798,7 +796,7 @@ class ReaderViewModel(
             "${manga.title} - ${chapter.preferredChapterName(context, manga, preferences)}".take(225),
         ) + (if (downloadPreferences.downloadWithId().get()) " (${chapter.id})" else "") + " - ${page1.number}-${page2.number}.jpg"
 
-        val destFile = directory.findFile(filename)!!
+        val destFile = directory.createFile(filename)!!
         stream.use { input ->
             destFile.openOutputStream().use { output ->
                 input.copyTo(output)

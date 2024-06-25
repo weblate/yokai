@@ -23,7 +23,6 @@ import eu.kanade.tachiyomi.ui.reader.viewer.BaseViewer
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import nl.adaptivity.xmlutil.core.impl.multiplatform.name
 import uy.kohesive.injekt.injectLazy
 
 /**
@@ -213,7 +212,7 @@ abstract class PagerViewer(val activity: ReaderActivity) : BaseViewer {
                     onReaderPageSelected(pageF, allowPreload, page.second is ReaderPage, forward)
                 }
                 is ChapterTransition -> onTransitionSelected(pageF)
-                else -> throw UnsupportedOperationException("${pageF::class.name} is not supported!")
+                else -> throw UnsupportedOperationException("${pageF::class.qualifiedName ?: "anonymous"} is not supported!")
             }
         }
     }

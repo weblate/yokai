@@ -14,7 +14,6 @@ import eu.kanade.tachiyomi.ui.reader.viewer.hasMissingChapters
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.widget.ViewPagerAdapter
 import kotlinx.coroutines.delay
-import nl.adaptivity.xmlutil.core.impl.multiplatform.name
 import kotlin.math.max
 
 /**
@@ -135,7 +134,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
         return when (item) {
             is ReaderPage -> PagerPageHolder(viewer, item, item2 as? ReaderPage)
             is ChapterTransition -> PagerTransitionHolder(viewer, item)
-            else -> throw UnsupportedOperationException("${item::class.name} is not supported!")
+            else -> throw UnsupportedOperationException("${item::class.qualifiedName ?: "anonymous"} is not supported!")
         }
     }
 

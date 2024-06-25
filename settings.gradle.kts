@@ -22,8 +22,10 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
-        maven { setUrl("https://jitpack.io") }
-        maven { setUrl("https://plugins.gradle.org/m2/") }
+        maven("https://jitpack.io")
+        maven("https://plugins.gradle.org/m2/")
+        // FIXME: Remove on Compose 1.8.0-alpha01
+        maven("https://androidx.dev/snapshots/builds/11925800/artifacts/repository")
     }
 }
 

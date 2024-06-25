@@ -1,9 +1,5 @@
 package eu.kanade.tachiyomi.ui.library
 
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -71,7 +67,9 @@ import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
+import yokai.i18n.MR
 import yokai.util.isLewd
+import yokai.util.lang.getString
 import java.util.*
 import java.util.concurrent.*
 import kotlin.math.roundToInt
@@ -947,6 +945,14 @@ class LibraryPresenter(
 
         return categories.associateWith { items[it.id] ?: emptyList() }.filter { it.value.isNotEmpty() }
     }
+
+    // FIXME: Seems like it's impossible to redirect current implementation to getLibraryFlow(), simply because of how
+    // J2K implements the library UI, both "Show all categories" (not to be confused with "Ungrouped") and
+    // "Show one category at a time" share the same data, which explains why J2K use blankItem instead of checking if
+    // list is empty to show the user if the category is empty or not. Understandable tbh, since it's pretty painful to
+    // maintain these two option on pre-Compose.
+    // ;
+    // Seems like I'll need to completely convert the UI to Compose first.
 
     /**
      * Library's flow.

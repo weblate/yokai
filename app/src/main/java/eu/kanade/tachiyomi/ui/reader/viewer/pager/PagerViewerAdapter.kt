@@ -8,11 +8,13 @@ import eu.kanade.tachiyomi.ui.reader.model.InsertPage
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.model.ReaderItem
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
+import eu.kanade.tachiyomi.ui.reader.model.SplitPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
 import eu.kanade.tachiyomi.ui.reader.viewer.hasMissingChapters
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.widget.ViewPagerAdapter
 import kotlinx.coroutines.delay
+import nl.adaptivity.xmlutil.core.impl.multiplatform.name
 import kotlin.math.max
 
 /**
@@ -133,6 +135,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
         return when (item) {
             is ReaderPage -> PagerPageHolder(viewer, item, item2 as? ReaderPage)
             is ChapterTransition -> PagerTransitionHolder(viewer, item)
+            else -> throw UnsupportedOperationException("${item::class.name} is not supported!")
         }
     }
 
@@ -208,8 +211,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                 this.joinedItems = pagedItems.map {
                     Pair<ReaderItem, ReaderItem?>(
                         it,
-                        // I don't even know what this is... but I'm guessing he try to check if "firstHalf" is not null
-                        if ((it as? ReaderPage)?.fullPage == true && it.firstHalf != null) it else null,
+                        if ((it as? ReaderPage)?.fullPage == true && it.firstHalf == true) SplitPage() else null,
                     )
                 }.toMutableList()
             } else {

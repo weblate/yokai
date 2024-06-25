@@ -15,7 +15,6 @@
 ## Fixes
 - Fixed auto backup, auto extension update, and app update checker stop working
   if it crash/failed
-- Fixed saving combined pages not doing anything
 
 ## Other
 - Some code refactors

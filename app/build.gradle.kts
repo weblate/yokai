@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId = "eu.kanade.tachiyomi"
         versionCode = 138
-        versionName = "1.8.4"
+        versionName = "1.8.4.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 

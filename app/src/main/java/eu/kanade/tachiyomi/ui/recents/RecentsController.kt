@@ -30,9 +30,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
@@ -94,6 +91,8 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.util.*
 import kotlin.math.max
 import android.R as AR
@@ -396,6 +395,7 @@ class RecentsController(bundle: Bundle? = null) :
         }
         binding.swipeRefresh.setOnRefreshListener {
             if (!LibraryUpdateJob.isRunning(view.context)) {
+                binding.swipeRefresh.isRefreshing = true
                 snack?.dismiss()
                 snack = view.snack(MR.strings.updating_library) {
                     anchorView =

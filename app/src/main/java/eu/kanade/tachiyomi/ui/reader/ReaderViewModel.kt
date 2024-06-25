@@ -794,7 +794,7 @@ class ReaderViewModel(
             "${manga.title} - ${chapter.preferredChapterName(context, manga, preferences)}".take(225),
         ) + (if (downloadPreferences.downloadWithId().get()) " (${chapter.id})" else "") + " - ${page1.number}-${page2.number}.jpg"
 
-        val destFile = directory.findFile(filename)!!
+        val destFile = directory.createFile(filename)!!
         stream.use { input ->
             destFile.openOutputStream().use { output ->
                 input.copyTo(output)

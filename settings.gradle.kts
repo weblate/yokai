@@ -24,8 +24,8 @@ dependencyResolutionManagement {
         google()
         maven("https://jitpack.io")
         maven("https://plugins.gradle.org/m2/")
-        // FIXME: Remove on Compose 1.8.0-alpha01
-        maven("https://androidx.dev/snapshots/builds/11925800/artifacts/repository")
+        // FIXME: https://issuetracker.google.com/343750859
+        maven("https://androidx.dev/snapshots/builds/11851351/artifacts/repository")
     }
 }
 

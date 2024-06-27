@@ -1,11 +1,11 @@
 [versions]
-compose-bom = "2024.06.00"
+compose-bom = "2024.06.00-alpha01"
 
 [libraries]
-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+bom = { module = "dev.chrisbanes.compose:compose-bom", version.ref = "compose-bom" }
 animation = { module = "androidx.compose.animation:animation" }
-foundation = { module = "androidx.compose.foundation:foundation", version = "1.7.0-SNAPSHOT" }
-material3 = { module = "androidx.compose.material3:material3", version = "1.3.0-SNAPSHOT" }
+foundation = { module = "androidx.compose.foundation:foundation" }
+material3 = { module = "androidx.compose.material3:material3" }
 material-motion = { module = "io.github.fornewid:material-motion-compose-core", version = "1.0.7" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }

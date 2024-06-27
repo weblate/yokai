@@ -24,8 +24,6 @@ dependencyResolutionManagement {
         google()
         maven("https://jitpack.io")
         maven("https://plugins.gradle.org/m2/")
-        // FIXME: https://issuetracker.google.com/343750859
-        maven("https://androidx.dev/snapshots/builds/11851351/artifacts/repository")
     }
 }
 

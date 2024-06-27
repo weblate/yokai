@@ -48,7 +48,7 @@ class CrashActivity : AppCompatActivity() {
                     acceptText = stringResource(MR.strings.dump_crash_logs),
                     onAcceptClick = {
                         scope.launch {
-                            CrashLogUtil(context).dumpLogs()
+                            CrashLogUtil(context).dumpLogs(exception)
                         }
                     },
                     canAccept = true,

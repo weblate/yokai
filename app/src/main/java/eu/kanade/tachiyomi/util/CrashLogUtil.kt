@@ -27,12 +27,15 @@ class CrashLogUtil(private val context: Context) {
         setSmallIcon(R.drawable.ic_yokai)
     }
 
-    suspend fun dumpLogs() = withNonCancellableContext {
+    suspend fun dumpLogs(exception: Throwable? = null) = withNonCancellableContext {
         try {
             val file = context.createFileInCacheDir("yokai_crash_logs.txt")
             file.appendText(getDebugInfo() + "\n\n")
             file.appendText(getExtensionsInfo() + "\n\n")
+            exception?.let { file.appendText("$it\n\n") }
+
             Runtime.getRuntime().exec("logcat *:E -d -f ${file.absolutePath}")
+
             showNotification(file.getUriCompat(context))
         } catch (e: IOException) {
             withUIContext { context.toast("Failed to get logs") }

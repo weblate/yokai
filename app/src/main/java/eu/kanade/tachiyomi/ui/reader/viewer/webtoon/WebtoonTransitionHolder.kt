@@ -11,10 +11,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderTransitionView
@@ -24,7 +20,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import yokai.i18n.MR
 import yokai.presentation.theme.YokaiTheme
+import yokai.util.lang.getString
 
 /**
  * Holder of the webtoon viewer that contains a chapter transition.
@@ -109,6 +107,7 @@ class WebtoonTransitionHolder(
      * Sets the loading state on the pages container.
      */
     private fun setLoading() {
+        // FIXME: Seems to be overflowing
         val progress = ComposeView(context).apply {
             setContent {
                 YokaiTheme { CircularProgressIndicator() }

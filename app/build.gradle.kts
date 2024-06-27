@@ -192,8 +192,6 @@ dependencies {
 
     // Disk
     implementation(libs.disklrucache)
-    implementation(libs.unifile)
-    implementation(libs.bundles.archive)
 
     // HTML parser
     implementation(libs.jsoup)

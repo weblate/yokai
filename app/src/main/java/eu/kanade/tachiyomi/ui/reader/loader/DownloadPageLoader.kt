@@ -10,10 +10,8 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
-import eu.kanade.tachiyomi.util.system.openReadOnlyChannel
-import eu.kanade.tachiyomi.util.system.toTempFile
 import uy.kohesive.injekt.injectLazy
-import java.io.File
+import yokai.core.archive.archiveReader
 
 /**
  * Loader used to load a chapter from the downloaded chapters.
@@ -29,11 +27,11 @@ class DownloadPageLoader(
     // Needed to open input streams
     private val context: Application by injectLazy()
 
-    private var zipPageLoader: ZipPageLoader? = null
+    private var archivePageLoader: ArchivePageLoader? = null
 
     override fun recycle() {
         super.recycle()
-        zipPageLoader?.recycle()
+        archivePageLoader?.recycle()
     }
 
     /**
@@ -50,7 +48,7 @@ class DownloadPageLoader(
     }
 
     private suspend fun getPagesFromArchive(chapterPath: UniFile): List<ReaderPage> {
-        val loader = ZipPageLoader(chapterPath.openReadOnlyChannel(context)).also { zipPageLoader = it }
+        val loader = ArchivePageLoader(chapterPath.archiveReader(context)).also { archivePageLoader = it }
         return loader.getPages()
     }
 
@@ -66,6 +64,6 @@ class DownloadPageLoader(
     }
 
     override suspend fun loadPage(page: ReaderPage) {
-        zipPageLoader?.loadPage(page)
+        archivePageLoader?.loadPage(page)
     }
 }

@@ -15,6 +15,9 @@ val UniFile.nameWithoutExtension: String?
 val UniFile.extension: String?
     get() = name?.replace("${nameWithoutExtension.orEmpty()}.", "")
 
+val UniFile.displayablePath: String
+    get() = filePath ?: uri.toString()
+
 fun UniFile.toTempFile(context: Context): File {
     val inputStream = context.contentResolver.openInputStream(uri)!!
     val tempFile =
@@ -47,6 +50,5 @@ fun UniFile.writeText(string: String, onComplete: () -> Unit = {}) {
     }
 }
 
-fun UniFile.openReadOnlyChannel(context: Context): SeekableByteChannel {
-    return ParcelFileDescriptor.AutoCloseInputStream(context.contentResolver.openFileDescriptor(uri, "r")).channel
-}
+fun UniFile.openFileDescriptor(context: Context, mode: String): ParcelFileDescriptor =
+    context.contentResolver.openFileDescriptor(uri, mode) ?: error("Failed to open file descriptor: $displayablePath")

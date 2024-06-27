@@ -23,6 +23,8 @@ kotlin {
                 api(kotlinx.coroutines.core)
                 api(kotlinx.serialization.json)
                 api(kotlinx.serialization.json.okio)
+
+                implementation(libs.jsoup)
             }
         }
         val androidMain by getting {
@@ -39,6 +41,10 @@ kotlin {
                 api(androidx.preference)
 
                 implementation(libs.quickjs.android)
+
+                api(libs.unifile)
+
+                implementation(libs.libarchive)
             }
         }
     }

@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.source
 import android.content.Context
 import androidx.core.net.toFile
 import co.touchlab.kermit.Logger
-import com.github.junrar.Archive
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
@@ -17,12 +16,12 @@ import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.util.chapter.ChapterRecognition
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import eu.kanade.tachiyomi.util.storage.EpubFile
+import eu.kanade.tachiyomi.util.storage.fillChapterMetadata
+import eu.kanade.tachiyomi.util.storage.fillMangaMetadata
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.extension
 import eu.kanade.tachiyomi.util.system.nameWithoutExtension
-import eu.kanade.tachiyomi.util.system.openReadOnlyChannel
-import eu.kanade.tachiyomi.util.system.toZipFile
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.writeText
 import kotlinx.coroutines.async
@@ -35,6 +34,7 @@ import nl.adaptivity.xmlutil.serialization.XML
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.core.archive.archiveReader
 import yokai.core.metadata.COMIC_INFO_FILE
 import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.copyFromComicInfo
@@ -187,7 +187,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                         val chapter = chapters.last()
                         val format = getFormat(chapter)
                         if (format is Format.Epub) {
-                            EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
+                            EpubFile(format.file.archiveReader(context)).use { epub ->
                                 epub.fillMangaMetadata(manga)
                             }
                         }
@@ -338,10 +338,10 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     private fun getFormat(file: UniFile) = with(file) {
+        val supportedArchives = listOf("zip", "cbz", "rar", "cbr", "7z", "cb7", "tar", "cbt")
         when {
             isDirectory -> Format.Directory(this)
-            extension.equals("zip", true) || extension.equals("cbz", true) -> Format.Zip(this)
-            extension.equals("rar", true) || extension.equals("cbr", true) -> Format.Rar(this)
+            supportedArchives.contains(extension?.lowercase()) -> Format.Archive(this)
             extension.equals("epub", true) -> Format.Epub(this)
             else -> throw Exception(context.getString(MR.strings.local_invalid_format))
         }
@@ -357,31 +357,22 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
                     entry?.let { updateCover(manga, it.openInputStream()) }
                 }
-                is Format.Zip -> {
-                    format.file.openReadOnlyChannel(context).toZipFile().use { zip ->
-                        val entry = zip.entries.toList()
-                            .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
-                            .find { !it.isDirectory && ImageUtil.isImage(it.name) { zip.getInputStream(it) } }
+                is Format.Archive -> {
+                    format.file.archiveReader(context).use { reader ->
+                        val entry = reader.useEntries { entries ->
+                                entries.toList()
+                                    .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
+                                    .find { it.isFile && ImageUtil.isImage(it.name) { reader.getInputStream(it.name)!! } }
+                            }
 
-                        entry?.let { updateCover(manga, zip.getInputStream(it)) }
-                    }
-                }
-                is Format.Rar -> {
-                    Archive(format.file.openInputStream()).use { archive ->
-                        val entry = archive.fileHeaders
-                            .sortedWith { f1, f2 -> f1.fileName.compareToCaseInsensitiveNaturalOrder(f2.fileName) }
-                            .find { !it.isDirectory && ImageUtil.isImage(it.fileName) { archive.getInputStream(it) } }
-
-                        entry?.let { updateCover(manga, archive.getInputStream(it)) }
+                        entry?.let { updateCover(manga, reader.getInputStream(it.name)!!) }
                     }
                 }
                 is Format.Epub -> {
-                    EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
-                        val entry = epub.getImagesFromPages()
-                            .firstOrNull()
-                            ?.let { epub.getEntry(it) }
+                    EpubFile(format.file.archiveReader(context)).use { epub ->
+                        val entry = epub.getImagesFromPages().firstOrNull()
 
-                        entry?.let { updateCover(manga, epub.getInputStream(it)) }
+                        entry?.let { updateCover(manga, epub.getInputStream(it)!!) }
                     }
                 }
             }
@@ -401,25 +392,19 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     true
                 }
                 is Format.Epub -> {
-                    EpubFile(format.file.openReadOnlyChannel(context)).use { epub ->
+                    EpubFile(format.file.archiveReader(context)).use { epub ->
                         epub.fillChapterMetadata(chapter)
                     }
                     true
                 }
-                is Format.Rar -> Archive(format.file.openInputStream()).use { archive ->
-                    val entry = archive.fileHeaders
-                        .sortedWith { f1, f2 -> f1.fileName.compareToCaseInsensitiveNaturalOrder(f2.fileName) }
-                        .find { !it.isDirectory && it.fileName == COMIC_INFO_FILE } ?: return false
+                is Format.Archive -> format.file.archiveReader(context).use { reader ->
+                    val entry = reader.useEntries { entries ->
+                        entries.toList()
+                            .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
+                            .find { it.isFile && it.name == COMIC_INFO_FILE }
+                    } ?: return false
 
-                    updateMetadata(chapter, manga, archive.getInputStream(entry))
-                    true
-                }
-                is Format.Zip -> format.file.openReadOnlyChannel(context).toZipFile().use { zip ->
-                    val entry = zip.entries.toList()
-                        .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
-                        .find { !it.isDirectory && it.name == COMIC_INFO_FILE } ?: return false
-
-                    updateMetadata(chapter, manga, zip.getInputStream(entry))
+                    updateMetadata(chapter, manga, reader.getInputStream(entry.name)!!)
                     true
                 }
             }
@@ -442,8 +427,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
     sealed class Format {
         data class Directory(val file: UniFile) : Format()
-        data class Zip(val file: UniFile) : Format()
-        data class Rar(val file: UniFile) : Format()
+        data class Archive(val file: UniFile) : Format()
         data class Epub(val file: UniFile) : Format()
     }
 }

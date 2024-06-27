@@ -20,7 +20,6 @@ coil3 = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 coil3-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil3" }
 coil3-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil3" }
 coil3-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil3" }
-common-compress = { module = "org.apache.commons:commons-compress", version = "1.26.0" }
 compose-theme-adapter3 = { module = "com.google.accompanist:accompanist-themeadapter-material3", version = "0.33.2-alpha" }
 conductor = { module = "com.bluelinelabs:conductor", version = "4.0.0-preview-4" }
 conductor-support-preference = { module = "com.github.tachiyomiorg:conductor-support-preference", version = "3.0.0" }
@@ -45,6 +44,8 @@ injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
+libarchive = { module = "me.zhanghai.android.libarchive:library", version = "1.1.0" }
+
 material = { module = "com.google.android.material:material", version = "1.12.0" }
 material-design-dimens = { module = "com.dmitrymalkovich.android:material-design-dimens", version = "1.4" }
 markwon = { module = "io.noties.markwon:core", version = "4.6.2" }
@@ -57,7 +58,6 @@ jsoup = { module = "org.jsoup:jsoup", version = "1.16.1" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
-junrar = { module = "com.github.junrar:junrar", version = "7.5.5" }
 loading-button = { module = "br.com.simplepass:loading-button-android", version = "2.2.0" }
 mockk = { module = "io.mockk:mockk", version = "1.13.11" }
 
@@ -103,7 +103,6 @@ kotlinter = { id = "org.jmailen.kotlinter", version = "4.1.1" }
 gradle-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
 
 [bundles]
-archive = [ "common-compress", "junrar" ]
 db = [ "sqldelight-coroutines" ]
 db-android = [ "sqldelight-android-driver", "sqldelight-android-paging" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]

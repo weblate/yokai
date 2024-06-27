@@ -47,6 +47,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import uy.kohesive.injekt.injectLazy
+import yokai.core.archive.ZipWriter
 import yokai.core.metadata.COMIC_INFO_FILE
 import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.getComicInfo
@@ -628,25 +629,9 @@ class Downloader(
         tmpDir: UniFile,
     ) {
         val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX") ?: return
-        ZipOutputStream(BufferedOutputStream(zip.openOutputStream())).use { zipOut ->
-            zipOut.setMethod(ZipEntry.STORED)
-
-            tmpDir.listFiles()?.forEach { img ->
-                img.openInputStream().use { input ->
-                    val data = input.readBytes()
-                    val size = img.length()
-                    val entry = ZipEntry(img.name).apply {
-                        val crc = CRC32().apply {
-                            update(data)
-                        }
-                        setCrc(crc.value)
-
-                        compressedSize = size
-                        setSize(size)
-                    }
-                    zipOut.putNextEntry(entry)
-                    zipOut.write(data)
-                }
+        ZipWriter(context, zip).use { writer ->
+            tmpDir.listFiles()?.forEach { file ->
+                writer.write(file)
             }
         }
         zip.renameTo("$dirname.cbz")

@@ -26,6 +26,7 @@ import yokai.util.lang.getString
 class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
 
     private val notifier = BackupNotifier(context.localeContext)
+    private val restorer = BackupRestorer(context, notifier)
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
         val notification = notifier.showRestoreProgress(progress = -1).build()
@@ -38,18 +39,14 @@ class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : C
     }
 
     override suspend fun doWork(): Result {
-        if (isRunning(context)) return Result.failure()
-
         val uriPath = inputData.getString(BackupConst.EXTRA_URI) ?: return Result.failure()
-
         val uri = Uri.parse(uriPath) ?: return Result.failure()
 
         tryToSetForeground()
 
         return withIOContext {
             try {
-                if (!BackupRestorer(context, notifier).restoreBackup(uri))
-                    notifier.showRestoreError(context.getString(MR.strings.restoring_backup_canceled))
+                restorer.restore(uri)
                 Result.success()
             } catch (e: Exception) {
                 if (e is CancellationException) {

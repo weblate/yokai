@@ -10,7 +10,7 @@ import eu.kanade.tachiyomi.data.backup.restore.restorers.PreferenceBackupRestore
 import eu.kanade.tachiyomi.util.BackupUtil
 import eu.kanade.tachiyomi.util.system.createFileInCacheDir
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.ensureActive
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.io.File
@@ -34,14 +34,12 @@ class BackupRestorer(
 
     private val errors = mutableListOf<Pair<Date, String>>()
 
-    suspend fun restoreBackup(uri: Uri): Boolean {
+    suspend fun restore(uri: Uri) {
         val startTime = System.currentTimeMillis()
         restoreProgress = 0
         errors.clear()
 
-        if (!performRestore(uri)) {
-            return false
-        }
+        performRestore(uri)
 
         val endTime = System.currentTimeMillis()
         val time = endTime - startTime
@@ -49,10 +47,9 @@ class BackupRestorer(
         val logFile = writeErrorLog()
 
         notifier.showRestoreComplete(time, errors.size, logFile.parent, logFile.name)
-        return true
     }
 
-    private suspend fun performRestore(uri: Uri): Boolean {
+    private suspend fun performRestore(uri: Uri) {
         val backup = BackupUtil.decodeBackup(context, uri)
 
         restoreAmount = backup.backupManga.size + 3 // +3 for categories, app prefs, source prefs
@@ -61,19 +58,22 @@ class BackupRestorer(
         val backupMaps = backup.backupBrokenSources.map { BackupSource(it.name, it.sourceId) } + backup.backupSources
         sourceMapping = backupMaps.associate { it.sourceId to it.name }
 
-        return coroutineScope {
+        coroutineScope {
             // Restore categories
             if (backup.backupCategories.isNotEmpty()) {
+                ensureActive()
                 categoriesBackupRestorer.restoreCategories(backup.backupCategories) {
                     restoreProgress += 1
                     showRestoreProgress(restoreProgress, restoreAmount, context.getString(MR.strings.categories))
                 }
             }
 
+            ensureActive()
             preferenceBackupRestorer.restoreAppPreferences(backup.backupPreferences) {
                 restoreProgress += 1
                 showRestoreProgress(restoreProgress, restoreAmount, context.getString(MR.strings.app_settings))
             }
+            ensureActive()
             preferenceBackupRestorer.restoreSourcePreferences(backup.backupSourcePreferences) {
                 restoreProgress += 1
                 showRestoreProgress(restoreProgress, restoreAmount, context.getString(MR.strings.source_settings))
@@ -81,10 +81,7 @@ class BackupRestorer(
 
             // Restore individual manga
             backup.backupManga.forEach {
-                if (!isActive) {
-                    return@coroutineScope false
-                }
-
+                ensureActive()
                 mangaBackupRestorer.restoreManga(
                     it,
                     backup.backupCategories,
@@ -98,7 +95,6 @@ class BackupRestorer(
                     },
                 )
             }
-            true
         }
         // TODO: optionally trigger online library + tracker update
     }

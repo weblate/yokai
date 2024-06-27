@@ -37,3 +37,4 @@
 - Update dependency com.github.tachiyomiorg:unifile to a9de196cc7
 - Update project to Kotlin 2.0
 - Update Brazilian Portuguese translation (AshbornXS)
+- Update compose bom to v2024.06.00-alpha01

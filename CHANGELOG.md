@@ -39,3 +39,5 @@
 - Update Brazilian Portuguese translation (AshbornXS)
 - Update compose bom to v2024.06.00-alpha01
 - Refactor archive support to use `libarchive`
+- Use version catalog for gradle plugins
+- Update dependency org.jsoup:jsoup to v1.7.1

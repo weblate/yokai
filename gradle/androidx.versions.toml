@@ -1,5 +1,6 @@
 [versions]
 activity = "1.9.0"
+agp = "8.5.0"
 lifecycle = "2.8.1"
 
 [libraries]
@@ -37,3 +38,7 @@ androidx = [
     "lifecycle-process", "lifecycle-runtime", "lifecycle-viewmodel", "lifecycle-viewmodel-compose", "multidex",
     "palette", "preference", "recyclerview", "sqlite", "layout-swiperefresh", "webkit", "work", "window"
 ]
+
+[plugins]
+application = { id = "com.android.application", version.ref = "agp" }
+library = { id = "com.android.library", version.ref = "agp" }

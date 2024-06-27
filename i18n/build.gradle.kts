@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("dev.icerock.mobile.multiplatform-resources")
+    alias(kotlinx.plugins.multiplatform)
+    alias(androidx.plugins.library)
+    alias(libs.plugins.moko)
 }
 
 kotlin {

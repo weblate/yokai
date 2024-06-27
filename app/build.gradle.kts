@@ -5,14 +5,14 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    alias(androidx.plugins.application)
+    alias(kotlinx.plugins.android)
+    alias(kotlinx.plugins.compose.compiler)
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
     id("com.google.android.gms.oss-licenses-plugin")
     id("com.google.gms.google-services") apply false
     id("com.google.firebase.crashlytics") apply false
-    alias(kotlinx.plugins.compose.compiler)
 }
 
 if (gradle.startParameter.taskRequests.toString().contains("Standard")) {

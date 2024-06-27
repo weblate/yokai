@@ -38,3 +38,4 @@
 - Update project to Kotlin 2.0
 - Update Brazilian Portuguese translation (AshbornXS)
 - Update compose bom to v2024.06.00-alpha01
+- Refactor archive support to use `libarchive`

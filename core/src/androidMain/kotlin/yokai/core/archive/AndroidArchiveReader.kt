@@ -9,15 +9,17 @@ import eu.kanade.tachiyomi.util.system.openFileDescriptor
 import me.zhanghai.android.libarchive.ArchiveException
 import java.io.InputStream
 
-class AndroidArchiveReader(pfd: ParcelFileDescriptor) : ArchiveReader {
-    val size = pfd.statSize
-    val address = Os.mmap(0, size, OsConstants.PROT_READ, OsConstants.MAP_PRIVATE, pfd.fileDescriptor, 0)
+class AndroidArchiveReader(pfd: ParcelFileDescriptor) : ArchiveReader() {
+    override val size =
+        pfd.statSize
+    override val address =
+        Os.mmap(0, size, OsConstants.PROT_READ, OsConstants.MAP_PRIVATE, pfd.fileDescriptor, 0)
 
-    override fun <T> useEntries(block: (Sequence<ArchiveEntry>) -> T): T =
-        AndroidArchiveInputStream(address, size).use { block(generateSequence { it.getNextEntry() }) }
+    override fun createInputStream(address: Long, size: Long): ArchiveInputStream =
+        AndroidArchiveInputStream(address, size)
 
     override fun getInputStream(entryName: String): InputStream? {
-        val archive = AndroidArchiveInputStream(address, size)
+        val archive = createInputStream(address, size)
         try {
             while (true) {
                 val entry = archive.getNextEntry() ?: break

@@ -22,17 +22,17 @@ internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader
     /**
      * Returns the pages found on this zip archive ordered with a natural comparator.
      */
-    override suspend fun getPages(): List<ReaderPage> {
-        return reader.useEntries { entries ->
-            entries.filter { it.isFile && ImageUtil.isImage(it.name) { reader.getInputStream(it.name)!! } }
-                .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
-                .mapIndexed { i, entry ->
-                    ReaderPage(i).apply {
-                        stream = { reader.getInputStream(entry.name)!! }
-                        status = Page.State.READY
-                    }
+    override suspend fun getPages(): List<ReaderPage> = reader.useEntries { entries ->
+        entries
+            .filter { it.isFile && ImageUtil.isImage(it.name) { reader.getInputStream(it.name)!! } }
+            .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
+            .mapIndexed { i, entry ->
+                ReaderPage(i).apply {
+                    stream = { reader.getInputStream(entry.name)!! }
+                    status = Page.State.READY
                 }
-        }.toList()
+            }
+            .toList()
     }
 
     /**

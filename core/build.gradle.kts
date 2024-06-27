@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(kotlinx.plugins.multiplatform)
+    alias(kotlinx.plugins.serialization)
     alias(androidx.plugins.library)
-    kotlin("plugin.serialization")
 }
 
 kotlin {

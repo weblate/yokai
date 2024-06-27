@@ -8,7 +8,7 @@ plugins {
     alias(androidx.plugins.application)
     alias(kotlinx.plugins.android)
     alias(kotlinx.plugins.compose.compiler)
-    kotlin("plugin.serialization")
+    alias(kotlinx.plugins.serialization)
     id("kotlin-parcelize")
     id("com.google.android.gms.oss-licenses-plugin")
     id("com.google.gms.google-services") apply false

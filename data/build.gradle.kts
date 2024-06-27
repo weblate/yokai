@@ -1,8 +1,8 @@
 plugins {
     alias(kotlinx.plugins.multiplatform)
+    alias(kotlinx.plugins.serialization)
     alias(androidx.plugins.library)
     alias(libs.plugins.sqldelight)
-    kotlin("plugin.serialization")
 }
 
 kotlin {

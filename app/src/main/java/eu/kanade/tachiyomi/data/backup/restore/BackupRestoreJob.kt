@@ -12,6 +12,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.backup.BackupConst
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -53,6 +54,7 @@ class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : C
                     notifier.showRestoreError(context.getString(MR.strings.restoring_backup_canceled))
                     Result.success()
                 } else {
+                    Logger.e(e) { "Failed to restore backup" }
                     restorer.writeErrorLog()
                     notifier.showRestoreError(e.message)
                     Result.failure()

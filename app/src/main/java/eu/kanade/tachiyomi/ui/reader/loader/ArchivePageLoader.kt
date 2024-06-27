@@ -7,12 +7,12 @@ import eu.kanade.tachiyomi.util.system.ImageUtil
 import yokai.core.archive.ArchiveReader
 
 /**
- * Loader used to load a chapter from a .zip or .cbz file.
+ * Loader used to load a chapter from an archive file.
  */
 internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader() {
 
     /**
-     * Recycles this loader and the open zip.
+     * Recycles this loader and the open archive.
      */
     override fun recycle() {
         super.recycle()
@@ -20,7 +20,7 @@ internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader
     }
 
     /**
-     * Returns the pages found on this zip archive ordered with a natural comparator.
+     * Returns the pages found on this archive ordered with a natural comparator.
      */
     override suspend fun getPages(): List<ReaderPage> = reader.useEntries { entries ->
         entries

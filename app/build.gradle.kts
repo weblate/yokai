@@ -125,10 +125,12 @@ android {
     productFlavors {
         create("standard") {
             buildConfigField("Boolean", "INCLUDE_UPDATER", "true")
+            dimension = "default"
         }
         create("dev") {
             resourceConfigurations.clear()
             resourceConfigurations.add("en")
+            dimension = "default"
         }
     }
 

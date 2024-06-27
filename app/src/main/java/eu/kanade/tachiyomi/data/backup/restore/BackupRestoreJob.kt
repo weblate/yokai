@@ -39,6 +39,8 @@ class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : C
     }
 
     override suspend fun doWork(): Result {
+        if (isRunning(context)) return Result.failure()
+
         tryToSetForeground()
 
         val uriPath = inputData.getString(BackupConst.EXTRA_URI) ?: return Result.failure()

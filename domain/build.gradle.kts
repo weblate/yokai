@@ -1,7 +1,7 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.android.library")
+    alias(kotlinx.plugins.multiplatform)
+    alias(kotlinx.plugins.serialization)
+    alias(androidx.plugins.library)
 }
 
 kotlin {

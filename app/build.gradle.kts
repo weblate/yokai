@@ -1,3 +1,5 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsPlugin
+import com.google.gms.googleservices.GoogleServicesPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
@@ -5,19 +7,19 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("plugin.serialization")
-    id("kotlin-parcelize")
-    id("com.google.android.gms.oss-licenses-plugin")
-    id("com.google.gms.google-services") apply false
-    id("com.google.firebase.crashlytics") apply false
+    alias(androidx.plugins.application)
+    alias(kotlinx.plugins.android)
     alias(kotlinx.plugins.compose.compiler)
+    alias(kotlinx.plugins.serialization)
+    alias(kotlinx.plugins.parcelize)
+    alias(libs.plugins.google.oss)
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.google.services) apply false
 }
 
 if (gradle.startParameter.taskRequests.toString().contains("Standard")) {
-    apply(mapOf("plugin" to "com.google.gms.google-services"))
-    apply(mapOf("plugin" to "com.google.firebase.crashlytics"))
+    apply<CrashlyticsPlugin>()
+    apply<GoogleServicesPlugin>()
 }
 
 fun runCommand(command: String): String {
@@ -123,10 +125,12 @@ android {
     productFlavors {
         create("standard") {
             buildConfigField("Boolean", "INCLUDE_UPDATER", "true")
+            dimension = "default"
         }
         create("dev") {
             resourceConfigurations.clear()
             resourceConfigurations.add("en")
+            dimension = "default"
         }
     }
 

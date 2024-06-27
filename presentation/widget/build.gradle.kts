@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(androidx.plugins.library)
+    alias(kotlinx.plugins.android)
     alias(kotlinx.plugins.compose.compiler)
 }
 

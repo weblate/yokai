@@ -8,26 +8,18 @@ import java.util.*
 plugins {
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.gradle.versions)
+    alias(androidx.plugins.application) apply false
+    alias(androidx.plugins.library) apply false
     alias(kotlinx.plugins.android) apply false
     alias(kotlinx.plugins.compose.compiler) apply false
-}
-
-buildscript {
-    dependencies {
-        classpath(libs.gradle)
-        classpath(libs.google.services)
-        classpath(kotlinx.gradle)
-        classpath(libs.oss.licenses.plugin)
-        classpath(kotlinx.serialization.gradle)
-        classpath(libs.firebase.crashlytics.gradle)
-        classpath(libs.sqldelight.gradle)
-        classpath(libs.moko.generator)
-    }
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
+    alias(kotlinx.plugins.multiplatform) apply false
+    alias(kotlinx.plugins.parcelize) apply false
+    alias(kotlinx.plugins.serialization) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.google.oss) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.moko) apply false
+    alias(libs.plugins.sqldelight) apply false
 }
 
 subprojects {

@@ -18,8 +18,8 @@ open class MangaImpl : Manga {
     private val customMangaManager: CustomMangaManager by injectLazy()
 
     override var title: String
-        get() = if (favorite) {
-            val customTitle = customMangaManager.getManga(this)?.title
+        get() = if (favorite && this.id != null) {
+            val customTitle = customMangaManager.getManga(this.id!!)?.title
             if (customTitle.isNullOrBlank()) ogTitle else customTitle
         } else {
             ogTitle
@@ -29,24 +29,24 @@ open class MangaImpl : Manga {
         }
 
     override var author: String?
-        get() = if (favorite) customMangaManager.getManga(this)?.author ?: ogAuthor else ogAuthor
+        get() = if (favorite && this.id != null) customMangaManager.getManga(this.id!!)?.author ?: ogAuthor else ogAuthor
         set(value) { ogAuthor = value }
 
     override var artist: String?
-        get() = if (favorite) customMangaManager.getManga(this)?.artist ?: ogArtist else ogArtist
+        get() = if (favorite && this.id != null) customMangaManager.getManga(this.id!!)?.artist ?: ogArtist else ogArtist
         set(value) { ogArtist = value }
 
     override var description: String?
-        get() = if (favorite) customMangaManager.getManga(this)?.description ?: ogDesc else ogDesc
+        get() = if (favorite && this.id != null) customMangaManager.getManga(this.id!!)?.description ?: ogDesc else ogDesc
         set(value) { ogDesc = value }
 
     override var genre: String?
-        get() = if (favorite) customMangaManager.getManga(this)?.genre ?: ogGenre else ogGenre
+        get() = if (favorite && this.id != null) customMangaManager.getManga(this.id!!)?.genre ?: ogGenre else ogGenre
         set(value) { ogGenre = value }
 
     override var status: Int
-        get() = if (favorite) {
-            customMangaManager.getManga(this)?.status.takeIf { it != -1 }
+        get() = if (favorite && this.id != null) {
+            customMangaManager.getManga(this.id!!)?.status.takeIf { it != -1 }
                 ?: ogStatus
         } else {
             ogStatus

@@ -1,7 +1,9 @@
 package yokai.domain.library.custom.model
 
-import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.database.models.MangaImpl
+import yokai.core.metadata.ComicInfo
+import yokai.core.metadata.ComicInfoPublishingStatus
+import yokai.domain.manga.models.Manga
+import java.io.Serializable
 
 data class CustomMangaInfo(
     var mangaId: Long,
@@ -11,27 +13,53 @@ data class CustomMangaInfo(
     val description: String? = null,
     val genre: String? = null,
     val status: Int? = null,
-) {
-    fun toManga() = MangaImpl().apply {
-        id = this@CustomMangaInfo.mangaId
-        title = this@CustomMangaInfo.title ?: ""
-        author = this@CustomMangaInfo.author
-        artist = this@CustomMangaInfo.artist
-        description = this@CustomMangaInfo.description
-        genre = this@CustomMangaInfo.genre
-        status = this@CustomMangaInfo.status ?: -1
-    }
-
+) : Serializable {
     companion object {
-        fun Manga.getMangaInfo() =
-            CustomMangaInfo(
-                mangaId = id!!,
+        fun Manga.getMangaInfo() = CustomMangaInfo(
+            mangaId = this.id ?: 0L,
+            title = this.ogTitle,
+            author = this.ogAuthor,
+            artist = this.ogArtist,
+            description = this.ogDescription,
+            genre = this.ogGenres.joinToString(", "),
+            status = this.ogStatus
+        )
+
+        fun fromComicInfo(mangaId: Long, comicInfo: ComicInfo): CustomMangaInfo {
+            val title = comicInfo.series?.value
+            val author = comicInfo.writer?.value
+            val description = comicInfo.summary?.value
+
+            val genre = listOfNotNull(
+                comicInfo.genre?.value,
+                comicInfo.tags?.value,
+                comicInfo.categories?.value,
+            )
+                .distinct()
+                .joinToString(", ") { it.trim() }
+                .takeIf { it.isNotEmpty() }
+
+            val artist = listOfNotNull(
+                comicInfo.penciller?.value,
+                comicInfo.inker?.value,
+                comicInfo.colorist?.value,
+                comicInfo.letterer?.value,
+                comicInfo.coverArtist?.value,
+            )
+                .flatMap { it.split(", ") }
+                .distinct()
+                .joinToString(", ") { it.trim() }
+                .takeIf { it.isNotEmpty() }
+
+            return CustomMangaInfo(
+                mangaId = mangaId,
                 title = title,
                 author = author,
                 artist = artist,
                 description = description,
                 genre = genre,
-                status = status,
+                status = ComicInfoPublishingStatus.toSMangaValue(comicInfo.publishingStatus?.value),
             )
+        }
     }
 }

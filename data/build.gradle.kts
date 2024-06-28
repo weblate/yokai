@@ -10,6 +10,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                api(projects.domain)
+
                 api(libs.bundles.db)
             }
         }

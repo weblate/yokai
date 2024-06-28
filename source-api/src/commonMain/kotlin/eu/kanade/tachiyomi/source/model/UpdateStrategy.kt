@@ -19,4 +19,10 @@ enum class UpdateStrategy {
      * known to be finished and have only a single chapter, for example.
      */
     ONLY_FETCH_ONCE,
+    ;
+
+    companion object {
+        fun decode(databaseValue: Long): UpdateStrategy = entries.getOrElse(databaseValue.toInt()) { ALWAYS_UPDATE }
+        fun encode(value: UpdateStrategy): Long = value.ordinal.toLong()
+    }
 }

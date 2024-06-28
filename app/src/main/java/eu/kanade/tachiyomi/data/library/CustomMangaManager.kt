@@ -2,8 +2,6 @@ package eu.kanade.tachiyomi.data.library
 
 import android.content.Context
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -19,13 +17,11 @@ import uy.kohesive.injekt.injectLazy
 import yokai.core.metadata.COMIC_INFO_EDITS_FILE
 import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.ComicInfoPublishingStatus
-import yokai.core.metadata.copyFromComicInfo
 import yokai.domain.library.custom.interactor.CreateCustomManga
 import yokai.domain.library.custom.interactor.DeleteCustomManga
 import yokai.domain.library.custom.interactor.GetCustomManga
 import yokai.domain.library.custom.interactor.RelinkCustomManga
 import yokai.domain.library.custom.model.CustomMangaInfo
-import yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
 import java.nio.charset.StandardCharsets
 
 class CustomMangaManager(val context: Context) {
@@ -35,7 +31,7 @@ class CustomMangaManager(val context: Context) {
 
     private val externalDir = UniFile.fromFile(context.getExternalFilesDir(null))
 
-    private var customMangaMap = mutableMapOf<Long, Manga>()
+    private var customMangaMap = mutableMapOf<Long, CustomMangaInfo>()
 
     private val createCustomManga: CreateCustomManga by injectLazy()
     private val deleteCustomManga: DeleteCustomManga by injectLazy()
@@ -45,10 +41,7 @@ class CustomMangaManager(val context: Context) {
     init {
         scope.launch {
             getCustomManga.subscribeAll().collectLatest {
-                customMangaMap = it.associate { info ->
-                    val id = info.mangaId
-                    id to info.toManga()
-                }.toMutableMap()
+                customMangaMap = it.associateBy { it.mangaId }.toMutableMap()
             }
             fetchCustomData()
         }
@@ -58,7 +51,7 @@ class CustomMangaManager(val context: Context) {
         const val EDIT_JSON_FILE = "edits.json"
     }
 
-    fun getManga(manga: Manga): Manga? = customMangaMap[manga.id]
+    fun getManga(mangaId: Long): CustomMangaInfo? = customMangaMap[mangaId]
 
     private suspend fun fetchCustomData() {
         val comicInfoEdits = externalDir?.findFile(COMIC_INFO_EDITS_FILE)
@@ -107,8 +100,8 @@ class CustomMangaManager(val context: Context) {
 
         val mangasJson = json.mangas ?: return
         mangasJson.mapNotNull { mangaObject ->
-            val id = mangaObject.id ?: return@mapNotNull null
-            customMangaMap[id] = mangaObject.toManga()
+            val obj = mangaObject.toManga() ?: return@mapNotNull null
+            customMangaMap[obj.mangaId] = obj
         }
 
         saveCustomInfo { jsonFile.delete() }
@@ -153,7 +146,7 @@ class CustomMangaManager(val context: Context) {
     }
 
     private suspend fun saveCustomInfo(onComplete: () -> Unit = {}) {
-        val edits = customMangaMap.values.map { it.getMangaInfo() }
+        val edits = customMangaMap.values.map { it }
         if (edits.isNotEmpty()) {
             createCustomManga.bulk(edits)
             onComplete()
@@ -176,14 +169,17 @@ class CustomMangaManager(val context: Context) {
         val status: Int? = null,
     ) {
 
-        fun toManga() = MangaImpl().apply {
-            id = this@MangaJson.id
-            title = this@MangaJson.title ?: ""
-            author = this@MangaJson.author
-            artist = this@MangaJson.artist
-            description = this@MangaJson.description
-            genre = this@MangaJson.genre?.joinToString(", ")
-            status = this@MangaJson.status ?: -1
+        fun toManga(): CustomMangaInfo? {
+            if (this.id == null) return null
+            return CustomMangaInfo(
+                mangaId = this.id!!,
+                title = this.title ?: "",
+                author = this.author,
+                artist = this.artist,
+                description = this.description,
+                genre = this.genre?.joinToString(", "),
+                status = this.status ?: -1,
+            )
         }
 
         override fun equals(other: Any?): Boolean {
@@ -272,9 +268,5 @@ class CustomMangaManager(val context: Context) {
         }
     }
 
-    private fun mangaFromComicInfoObject(id: Long, comicInfo: ComicInfo) = MangaImpl().apply {
-        this.id = id
-        this.copyFromComicInfo(comicInfo)
-        this.title = comicInfo.series?.value ?: ""
-    }
+    private fun mangaFromComicInfoObject(id: Long, comicInfo: ComicInfo) = CustomMangaInfo.fromComicInfo(id, comicInfo)
 }

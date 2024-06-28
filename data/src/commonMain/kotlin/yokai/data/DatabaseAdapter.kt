@@ -4,15 +4,10 @@ import app.cash.sqldelight.ColumnAdapter
 import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import java.util.*
 
-// TODO: Move to yokai.data.DatabaseAdapter
-
 val updateStrategyAdapter = object : ColumnAdapter<UpdateStrategy, Long> {
-    private val enumValues by lazy { UpdateStrategy.entries }
+    override fun decode(databaseValue: Long): UpdateStrategy = UpdateStrategy.decode(databaseValue)
 
-    override fun decode(databaseValue: Long): UpdateStrategy =
-        enumValues.getOrElse(databaseValue.toInt()) { UpdateStrategy.ALWAYS_UPDATE }
-
-    override fun encode(value: UpdateStrategy): Long = value.ordinal.toLong()
+    override fun encode(value: UpdateStrategy): Long = UpdateStrategy.encode(value)
 }
 
 val dateAdapter = object : ColumnAdapter<Date, Long> {

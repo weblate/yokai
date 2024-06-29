@@ -31,6 +31,7 @@ import yokai.domain.manga.models.Manga
 import yokai.domain.manga.models.MangaCategory
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.UpdateTrack
 import yokai.domain.track.models.TrackUpdate
 import yokai.domain.ui.UiPreferences
 import java.util.*
@@ -47,6 +48,7 @@ class MigrationProcessAdapter(
     private val deleteMangaCategory: DeleteMangaCategory by injectLazy()
     private val insertMangaCategory: InsertMangaCategory by injectLazy()
     private val getTrack: GetTrack by injectLazy()
+    private val updateTrack: UpdateTrack by injectLazy()
 
     var items: List<MigrationProcessItem> = emptyList()
     val preferences: PreferencesHelper by injectLazy()
@@ -157,6 +159,7 @@ class MigrationProcessAdapter(
             deleteMangaCategory,
             insertMangaCategory,
             getTrack,
+            updateTrack,
             enhancedServices,
             coverCache,
             customMangaManager,
@@ -180,6 +183,7 @@ class MigrationProcessAdapter(
             deleteMangaCategory: DeleteMangaCategory,
             insertMangaCategory: InsertMangaCategory,
             getTrack: GetTrack,
+            updateTrack: UpdateTrack,
             enhancedServices: List<EnhancedTrackService>,
             coverCache: CoverCache,
             customMangaManager: CustomMangaManager,

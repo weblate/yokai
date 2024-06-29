@@ -25,3 +25,9 @@ findAllByMangaId:
 SELECT *
 FROM manga_sync
 WHERE manga_id = :mangaId;
+
+update:
+UPDATE manga_sync SET
+  manga_id = coalesce(:mangaId, manga_id),
+  remote_url = coalesce(:trackingUrl, remote_url)
+WHERE _id = :trackId;

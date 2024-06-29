@@ -46,6 +46,7 @@ import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.track.TrackRepository
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.UpdateTrack
 
 class DomainModule : InjektModule {
     override fun InjektRegistrar.registerInjectables() {
@@ -89,5 +90,6 @@ class DomainModule : InjektModule {
 
         addSingletonFactory<TrackRepository> { TrackRepositoryImpl(get()) }
         addFactory { GetTrack(get()) }
+        addFactory { UpdateTrack(get()) }
     }
 }

@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.data.backup.models
 
 import eu.kanade.tachiyomi.data.database.models.ChapterImpl
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.data.database.models.TrackImpl
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
@@ -9,7 +8,9 @@ import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import eu.kanade.tachiyomi.util.chapter.ChapterUtil
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
+import yokai.data.manga.models.readingModeType
 import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.manga.models.Manga
 
 @Suppress("DEPRECATION")
 @Serializable
@@ -115,29 +116,29 @@ data class BackupManga(
         fun copyFrom(manga: Manga, customMangaManager: CustomMangaManager?): BackupManga {
             return BackupManga(
                 url = manga.url,
-                title = manga.originalTitle,
-                artist = manga.originalArtist,
-                author = manga.originalAuthor,
-                description = manga.originalDescription,
-                genre = manga.getOriginalGenres() ?: emptyList(),
-                status = manga.originalStatus,
-                thumbnailUrl = manga.thumbnail_url,
+                title = manga.ogTitle,
+                artist = manga.ogArtist,
+                author = manga.ogAuthor,
+                description = manga.ogDescription,
+                genre = manga.ogGenres,
+                status = manga.ogStatus,
+                thumbnailUrl = manga.thumbnailUrl,
                 favorite = manga.favorite,
                 source = manga.source,
-                dateAdded = manga.date_added,
+                dateAdded = manga.dateAdded,
                 viewer = manga.readingModeType,
-                viewer_flags = manga.viewer_flags.takeIf { it != -1 } ?: 0,
-                chapterFlags = manga.chapter_flags,
-                updateStrategy = manga.update_strategy,
-                excludedScanlators = ChapterUtil.getScanlators(manga.filtered_scanlators),
+                viewer_flags = manga.viewerFlags.takeIf { it != -1 } ?: 0,
+                chapterFlags = manga.chapterFlags,
+                updateStrategy = manga.updateStrategy,
+                excludedScanlators = ChapterUtil.getScanlators(manga.filteredScanlators),
             ).also { backupManga ->
-                customMangaManager?.getManga(manga)?.let {
+                customMangaManager?.getManga(manga.id)?.let {
                     backupManga.customTitle = it.title
                     backupManga.customArtist = it.artist
                     backupManga.customAuthor = it.author
                     backupManga.customDescription = it.description
-                    backupManga.customGenre = it.getGenres()
-                    backupManga.customStatus = it.status
+                    backupManga.customGenre = it.genres
+                    backupManga.customStatus = it.status ?: -1
                 }
             }
         }

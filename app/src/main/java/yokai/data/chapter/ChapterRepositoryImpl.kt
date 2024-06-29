@@ -9,6 +9,9 @@ import yokai.domain.chapter.ChapterRepository
 import yokai.domain.chapter.models.ChapterUpdate
 
 class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepository {
+    override suspend fun getChapter(chapterId: Long): Chapter? =
+        handler.awaitOneOrNull { chaptersQueries.find(chapterId, Chapter::mapper) }
+
     override suspend fun getChapters(mangaId: Long, filterScanlators: Boolean): List<Chapter> =
         handler.awaitList { chaptersQueries.getChaptersByMangaId(mangaId, filterScanlators.toInt().toLong(), Chapter::mapper) }
 

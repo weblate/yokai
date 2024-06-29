@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import yokai.domain.chapter.models.ChapterUpdate
 
 interface ChapterRepository {
+    suspend fun getChapter(chapterId: Long): Chapter?
+
     suspend fun getChapters(mangaId: Long, filterScanlators: Boolean): List<Chapter>
     fun getChaptersAsFlow(mangaId: Long, filterScanlators: Boolean): Flow<List<Chapter>>
 

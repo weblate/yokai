@@ -14,6 +14,9 @@ data class CustomMangaInfo(
     val genre: String? = null,
     val status: Int? = null,
 ) : Serializable {
+    val genres: List<String>
+        get() = genre?.split(", ").orEmpty()
+
     companion object {
         fun Manga.getMangaInfo() = CustomMangaInfo(
             mangaId = this.id ?: 0L,

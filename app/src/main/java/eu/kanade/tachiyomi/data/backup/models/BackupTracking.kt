@@ -1,9 +1,9 @@
 package eu.kanade.tachiyomi.data.backup.models
 
-import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.TrackImpl
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
+import yokai.domain.track.models.Track
 
 @Serializable
 data class BackupTracking(
@@ -53,18 +53,18 @@ data class BackupTracking(
     companion object {
         fun copyFrom(track: Track): BackupTracking {
             return BackupTracking(
-                syncId = track.sync_id,
-                mediaId = track.media_id,
+                syncId = track.syncId,
+                mediaId = track.mediaId,
                 // forced not null so its compatible with 1.x backup system
-                libraryId = track.library_id!!,
+                libraryId = track.libraryId!!,
                 title = track.title,
-                lastChapterRead = track.last_chapter_read,
-                totalChapters = track.total_chapters,
+                lastChapterRead = track.lastChapterRead,
+                totalChapters = track.totalChapters,
                 score = track.score,
                 status = track.status,
-                startedReadingDate = track.started_reading_date,
-                finishedReadingDate = track.finished_reading_date,
-                trackingUrl = track.tracking_url,
+                startedReadingDate = track.startedReadingDate,
+                finishedReadingDate = track.finishedReadingDate,
+                trackingUrl = track.trackingUrl,
             )
         }
     }

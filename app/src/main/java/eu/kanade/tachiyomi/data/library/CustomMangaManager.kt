@@ -51,7 +51,7 @@ class CustomMangaManager(val context: Context) {
         const val EDIT_JSON_FILE = "edits.json"
     }
 
-    fun getManga(mangaId: Long): CustomMangaInfo? = customMangaMap[mangaId]
+    fun getManga(mangaId: Long?): CustomMangaInfo? = mangaId?.let { customMangaMap[it] }
 
     private suspend fun fetchCustomData() {
         val comicInfoEdits = externalDir?.findFile(COMIC_INFO_EDITS_FILE)

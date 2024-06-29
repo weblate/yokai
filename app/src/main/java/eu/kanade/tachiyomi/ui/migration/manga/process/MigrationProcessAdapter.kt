@@ -3,10 +3,6 @@ package eu.kanade.tachiyomi.ui.migration.manga.process
 import android.view.MenuItem
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.data.database.models.History
-import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
@@ -22,15 +18,36 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
+import yokai.domain.category.interactor.GetCategories
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.InsertChapter
+import yokai.domain.history.interactor.GetHistory
+import yokai.domain.history.models.History
+import yokai.domain.manga.category.interactor.DeleteMangaCategory
+import yokai.domain.manga.category.interactor.InsertMangaCategory
+import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.Manga
+import yokai.domain.manga.models.MangaCategory
+import yokai.domain.manga.models.MangaUpdate
+import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.models.TrackUpdate
 import yokai.domain.ui.UiPreferences
 import java.util.*
 
 class MigrationProcessAdapter(
     val controller: MigrationListController,
 ) : FlexibleAdapter<MigrationProcessItem>(null, controller, true) {
+    private val getCategories: GetCategories by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
+    private val insertChapter: InsertChapter by injectLazy()
+    private val getHistory: GetHistory by injectLazy()
+    private val getManga: GetManga by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
+    private val deleteMangaCategory: DeleteMangaCategory by injectLazy()
+    private val insertMangaCategory: InsertMangaCategory by injectLazy()
+    private val getTrack: GetTrack by injectLazy()
 
-    private val db: DatabaseHelper by injectLazy()
     var items: List<MigrationProcessItem> = emptyList()
     val preferences: PreferencesHelper by injectLazy()
     val uiPreferences: UiPreferences by injectLazy()
@@ -74,25 +91,21 @@ class MigrationProcessAdapter(
 
     suspend fun performMigrations(copy: Boolean) {
         withContext(Dispatchers.IO) {
-            db.inTransaction {
-                currentItems.forEach { migratingManga ->
-                    val manga = migratingManga.manga
-                    if (manga.searchResult.initialized) {
-                        val toMangaObj =
-                            db.getManga(manga.searchResult.get() ?: return@forEach)
-                                .executeAsBlocking()
-                                ?: return@forEach
-                        val prevManga = manga.manga() ?: return@forEach
-                        val source = sourceManager.get(toMangaObj.source) ?: return@forEach
-                        val prevSource = sourceManager.get(prevManga.source)
-                        migrateMangaInternal(
-                            prevSource,
-                            source,
-                            prevManga,
-                            toMangaObj,
-                            !copy,
-                        )
-                    }
+            currentItems.forEach { migratingManga ->
+                val manga = migratingManga.manga
+                if (manga.searchResult.initialized) {
+                    val toMangaObj = getManga.awaitById(manga.searchResult.get() ?: return@forEach)
+                        ?: return@forEach
+                    val prevManga = manga.manga() ?: return@forEach
+                    val source = sourceManager.get(toMangaObj.source) ?: return@forEach
+                    val prevSource = sourceManager.get(prevManga.source)
+                    migrateMangaInternal(
+                        prevSource,
+                        source,
+                        prevManga,
+                        toMangaObj,
+                        !copy,
+                    )
                 }
             }
         }
@@ -101,21 +114,17 @@ class MigrationProcessAdapter(
     fun migrateManga(position: Int, copy: Boolean) {
         launchUI {
             val manga = getItem(position)?.manga ?: return@launchUI
-            db.inTransaction {
-                val toMangaObj =
-                    db.getManga(manga.searchResult.get() ?: return@launchUI).executeAsBlocking()
-                        ?: return@launchUI
-                val prevManga = manga.manga() ?: return@launchUI
-                val source = sourceManager.get(toMangaObj.source) ?: return@launchUI
-                val prevSource = sourceManager.get(prevManga.source)
-                migrateMangaInternal(
-                    prevSource,
-                    source,
-                    prevManga,
-                    toMangaObj,
-                    !copy,
-                )
-            }
+            val toMangaObj = getManga.awaitById(manga.searchResult.get() ?: return@launchUI) ?: return@launchUI
+            val prevManga = manga.manga() ?: return@launchUI
+            val source = sourceManager.get(toMangaObj.source) ?: return@launchUI
+            val prevSource = sourceManager.get(prevManga.source)
+            migrateMangaInternal(
+                prevSource,
+                source,
+                prevManga,
+                toMangaObj,
+                !copy,
+            )
             removeManga(position)
         }
     }
@@ -129,7 +138,7 @@ class MigrationProcessAdapter(
         sourceFinished()
     }
 
-    private fun migrateMangaInternal(
+    private suspend fun migrateMangaInternal(
         prevSource: Source?,
         source: Source,
         prevManga: Manga,
@@ -138,14 +147,39 @@ class MigrationProcessAdapter(
     ) {
         if (controller.config == null) return
         val flags = preferences.migrateFlags().get()
-        migrateMangaInternal(flags, db, enhancedServices, coverCache, customMangaManager, prevSource, source, prevManga, manga, replace)
+        migrateMangaInternal(
+            flags,
+            getCategories,
+            getChapter,
+            insertChapter,
+            getHistory,
+            updateManga,
+            deleteMangaCategory,
+            insertMangaCategory,
+            getTrack,
+            enhancedServices,
+            coverCache,
+            customMangaManager,
+            prevSource,
+            source,
+            prevManga,
+            manga,
+            replace,
+        )
     }
 
     companion object {
 
-        fun migrateMangaInternal(
+        suspend fun migrateMangaInternal(
             flags: Int,
-            db: DatabaseHelper,
+            getCategories: GetCategories,
+            getChapter: GetChapter,
+            insertChapter: InsertChapter,
+            getHistory: GetHistory,
+            updateManga: UpdateManga,
+            deleteMangaCategory: DeleteMangaCategory,
+            insertMangaCategory: InsertMangaCategory,
+            getTrack: GetTrack,
             enhancedServices: List<EnhancedTrackService>,
             coverCache: CoverCache,
             customMangaManager: CustomMangaManager,
@@ -157,11 +191,11 @@ class MigrationProcessAdapter(
         ) {
             // Update chapters read
             if (MigrationFlags.hasChapters(flags)) {
-                val prevMangaChapters = db.getChapters(prevManga).executeAsBlocking()
+                val prevMangaChapters = getChapter.awaitAll(prevManga, false)
                 val maxChapterRead =
                     prevMangaChapters.filter { it.read }.maxOfOrNull { it.chapter_number } ?: 0f
-                val dbChapters = db.getChapters(manga).executeAsBlocking()
-                val prevHistoryList = db.getHistoryByMangaId(prevManga.id!!).executeAsBlocking()
+                val dbChapters = getChapter.awaitAll(manga, false)
+                val prevHistoryList = getHistory.awaitAllByMangaId(prevManga.id!!)
                 val historyList = mutableListOf<History>()
                 for (chapter in dbChapters) {
                     if (chapter.isRecognizedNumber) {
@@ -171,13 +205,13 @@ class MigrationProcessAdapter(
                             chapter.bookmark = prevChapter.bookmark
                             chapter.read = prevChapter.read
                             chapter.date_fetch = prevChapter.date_fetch
-                            prevHistoryList.find { it.chapter_id == prevChapter.id }
+                            prevHistoryList.find { it.chapterId == prevChapter.id }
                                 ?.let { prevHistory ->
-                                    val history = History.create(chapter)
-                                        .apply {
-                                            last_read = prevHistory.last_read
-                                            time_read = prevHistory.time_read
-                                        }
+                                    val history = History(
+                                        chapterId = chapter.id!!,
+                                        lastRead = prevHistory.lastRead,
+                                        timeRead = prevHistory.timeRead,
+                                    )
                                     historyList.add(history)
                                 }
                         } else if (chapter.chapter_number <= maxChapterRead) {
@@ -185,59 +219,63 @@ class MigrationProcessAdapter(
                         }
                     }
                 }
-                db.insertChapters(dbChapters).executeAsBlocking()
+                dbChapters.forEach { insertChapter.await(it) }
                 db.upsertHistoryLastRead(historyList).executeAsBlocking()
             }
             // Update categories
             if (MigrationFlags.hasCategories(flags)) {
-                val categories = db.getCategoriesForManga(prevManga).executeAsBlocking()
-                val mangaCategories = categories.map { MangaCategory.create(manga, it) }
-                db.setMangaCategories(mangaCategories, listOf(manga))
+                val categories = getCategories.awaitByMangaId(prevManga.id!!)
+                val mangaCategories = categories.map { MangaCategory(
+                    mangaId = manga.id!!,
+                    categoryId = it.id!!,
+                ) }
+                mangaCategories.forEach { mangaCategory ->
+                    deleteMangaCategory.awaitByMangaId(manga.id!!)
+                    insertMangaCategory.await(mangaCategory)
+                }
             }
             // Update track
             if (MigrationFlags.hasTracks(flags)) {
                 val tracksToUpdate =
-                    db.getTracks(prevManga).executeAsBlocking().mapNotNull { track ->
-                        track.id = null
-                        track.manga_id = manga.id!!
-
+                    getTrack.awaitAllByMangaId(prevManga.id!!).mapNotNull { track ->
                         val service = enhancedServices
-                            .firstOrNull { it.isTrackFrom(track, prevManga, prevSource) }
+                            .firstOrNull { it.isTrackFrom(track.trackingUrl, prevManga, prevSource) }
                         if (service != null) {
                             service.migrateTrack(track, manga, source)
                         } else {
-                            track
+                            TrackUpdate(
+                                id = track.id,
+                                mangaId = manga.id!!,
+                            )
                         }
                     }
-                db.insertTracks(tracksToUpdate).executeAsBlocking()
+                updateTrack.awaitAll(tracksToUpdate)
             }
             // Update favorite status
             if (replace) {
-                prevManga.favorite = false
-                db.updateMangaFavorite(prevManga).executeAsBlocking()
+                updateManga.await(MangaUpdate(
+                    prevManga.id!!,
+                    favorite = false,
+                ))
             }
-            manga.favorite = true
-            if (replace) {
-                manga.date_added = prevManga.date_added
-            } else {
-                manga.date_added = Date().time
-            }
+            updateManga.await(MangaUpdate(
+                manga.id!!,
+                title = manga.ogTitle,
+                favorite = true,
+                dateAdded = if (replace) prevManga.dateAdded else Date().time,
+            ))
 
             // Update custom cover & info
             if (MigrationFlags.hasCustomMangaInfo(flags)) {
                 if (coverCache.getCustomCoverFile(prevManga).exists()) {
                     coverCache.setCustomCoverToCache(manga, coverCache.getCustomCoverFile(prevManga).inputStream())
                 }
-                customMangaManager.getManga(prevManga)?.let { customManga ->
+                customMangaManager.getManga(prevManga.id!!)?.let { customManga ->
                     launchNow {
-                        customMangaManager.updateMangaInfo(prevManga.id, manga.id, customManga.getMangaInfo())
+                        customMangaManager.updateMangaInfo(prevManga.id, manga.id, customManga)
                     }
                 }
             }
-
-            db.updateMangaFavorite(manga).executeAsBlocking()
-            db.updateMangaAdded(manga).executeAsBlocking()
-            db.updateMangaTitle(manga).executeAsBlocking()
         }
     }
 }

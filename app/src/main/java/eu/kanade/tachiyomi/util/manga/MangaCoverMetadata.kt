@@ -4,12 +4,13 @@ import android.graphics.BitmapFactory
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.coil.getBestColor
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import uy.kohesive.injekt.injectLazy
+import yokai.data.manga.models.dominantCoverColors
+import yokai.domain.manga.models.Manga
 import java.io.File
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.*
 
 /** Object that holds info about a covers size ratio + dominant colors */
 object MangaCoverMetadata {

@@ -1,13 +1,13 @@
 package yokai.data.manga
 
 import co.touchlab.kermit.Logger
-import eu.kanade.tachiyomi.data.database.models.LibraryManga
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.util.system.toInt
 import kotlinx.coroutines.flow.Flow
 import yokai.data.DatabaseHandler
 import yokai.data.updateStrategyAdapter
 import yokai.domain.manga.MangaRepository
+import yokai.domain.manga.models.LibraryManga
+import yokai.domain.manga.models.Manga
 import yokai.domain.manga.models.MangaUpdate
 
 class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepository {
@@ -85,22 +85,22 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
             mangasQueries.insert(
                 source = manga.source,
                 url = manga.url,
-                artist = manga.artist,
-                author = manga.author,
-                description = manga.description,
-                genre = manga.genre,
-                title = manga.title,
-                status = manga.status.toLong(),
-                thumbnailUrl = manga.thumbnail_url,
+                artist = manga.ogArtist,
+                author = manga.ogAuthor,
+                description = manga.ogDescription,
+                genre = manga.ogGenres.joinToString(", "),
+                title = manga.ogTitle,
+                status = manga.ogStatus.toLong(),
+                thumbnailUrl = manga.thumbnailUrl,
                 favorite = manga.favorite.toInt().toLong(),
-                lastUpdate = manga.last_update,
+                lastUpdate = manga.lastUpdate,
                 initialized = manga.initialized,
-                viewer = manga.viewer_flags.toLong(),
-                hideTitle = manga.hide_title.toInt().toLong(),
-                chapterFlags = manga.chapter_flags.toLong(),
-                dateAdded = manga.date_added,
-                filteredScanlators = manga.filtered_scanlators,
-                updateStrategy = manga.update_strategy.let(updateStrategyAdapter::encode),
+                viewer = manga.viewerFlags.toLong(),
+                hideTitle = manga.hideTitle.toInt().toLong(),
+                chapterFlags = manga.chapterFlags.toLong(),
+                dateAdded = manga.dateAdded,
+                filteredScanlators = manga.filteredScanlators,
+                updateStrategy = manga.updateStrategy.let(updateStrategyAdapter::encode),
             )
             mangasQueries.selectLastInsertedRowId()
         }

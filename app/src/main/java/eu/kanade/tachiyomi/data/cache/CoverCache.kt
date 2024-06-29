@@ -6,8 +6,6 @@ import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.memory.MemoryCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.executeOnIO
@@ -18,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.manga.models.Manga
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.io.File
@@ -196,7 +195,7 @@ class CoverCache(val context: Context) {
      * @return cover image.
      */
     fun getCoverFile(manga: Manga): File {
-        val hashKey = DiskUtil.hashKeyForDisk((manga.thumbnail_url.orEmpty()))
+        val hashKey = DiskUtil.hashKeyForDisk((manga.thumbnailUrl.orEmpty()))
         return if (manga.favorite) {
             File(cacheDir, hashKey)
         } else {
@@ -206,7 +205,7 @@ class CoverCache(val context: Context) {
 
     fun deleteFromCache(name: String?) {
         if (name.isNullOrEmpty()) return
-        val file = getCoverFile(MangaImpl().apply { thumbnail_url = name })
+        val file = getCoverFile(Manga.blank().copy(thumbnailUrl = name))
         context.imageLoader.memoryCache?.remove(MemoryCache.Key(file.name))
         if (file.exists()) file.delete()
     }
@@ -222,7 +221,7 @@ class CoverCache(val context: Context) {
         deleteCustom: Boolean = true,
     ) {
         // Check if url is empty.
-        if (manga.thumbnail_url.isNullOrEmpty()) return
+        if (manga.thumbnailUrl.isNullOrEmpty()) return
 
         // Remove file
         val file = getCoverFile(manga)

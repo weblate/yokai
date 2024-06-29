@@ -9,11 +9,11 @@ import com.pushtorefresh.storio.sqlite.operations.put.DefaultPutResolver
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
 import com.pushtorefresh.storio.sqlite.queries.InsertQuery
 import com.pushtorefresh.storio.sqlite.queries.UpdateQuery
-import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable.COL_CATEGORY_ID
 import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable.COL_ID
 import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable.COL_MANGA_ID
 import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable.TABLE
+import yokai.domain.manga.models.MangaCategory
 
 class MangaCategoryTypeMapping : SQLiteTypeMapping<MangaCategory>(
     MangaCategoryPutResolver(),

@@ -1,17 +1,17 @@
 package eu.kanade.tachiyomi.ui.migration.manga.process
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.view.DeferredField
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.models.Manga
 import kotlin.coroutines.CoroutineContext
 
 class MigratingManga(
-    private val db: DatabaseHelper,
+    private val getManga: GetManga,
     private val sourceManager: SourceManager,
     val mangaId: Long,
     parentContext: CoroutineContext,
@@ -28,7 +28,7 @@ class MigratingManga(
     @Volatile
     private var manga: Manga? = null
     suspend fun manga(): Manga? {
-        if (manga == null) manga = db.getManga(mangaId).executeAsBlocking()
+        if (manga == null) manga = getManga.awaitById(mangaId)
         return manga
     }
 

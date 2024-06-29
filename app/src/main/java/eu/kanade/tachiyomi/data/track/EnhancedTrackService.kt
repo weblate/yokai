@@ -1,9 +1,10 @@
 package eu.kanade.tachiyomi.data.track
 
-import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.source.Source
+import yokai.domain.manga.models.Manga
+import yokai.domain.track.models.Track
+import yokai.domain.track.models.TrackUpdate
 
 /**
  * An Enhanced Track Service will never prompt the user to match a manga with the remote.
@@ -32,15 +33,19 @@ interface EnhancedTrackService {
     /**
      * Checks whether the provided source/track/manga triplet is from this TrackService
      */
-    fun isTrackFrom(track: Track, manga: Manga, source: Source?): Boolean =
-        track.tracking_url == manga.url && source?.let { accept(it) } == true
+    fun isTrackFrom(trackUrl: String, manga: Manga, source: Source?): Boolean =
+        trackUrl == manga.url && source?.let { accept(it) } == true
 
     /**
      * Migrates the given track for the manga to the newSource, if possible
      */
-    fun migrateTrack(track: Track, manga: Manga, newSource: Source): Track? =
+    fun migrateTrack(track: Track, manga: Manga, newSource: Source): TrackUpdate? =
         if (accept(newSource)) {
-            track.also { track.tracking_url = manga.url }
+            TrackUpdate(
+                id = track.id,
+                mangaId = manga.id!!,
+                trackingUrl = manga.url,
+            )
         } else {
             null
         }

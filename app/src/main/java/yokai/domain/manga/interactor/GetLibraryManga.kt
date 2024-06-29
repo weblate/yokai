@@ -1,8 +1,8 @@
 package yokai.domain.manga.interactor
 
-import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import kotlinx.coroutines.flow.Flow
 import yokai.domain.manga.MangaRepository
+import yokai.domain.manga.models.LibraryManga
 
 class GetLibraryManga(
     private val mangaRepository: MangaRepository,

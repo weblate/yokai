@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.data.backup.models
 
-import eu.kanade.tachiyomi.data.database.models.TrackImpl
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 import yokai.domain.track.models.Track
@@ -30,24 +29,25 @@ data class BackupTracking(
     @ProtoNumber(100) var mediaId: Long = 0,
 ) {
 
-    fun getTrackingImpl(): TrackImpl {
-        return TrackImpl().apply {
-            sync_id = this@BackupTracking.syncId
-            media_id = if (this@BackupTracking.mediaIdInt != 0) {
+    fun getTrackingImpl(): Track {
+        return Track(
+            id = -1L,
+            syncId = this@BackupTracking.syncId,
+            mediaId = if (this@BackupTracking.mediaIdInt != 0) {
                 this@BackupTracking.mediaIdInt.toLong()
             } else {
                 this@BackupTracking.mediaId
-            }
-            library_id = this@BackupTracking.libraryId
-            title = this@BackupTracking.title
-            last_chapter_read = this@BackupTracking.lastChapterRead
-            total_chapters = this@BackupTracking.totalChapters
-            score = this@BackupTracking.score
-            status = this@BackupTracking.status
-            started_reading_date = this@BackupTracking.startedReadingDate
-            finished_reading_date = this@BackupTracking.finishedReadingDate
-            tracking_url = this@BackupTracking.trackingUrl
-        }
+            },
+            libraryId = this@BackupTracking.libraryId,
+            title = this@BackupTracking.title,
+            lastChapterRead = this@BackupTracking.lastChapterRead,
+            totalChapters = this@BackupTracking.totalChapters,
+            score = this@BackupTracking.score,
+            status = this@BackupTracking.status,
+            startedReadingDate = this@BackupTracking.startedReadingDate,
+            finishedReadingDate = this@BackupTracking.finishedReadingDate,
+            trackingUrl = this@BackupTracking.trackingUrl,
+        )
     }
 
     companion object {

@@ -6,6 +6,8 @@ import eu.kanade.tachiyomi.data.database.models.Manga.Companion.TYPE_MANGA
 import eu.kanade.tachiyomi.data.database.models.Manga.Companion.TYPE_MANHUA
 import eu.kanade.tachiyomi.data.database.models.Manga.Companion.TYPE_MANHWA
 import eu.kanade.tachiyomi.data.database.models.Manga.Companion.TYPE_WEBTOON
+import eu.kanade.tachiyomi.data.download.DownloadManager
+import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.SourceManager
@@ -20,21 +22,48 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.models.Manga
-import yokai.domain.manga.models.MangaUpdate
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.util.*
 
 fun Manga.toSManga() = SManga.create().also {
     it.url = url
-    it.title = title
-    it.artist = artist
-    it.author = author
-    it.description = description
-    it.genre = genres.joinToString()
-    it.status = status
+    it.title = ogTitle
+    it.artist = ogArtist
+    it.author = ogAuthor
+    it.description = ogDescription
+    it.genre = ogGenres.joinToString()
+    it.status = ogStatus
     it.thumbnail_url = thumbnailUrl
     it.initialized = initialized
+}
+
+fun Manga.copyFrom(other: Manga): Manga {
+    val title: String
+    if (other.ogTitle != ogTitle) {
+        title = other.ogTitle
+        val db: DownloadManager by injectLazy()
+        val provider = DownloadProvider(db.context)
+        provider.renameMangaFolder(ogTitle, other.title, source)
+    } else {
+        title = ogTitle
+    }
+
+    val author = other.ogAuthor ?: ogAuthor
+    val artist = other.ogArtist ?: ogArtist
+    val description = other.ogDescription ?: ogDescription
+    val genres = other.ogGenres.ifEmpty { ogGenres }
+    val status = other.ogStatus.takeIf { it != -1 } ?: ogStatus
+    val thumbnailUrl = other.thumbnailUrl ?: thumbnailUrl
+    return this.copy(
+        ogTitle = title,
+        ogAuthor = author,
+        ogArtist = artist,
+        ogDescription = description,
+        ogGenres = genres,
+        ogStatus = status,
+        thumbnailUrl = thumbnailUrl,
+    )
 }
 
 fun Manga.copyFrom(other: SManga): Manga {
@@ -123,30 +152,6 @@ var Manga.dominantCoverColors: Pair<Int, Int>?
         value ?: return
         MangaCoverMetadata.addCoverColor(this, value.first, value.second)
     }
-
-fun Manga.toMangaUpdate(): MangaUpdate {
-    return MangaUpdate(
-        id = id!!,
-        source = source,
-        url = url,
-        artist = artist,
-        author = author,
-        description = description,
-        genres = genres,
-        title = title,
-        status = status,
-        thumbnailUrl = thumbnailUrl,
-        favorite = favorite,
-        lastUpdate = lastUpdate,
-        initialized = initialized,
-        viewerFlags = viewerFlags,
-        hideTitle = hideTitle,
-        chapterFlags = chapterFlags,
-        dateAdded = dateAdded,
-        filteredScanlators = filteredScanlators,
-        updateStrategy = updateStrategy,
-    )
-}
 
 fun Manga.seriesType(context: Context, sourceManager: SourceManager? = null): String {
     return context.getString(

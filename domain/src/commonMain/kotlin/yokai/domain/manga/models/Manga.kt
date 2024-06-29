@@ -126,6 +126,30 @@ data class Manga(
             id?.let { vibrantCoverColorMap[it] = value }
         }
 
+    fun toMangaUpdate(): MangaUpdate {
+        return MangaUpdate(
+            id = id!!,
+            source = source,
+            url = url,
+            artist = ogArtist,
+            author = ogAuthor,
+            description = ogDescription,
+            genres = ogGenres,
+            title = ogTitle,
+            status = ogStatus,
+            thumbnailUrl = thumbnailUrl,
+            favorite = favorite,
+            lastUpdate = lastUpdate,
+            initialized = initialized,
+            viewerFlags = viewerFlags,
+            hideTitle = hideTitle,
+            chapterFlags = chapterFlags,
+            dateAdded = dateAdded,
+            filteredScanlators = filteredScanlators,
+            updateStrategy = updateStrategy,
+        )
+    }
+
     companion object {
         // Generic filter that does not filter anything
         const val SHOW_ALL = 0x00000000

@@ -5,6 +5,7 @@ import eu.kanade.tachiyomi.source.Source
 import yokai.domain.manga.models.Manga
 import yokai.domain.track.models.Track
 import yokai.domain.track.models.TrackUpdate
+import kotlin.math.max
 
 /**
  * An Enhanced Track Service will never prompt the user to match a manga with the remote.
@@ -45,6 +46,7 @@ interface EnhancedTrackService {
                 id = track.id,
                 mangaId = manga.id!!,
                 trackingUrl = manga.url,
+                lastChapterRead = max(dbTrack.lastChapterRead, track.lastChapterRead),
             )
         } else {
             null

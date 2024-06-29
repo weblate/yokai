@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.data.database.models
 
 import eu.kanade.tachiyomi.source.model.SChapter
+import yokai.domain.chapter.models.ChapterUpdate
 import java.io.Serializable
 
 interface Chapter : SChapter, Serializable {
@@ -23,6 +24,23 @@ interface Chapter : SChapter, Serializable {
 
     val isRecognizedNumber: Boolean
         get() = chapter_number >= 0f
+
+    fun toChapterUpdate() =
+         ChapterUpdate(
+             id = id ?: -1,
+             mangaId = manga_id ?: -1,
+             url = url,
+             name = name,
+             scanlator = scanlator,
+             read = read,
+             bookmark = bookmark,
+             lastPageRead = last_page_read.toLong(),
+             pagesLeft = pages_left.toLong(),
+             chapterNumber = chapter_number.toDouble(),
+             sourceOrder = source_order.toLong(),
+             dateFetch = date_fetch,
+             dateUpload = date_upload
+        )
 
     companion object {
 

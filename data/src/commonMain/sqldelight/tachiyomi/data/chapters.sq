@@ -26,6 +26,11 @@ SELECT *
 FROM chapters
 WHERE _id = :chapterId;
 
+findByUrl:
+SELECT *
+FROM chapters
+WHERE url = :url;
+
 getChaptersByMangaId:
 SELECT C.*
 FROM chapters AS C

@@ -40,6 +40,9 @@ class TrackRepositoryImpl(private val handler: DatabaseHandler) : TrackRepositor
                     trackId = update.id,
                     mangaId = update.mangaId,
                     trackingUrl = update.trackingUrl,
+                    lastChapterRead = update.lastChapterRead?.toDouble(),
+                    mediaId = update.mediaId,
+                    libraryId = update.libraryId,
                 )
             }
         }

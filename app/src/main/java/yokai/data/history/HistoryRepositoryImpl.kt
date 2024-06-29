@@ -7,11 +7,14 @@ import yokai.domain.history.models.History
 import yokai.domain.history.models.HistoryUpdate
 
 class HistoryRepositoryImpl(private val handler: DatabaseHandler) : HistoryRepository {
-    override suspend fun findByMangaId(mangaId: Long): List<History> =
+    override suspend fun findAllByMangaId(mangaId: Long): List<History> =
         handler.awaitList { historyQueries.findByMangaId(mangaId, History::mapper) }
 
-    override suspend fun findBySourceUrl(url: String): List<History> =
+    override suspend fun findAllByChapterUrl(url: String): List<History> =
         handler.awaitList { historyQueries.findByChapterUrl(url, History::mapper) }
+
+    override suspend fun findByChapterUrl(url: String): History? =
+        handler.awaitOneOrNull { historyQueries.findByChapterUrl(url, History::mapper) }
 
     override suspend fun upsert(update: HistoryUpdate): Boolean {
         return try {

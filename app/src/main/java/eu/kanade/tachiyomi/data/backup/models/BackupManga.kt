@@ -1,8 +1,6 @@
 package eu.kanade.tachiyomi.data.backup.models
 
 import eu.kanade.tachiyomi.data.database.models.ChapterImpl
-import eu.kanade.tachiyomi.data.database.models.MangaImpl
-import eu.kanade.tachiyomi.data.database.models.TrackImpl
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import eu.kanade.tachiyomi.util.chapter.ChapterUtil
@@ -11,6 +9,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
 import yokai.data.manga.models.readingModeType
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.models.Manga
+import yokai.domain.track.models.Track
 
 @Suppress("DEPRECATION")
 @Serializable
@@ -56,27 +55,28 @@ data class BackupManga(
     @ProtoNumber(804) var customDescription: String? = null,
     @ProtoNumber(805) var customGenre: List<String>? = null,
 ) {
-    fun getMangaImpl(): MangaImpl {
-        return MangaImpl().apply {
-            url = this@BackupManga.url
-            title = this@BackupManga.title
-            artist = this@BackupManga.artist
-            author = this@BackupManga.author
-            description = this@BackupManga.description
-            genre = this@BackupManga.genre.joinToString()
-            status = this@BackupManga.status
-            thumbnail_url = this@BackupManga.thumbnailUrl
-            favorite = this@BackupManga.favorite
-            source = this@BackupManga.source
-            date_added = this@BackupManga.dateAdded
-            viewer_flags = (
+    fun getMangaImpl(): Manga {
+        return Manga(
+            id = null,
+            url = this@BackupManga.url,
+            ogTitle = this@BackupManga.title,
+            ogArtist = this@BackupManga.artist,
+            ogAuthor = this@BackupManga.author,
+            ogDescription = this@BackupManga.description,
+            ogGenres = this@BackupManga.genre,
+            ogStatus = this@BackupManga.status,
+            thumbnailUrl = this@BackupManga.thumbnailUrl,
+            favorite = this@BackupManga.favorite,
+            source = this@BackupManga.source,
+            dateAdded = this@BackupManga.dateAdded,
+            viewerFlags = (
                 this@BackupManga.viewer_flags
                     ?: this@BackupManga.viewer
                 ).takeIf { it != 0 }
-                ?: -1
-            chapter_flags = this@BackupManga.chapterFlags
-            update_strategy = this@BackupManga.updateStrategy
-        }
+                ?: -1,
+            chapterFlags = this@BackupManga.chapterFlags,
+            updateStrategy = this@BackupManga.updateStrategy,
+        )
     }
 
     fun getChaptersImpl(): List<ChapterImpl> {
@@ -106,7 +106,7 @@ data class BackupManga(
         return null
     }
 
-    fun getTrackingImpl(): List<TrackImpl> {
+    fun getTrackingImpl(): List<Track> {
         return tracking.map {
             it.getTrackingImpl()
         }

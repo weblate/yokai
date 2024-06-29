@@ -31,6 +31,7 @@ import yokai.domain.extension.repo.interactor.ReplaceExtensionRepo
 import yokai.domain.extension.repo.interactor.UpdateExtensionRepo
 import yokai.domain.history.HistoryRepository
 import yokai.domain.history.interactor.GetHistory
+import yokai.domain.history.interactor.UpsertHistory
 import yokai.domain.library.custom.CustomMangaRepository
 import yokai.domain.library.custom.interactor.CreateCustomManga
 import yokai.domain.library.custom.interactor.DeleteCustomManga
@@ -87,6 +88,7 @@ class DomainModule : InjektModule {
 
         addSingletonFactory<HistoryRepository> { HistoryRepositoryImpl(get()) }
         addFactory { GetHistory(get()) }
+        addFactory { UpsertHistory(get()) }
 
         addSingletonFactory<TrackRepository> { TrackRepositoryImpl(get()) }
         addFactory { GetTrack(get()) }

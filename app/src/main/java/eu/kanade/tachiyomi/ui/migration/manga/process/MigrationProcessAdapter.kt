@@ -22,7 +22,8 @@ import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.history.interactor.GetHistory
-import yokai.domain.history.models.History
+import yokai.domain.history.interactor.UpsertHistory
+import yokai.domain.history.models.HistoryUpdate
 import yokai.domain.manga.category.interactor.DeleteMangaCategory
 import yokai.domain.manga.category.interactor.InsertMangaCategory
 import yokai.domain.manga.interactor.GetManga
@@ -43,6 +44,7 @@ class MigrationProcessAdapter(
     private val getChapter: GetChapter by injectLazy()
     private val insertChapter: InsertChapter by injectLazy()
     private val getHistory: GetHistory by injectLazy()
+    private val upsertHistory: UpsertHistory by injectLazy()
     private val getManga: GetManga by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
     private val deleteMangaCategory: DeleteMangaCategory by injectLazy()
@@ -155,6 +157,7 @@ class MigrationProcessAdapter(
             getChapter,
             insertChapter,
             getHistory,
+            upsertHistory,
             updateManga,
             deleteMangaCategory,
             insertMangaCategory,
@@ -179,6 +182,7 @@ class MigrationProcessAdapter(
             getChapter: GetChapter,
             insertChapter: InsertChapter,
             getHistory: GetHistory,
+            upsertHistory: UpsertHistory,
             updateManga: UpdateManga,
             deleteMangaCategory: DeleteMangaCategory,
             insertMangaCategory: InsertMangaCategory,
@@ -200,7 +204,7 @@ class MigrationProcessAdapter(
                     prevMangaChapters.filter { it.read }.maxOfOrNull { it.chapter_number } ?: 0f
                 val dbChapters = getChapter.awaitAll(manga, false)
                 val prevHistoryList = getHistory.awaitAllByMangaId(prevManga.id!!)
-                val historyList = mutableListOf<History>()
+                val updates = mutableListOf<HistoryUpdate>()
                 for (chapter in dbChapters) {
                     if (chapter.isRecognizedNumber) {
                         val prevChapter =
@@ -211,12 +215,12 @@ class MigrationProcessAdapter(
                             chapter.date_fetch = prevChapter.date_fetch
                             prevHistoryList.find { it.chapterId == prevChapter.id }
                                 ?.let { prevHistory ->
-                                    val history = History(
+                                    val history = HistoryUpdate(
                                         chapterId = chapter.id!!,
-                                        lastRead = prevHistory.lastRead,
-                                        timeRead = prevHistory.timeRead,
+                                        readAt = prevHistory.lastRead,
+                                        sessionReadDuration = prevHistory.timeRead,
                                     )
-                                    historyList.add(history)
+                                    updates.add(history)
                                 }
                         } else if (chapter.chapter_number <= maxChapterRead) {
                             chapter.read = true
@@ -224,7 +228,7 @@ class MigrationProcessAdapter(
                     }
                 }
                 dbChapters.forEach { insertChapter.await(it) }
-                db.upsertHistoryLastRead(historyList).executeAsBlocking()
+                upsertHistory.awaitAll(updates)
             }
             // Update categories
             if (MigrationFlags.hasCategories(flags)) {

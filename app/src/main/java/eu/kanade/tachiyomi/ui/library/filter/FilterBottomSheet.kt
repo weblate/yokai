@@ -371,7 +371,7 @@ class FilterBottomSheet @JvmOverloads constructor(context: Context, attrs: Attri
             checked = true
             var types = mutableSetOf<StringResource>()
             libraryManga.forEach {
-                when (it.manga.seriesType(sourceManager = sourceManager)) {
+                when (it.library.seriesType(sourceManager = sourceManager)) {
                     Manga.TYPE_MANHWA, Manga.TYPE_WEBTOON -> types.add(MR.strings.manhwa)
                     Manga.TYPE_MANHUA -> types.add(MR.strings.manhua)
                     Manga.TYPE_COMIC -> types.add(MR.strings.comic)

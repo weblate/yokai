@@ -5,9 +5,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import com.google.android.material.card.MaterialCardView
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -47,14 +44,14 @@ abstract class LibraryHolder(
         val showTotal = item.header.category.sortingMode() == LibrarySort.TotalChapters
         badge.setUnreadDownload(
             when {
-                showTotal -> item.manga.totalChapters
-                item.unreadType == 2 -> item.manga.unread
-                item.unreadType == 1 -> if (item.manga.unread > 0) -1 else -2
+                showTotal -> item.library.totalChapters
+                item.unreadType == 2 -> item.library.unread
+                item.unreadType == 1 -> if (item.library.unread > 0) -1 else -2
                 else -> -2
             },
             when {
                 item.downloadCount == -1 -> -1
-                item.manga.isLocal() -> -2
+                item.library.isLocal() -> -2
                 else -> item.downloadCount
             },
             showTotal,
@@ -65,7 +62,7 @@ abstract class LibraryHolder(
 
     fun setReadingButton(item: LibraryItem) {
         itemView.findViewById<View>(R.id.play_layout)?.isVisible =
-            item.manga.unread > 0 && !item.hideReadingButton
+            item.library.unread > 0 && !item.hideReadingButton
     }
 
     /**
@@ -80,7 +77,7 @@ abstract class LibraryHolder(
 
     override fun onLongClick(view: View?): Boolean {
         return if (adapter.isLongPressDragEnabled) {
-            val manga = (adapter.getItem(flexibleAdapterPosition) as LibraryItem).manga
+            val manga = (adapter.getItem(flexibleAdapterPosition) as LibraryItem).library
             if (!isDraggable && !manga.isBlank() && !manga.isHidden()) {
                 adapter.mItemLongClickListener.onItemLongClick(flexibleAdapterPosition)
                 toggleActivation()

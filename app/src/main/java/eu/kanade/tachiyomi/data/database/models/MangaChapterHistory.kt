@@ -1,5 +1,8 @@
 package eu.kanade.tachiyomi.data.database.models
 
+import yokai.domain.history.models.History
+import yokai.domain.manga.models.Manga
+
 /**
  * Object containing manga, chapter and history
  *
@@ -10,7 +13,11 @@ package eu.kanade.tachiyomi.data.database.models
 data class MangaChapterHistory(val manga: Manga, val chapter: Chapter, val history: History, var extraChapters: List<ChapterHistory> = emptyList()) {
 
     companion object {
-        fun createBlank() = MangaChapterHistory(MangaImpl(), ChapterImpl(), HistoryImpl())
+        fun createBlank() = MangaChapterHistory(
+            Manga(-1L, url = "", ogTitle = ""),
+            ChapterImpl(),
+            History(chapterId = -1L),
+        )
     }
 }
 

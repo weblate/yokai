@@ -29,7 +29,7 @@ import yokai.domain.manga.models.LibraryManga
 import yokai.domain.ui.UiPreferences
 
 class LibraryItem(
-    val manga: LibraryManga,
+    val library: LibraryManga,
     header: LibraryHeaderItem,
     private val context: Context?,
     private val uiPreferences: UiPreferences = Injekt.get(),
@@ -52,7 +52,7 @@ class LibraryItem(
         get() = preferences.hideStartReadingButton().get()
 
     override fun getLayoutRes(): Int {
-        return if (libraryLayout == LAYOUT_LIST || manga.isBlank()) {
+        return if (libraryLayout == LAYOUT_LIST || library.isBlank()) {
             R.layout.manga_list_item
         } else {
             R.layout.manga_grid_item
@@ -64,7 +64,7 @@ class LibraryItem(
         return if (parent is AutofitRecyclerView) {
             val libraryLayout = libraryLayout
             val isFixedSize = uniformSize
-            if (libraryLayout == LAYOUT_LIST || manga.isBlank()) {
+            if (libraryLayout == LAYOUT_LIST || library.isBlank()) {
                 LibraryListHolder(view, adapter as LibraryCategoryAdapter)
             } else {
                 view.apply {
@@ -109,7 +109,7 @@ class LibraryItem(
                     isFixedSize,
                 )
                 if (!isFixedSize) {
-                    gridHolder.setFreeformCoverRatio(manga, parent)
+                    gridHolder.setFreeformCoverRatio(library, parent)
                 }
                 gridHolder
             }
@@ -125,14 +125,14 @@ class LibraryItem(
         payloads: MutableList<Any?>?,
     ) {
         if (holder is LibraryGridHolder && !holder.fixedSize) {
-            holder.setFreeformCoverRatio(manga, adapter.recyclerView as? AutofitRecyclerView)
+            holder.setFreeformCoverRatio(library, adapter.recyclerView as? AutofitRecyclerView)
         }
         holder.onSetValues(this)
         (holder as? LibraryGridHolder)?.setSelected(adapter.isSelected(position))
         val layoutParams = holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams
-        layoutParams?.isFullSpan = manga.isBlank()
+        layoutParams?.isFullSpan = library.isBlank()
         if (libraryLayout == LAYOUT_COVER_ONLY_GRID) {
-            holder.itemView.compatToolTipText = manga.title
+            holder.itemView.compatToolTipText = library.title
         }
     }
 
@@ -140,15 +140,15 @@ class LibraryItem(
      * Returns true if this item is draggable.
      */
     override fun isDraggable(): Boolean {
-        return !manga.isBlank() && header.category.isDragAndDrop
+        return !library.isBlank() && header.category.isDragAndDrop
     }
 
     override fun isEnabled(): Boolean {
-        return !manga.isBlank()
+        return !library.isBlank()
     }
 
     override fun isSelectable(): Boolean {
-        return !manga.isBlank()
+        return !library.isBlank()
     }
 
     /**
@@ -159,26 +159,26 @@ class LibraryItem(
      */
     override fun filter(constraint: String): Boolean {
         filter = constraint
-        if (manga.isBlank() && manga.title.isBlank()) {
+        if (library.isBlank() && library.title.isBlank()) {
             return constraint.isEmpty()
         }
-        val sourceName by lazy { sourceManager.getOrStub(manga.source).name }
-        return manga.title.contains(constraint, true) ||
-            (manga.author?.contains(constraint, true) ?: false) ||
-            (manga.artist?.contains(constraint, true) ?: false) ||
+        val sourceName by lazy { sourceManager.getOrStub(library.source).name }
+        return library.title.contains(constraint, true) ||
+            (library.author?.contains(constraint, true) ?: false) ||
+            (library.artist?.contains(constraint, true) ?: false) ||
             sourceName.contains(constraint, true) ||
             if (constraint.contains(",")) {
-                val genres = manga.genre?.split(", ")
+                val genres = library.genre?.split(", ")
                 constraint.split(",").all { containsGenre(it.trim(), genres) }
             } else {
-                containsGenre(constraint, manga.genre?.split(", "))
+                containsGenre(constraint, library.genre?.split(", "))
             }
     }
 
     private fun containsGenre(tag: String, genres: List<String>?): Boolean {
         if (tag.trim().isEmpty()) return true
         context ?: return false
-        val seriesType by lazy { manga.seriesType(context, sourceManager) }
+        val seriesType by lazy { library.seriesType(context, sourceManager) }
         return if (tag.startsWith("-")) {
             val realTag = tag.substringAfter("-")
             genres?.find {
@@ -193,13 +193,13 @@ class LibraryItem(
 
     override fun equals(other: Any?): Boolean {
         if (other is LibraryItem) {
-            return manga.id == other.manga.id && manga.category == other.manga.category
+            return library.id == other.library.id && library.category == other.library.category
         }
         return false
     }
 
     override fun hashCode(): Int {
-        var result = manga.id!!.hashCode()
+        var result = library.id!!.hashCode()
         result = 31 * result + (header?.hashCode() ?: 0)
         return result
     }

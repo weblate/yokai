@@ -2,16 +2,16 @@ package eu.kanade.tachiyomi.data.coil
 
 import coil3.key.Keyer
 import coil3.request.Options
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.util.storage.DiskUtil
+import yokai.domain.manga.models.Manga
 
 class MangaCoverKeyer : Keyer<Manga> {
     override fun key(data: Manga, options: Options): String? {
-        if (data.thumbnail_url.isNullOrBlank()) return null
+        if (data.thumbnailUrl.isNullOrBlank()) return null
         return if (!data.favorite) {
-            data.thumbnail_url!!
+            data.thumbnailUrl!!
         } else {
-            DiskUtil.hashKeyForDisk(data.thumbnail_url!!)
+            DiskUtil.hashKeyForDisk(data.thumbnailUrl!!)
         }
     }
 }

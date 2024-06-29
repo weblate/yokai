@@ -1,11 +1,11 @@
 package eu.kanade.tachiyomi.util.chapter
 
 import eu.kanade.tachiyomi.data.database.models.Chapter
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.manga.models.Manga
 
 class ChapterSort(val manga: Manga, val chapterFilter: ChapterFilter = Injekt.get(), val preferences: PreferencesHelper = Injekt.get()) {
 

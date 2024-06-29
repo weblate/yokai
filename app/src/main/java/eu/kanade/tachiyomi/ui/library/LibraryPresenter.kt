@@ -7,7 +7,6 @@ import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Chapter.Companion.copy
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
@@ -65,6 +64,7 @@ import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.LibraryManga
+import yokai.domain.manga.models.Manga
 import yokai.domain.manga.models.MangaCategory
 import yokai.domain.manga.models.MangaUpdate
 import yokai.i18n.MR
@@ -214,8 +214,8 @@ class LibraryPresenter(
 
     fun getItemCountInCategories(categoryId: Int): Int {
         val items = sectionedLibraryItems[categoryId]
-        return if (items?.firstOrNull()?.manga?.isHidden() == true || items?.firstOrNull()?.manga?.isBlank() == true) {
-            items.firstOrNull()?.manga?.read ?: 0
+        return if (items?.firstOrNull()?.library?.isHidden() == true || items?.firstOrNull()?.library?.isBlank() == true) {
+            items.firstOrNull()?.library?.read ?: 0
         } else {
             sectionedLibraryItems[categoryId]?.size ?: 0
         }
@@ -233,7 +233,7 @@ class LibraryPresenter(
             }
 
             val (library, _) = withIOContext { getLibraryFromDB() }
-            val hiddenItems = library.filter { it.manga.isHidden() }.mapNotNull { it.manga.items }.flatten()
+            val hiddenItems = library.filter { it.library.isHidden() }.mapNotNull { it.library.items }.flatten()
             setDownloadCount(library)
             setUnreadBadge(library)
             setSourceLanguage(library)
@@ -296,7 +296,7 @@ class LibraryPresenter(
 
     fun getMangaInCategories(catId: Int?): List<LibraryManga>? {
         catId ?: return null
-        return allLibraryItems.filter { it.header.category.id == catId }.map { it.manga }
+        return allLibraryItems.filter { it.header.category.id == catId }.map { it.library }
     }
 
     private suspend fun sectionLibrary(items: List<LibraryItem>, freshStart: Boolean = false) {
@@ -347,12 +347,12 @@ class LibraryPresenter(
         val realCount = mutableMapOf<Int, Int>()
         val filteredItems = this.filter f@{ item ->
             if (showEmptyCategoriesWhileFiltering) {
-                realCount[item.manga.category] = sectionedLibraryItems[item.manga.category]?.size ?: 0
+                realCount[item.library.category] = sectionedLibraryItems[item.library.category]?.size ?: 0
             }
 
-            if (!showEmptyCategoriesWhileFiltering && item.manga.isHidden()) {
-                val subItems = sectionedLibraryItems[item.manga.category]?.takeUnless { it.size <= 1 }
-                    ?: hiddenLibraryItems.filter { it.manga.category == item.manga.category }
+            if (!showEmptyCategoriesWhileFiltering && item.library.isHidden()) {
+                val subItems = sectionedLibraryItems[item.library.category]?.takeUnless { it.size <= 1 }
+                    ?: hiddenLibraryItems.filter { it.library.category == item.library.category }
                 if (subItems.isEmpty()) {
                     return@f filtersOff
                 } else {
@@ -364,8 +364,8 @@ class LibraryPresenter(
                         )
                     }
                 }
-            } else if (item.manga.isBlank() || item.manga.isHidden()) {
-                missingCategorySet.remove(item.manga.category)
+            } else if (item.library.isBlank() || item.library.isHidden()) {
+                missingCategorySet.remove(item.library.category)
                 return@f if (showAllCategories) {
                     filtersOff || showEmptyCategoriesWhileFiltering
                 } else {
@@ -378,14 +378,14 @@ class LibraryPresenter(
                 filterTrackers,
             )
             if (matches) {
-                missingCategorySet.remove(item.manga.category)
+                missingCategorySet.remove(item.library.category)
             }
             matches
         }.toMutableList()
         if (showEmptyCategoriesWhileFiltering) {
             missingCategorySet.forEach {
                 filteredItems.add(
-                    blankItem(it).first().apply { manga.realMangaCount = realCount[it] ?: 0 }
+                    blankItem(it).first().apply { library.realMangaCount = realCount[it] ?: 0 }
                 )
             }
         }
@@ -401,21 +401,21 @@ class LibraryPresenter(
             return matchesCustomFilters(item, it, filterTrackers)
         }
 
-        if (filterPrefs.filterUnread == STATE_INCLUDE && item.manga.unread == 0) return false
-        if (filterPrefs.filterUnread == STATE_EXCLUDE && item.manga.unread > 0) return false
+        if (filterPrefs.filterUnread == STATE_INCLUDE && item.library.unread == 0) return false
+        if (filterPrefs.filterUnread == STATE_EXCLUDE && item.library.unread > 0) return false
 
         // Filter for unread chapters
-        if (filterPrefs.filterUnread == 3 && !(item.manga.unread > 0 && !item.manga.hasRead)) return false
-        if (filterPrefs.filterUnread == 4 && !(item.manga.unread > 0 && item.manga.hasRead)) return false
+        if (filterPrefs.filterUnread == 3 && !(item.library.unread > 0 && !item.library.hasRead)) return false
+        if (filterPrefs.filterUnread == 4 && !(item.library.unread > 0 && item.library.hasRead)) return false
 
-        if (filterPrefs.filterBookmarked == STATE_INCLUDE && item.manga.bookmarkCount == 0) return false
-        if (filterPrefs.filterBookmarked == STATE_EXCLUDE && item.manga.bookmarkCount > 0) return false
+        if (filterPrefs.filterBookmarked == STATE_INCLUDE && item.library.bookmarkCount == 0) return false
+        if (filterPrefs.filterBookmarked == STATE_EXCLUDE && item.library.bookmarkCount > 0) return false
 
         if (filterPrefs.filterMangaType > 0) {
             if (if (filterPrefs.filterMangaType == Manga.TYPE_MANHWA) {
-                item.manga.seriesType(sourceManager = sourceManager) !in arrayOf(filterPrefs.filterMangaType, Manga.TYPE_WEBTOON)
+                item.library.seriesType(sourceManager = sourceManager) !in arrayOf(filterPrefs.filterMangaType, Manga.TYPE_WEBTOON)
             } else {
-                    filterPrefs.filterMangaType != item.manga.seriesType(sourceManager = sourceManager)
+                    filterPrefs.filterMangaType != item.library.seriesType(sourceManager = sourceManager)
                 }
             ) {
                 return false
@@ -423,24 +423,24 @@ class LibraryPresenter(
         }
 
         // Filter for completed status of manga
-        if (filterPrefs.filterCompleted == STATE_INCLUDE && item.manga.status != SManga.COMPLETED) return false
-        if (filterPrefs.filterCompleted == STATE_EXCLUDE && item.manga.status == SManga.COMPLETED) return false
+        if (filterPrefs.filterCompleted == STATE_INCLUDE && item.library.status != SManga.COMPLETED) return false
+        if (filterPrefs.filterCompleted == STATE_EXCLUDE && item.library.status == SManga.COMPLETED) return false
 
         if (!matchesFilterTracking(item, filterPrefs.filterTracked, filterTrackers)) return false
 
         // Filter for downloaded manga
         if (filterPrefs.filterDownloaded != STATE_IGNORE) {
             val isDownloaded = when {
-                item.manga.isLocal() -> true
+                item.library.isLocal() -> true
                 item.downloadCount != -1 -> item.downloadCount > 0
-                else -> downloadManager.getDownloadCount(item.manga) > 0
+                else -> downloadManager.getDownloadCount(item.library) > 0
             }
             return if (filterPrefs.filterDownloaded == STATE_INCLUDE) isDownloaded else !isDownloaded
         }
 
         // Filter for NSFW/SFW contents
-        if (filterPrefs.filterContentType == STATE_INCLUDE) return !item.manga.isLewd()
-        if (filterPrefs.filterContentType == STATE_EXCLUDE) return item.manga.isLewd()
+        if (filterPrefs.filterContentType == STATE_INCLUDE) return !item.library.isLewd()
+        if (filterPrefs.filterContentType == STATE_EXCLUDE) return item.library.isLewd()
         return true
     }
 
@@ -451,23 +451,23 @@ class LibraryPresenter(
     ): Boolean {
         val statuses = customFilters.filterStatus
         if (statuses.isNotEmpty()) {
-            if (item.manga.status !in statuses) return false
+            if (item.library.status !in statuses) return false
         }
         val seriesTypes = customFilters.filterMangaType
         if (seriesTypes.isNotEmpty()) {
-            if (item.manga.seriesType(sourceManager = sourceManager) !in seriesTypes) return false
+            if (item.library.seriesType(sourceManager = sourceManager) !in seriesTypes) return false
         }
         val languages = customFilters.filterLanguages
         if (languages.isNotEmpty()) {
-            if (getLanguage(item.manga) !in languages) return false
+            if (getLanguage(item.library) !in languages) return false
         }
         val sources = customFilters.filterSources
         if (sources.isNotEmpty()) {
-            if (item.manga.source !in sources) return false
+            if (item.library.source !in sources) return false
         }
         val trackingScore = customFilters.filterTrackingScore
         if (trackingScore > 0 || trackingScore == -1) {
-            val tracks = db.getTracks(item.manga).executeAsBlocking()
+            val tracks = db.getTracks(item.library).executeAsBlocking()
 
             val hasTrack = loggedServices.any { service ->
                 tracks.any { it.sync_id == service.id }
@@ -479,20 +479,20 @@ class LibraryPresenter(
         if (!matchesFilterTracking(item, customFilters.filterTracked, filterTrackers)) return false
         val startingYear = customFilters.filterStartYear
         if (startingYear > 0) {
-            val mangaStartingYear = item.manga.getStartYear()
+            val mangaStartingYear = item.library.getStartYear()
             if (mangaStartingYear != startingYear) return false
         }
         val mangaLength = customFilters.filterLength
         if (mangaLength != null) {
-            if (item.manga.totalChapters !in mangaLength) return false
+            if (item.library.totalChapters !in mangaLength) return false
         }
         val categories = customFilters.filterCategories
         if (categories.isNotEmpty()) {
-            if (item.manga.category !in categories) return false
+            if (item.library.category !in categories) return false
         }
         val tags = customFilters.filterTags
         if (tags.isNotEmpty()) {
-            val genres = item.manga.getGenres() ?: return false
+            val genres = item.library.getGenres() ?: return false
             if (tags.none { tag -> genres.any { it.equals(tag, true) } }) return false
         }
         return true
@@ -532,7 +532,7 @@ class LibraryPresenter(
     ): Boolean {
         // Filter for tracked (or per tracked service)
         if (filterTracked != STATE_IGNORE) {
-            val tracks = db.getTracks(item.manga).executeAsBlocking()
+            val tracks = db.getTracks(item.library).executeAsBlocking()
 
             val hasTrack = loggedServices.any { service ->
                 tracks.any { it.sync_id == service.id }
@@ -581,7 +581,7 @@ class LibraryPresenter(
         }
 
         for (item in itemList) {
-            item.downloadCount = downloadManager.getDownloadCount(item.manga)
+            item.downloadCount = downloadManager.getDownloadCount(item.library)
         }
     }
 
@@ -595,7 +595,7 @@ class LibraryPresenter(
     private fun setSourceLanguage(itemList: List<LibraryItem>) {
         val showLanguageBadges = preferences.languageBadge().get()
         for (item in itemList) {
-            item.sourceLanguage = if (showLanguageBadges) getLanguage(item.manga) else null
+            item.sourceLanguage = if (showLanguageBadges) getLanguage(item.library) else null
         }
     }
 
@@ -627,30 +627,30 @@ class LibraryPresenter(
                     category.mangaSort != null -> {
                         var sort = when (category.sortingMode() ?: LibrarySort.Title) {
                             LibrarySort.Title -> sortAlphabetical(i1, i2)
-                            LibrarySort.LatestChapter -> i2.manga.last_update.compareTo(i1.manga.last_update)
+                            LibrarySort.LatestChapter -> i2.library.last_update.compareTo(i1.library.last_update)
                             LibrarySort.Unread -> when {
-                                i1.manga.unread == i2.manga.unread -> 0
-                                i1.manga.unread == 0 -> if (category.isAscending()) 1 else -1
-                                i2.manga.unread == 0 -> if (category.isAscending()) -1 else 1
-                                else -> i1.manga.unread.compareTo(i2.manga.unread)
+                                i1.library.unread == i2.library.unread -> 0
+                                i1.library.unread == 0 -> if (category.isAscending()) 1 else -1
+                                i2.library.unread == 0 -> if (category.isAscending()) -1 else 1
+                                else -> i1.library.unread.compareTo(i2.library.unread)
                             }
                             LibrarySort.LastRead -> {
-                                i1.manga.lastRead.compareTo(i2.manga.lastRead)
+                                i1.library.lastRead.compareTo(i2.library.lastRead)
                             }
                             LibrarySort.TotalChapters -> {
-                                i1.manga.totalChapters.compareTo(i2.manga.totalChapters)
+                                i1.library.totalChapters.compareTo(i2.library.totalChapters)
                             }
                             LibrarySort.DateFetched -> {
-                                i1.manga.lastFetch.compareTo(i2.manga.lastFetch)
+                                i1.library.lastFetch.compareTo(i2.library.lastFetch)
                             }
-                            LibrarySort.DateAdded -> i2.manga.date_added.compareTo(i1.manga.date_added)
+                            LibrarySort.DateAdded -> i2.library.date_added.compareTo(i1.library.date_added)
                             LibrarySort.DragAndDrop -> {
                                 if (category.isDynamic) {
                                     val category1 =
-                                        allCategories.find { i1.manga.category == it.id }?.order
+                                        allCategories.find { i1.library.category == it.id }?.order
                                             ?: 0
                                     val category2 =
-                                        allCategories.find { i2.manga.category == it.id }?.order
+                                        allCategories.find { i2.library.category == it.id }?.order
                                             ?: 0
                                     category1.compareTo(category2)
                                 } else {
@@ -663,8 +663,8 @@ class LibraryPresenter(
                     }
                     category.mangaOrder.isNotEmpty() -> {
                         val order = category.mangaOrder
-                        val index1 = order.indexOf(i1.manga.id!!)
-                        val index2 = order.indexOf(i2.manga.id!!)
+                        val index1 = order.indexOf(i1.library.id!!)
+                        val index2 = order.indexOf(i2.library.id!!)
                         when {
                             index1 == index2 -> 0
                             index1 == -1 -> -1
@@ -707,9 +707,9 @@ class LibraryPresenter(
      */
     private fun sortAlphabetical(i1: LibraryItem, i2: LibraryItem): Int {
         return if (removeArticles) {
-            i1.manga.title.removeArticles().compareTo(i2.manga.title.removeArticles(), true)
+            i1.library.title.removeArticles().compareTo(i2.library.title.removeArticles(), true)
         } else {
-            i1.manga.title.compareTo(i2.manga.title, true)
+            i1.library.title.compareTo(i2.library.title, true)
         }
     }
 
@@ -749,7 +749,7 @@ class LibraryPresenter(
                 return@forEach  // No hidden manga to be handled
             }
             val mergedTitle = manga.joinToString("-") {
-                it.manga.title + "-" + it.manga.author
+                it.library.title + "-" + it.library.author
             }
             this.add(
                 LibraryItem(
@@ -1110,9 +1110,9 @@ class LibraryPresenter(
                             )
                         }
                     } else if (catId in categoriesHidden && showAll && categories.size > 1) {
-                        val mangaToRemove = items.filter { it.manga.category == catId }
+                        val mangaToRemove = items.filter { it.library.category == catId }
                         val mergedTitle = mangaToRemove.joinToString("-") {
-                            it.manga.title + "-" + it.manga.author
+                            it.library.title + "-" + it.library.author
                         }
                         sectionedLibraryItems[catId] = mangaToRemove
                         hiddenItems.addAll(mangaToRemove)
@@ -1306,7 +1306,7 @@ class LibraryPresenter(
             if (category.isHidden) {
                 val mangaToRemove = items.filter { it.header.catId == catId }
                 val mergedTitle = mangaToRemove.joinToString("-") {
-                    it.manga.title + "-" + it.manga.author
+                    it.library.title + "-" + it.library.author
                 }
                 sectionedLibraryItems[catId] = mangaToRemove
                 items.removeAll { it.header.catId == catId }

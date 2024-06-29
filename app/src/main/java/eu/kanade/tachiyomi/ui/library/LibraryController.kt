@@ -60,7 +60,6 @@ import eu.davidea.flexibleadapter.items.ISectionable
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Category
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -135,6 +134,7 @@ import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.manga.models.LibraryManga
+import yokai.domain.manga.models.Manga
 import yokai.domain.ui.UiPreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -196,7 +196,7 @@ open class LibraryController(
     /**
      * Currently selected mangas.
      */
-    private val selectedMangas = mutableSetOf<Manga>()
+    private val selectedMangas = mutableSetOf<LibraryManga>()
 
     private var mAdapter: LibraryCategoryAdapter? = null
     private val adapter: LibraryCategoryAdapter
@@ -519,10 +519,12 @@ open class LibraryController(
     }
 
     private fun openRandomManga() {
-        val items = adapter.currentItems.filter { (it is LibraryItem && !it.manga.isBlank() && !it.manga.isHidden() && (!it.manga.initialized || it.manga.unread > 0)) }
+        val items = adapter.currentItems.filter {
+            (it is LibraryItem && !it.library.isBlank() && !it.library.isHidden() && it.library.manga != null && (!it.library.manga.initialized || it.library.unread > 0))
+        }
         if (items.isNotEmpty()) {
             val item = items.random() as LibraryItem
-            openManga(item.manga)
+            openManga(item.library.manga!!)
         }
     }
 
@@ -997,7 +999,7 @@ open class LibraryController(
                 override fun getSpanSize(position: Int): Int {
                     if (libraryLayout == LibraryItem.LAYOUT_LIST) return managerSpanCount
                     val item = this@LibraryController.mAdapter?.getItem(position)
-                    return if (item is LibraryHeaderItem || item is SearchGlobalItem || (item is LibraryItem && item.manga.isBlank())) {
+                    return if (item is LibraryHeaderItem || item is SearchGlobalItem || (item is LibraryItem && item.library.isBlank())) {
                         managerSpanCount
                     } else {
                         1
@@ -1460,12 +1462,12 @@ open class LibraryController(
         adapter.isLongPressDragEnabled = canDrag()
     }
 
-    private fun setSelection(manga: Manga, selected: Boolean) {
+    private fun setSelection(manga: LibraryManga, selected: Boolean) {
         if (manga.isBlank()) return
         val currentMode = adapter.mode
         if (selected) {
             if (selectedMangas.add(manga)) {
-                val positions = adapter.allIndexOf(manga)
+                val positions = adapter.allIndexOf(manga.manga)
                 if (adapter.mode != SelectableAdapter.Mode.MULTI) {
                     adapter.mode = SelectableAdapter.Mode.MULTI
                 }
@@ -1480,7 +1482,7 @@ open class LibraryController(
             }
         } else {
             if (selectedMangas.remove(manga)) {
-                val positions = adapter.allIndexOf(manga)
+                val positions = adapter.allIndexOf(manga.manga)
                 lastClickPosition = -1
                 if (selectedMangas.isEmpty()) {
                     adapter.mode = SelectableAdapter.Mode.SINGLE
@@ -1511,16 +1513,16 @@ open class LibraryController(
             toggleSelection(position)
             return
         }
-        val manga = (adapter.getItem(position) as? LibraryItem)?.manga ?: return
+        val library = (adapter.getItem(position) as? LibraryItem)?.library ?: return
         val activity = activity ?: return
-        val chapter = presenter.getFirstUnread(manga) ?: return
+        val chapter = presenter.getFirstUnread(library.manga) ?: return
         activity.apply {
             if (view != null) {
                 val (intent, bundle) = ReaderActivity
-                    .newIntentWithTransitionOptions(activity, manga, chapter, view)
+                    .newIntentWithTransitionOptions(activity, library.manga, chapter, view)
                 startActivity(intent, bundle)
             } else {
-                startActivity(ReaderActivity.newIntent(activity, manga, chapter))
+                startActivity(ReaderActivity.newIntent(activity, library.manga, chapter))
             }
         }
         destroyActionModeIfNeeded()
@@ -1528,8 +1530,8 @@ open class LibraryController(
 
     private fun toggleSelection(position: Int) {
         val item = adapter.getItem(position) as? LibraryItem ?: return
-        if (item.manga.isBlank()) return
-        setSelection(item.manga, !adapter.isSelected(position))
+        if (item.library.isBlank()) return
+        setSelection(item.library, !adapter.isSelected(position))
         invalidateActionMode()
     }
 
@@ -1552,7 +1554,7 @@ open class LibraryController(
             toggleSelection(position)
             false
         } else {
-            openManga(item.manga)
+            openManga(item.library)
             false
         }
     }
@@ -1577,7 +1579,7 @@ open class LibraryController(
         if (item !is LibraryItem) return
         snack?.dismiss()
         if (libraryLayout == LibraryItem.LAYOUT_COVER_ONLY_GRID && actionMode == null) {
-            snack = view?.snack(item.manga.title) {
+            snack = view?.snack(item.library.title) {
                 anchorView = activityBinding?.bottomNav
                 view.elevation = 15f.dpToPx
             }
@@ -1633,7 +1635,7 @@ open class LibraryController(
     private fun setSelection(position: Int, selected: Boolean = true) {
         val item = adapter.getItem(position) as? LibraryItem ?: return
 
-        setSelection(item.manga, selected)
+        setSelection(item.library, selected)
         invalidateActionMode()
     }
 
@@ -1661,8 +1663,8 @@ open class LibraryController(
         val newHeader = adapter.getSectionHeader(toPosition) as? LibraryHeaderItem
         if (toPosition < 1) return false
         return (adapter.getItem(toPosition) !is LibraryHeaderItem) && (
-            newHeader?.category?.id == item.manga.category || !presenter.mangaIsInCategory(
-                item.manga,
+            newHeader?.category?.id == item.library.category || !presenter.mangaIsInCategory(
+                item.library,
                 newHeader?.category?.id,
             )
             )
@@ -1683,11 +1685,11 @@ open class LibraryController(
         val newHeader = adapter.getSectionHeader(position) as? LibraryHeaderItem
         val libraryItems = getSectionItems(adapter.getSectionHeader(position), item)
             .filterIsInstance<LibraryItem>()
-        val mangaIds = libraryItems.mapNotNull { (it as? LibraryItem)?.manga?.id }
-        if (newHeader?.category?.id == item.manga.category) {
-            presenter.rearrangeCategory(item.manga.category, mangaIds)
+        val mangaIds = libraryItems.mapNotNull { (it as? LibraryItem)?.library?.id }
+        if (newHeader?.category?.id == item.library.category) {
+            presenter.rearrangeCategory(item.library.category, mangaIds)
         } else {
-            if (presenter.mangaIsInCategory(item.manga, newHeader?.category?.id)) {
+            if (presenter.mangaIsInCategory(item.library, newHeader?.category?.id)) {
                 adapter.moveItem(position, lastItemPosition!!)
                 snack = view?.snack(MR.strings.already_in_category) {
                     anchorView = anchorView()
@@ -1697,7 +1699,7 @@ open class LibraryController(
             }
             if (newHeader?.category != null) {
                 moveMangaToCategory(
-                    item.manga,
+                    item.library,
                     newHeader.category,
                     mangaIds,
                 )
@@ -1816,7 +1818,7 @@ open class LibraryController(
             val item = adapter.findCategoryHeader(catId) ?: return
             val libraryItems = adapter.getSectionItems(item)
                 .filterIsInstance<LibraryItem>()
-            val mangaIds = libraryItems.mapNotNull { (it as? LibraryItem)?.manga?.id }
+            val mangaIds = libraryItems.mapNotNull { (it as? LibraryItem)?.library?.id }
             presenter.rearrangeCategory(catId, mangaIds)
         } else {
             presenter.sortCategory(catId, sortBy)

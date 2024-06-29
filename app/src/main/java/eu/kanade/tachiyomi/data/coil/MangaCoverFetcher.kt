@@ -15,7 +15,6 @@ import coil3.getOrDefault
 import coil3.request.Options
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.network.await
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.online.HttpSource
@@ -36,6 +35,7 @@ import okio.buffer
 import okio.sink
 import okio.source
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.models.Manga
 import java.io.File
 import java.net.HttpURLConnection
 import java.util.*
@@ -57,7 +57,7 @@ class MangaCoverFetcher(
 
     override suspend fun fetch(): FetchResult {
         // diskCacheKey is thumbnail_url
-        url = manga.thumbnail_url ?: error("No cover specified")
+        url = manga.thumbnailUrl ?: error("No cover specified")
         return when (getResourceType(url)) {
             Type.URL -> httpLoader()
             Type.File -> {

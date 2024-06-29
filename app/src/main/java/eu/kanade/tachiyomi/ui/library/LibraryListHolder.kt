@@ -5,15 +5,13 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import coil3.dispose
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.MangaListItemBinding
 import eu.kanade.tachiyomi.util.lang.highlightText
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.view.setCards
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * Class used to hold the displayed data of a manga in the library, like the cover or the binding.title.
@@ -41,17 +39,17 @@ class LibraryListHolder(
         setCards(adapter.showOutline, binding.card, binding.unreadDownloadBadge.root)
         binding.title.isVisible = true
         binding.constraintLayout.minHeight = 56.dpToPx
-        if (item.manga.isBlank()) {
+        if (item.library.isBlank()) {
             binding.constraintLayout.minHeight = 0
             binding.constraintLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 height = ViewGroup.MarginLayoutParams.WRAP_CONTENT
             }
-            if (item.manga.status == -1) {
+            if (item.library.status == -1) {
                 binding.title.text = null
                 binding.title.isVisible = false
             } else {
                 binding.title.text = itemView.context.getString(
-                    if (adapter.hasActiveFilters && item.manga.realMangaCount >= 1) {
+                    if (adapter.hasActiveFilters && item.library.realMangaCount >= 1) {
                         MR.strings.no_matches_for_filters_short
                     } else {
                         MR.strings.category_is_empty
@@ -73,16 +71,16 @@ class LibraryListHolder(
         binding.title.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
 
         // Update the binding.title of the manga.
-        binding.title.text = item.manga.title.highlightText(item.filter, color)
+        binding.title.text = item.library.title.highlightText(item.filter, color)
         setUnreadBadge(binding.unreadDownloadBadge.badgeView, item)
 
         val authorArtist =
-            if (item.manga.author == item.manga.artist || item.manga.artist.isNullOrBlank()) {
-                item.manga.author?.trim() ?: ""
+            if (item.library.author == item.library.artist || item.library.artist.isNullOrBlank()) {
+                item.library.author?.trim() ?: ""
             } else {
                 listOfNotNull(
-                    item.manga.author?.trim()?.takeIf { it.isNotBlank() },
-                    item.manga.artist?.trim()?.takeIf { it.isNotBlank() },
+                    item.library.author?.trim()?.takeIf { it.isNotBlank() },
+                    item.library.artist?.trim()?.takeIf { it.isNotBlank() },
                 ).joinToString(", ")
             }
 
@@ -97,7 +95,7 @@ class LibraryListHolder(
 
         // Update the cover.
         binding.coverThumbnail.dispose()
-        binding.coverThumbnail.loadManga(item.manga)
+        binding.coverThumbnail.loadManga(item.library)
     }
 
     override fun onActionStateChanged(position: Int, actionState: Int) {

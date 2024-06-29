@@ -5,10 +5,6 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -21,6 +17,8 @@ import eu.kanade.tachiyomi.util.system.withDefContext
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.ui.UiPreferences
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.util.*
 
 /**
@@ -118,7 +116,7 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
     fun indexOf(manga: Manga): Int {
         return currentItems.indexOfFirst {
             if (it is LibraryItem) {
-                it.manga.id == manga.id
+                it.library.id == manga.id
             } else {
                 false
             }
@@ -142,7 +140,7 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
      */
     fun allIndexOf(manga: Manga): List<Int> {
         return currentItems.mapIndexedNotNull { index, it ->
-            if (it is LibraryItem && it.manga.id == manga.id) {
+            if (it is LibraryItem && it.library.id == manga.id) {
                 index
             } else {
                 null
@@ -164,7 +162,7 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
         } else {
             val filteredManga = withDefContext { mangas.filter { it.filter(s) } }
             if (filteredManga.isEmpty() && controller?.presenter?.showAllCategories == false) {
-                val catId = mangas.firstOrNull()?.let { it.header?.catId ?: it.manga.category }
+                val catId = mangas.firstOrNull()?.let { it.header?.catId ?: it.library.category }
                 val blankItem = catId?.let { controller.presenter.blankItem(it) }
                 updateDataSet(blankItem ?: emptyList())
             } else {
@@ -201,16 +199,16 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                 item.category.name
             }
             is LibraryItem -> {
-                val text = if (item.manga.isBlank()) {
+                val text = if (item.library.isBlank()) {
                     return item.header?.category?.name.orEmpty()
                 } else {
                     when (getSort(position)) {
                         LibrarySort.DragAndDrop -> {
                             if (item.header.category.isDynamic) {
-                                val category = db.getCategoriesForManga(item.manga).executeAsBlocking().firstOrNull()?.name
+                                val category = db.getCategoriesForManga(item.library).executeAsBlocking().firstOrNull()?.name
                                 category ?: context.getString(MR.strings.default_value)
                             } else {
-                                val title = item.manga.title
+                                val title = item.library.title
                                 if (preferences.removeArticles().get()) {
                                     title.removeArticles().chop(15)
                                 } else {
@@ -219,19 +217,19 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                             }
                         }
                         LibrarySort.DateFetched -> {
-                            val id = item.manga.id ?: return ""
+                            val id = item.library.id ?: return ""
                             val history = db.getChapters(id).executeAsBlocking()
                             val last = history.maxOfOrNull { it.date_fetch }
                             context.timeSpanFromNow(MR.strings.fetched_, last ?: 0)
                         }
                         LibrarySort.LastRead -> {
-                            val id = item.manga.id ?: return ""
+                            val id = item.library.id ?: return ""
                             val history = db.getHistoryByMangaId(id).executeAsBlocking()
                             val last = history.maxOfOrNull { it.last_read }
                             context.timeSpanFromNow(MR.strings.read_, last ?: 0)
                         }
                         LibrarySort.Unread -> {
-                            val unread = item.manga.unread
+                            val unread = item.library.unread
                             if (unread > 0) {
                                 context.getString(MR.strings._unread, unread)
                             } else {
@@ -239,7 +237,7 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                             }
                         }
                         LibrarySort.TotalChapters -> {
-                            val total = item.manga.totalChapters
+                            val total = item.library.totalChapters
                             if (total > 0) {
                                 recyclerView.context.getString(
                                     MR.plurals.chapters_plural,
@@ -251,16 +249,16 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                             }
                         }
                         LibrarySort.LatestChapter -> {
-                            context.timeSpanFromNow(MR.strings.updated_, item.manga.last_update)
+                            context.timeSpanFromNow(MR.strings.updated_, item.library.last_update)
                         }
                         LibrarySort.DateAdded -> {
-                            context.timeSpanFromNow(MR.strings.added_, item.manga.date_added)
+                            context.timeSpanFromNow(MR.strings.added_, item.library.date_added)
                         }
                         LibrarySort.Title -> {
                             val title = if (preferences.removeArticles().get()) {
-                                item.manga.title.removeArticles()
+                                item.library.title.removeArticles()
                             } else {
-                                item.manga.title
+                                item.library.title
                             }
                             getFirstLetter(title)
                         }

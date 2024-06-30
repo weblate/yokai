@@ -41,3 +41,4 @@
 - Refactor archive support to use `libarchive`
 - Use version catalog for gradle plugins
 - Update dependency org.jsoup:jsoup to v1.7.1
+- Update dependency com.github.tachiyomiorg:image-decoder to revision f875eb3b89

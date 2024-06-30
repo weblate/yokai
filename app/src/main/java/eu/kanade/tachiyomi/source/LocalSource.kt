@@ -138,7 +138,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         }
 
         var mangaDirs = getBaseDirectory()?.listFiles().orEmpty()
-            .filter { it.isDirectory || !it.name.orEmpty().startsWith('.') }
+            .filter { it.isDirectory && !it.name.orEmpty().startsWith('.') }
             .distinctBy { it.name }
             .filter {
                 if (time == 0L && query.isBlank())

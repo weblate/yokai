@@ -4,10 +4,6 @@ import android.content.Context
 import androidx.core.net.toFile
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.source.model.Filter
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
@@ -40,6 +36,8 @@ import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.copyFromComicInfo
 import yokai.core.metadata.toComicInfo
 import yokai.domain.storage.StorageManager
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -294,7 +292,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
     override suspend fun getChapterList(manga: SManga): List<SChapter> = withIOContext {
         val chapters = getBaseDirectory()?.findFile(manga.url)?.listFiles().orEmpty()
-            .filter { it.isDirectory || isSupportedFile(it.extension.orEmpty()) }
+            .filter { it.isDirectory || isSupportedArchive(it.extension.orEmpty()) || it.extension.equals("epub", true) }
             .map { chapterFile ->
                 SChapter.create().apply {
                     url = "${manga.url}/${chapterFile.name}"
@@ -320,7 +318,8 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
 
     override suspend fun getPageList(chapter: SChapter) = throw Exception("Unused")
 
-    private fun isSupportedFile(extension: String): Boolean {
+    private fun isSupportedArchive(extension: String?): Boolean {
+        extension ?: return false
         return extension.lowercase() in SUPPORTED_ARCHIVE_TYPES
     }
 
@@ -338,10 +337,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 
     private fun getFormat(file: UniFile) = with(file) {
-        val supportedArchives = listOf("zip", "cbz", "rar", "cbr", "7z", "cb7", "tar", "cbt")
         when {
             isDirectory -> Format.Directory(this)
-            supportedArchives.contains(extension?.lowercase()) -> Format.Archive(this)
+            isSupportedArchive(extension) -> Format.Archive(this)
             extension.equals("epub", true) -> Format.Epub(this)
             else -> throw Exception(context.getString(MR.strings.local_invalid_format))
         }
@@ -360,10 +358,10 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 is Format.Archive -> {
                     format.file.archiveReader(context).use { reader ->
                         val entry = reader.useEntries { entries ->
-                                entries.toList()
-                                    .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
-                                    .find { it.isFile && ImageUtil.isImage(it.name) { reader.getInputStream(it.name)!! } }
-                            }
+                            entries
+                                .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
+                                .find { it.isFile && ImageUtil.isImage(it.name) { reader.getInputStream(it.name)!! } }
+                        }
 
                         entry?.let { updateCover(manga, reader.getInputStream(it.name)!!) }
                     }
@@ -398,14 +396,10 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     true
                 }
                 is Format.Archive -> format.file.archiveReader(context).use { reader ->
-                    val entry = reader.useEntries { entries ->
-                        entries.toList()
-                            .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
-                            .find { it.isFile && it.name == COMIC_INFO_FILE }
-                    } ?: return false
-
-                    updateMetadata(chapter, manga, reader.getInputStream(entry.name)!!)
-                    true
+                    reader.getInputStream(COMIC_INFO_FILE)?.use {
+                        updateMetadata(chapter, manga, it)
+                        true
+                    } ?: false
                 }
             }
         } catch (e: Throwable) {
@@ -432,4 +426,4 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     }
 }
 
-private val SUPPORTED_ARCHIVE_TYPES = listOf("zip", "cbz", "rar", "cbr", "epub")
+private val SUPPORTED_ARCHIVE_TYPES = listOf("zip", "cbz", "rar", "cbr", "7z", "cb7", "tar", "cbt")

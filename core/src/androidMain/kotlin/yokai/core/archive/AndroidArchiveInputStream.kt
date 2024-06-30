@@ -4,8 +4,13 @@ import me.zhanghai.android.libarchive.Archive
 import me.zhanghai.android.libarchive.ArchiveEntry
 import me.zhanghai.android.libarchive.ArchiveException
 import java.nio.ByteBuffer
+import kotlin.concurrent.Volatile
 
 class AndroidArchiveInputStream(buffer: Long, size: Long) : ArchiveInputStream() {
+    private val lock = Any()
+    @Volatile
+    private var isClosed = false
+
     private val archive = Archive.readNew()
 
     init {
@@ -40,6 +45,11 @@ class AndroidArchiveInputStream(buffer: Long, size: Long) : ArchiveInputStream()
     }
 
     override fun close() {
+        synchronized(lock) {
+            if (isClosed) return
+            isClosed = true
+        }
+
         Archive.readFree(archive)
     }
 

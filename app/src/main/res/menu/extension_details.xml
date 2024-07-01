@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/action_open_repo"
-        android:icon="@drawable/ic_open_in_webview_24dp"
+        android:icon="@drawable/ic_code_blocks_24dp"
         android:title="@string/action_open_repo"
         app:showAsAction="ifRoom" />
 

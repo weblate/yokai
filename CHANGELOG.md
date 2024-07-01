@@ -7,5 +7,5 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
-## Fixes
-- Fixed saving combined pages not doing anything
+## Changes
+- Changed "Open source repo" icon to prevent confusion

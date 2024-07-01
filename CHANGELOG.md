@@ -7,5 +7,5 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
-## Changes
-- Changed "Open source repo" icon to prevent confusion
+## Fixes
+- Fixed "Open source repo" icon's colour

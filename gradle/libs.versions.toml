@@ -36,7 +36,8 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
 flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter", version.ref = "flexible-adapter" }
 guava = { module = "com.google.guava:guava", version = "31.1-android" }
-image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "e08e9be535" }
+# FIXME: Redirect back to 'com.github.tachiyomiorg:image-decoder' once build is fixed
+image-decoder = { module = "com.github.null2264:image-decoder", version = "d48087fbfa" }
 injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65b0440" }
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }

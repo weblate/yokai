@@ -7,7 +7,9 @@ moko = "0.24.1"
 nucleus = "3.0.0"
 okhttp = "5.0.0-alpha.14"
 shizuku = "12.1.0"
-sqlite = "2.5.0-alpha04"
+# FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
+#sqlite = "2.5.0-alpha04"
+sqlite = "2.4.0"
 sqldelight = "2.0.2"
 junit = "5.8.2"
 kermit = "2.0.3"
@@ -75,7 +77,8 @@ rxjava = { module = "io.reactivex:rxjava", version = "1.3.8" }
 rxandroid = { module = "io.reactivex:rxandroid", version = "1.2.1" }
 slice = { module = "com.github.mthli:Slice", version = "v1.2" }
 
-sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+# FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
+#sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 sqlite-ktx = { module = "androidx.sqlite:sqlite-ktx", version.ref = "sqlite" }
 sqlite-android = { module = "com.github.requery:sqlite-android", version = "3.45.0" }
 
@@ -106,7 +109,9 @@ db = [ "sqldelight-coroutines" ]
 db-android = [ "sqldelight-android-driver", "sqldelight-android-paging" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
 logging = [ "kermit" ]
-sqlite = [ "sqlite", "sqlite-ktx" ]
+# FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
+#sqlite = [ "sqlite", "sqlite-ktx" ]
+sqlite = [ "sqlite-ktx" ]
 test = [ "junit-api", "mockk" ]
 test-android = [ "junit-android" ]
 test-runtime = [ "junit-engine" ]

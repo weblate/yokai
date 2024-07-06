@@ -29,7 +29,7 @@ jobs:
 
       - name: Setup Android SDK
         run: |
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;29.0.3"
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0"
 
       - name: Setup Gradle
         uses: null2264/actions/gradle-setup@c63d62af63686cb442114b979d4bedb96a514881
@@ -107,7 +107,7 @@ jobs:
           report_paths: '**/build/test-results/test*/TEST-*.xml'
 
       - name: Sign APK
-        uses: null2264/actions/android-signer@c63d62af63686cb442114b979d4bedb96a514881
+        uses: null2264/actions/android-signer@102c5b82a95381eeb420bb2d62639d1ff2a3eb1c
         if: env.VERSION_TAG != ''
         with:
           releaseDir: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}

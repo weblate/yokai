@@ -26,7 +26,9 @@ A free and open source manga reader
 
 ## About Fork
 
-This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR. Updates are sporadic, sometime fast, sometime slow.
+This fork was created for personal usage, the name Yōkai is chosen in theme of my "paranormal" fork collection, all of them are made for personal purposes, to explore the language used to made them, explore new tech, or simply want to add my own twists that may not accepted by upstream as a PR.
+
+Updates are sporadic, sometime fast, sometime slow.
 
 ## Features
 
@@ -79,8 +81,8 @@ This fork was created for personal usage, the name Yōkai is chosen in theme of 
 <details>
     <summary><h3>From Yōkai</h3></summary>
     
-* New Theme
-* NSFW/SFW Filter
+* New theme
+* NSFW/SFW filter
 
 </details>
 

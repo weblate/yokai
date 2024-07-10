@@ -11,6 +11,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.Page
+import eu.kanade.tachiyomi.util.system.ImageUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -180,7 +181,7 @@ class DownloadManager(val context: Context) {
     fun buildPageList(source: Source, manga: Manga, chapter: Chapter): List<Page> {
         val chapterDir = provider.findChapterDir(chapter, manga, source)
         val files = chapterDir?.listFiles().orEmpty()
-            .filter { "image" in it.type.orEmpty() }
+            .filter { it.isFile && ImageUtil.isImage(it.name.orEmpty()) { it.openInputStream() } }
 
         if (files.isEmpty()) {
             throw Exception(context.getString(MR.strings.no_pages_found))

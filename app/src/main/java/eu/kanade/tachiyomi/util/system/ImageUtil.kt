@@ -45,12 +45,8 @@ import kotlin.math.roundToInt
 object ImageUtil {
 
     fun isImage(name: String, openStream: (() -> InputStream)? = null): Boolean {
-        val contentType = try {
-            URLConnection.guessContentTypeFromName(name)
-        } catch (e: Exception) {
-            null
-        } ?: openStream?.let { findImageType(it)?.mime }
-        return contentType?.startsWith("image/") ?: false
+        val extension = name.substringAfterLast('.')
+        return ImageType.entries.any { it.extension == extension } || openStream?.let { findImageType(it) } != null
     }
 
     fun findImageType(openStream: () -> InputStream): ImageType? {
@@ -88,10 +84,9 @@ object ImageUtil {
         }
     }
 
-    fun getExtensionFromMimeType(mime: String?): String {
-        return MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)
-            ?: SUPPLEMENTARY_MIMETYPE_MAPPING[mime]
-            ?: "jpg"
+    fun getExtensionFromMimeType(mime: String?, openStream: () -> InputStream): String {
+        val type = mime?.let { ImageType.entries.find { it.mime == mime } } ?: findImageType(openStream)
+        return type?.extension ?: "jpg"
     }
 
     fun isAnimatedAndSupported(source: BufferedSource): Boolean {
@@ -779,12 +774,6 @@ object ImageUtil {
         BitmapFactory.decodeStream(imageSource.peek().inputStream(), null, options)
         return options
     }
-
-    // Android doesn't include some mappings
-    private val SUPPLEMENTARY_MIMETYPE_MAPPING = mapOf(
-        // https://issuetracker.google.com/issues/182703810
-        "image/jxl" to "jxl",
-    )
 
     fun isMaxTextureSizeExceeded(data: Any): Boolean {
         val width: Int

@@ -44,7 +44,9 @@ import kotlin.math.roundToInt
 
 object ImageUtil {
 
-    fun isImage(name: String, openStream: (() -> InputStream)? = null): Boolean {
+    fun isImage(name: String?, openStream: (() -> InputStream)? = null): Boolean {
+        if (name == null) return false
+
         val extension = name.substringAfterLast('.')
         return ImageType.entries.any { it.extension == extension } || openStream?.let { findImageType(it) } != null
     }

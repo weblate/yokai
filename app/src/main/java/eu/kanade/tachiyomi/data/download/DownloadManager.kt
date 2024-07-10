@@ -181,7 +181,7 @@ class DownloadManager(val context: Context) {
     fun buildPageList(source: Source, manga: Manga, chapter: Chapter): List<Page> {
         val chapterDir = provider.findChapterDir(chapter, manga, source)
         val files = chapterDir?.listFiles().orEmpty()
-            .filter { it.isFile && ImageUtil.isImage(it.name.orEmpty()) { it.openInputStream() } }
+            .filter { it.isFile && ImageUtil.isImage(it.name) { it.openInputStream() } }
 
         if (files.isEmpty()) {
             throw Exception(context.getString(MR.strings.no_pages_found))

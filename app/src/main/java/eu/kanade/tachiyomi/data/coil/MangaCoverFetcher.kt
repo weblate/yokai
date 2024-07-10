@@ -28,7 +28,6 @@ import okhttp3.CacheControl
 import okhttp3.Call
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.internal.closeQuietly
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import okio.Source
@@ -139,11 +138,11 @@ class MangaCoverFetcher(
                     dataSource = if (response.cacheResponse != null) DataSource.DISK else DataSource.NETWORK,
                 )
             } catch (e: Exception) {
-                responseBody.closeQuietly()
+                responseBody.close()
                 throw e
             }
         } catch (e: Exception) {
-            snapshot?.closeQuietly()
+            snapshot?.close()
             throw e
         }
     }
@@ -152,7 +151,7 @@ class MangaCoverFetcher(
         val client = sourceLazy.value?.client ?: callFactoryLazy.value
         val response = client.newCall(newRequest()).await()
         if (!response.isSuccessful && response.code != HttpURLConnection.HTTP_NOT_MODIFIED) {
-            response.body.closeQuietly()
+            response.close()
             throw Exception(response.message)  // FIXME: Should probably use something else other than generic Exception
         }
         return response
@@ -244,7 +243,7 @@ class MangaCoverFetcher(
         response: Response,
     ): DiskCache.Snapshot? {
         if (!options.diskCachePolicy.writeEnabled) {
-            snapshot?.closeQuietly()
+            snapshot?.close()
             return null
         }
         val editor = if (snapshot != null) {

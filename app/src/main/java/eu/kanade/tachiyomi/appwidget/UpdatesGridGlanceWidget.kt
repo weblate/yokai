@@ -16,6 +16,7 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.updateAll
 import androidx.glance.background
 import androidx.glance.layout.fillMaxSize
+import coil3.asDrawable
 import coil3.executeBlocking
 import coil3.imageLoader
 import coil3.request.CachePolicy

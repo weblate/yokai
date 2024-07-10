@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import coil3.asDrawable
 import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest

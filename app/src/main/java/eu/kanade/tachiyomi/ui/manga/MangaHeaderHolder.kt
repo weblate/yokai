@@ -25,6 +25,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.transition.TransitionSet
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import coil3.asDrawable
 import coil3.request.CachePolicy
 import coil3.request.error
 import coil3.request.placeholder

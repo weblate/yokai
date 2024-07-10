@@ -42,3 +42,4 @@
 - Use version catalog for gradle plugins
 - Update dependency org.jsoup:jsoup to v1.7.1
 - Bump dependency com.github.tachiyomiorg:image-decoder revision to 41c059e540
+- Bump dependency io.coil-kt.coil3 to v3.0.0-alpha08

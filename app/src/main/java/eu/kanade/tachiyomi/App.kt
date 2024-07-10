@@ -244,12 +244,17 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             val callFactoryLazy = lazy { Injekt.get<NetworkHelper>().client }
             val diskCacheLazy = lazy { CoilDiskCache.get(this@App) }
             components {
+                // NetworkFetcher.Factory
                 add(OkHttpNetworkFetcherFactory(callFactoryLazy::value))
+                // Decoder.Factory
                 add(TachiyomiImageDecoder.Factory())
-                add(MangaCoverFetcher.Factory(callFactoryLazy, diskCacheLazy))
-                add(MangaCoverKeyer())
+                // Fetcher.Factory
                 add(BufferedSourceFetcher.Factory())
+                add(MangaCoverFetcher.Factory(callFactoryLazy, diskCacheLazy))
+                // Keyer
+                add(MangaCoverKeyer())
             }
+
             diskCache(diskCacheLazy::value)
             memoryCache { MemoryCache.Builder().maxSizePercent(this@App, 0.40).build() }
             crossfade(true)
@@ -258,7 +263,8 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             if (BuildConfig.DEBUG) {
                 logger(DebugLogger())
             }
-        }.build()
+        }
+            .build()
     }
 }
 

@@ -5,16 +5,24 @@
 
 ## Fixes  ?? Bugfixes
 
+## Translation  ?? translation changes/updates
+
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Changes
 - Add more info to WorkerInfo page
   - Added "next scheduled run"
   - Added attempt count
+- `english` tag no longer cause reading mode to switch to LTR (mangkoran)
 
 ## Fixes
 - Fixed auto backup, auto extension update, and app update checker stop working
   if it crash/failed
+
+## Translation
+- Update Japanese translation (akir45)
+- Update Brazilian Portuguese translation (AshbornXS)
+- Update Filipino translation (infyProductions)
 
 ## Other
 - Some code refactors
@@ -33,10 +41,8 @@
   - Merge lastFetch and lastRead query into library_view VIEW
   - Migrated a few more chapter related queries
   - Migrated most of manga related queries
-- Update Japanese translation (akir45)
 - Bump dependency com.github.tachiyomiorg:unifile revision to a9de196cc7
 - Update project to Kotlin 2.0
-- Update Brazilian Portuguese translation (AshbornXS)
 - Update compose bom to v2024.06.00-alpha01
 - Refactor archive support to use `libarchive`
 - Use version catalog for gradle plugins

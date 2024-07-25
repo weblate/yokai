@@ -1,5 +1,5 @@
 [versions]
-compose-bom = "2024.06.00-alpha01"
+compose-bom = "2024.07.00-alpha01"
 
 [libraries]
 bom = { module = "dev.chrisbanes.compose:compose-bom", version.ref = "compose-bom" }

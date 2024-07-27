@@ -28,6 +28,7 @@ class UpdateExtensionRepo(
         } catch (e: Exception) {
             when (e) {
                 is FetchExtensionRepoException -> {
+                    // TODO: A way to show user that a repo failed to update
                     Logger.e(e) { "Failed to fetch repo details" }
                     return
                 }

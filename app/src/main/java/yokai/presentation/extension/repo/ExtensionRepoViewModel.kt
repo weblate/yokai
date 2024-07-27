@@ -54,6 +54,7 @@ class ExtensionRepoViewModel :
                 is CreateExtensionRepo.Result.Success -> internalEvent.value = ExtensionRepoEvent.Success
                 is CreateExtensionRepo.Result.Error -> internalEvent.value = ExtensionRepoEvent.InvalidUrl
                 is CreateExtensionRepo.Result.RepoAlreadyExists -> internalEvent.value = ExtensionRepoEvent.RepoAlreadyExists
+                is CreateExtensionRepo.Result.RepoFetchFailed -> internalEvent.value = ExtensionRepoEvent.RepoFetchFailed
                 is CreateExtensionRepo.Result.DuplicateFingerprint -> {
                     internalEvent.value = ExtensionRepoEvent.ShowDialog(RepoDialog.Conflict(result.oldRepo, result.newRepo))
                 }
@@ -93,6 +94,7 @@ sealed class ExtensionRepoEvent {
     sealed class LocalizedMessage(val stringRes: StringResource) : ExtensionRepoEvent()
     data object InvalidUrl : LocalizedMessage(MR.strings.invalid_repo_url)
     data object RepoAlreadyExists : LocalizedMessage(MR.strings.repo_already_exists)
+    data object RepoFetchFailed : LocalizedMessage(MR.strings.repo_fetch_failed)
     data class ShowDialog(val dialog: RepoDialog) : ExtensionRepoEvent()
     data object NoOp : ExtensionRepoEvent()
     data object Success : ExtensionRepoEvent()

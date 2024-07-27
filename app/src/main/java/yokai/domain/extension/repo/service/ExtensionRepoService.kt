@@ -12,7 +12,9 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.OkHttpClient
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.extension.repo.exception.FetchExtensionRepoException
 import yokai.domain.extension.repo.model.ExtensionRepo
+import java.net.UnknownHostException
 
 class ExtensionRepoService(
     private val client: OkHttpClient,
@@ -35,8 +37,12 @@ class ExtensionRepoService(
                 response["meta"]
                     ?.jsonObject
                     ?.let { jsonToExtensionRepo(baseUrl = repo, it) }
-            } catch (_: HttpException) {
-                null
+            } catch (e: Exception) {
+                when (e) {
+                    is HttpException -> null
+                    is UnknownHostException -> throw FetchExtensionRepoException(e)
+                    else -> throw e
+                }
             }
         }
     }

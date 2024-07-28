@@ -73,11 +73,13 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         }
 
         fun updateCover(manga: SManga, input: InputStream): UniFile? {
-            val dir = getBaseDirectory() ?: return null
-            var cover = getCoverFile(dir.findFile(manga.url))
-            if (cover == null) {
-                cover = dir.findFile(manga.url)?.createFile(COVER_NAME)!!
+            val dir = getBaseDirectory()?.findFile(manga.url)
+            if (dir == null) {
+                input.close()
+                return null
             }
+
+            val cover = getCoverFile(dir) ?: dir.createFile(COVER_NAME)!!
             // It might not exist if using the external SD card
             cover.parentFile?.parentFile?.createDirectory(cover.parentFile?.name)
             input.use {

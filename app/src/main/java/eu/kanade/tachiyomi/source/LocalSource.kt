@@ -206,14 +206,14 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             if (comicInfoFile != null)
                 return@withIOContext manga.copy().apply {
                     setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this)
-                    invalidateCover(manga)
+                    invalidateCover(this)
                 }
 
             // TODO: Remove after awhile
             if (legacyJsonFile != null) {
                 val rt = manga.copy().apply {
                     setMangaDetailsFromLegacyJsonFile(legacyJsonFile.openInputStream(), this)
-                    invalidateCover(manga)
+                    invalidateCover(this)
                 }
                 val comicInfo = rt.toComicInfo()
                 localMangaDir.createFile(COMIC_INFO_FILE)

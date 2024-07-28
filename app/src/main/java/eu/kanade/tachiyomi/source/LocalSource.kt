@@ -105,9 +105,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
          * Returns valid cover file inside [parent] directory.
          */
         private fun getCoverFile(parent: UniFile?): UniFile? {
-            return parent?.listFiles()?.find { it.nameWithoutExtension == "cover" }?.takeIf {
-                it.isFile && ImageUtil.isImage(it.name.orEmpty()) { it.openInputStream() }
-            }
+            return parent?.listFiles()
+                ?.filter { it.isFile && it.nameWithoutExtension.equals("cover", ignoreCase = true) }
+                ?.firstOrNull { ImageUtil.isImage(it.name.orEmpty()) { it.openInputStream() } }
         }
 
         private fun getBaseDirectory(): UniFile? {

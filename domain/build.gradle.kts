@@ -9,7 +9,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.sourceApi)
+                implementation(projects.source.api)
             }
         }
         val androidMain by getting {

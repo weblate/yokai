@@ -149,7 +149,7 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.i18n)
     implementation(projects.presentation.core)
-    implementation(projects.sourceApi)
+    implementation(projects.source.api)
 
     // Compose
     implementation(platform(compose.bom))

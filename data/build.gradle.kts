@@ -16,7 +16,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(libs.bundles.db.android)
-                implementation(projects.sourceApi)
+                implementation(projects.source.api)
             }
         }
     }

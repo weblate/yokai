@@ -12,8 +12,7 @@ import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.util.chapter.ChapterRecognition
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import eu.kanade.tachiyomi.util.storage.EpubFile
-import eu.kanade.tachiyomi.util.storage.fillChapterMetadata
-import eu.kanade.tachiyomi.util.storage.fillMangaMetadata
+import eu.kanade.tachiyomi.util.storage.fillMetadata
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.extension
@@ -306,15 +305,10 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
             .toList()
 
+        // Copy the cover from the first chapter found.
         if (manga.thumbnail_url.isNullOrBlank()) {
             chapters.lastOrNull()?.let { chapter ->
                 try {
-                    val format = getFormat(chapter)
-                    if (format is Format.Epub)
-                        EpubFile(format.file.archiveReader(context)).use { epub ->
-                            epub.fillMangaMetadata(manga)
-                        }
-                    // Copy the cover from the first chapter found.
                     updateCover(chapter, manga)
                 } catch (e: Exception) {
                     Logger.e(e)
@@ -400,7 +394,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 }
                 is Format.Epub -> {
                     EpubFile(format.file.archiveReader(context)).use { epub ->
-                        epub.fillChapterMetadata(chapter)
+                        epub.fillMetadata(chapter, manga)
                     }
                     true
                 }

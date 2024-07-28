@@ -107,7 +107,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         private fun getCoverFile(parent: UniFile?): UniFile? {
             return parent?.listFiles()
                 ?.filter { it.isFile && it.nameWithoutExtension.equals("cover", ignoreCase = true) }
-                ?.firstOrNull { ImageUtil.isImage(it.name.orEmpty()) { it.openInputStream() } }
+                ?.firstOrNull { ImageUtil.isImage(it.name) { it.openInputStream() } }
         }
 
         private fun getBaseDirectory(): UniFile? {
@@ -353,7 +353,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 is Format.Directory -> {
                     val entry = format.file.listFiles()
                         ?.sortedWith { f1, f2 -> f1.name.orEmpty().compareToCaseInsensitiveNaturalOrder(f2.name.orEmpty()) }
-                        ?.find { !it.isDirectory && ImageUtil.isImage(it.name.orEmpty()) { FileInputStream(it.uri.toFile()) } }
+                        ?.find { !it.isDirectory && ImageUtil.isImage(it.name) { FileInputStream(it.uri.toFile()) } }
 
                     entry?.let { updateCover(manga, it.openInputStream()) }
                 }

@@ -226,11 +226,17 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             val legacyJsonFile = localMangaFiles.firstOrNull { it.extension.orEmpty().equals("json", true) }
 
             if (comicInfoFile != null)
-                return@withIOContext manga.copy().apply { setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this) }
+                return@withIOContext manga.copy().apply {
+                    setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this)
+                    invalidateCover(manga)
+                }
 
             // TODO: Remove after awhile
             if (legacyJsonFile != null) {
-                val rt = manga.copy().apply { setMangaDetailsFromLegacyJsonFile(legacyJsonFile.openInputStream(), this) }
+                val rt = manga.copy().apply {
+                    setMangaDetailsFromLegacyJsonFile(legacyJsonFile.openInputStream(), this)
+                    invalidateCover(manga)
+                }
                 val comicInfo = rt.toComicInfo()
                 localMangaDir.createFile(COMIC_INFO_FILE)
                     ?.writeText(xml.encodeToString(ComicInfo.serializer(), comicInfo)) { legacyJsonFile.delete() }

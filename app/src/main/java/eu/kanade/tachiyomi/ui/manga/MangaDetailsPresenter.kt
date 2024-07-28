@@ -12,10 +12,6 @@ import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.BuildConfig
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -81,6 +77,8 @@ import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.storage.StorageManager
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -854,7 +852,11 @@ class MangaDetailsPresenter(
         if (uri != null) {
             editCoverWithStream(uri)
         } else if (resetCover) {
-            coverCache.deleteCustomCover(manga)
+            if (!manga.isLocal()) {
+                coverCache.deleteCustomCover(manga)
+            } else {
+                LocalSource.invalidateCover(manga)
+            }
             view?.setPaletteColor()
         }
         view?.updateHeader()

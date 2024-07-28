@@ -9,6 +9,10 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
+## Additions
+- Add button to local source's entry info editor to invalidate cover,
+  in case Android messing it up (especially on heavily modified ROMs)
+
 ## Changes
 - Add more info to WorkerInfo page
   - Added "next scheduled run"

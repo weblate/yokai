@@ -72,6 +72,13 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
         }
 
+        fun invalidateCover(manga: SManga) {
+            val dir = getBaseDirectory()?.findFile(manga.url) ?: return
+            val cover = getCoverFile(dir) ?: return
+
+            manga.thumbnail_url = cover.uri.toString()
+        }
+
         fun updateCover(manga: SManga, input: InputStream): UniFile? {
             val dir = getBaseDirectory()?.findFile(manga.url)
             if (dir == null) {

@@ -216,14 +216,22 @@ class EditMangaDialog : DialogController {
             true
         }
 
-        binding.resetCover.isVisible = !isLocal
-        binding.resetCover.setOnClickListener {
-            binding.mangaCover.load(
-                manga,
-            ) {
-                extras[MangaCoverFetcher.USE_CUSTOM_COVER_KEY] = false
+        binding.resetCover.text = context.getString(
+            if (isLocal) {
+                MR.strings.invalidate_cover
+            } else {
+                MR.strings.reset_cover
             }
-            customCoverUri = null
+        )
+        binding.resetCover.setOnClickListener {
+            if (!isLocal) {
+                binding.mangaCover.load(
+                    manga,
+                ) {
+                    extras[MangaCoverFetcher.USE_CUSTOM_COVER_KEY] = false
+                }
+                customCoverUri = null
+            }
             willResetCover = true
         }
     }

@@ -14,6 +14,7 @@ A free and open source manga reader
 
 [![CI](https://github.com/null2264/yokai/actions/workflows/build_push.yml/badge.svg)](https://github.com/null2264/yokai/actions/workflows/build_push.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](/LICENSE)
+[![Mirror: GitLab](https://img.shields.io/badge/mirror-GitLab-orange.svg)](https://gitlab.com/null2264/yokai)
 
 <img src="./.github/readme-images/screens.gif" alt="Yokai screenshot" height="412px" width="800px" />
 

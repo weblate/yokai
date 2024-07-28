@@ -187,28 +187,6 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     if (cover != null && cover.exists()) {
                         thumbnail_url = cover.uri.toString()
                     }
-
-                    val manga = this
-                    val chapters = getChapterList(manga)
-                    if (chapters.isNotEmpty()) {
-                        val chapter = chapters.last()
-                        val format = getFormat(chapter)
-                        if (format is Format.Epub) {
-                            EpubFile(format.file.archiveReader(context)).use { epub ->
-                                epub.fillMangaMetadata(manga)
-                            }
-                        }
-
-                        // Copy the cover from the first chapter found.
-                        if (thumbnail_url == null) {
-                            try {
-                                val dest = updateCover(chapter, manga)
-                                thumbnail_url = dest?.filePath
-                            } catch (e: Exception) {
-                                Logger.e(e)
-                            }
-                        }
-                    }
                 }
             }
         }.awaitAll()
@@ -327,6 +305,22 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 if (c == 0) c2.name.compareToCaseInsensitiveNaturalOrder(c1.name) else c
             }
             .toList()
+
+        if (manga.thumbnail_url.isNullOrBlank()) {
+            chapters.lastOrNull()?.let { chapter ->
+                try {
+                    val format = getFormat(chapter)
+                    if (format is Format.Epub)
+                        EpubFile(format.file.archiveReader(context)).use { epub ->
+                            epub.fillMangaMetadata(manga)
+                        }
+                    // Copy the cover from the first chapter found.
+                    updateCover(chapter, manga)
+                } catch (e: Exception) {
+                    Logger.e(e)
+                }
+            }
+        }
 
         chapters
     }

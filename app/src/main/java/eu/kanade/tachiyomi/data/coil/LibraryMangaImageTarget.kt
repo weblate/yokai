@@ -11,7 +11,7 @@ import coil3.request.Disposable
 import coil3.request.ImageRequest
 import coil3.target.ImageViewTarget
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.system.launchIO
 import uy.kohesive.injekt.injectLazy
 

@@ -13,7 +13,6 @@ import eu.kanade.tachiyomi.data.database.mappers.TrackTypeMapping
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.History
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.models.SearchMetadata
 import eu.kanade.tachiyomi.data.database.models.Track
@@ -24,7 +23,7 @@ import eu.kanade.tachiyomi.data.database.queries.MangaCategoryQueries
 import eu.kanade.tachiyomi.data.database.queries.MangaQueries
 import eu.kanade.tachiyomi.data.database.queries.SearchMetadataQueries
 import eu.kanade.tachiyomi.data.database.queries.TrackQueries
-import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 /**
  * This class provides operations to manage the database through its interfaces.

@@ -1,7 +1,7 @@
 package yokai.domain.library.custom.model
 
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 data class CustomMangaInfo(
     var mangaId: Long,

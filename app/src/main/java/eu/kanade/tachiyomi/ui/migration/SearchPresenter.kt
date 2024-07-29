@@ -1,6 +1,6 @@
 package eu.kanade.tachiyomi.ui.migration
 
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.CatalogueSource
 import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchItem
 import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchMangaItem

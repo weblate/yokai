@@ -1,22 +1,9 @@
-package eu.kanade.tachiyomi.data.database.models
+package eu.kanade.tachiyomi.domain.manga.models
 
-import android.content.Context
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.SManga
-import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
-import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
-import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
-import yokai.data.updateStrategyAdapter
 import yokai.domain.manga.models.MangaUpdate
 import java.util.*
+import kotlin.collections.set
 
 // TODO: Transform into data class
 interface Manga : SManga {
@@ -39,18 +26,27 @@ interface Manga : SManga {
 
     var filtered_scanlators: String?
 
+    var ogTitle: String
+    var ogAuthor: String?
+    var ogArtist: String?
+    var ogDesc: String?
+    var ogGenre: String?
+    var ogStatus: Int
+
+    @Deprecated("Use ogTitle directly instead", ReplaceWith("ogTitle"))
     val originalTitle: String
-        get() = (this as? MangaImpl)?.ogTitle ?: title
+        get() = ogTitle
     val originalAuthor: String?
-        get() = (this as? MangaImpl)?.ogAuthor ?: author
+        get() = ogAuthor ?: author
     val originalArtist: String?
-        get() = (this as? MangaImpl)?.ogArtist ?: artist
+        get() = ogArtist ?: artist
     val originalDescription: String?
-        get() = (this as? MangaImpl)?.ogDesc ?: description
+        get() = ogDesc ?: description
     val originalGenre: String?
-        get() = (this as? MangaImpl)?.ogGenre ?: genre
+        get() = ogGenre ?: genre
+    @Deprecated("Use ogStatus directly instead", ReplaceWith("ogStatus"))
     val originalStatus: Int
-        get() = (this as? MangaImpl)?.ogStatus ?: status
+        get() = ogStatus
 
     val hasSameAuthorAndArtist: Boolean
         get() = author == artist || artist.isNullOrBlank() ||
@@ -102,7 +98,7 @@ interface Manga : SManga {
         chapter_flags = chapter_flags and mask.inv() or (flag and mask)
     }
 
-    private fun setViewerFlags(flag: Int, mask: Int) {
+    fun setViewerFlags(flag: Int, mask: Int) {
         viewer_flags = viewer_flags and mask.inv() or (flag and mask)
     }
 
@@ -118,107 +114,11 @@ interface Manga : SManga {
     val usesLocalFilter: Boolean
         get() = chapter_flags and CHAPTER_FILTER_LOCAL_MASK == CHAPTER_FILTER_LOCAL
 
-    fun sortDescending(preferences: PreferencesHelper): Boolean =
-        if (usesLocalSort) sortDescending else preferences.chaptersDescAsDefault().get()
-
-    fun chapterOrder(preferences: PreferencesHelper): Int =
-        if (usesLocalSort) sorting else preferences.sortChapterOrder().get()
-
-    fun readFilter(preferences: PreferencesHelper): Int =
-        if (usesLocalFilter) readFilter else preferences.filterChapterByRead().get()
-
-    fun downloadedFilter(preferences: PreferencesHelper): Int =
-        if (usesLocalFilter) downloadedFilter else preferences.filterChapterByDownloaded().get()
-
-    fun bookmarkedFilter(preferences: PreferencesHelper): Int =
-        if (usesLocalFilter) bookmarkedFilter else preferences.filterChapterByBookmarked().get()
-
-    fun hideChapterTitle(preferences: PreferencesHelper): Boolean =
-        if (usesLocalFilter) hideChapterTitles else preferences.hideChapterTitlesByDefault().get()
-
     fun showChapterTitle(defaultShow: Boolean): Boolean = chapter_flags and CHAPTER_DISPLAY_MASK == CHAPTER_DISPLAY_NUMBER
-
-    fun seriesType(context: Context, sourceManager: SourceManager? = null): String {
-        return context.getString(
-            when (seriesType(sourceManager = sourceManager)) {
-                TYPE_WEBTOON -> MR.strings.webtoon
-                TYPE_MANHWA -> MR.strings.manhwa
-                TYPE_MANHUA -> MR.strings.manhua
-                TYPE_COMIC -> MR.strings.comic
-                else -> MR.strings.manga
-            },
-        ).lowercase(Locale.getDefault())
-    }
 
     fun getOriginalGenres(): List<String>? {
         return (originalGenre ?: genre)?.split(",")
             ?.mapNotNull { tag -> tag.trim().takeUnless { it.isBlank() } }
-    }
-
-    /**
-     * The type of comic the manga is (ie. manga, manhwa, manhua)
-     */
-    fun seriesType(useOriginalTags: Boolean = false, customTags: String? = null, sourceManager: SourceManager? = null): Int {
-        val sourceName by lazy { (sourceManager ?: Injekt.get()).getOrStub(source).name }
-        val tags = customTags ?: if (useOriginalTags) originalGenre else genre
-        val currentTags = tags?.split(",")?.map { it.trim().lowercase(Locale.US) } ?: emptyList()
-        return if (currentTags.any { tag -> isMangaTag(tag) }) {
-            TYPE_MANGA
-        } else if (currentTags.any { tag -> isComicTag(tag) } ||
-            isComicSource(sourceName)
-        ) {
-            TYPE_COMIC
-        } else if (currentTags.any { tag -> isWebtoonTag(tag) } ||
-            (
-                sourceName.contains("webtoon", true) &&
-                    currentTags.none { tag -> isManhuaTag(tag) } &&
-                    currentTags.none { tag -> isManhwaTag(tag) }
-                )
-        ) {
-            TYPE_WEBTOON
-        } else if (currentTags.any { tag -> isManhuaTag(tag) } || sourceName.contains(
-                "manhua",
-                true,
-            )
-        ) {
-            TYPE_MANHUA
-        } else if (currentTags.any { tag -> isManhwaTag(tag) } || isWebtoonSource(sourceName)) {
-            TYPE_MANHWA
-        } else {
-            TYPE_MANGA
-        }
-    }
-
-    /**
-     * The type the reader should use. Different from manga type as certain manga has different
-     * read types
-     */
-    fun defaultReaderType(): Int {
-        val sourceName = Injekt.get<SourceManager>().getOrStub(source).name
-        val currentTags = genre?.split(",")?.map { it.trim().lowercase(Locale.US) } ?: emptyList()
-        return if (currentTags.any {
-                tag -> isManhwaTag(tag) || tag.contains("webtoon")
-            } || (
-                isWebtoonSource(sourceName) &&
-                currentTags.none { tag -> isManhuaTag(tag) } &&
-                currentTags.none { tag -> isComicTag(tag) }
-            )
-        ) {
-            ReadingModeType.LONG_STRIP.flagValue
-        } else if (currentTags.any {
-                tag -> tag == "chinese" || tag == "manhua" || tag == "comic"
-            } || (
-                isComicSource(sourceName) &&
-                !sourceName.contains("tapas", true) &&
-                currentTags.none { tag -> isMangaTag(tag) }
-            ) || (
-                sourceName.contains("manhua", true) && currentTags.none { tag -> isMangaTag(tag) }
-            )
-        ) {
-            ReadingModeType.LEFT_TO_RIGHT.flagValue
-        } else {
-            0
-        }
     }
 
     fun isSeriesTag(tag: String): Boolean {
@@ -270,20 +170,6 @@ interface Manga : SManga {
             sourceName.contains("ReadComicOnline", true)
     }
 
-    fun isOneShotOrCompleted(db: DatabaseHelper): Boolean {
-        val tags by lazy { genre?.split(",")?.map { it.trim().lowercase(Locale.US) } }
-        val chapters by lazy { db.getChapters(this).executeAsBlocking() }
-        val firstChapterName by lazy { chapters.firstOrNull()?.name?.lowercase() ?: "" }
-        return status == SManga.COMPLETED || tags?.contains("oneshot") == true ||
-            (
-                chapters.size == 1 &&
-                    (
-                        Regex("one.?shot").containsMatchIn(firstChapterName) ||
-                            firstChapterName.contains("oneshot")
-                        )
-                )
-    }
-
     fun key(): String {
         return "manga-id-$id"
     }
@@ -309,25 +195,10 @@ interface Manga : SManga {
         get() = chapter_flags and CHAPTER_SORTING_MASK
         set(sort) = setChapterFlags(sort, CHAPTER_SORTING_MASK)
 
-    var readingModeType: Int
-        get() = viewer_flags and ReadingModeType.MASK
-        set(readingMode) = setViewerFlags(readingMode, ReadingModeType.MASK)
-
-    var orientationType: Int
-        get() = viewer_flags and OrientationType.MASK
-        set(rotationType) = setViewerFlags(rotationType, OrientationType.MASK)
-
     var vibrantCoverColor: Int?
         get() = vibrantCoverColorMap[id]
         set(value) {
             id?.let { vibrantCoverColorMap[it] = value }
-        }
-
-    var dominantCoverColors: Pair<Int, Int>?
-        get() = MangaCoverMetadata.getColors(this)
-        set(value) {
-            value ?: return
-            MangaCoverMetadata.addCoverColor(this, value.first, value.second)
         }
 
     fun toMangaUpdate(): MangaUpdate {
@@ -397,56 +268,5 @@ interface Manga : SManga {
         const val TYPE_WEBTOON = 5
 
         private val vibrantCoverColorMap: HashMap<Long, Int?> = hashMapOf()
-
-        fun create(source: Long): Manga = MangaImpl().apply {
-            this.source = source
-        }
-
-        fun create(pathUrl: String, title: String, source: Long = 0): Manga = MangaImpl().apply {
-            url = pathUrl
-            this.title = title
-            this.source = source
-        }
-
-        fun mapper(
-            id: Long,
-            source: Long,
-            url: String,
-            artist: String?,
-            author: String?,
-            description: String?,
-            genre: String?,
-            title: String,
-            status: Long,
-            thumbnailUrl: String?,
-            favorite: Long,
-            lastUpdate: Long?,
-            initialized: Boolean,
-            viewerFlags: Long,
-            hideTitle: Long,
-            chapterFlags: Long,
-            dateAdded: Long?,
-            filteredScanlators: String?,
-            updateStrategy: Long
-        ): Manga = create(source).apply {
-            this.id = id
-            this.url = url
-            this.artist = artist
-            this.author = author
-            this.description = description
-            this.genre = genre
-            this.title = title
-            this.status = status.toInt()
-            this.thumbnail_url = thumbnailUrl
-            this.favorite = favorite > 0
-            this.last_update = lastUpdate ?: 0L
-            this.initialized = initialized
-            this.viewer_flags = viewerFlags.toInt()
-            this.chapter_flags = chapterFlags.toInt()
-            this.hide_title = hideTitle > 0
-            this.date_added = dateAdded ?: 0L
-            this.filtered_scanlators = filteredScanlators
-            this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
-        }
     }
 }

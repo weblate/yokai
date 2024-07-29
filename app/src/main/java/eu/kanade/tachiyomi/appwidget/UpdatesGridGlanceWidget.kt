@@ -26,8 +26,6 @@ import coil3.size.Precision
 import coil3.size.Scale
 import coil3.transform.RoundedCornersTransformation
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
 import eu.kanade.tachiyomi.appwidget.components.CoverHeight
 import eu.kanade.tachiyomi.appwidget.components.CoverWidth
 import eu.kanade.tachiyomi.appwidget.components.LockedWidget
@@ -35,7 +33,7 @@ import eu.kanade.tachiyomi.appwidget.components.UpdatesWidget
 import eu.kanade.tachiyomi.appwidget.util.appWidgetBackgroundRadius
 import eu.kanade.tachiyomi.appwidget.util.calculateRowAndColumnCount
 import eu.kanade.tachiyomi.core.security.SecurityPreferences
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.launchIO

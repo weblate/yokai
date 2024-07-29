@@ -2,7 +2,8 @@ package yokai.data.manga
 
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.data.database.models.mapper
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.system.toInt
 import kotlinx.coroutines.flow.Flow
 import yokai.data.DatabaseHandler

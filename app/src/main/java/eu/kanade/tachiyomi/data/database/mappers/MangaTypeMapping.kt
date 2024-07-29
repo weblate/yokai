@@ -9,7 +9,6 @@ import com.pushtorefresh.storio.sqlite.operations.put.DefaultPutResolver
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
 import com.pushtorefresh.storio.sqlite.queries.InsertQuery
 import com.pushtorefresh.storio.sqlite.queries.UpdateQuery
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_ARTIST
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_AUTHOR
@@ -31,6 +30,7 @@ import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_UPDATE_STRATEGY
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_URL
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.COL_VIEWER
 import eu.kanade.tachiyomi.data.database.tables.MangaTable.TABLE
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import yokai.data.updateStrategyAdapter
 
 class MangaTypeMapping : SQLiteTypeMapping<Manga>(

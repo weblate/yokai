@@ -3,8 +3,8 @@ package eu.kanade.tachiyomi.ui.source.globalsearch
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.core.view.isVisible
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.databinding.SourceGlobalSearchControllerCardBinding
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.ui.migration.SearchController

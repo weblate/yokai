@@ -1,6 +1,6 @@
 package yokai.util
 
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.SourceManager
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get

@@ -1,6 +1,6 @@
 package yokai.domain.chapter.interactor
 
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import yokai.domain.chapter.ChapterRepository
 
 class GetChapter(

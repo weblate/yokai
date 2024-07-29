@@ -16,6 +16,7 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.updateAll
 import androidx.glance.background
 import androidx.glance.layout.fillMaxSize
+import coil3.asDrawable
 import coil3.executeBlocking
 import coil3.imageLoader
 import coil3.request.CachePolicy
@@ -25,8 +26,7 @@ import coil3.size.Precision
 import coil3.size.Scale
 import coil3.transform.RoundedCornersTransformation
 import eu.kanade.tachiyomi.core.security.SecurityPreferences
-import eu.kanade.tachiyomi.data.database.models.Manga
-import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.MainScope
@@ -41,7 +41,6 @@ import yokai.presentation.widget.util.calculateRowAndColumnCount
 import java.util.*
 import kotlin.math.min
 
-// FIXME: Move Manga to 'data' module
 class UpdatesGridGlanceWidget(
     private val app: Application = Injekt.get(),
     private val preferences: SecurityPreferences = Injekt.get(),
@@ -78,6 +77,7 @@ class UpdatesGridGlanceWidget(
                 .flatMap { manager.getAppWidgetSizes(it) }
                 .maxBy { it.height.value * it.width.value }
                 .calculateRowAndColumnCount()
+            // FIXME: Extract getRecentManga logic out of RecentsPresenter
             val processList = list ?: RecentsPresenter.getRecentManga(customAmount = min(50, rowCount * columnCount))
 
             data = prepareList(processList, rowCount * columnCount)
@@ -110,6 +110,7 @@ class UpdatesGridGlanceWidget(
                         }
                     }
                     .build()
+                // FIXME: Make Manga independent from SManga
                 Pair(updatesView.id!!, app.imageLoader.executeBlocking(request).image?.asDrawable(app.resources)?.toBitmap())
             }
     }

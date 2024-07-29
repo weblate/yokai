@@ -2,7 +2,7 @@ package eu.kanade.tachiyomi.data.coil
 
 import coil3.key.Keyer
 import coil3.request.Options
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 
 class MangaCoverKeyer : Keyer<Manga> {

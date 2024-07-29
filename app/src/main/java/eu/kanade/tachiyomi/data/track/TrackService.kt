@@ -2,10 +2,10 @@ package eu.kanade.tachiyomi.data.track
 
 import androidx.annotation.CallSuper
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Track
+import eu.kanade.tachiyomi.data.database.models.isOneShotOrCompleted
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.util.system.executeOnIO
@@ -110,7 +110,7 @@ abstract class TrackService(val id: Int) {
 
 suspend fun TrackService.updateNewTrackInfo(track: Track) {
     val manga = db.getManga(track.manga_id).executeOnIO()
-    val allRead = manga?.isOneShotOrCompleted(db) == true &&
+    val allRead = manga?.isOneShotOrCompleted() == true &&
         db.getChapters(track.manga_id).executeOnIO().all { it.read }
     if (supportsReadingDates) {
         track.started_reading_date = getStartDate(track)

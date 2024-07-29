@@ -1,8 +1,10 @@
 package eu.kanade.tachiyomi.util.chapter
 
 import eu.kanade.tachiyomi.data.database.models.Chapter
-import eu.kanade.tachiyomi.data.database.models.Manga
+import eu.kanade.tachiyomi.data.database.models.chapterOrder
+import eu.kanade.tachiyomi.data.database.models.sortDescending
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get

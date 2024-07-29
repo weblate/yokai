@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.database.models
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import uy.kohesive.injekt.injectLazy
@@ -73,18 +74,12 @@ open class MangaImpl : Manga {
 
     override var filtered_scanlators: String? = null
 
-    lateinit var ogTitle: String
-        private set
-    var ogAuthor: String? = null
-        private set
-    var ogArtist: String? = null
-        private set
-    var ogDesc: String? = null
-        private set
-    var ogGenre: String? = null
-        private set
-    var ogStatus: Int = 0
-        private set
+    override lateinit var ogTitle: String
+    override var ogAuthor: String? = null
+    override var ogArtist: String? = null
+    override var ogDesc: String? = null
+    override var ogGenre: String? = null
+    override var ogStatus: Int = 0
 
     override fun copyFrom(other: SManga) {
         if (other is MangaImpl && other::ogTitle.isInitialized &&

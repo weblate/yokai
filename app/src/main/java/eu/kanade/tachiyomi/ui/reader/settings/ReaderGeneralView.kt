@@ -3,6 +3,8 @@ package eu.kanade.tachiyomi.ui.reader.settings
 import android.content.Context
 import android.util.AttributeSet
 import androidx.core.view.isVisible
+import eu.kanade.tachiyomi.data.database.models.orientationType
+import eu.kanade.tachiyomi.data.database.models.readingModeType
 import eu.kanade.tachiyomi.databinding.ReaderGeneralLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.bindToPreference

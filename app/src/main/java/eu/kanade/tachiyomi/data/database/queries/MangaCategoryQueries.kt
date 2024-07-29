@@ -4,9 +4,9 @@ import com.pushtorefresh.storio.Queries
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
 import eu.kanade.tachiyomi.data.database.DbProvider
 import eu.kanade.tachiyomi.data.database.inTransaction
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.tables.MangaCategoryTable
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface MangaCategoryQueries : DbProvider {
 

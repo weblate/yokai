@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(androidx.plugins.library)
     alias(kotlinx.plugins.android)
@@ -23,8 +25,17 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.i18n)
     implementation(projects.presentation.core)
+    implementation(projects.source.api)  // Access to SManga
 
     implementation(androidx.glance.appwidget)
 
     implementation(libs.coil3)
+}
+
+tasks {
+    withType<KotlinCompile> {
+        compilerOptions.freeCompilerArgs.addAll(
+            "-opt-in=coil3.annotation.ExperimentalCoilApi",
+        )
+    }
 }

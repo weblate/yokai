@@ -3,10 +3,10 @@ package eu.kanade.tachiyomi.data.database.queries
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
 import com.pushtorefresh.storio.sqlite.queries.Query
 import eu.kanade.tachiyomi.data.database.DbProvider
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.tables.TrackTable
 import eu.kanade.tachiyomi.data.track.TrackService
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface TrackQueries : DbProvider {
 

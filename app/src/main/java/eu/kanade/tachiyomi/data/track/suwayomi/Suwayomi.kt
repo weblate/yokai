@@ -2,17 +2,15 @@ package eu.kanade.tachiyomi.data.track.suwayomi
 
 import android.content.Context
 import android.graphics.Color
-import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
+import eu.kanade.tachiyomi.domain.manga.models.Manga
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class Suwayomi(private val context: Context, id: Int) : TrackService(id), EnhancedTrackService {
     val api by lazy { TachideskApi() }

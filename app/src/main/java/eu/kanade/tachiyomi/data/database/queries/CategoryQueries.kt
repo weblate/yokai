@@ -4,8 +4,8 @@ import com.pushtorefresh.storio.sqlite.queries.Query
 import com.pushtorefresh.storio.sqlite.queries.RawQuery
 import eu.kanade.tachiyomi.data.database.DbProvider
 import eu.kanade.tachiyomi.data.database.models.Category
-import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.database.tables.CategoryTable
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface CategoryQueries : DbProvider {
 

@@ -31,6 +31,17 @@ fun runCommand(command: String): String {
     return String(byteOut.toByteArray()).trim()
 }
 
+val versionName = "1.8.5"
+val betaCount by lazy {
+    val betaTags = runCommand("git tag -l --sort=refname v${versionName}-b*")
+
+    String.format("%02d", if (betaTags.isNotEmpty()) {
+        val betaTag = betaTags.split("\n").last().substringAfter("-b").toIntOrNull()
+        ((betaTag ?: 0) + 1)
+    } else {
+        1
+    })
+}
 val commitCount by lazy { runCommand("git rev-list --count HEAD") }
 val commitHash by lazy { runCommand("git rev-parse --short HEAD") }
 val buildTime: String by lazy {
@@ -44,7 +55,7 @@ android {
     defaultConfig {
         applicationId = "eu.kanade.tachiyomi"
         versionCode = 139
-        versionName = "1.8.4.3"
+        versionName = versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 
@@ -94,7 +105,7 @@ android {
             buildConfigField("boolean", "BETA", "true")
 
             matchingFallbacks.add("release")
-            versionNameSuffix = "-b${commitCount}"
+            versionNameSuffix = "-b${betaCount}"
         }
         create("nightly") {
             initWith(getByName("release"))

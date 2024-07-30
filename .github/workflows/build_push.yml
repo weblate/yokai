@@ -9,6 +9,11 @@ on:
         description: 'Version (without "v" prefix)'
         required: true
         type: string
+      beta:
+        description: 'Beta release'
+        default: false
+        required: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -58,10 +63,21 @@ jobs:
 
       # PROD
       - name: Prepare release build
-        if: github.event.inputs.version != ''
+        if: github.event.inputs.version != '' && github.event.inputs.beta != 'true'
         run: |
           set -x
           echo "VERSION_TAG=v${{github.event.inputs.version}}" >> $GITHUB_ENV
+
+      # BETA
+      - name: Prepare beta build
+        if: github.event.inputs.version != '' && github.event.inputs.beta == 'true'
+        run: |
+          set -x
+
+          BETA_COUNT=$(git tag -l --sort=refname "v${{github.event.inputs.version}}-b*" | tail -n1 | sed "s/^\S*-b//g")
+          [ "$BETA_COUNT" = "" ] && BETA_COUNT="1" || BETA_COUNT=$((BETA_COUNT+1))
+
+          echo "VERSION_TAG=v${{github.event.inputs.version}}-b${BETA_COUNT}" >> $GITHUB_ENV
 
       # NIGHTLY
       - name: Prepare nightly build
@@ -74,8 +90,13 @@ jobs:
 
       # PROD
       - name: Build release build and run tests
-        if: startsWith(env.VERSION_TAG, 'v')
+        if: startsWith(env.VERSION_TAG, 'v') && github.event.inputs.beta != 'true'
         run: ./gradlew assembleStandardRelease testStandardReleaseUnitTest
+
+      # BETA
+      - name: Build release build and run tests
+        if: startsWith(env.VERSION_TAG, 'v') && github.event.inputs.beta == 'true'
+        run: ./gradlew assembleStandardBeta testStandardBetaUnitTest
 
       # NIGHTLY
       - name: Build nightly build and run tests
@@ -104,11 +125,27 @@ jobs:
           detailed_summary: true
           report_paths: '**/build/test-results/test*/TEST-*.xml'
 
+      - name: Get version stage
+        id: version_stage
+        shell: bash
+        run: |
+          stage=""
+          case "${{ env.VERSION_TAG }}" in
+            v*)
+              _test=$(echo "${{ env.VERSION_TAG }}" | grep "v*-b")
+              [ "$_test" = "" ] && stage="release" || stage="beta"
+              ;;
+            r*) stage="nightly" ;;
+          esac
+          [ "$stage" = "" ] && exit 1  # something went wrong
+
+          echo "STAGE=${stage}" >> $GITHUB_OUTPUT
+
       - name: Sign APK
         uses: null2264/actions/android-signer@102c5b82a95381eeb420bb2d62639d1ff2a3eb1c
         if: env.VERSION_TAG != ''
         with:
-          releaseDir: app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
+          releaseDir: app/build/outputs/apk/standard/${{ steps.version_stage.outputs.STAGE }}
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           keyAlias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -119,8 +156,8 @@ jobs:
         if: env.VERSION_TAG != ''
         run: |
           set -e
-          
-          dir=app/build/outputs/apk/standard/${{ startsWith(env.VERSION_TAG, 'v') && 'release' || 'nightly' }}
+
+          dir="app/build/outputs/apk/standard/${{ steps.version_stage.outputs.STAGE }}"
 
           mv $dir/app-standard-universal-*-signed.apk yokai-${{ env.VERSION_TAG }}.apk
           sha=`sha256sum yokai-${{ env.VERSION_TAG }}.apk | awk '{ print $1 }'`
@@ -150,7 +187,7 @@ jobs:
           name: Yōkai ${{ env.VERSION_TAG }}
           body: |
             ${{ steps.changelog.outputs.CHANGELOG }}
-            
+
             ---
 
             ### Checksums
@@ -173,7 +210,7 @@ jobs:
             yokai-x86-${{ env.VERSION_TAG }}.apk
             yokai-x86_64-${{ env.VERSION_TAG }}.apk
           draft: true
-          prerelease: false
+          prerelease: ${{ github.event.inputs.beta }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

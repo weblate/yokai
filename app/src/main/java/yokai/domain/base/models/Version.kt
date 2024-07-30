@@ -26,10 +26,10 @@ data class Version(
             patch.compareTo(other.patch)).compareTo(0)
         // if semver is equal, check version stage (release (3) > beta (2) > alpha (1))
         if (rt == 0) rt = stage.weight.compareTo(other.stage.weight)
-        // if stage is also equal, we compare build number
-        if (rt == 0) rt = build.compareTo(other.build)
-        // if everything are equal, check if it's a hotfix (1.2.3 vs 1.2.3.1)
+        // if stage is also equal, check if it's a hotfix (1.2.3 vs 1.2.3.1)
         if (rt == 0) rt = hotfix.compareTo(other.hotfix)
+        // if everything are equal, we compare build number. Still only matters on unstable (beta and nightly) releases
+        if (rt == 0) rt = build.compareTo(other.build)
 
         return rt
     }

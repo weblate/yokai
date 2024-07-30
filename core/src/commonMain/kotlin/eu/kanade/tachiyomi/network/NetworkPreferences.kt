@@ -9,6 +9,6 @@ class NetworkPreferences(private val preferenceStore: PreferenceStore) {
     fun defaultUserAgent() = preferenceStore.getString("default_user_agent", DEFAULT_USER_AGENT)
 
     companion object {
-        const val DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.1"
+        const val DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
     }
 }

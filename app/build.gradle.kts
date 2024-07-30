@@ -196,6 +196,7 @@ dependencies {
     debugImplementation(libs.chucker.library)
     releaseImplementation(libs.chucker.library.no.op)
     "nightlyImplementation"(libs.chucker.library.no.op)
+    "betaImplementation"(libs.chucker.library.no.op)
 
     implementation(kotlin("reflect", version = kotlinx.versions.kotlin.get()))
 

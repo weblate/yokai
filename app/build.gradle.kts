@@ -31,9 +31,9 @@ fun runCommand(command: String): String {
     return String(byteOut.toByteArray()).trim()
 }
 
-val versionName = "1.8.5"
+val _versionName = "1.8.5"
 val betaCount by lazy {
-    val betaTags = runCommand("git tag -l --sort=refname v${versionName}-b*")
+    val betaTags = runCommand("git tag -l --sort=refname v${_versionName}-b*")
 
     String.format("%02d", if (betaTags.isNotEmpty()) {
         val betaTag = betaTags.split("\n").last().substringAfter("-b").toIntOrNull()
@@ -55,11 +55,12 @@ android {
     defaultConfig {
         applicationId = "eu.kanade.tachiyomi"
         versionCode = 139
-        versionName = versionName
+        versionName = _versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 
         buildConfigField("String", "COMMIT_COUNT", "\"${commitCount}\"")
+        buildConfigField("String", "BETA_COUNT", "\"${betaCount}\"")
         buildConfigField("String", "COMMIT_SHA", "\"${commitHash}\"")
         buildConfigField("String", "BUILD_TIME", "\"${buildTime}\"")
         buildConfigField("Boolean", "INCLUDE_UPDATER", "false")

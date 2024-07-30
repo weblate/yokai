@@ -94,7 +94,7 @@ jobs:
         run: ./gradlew assembleStandardRelease testStandardReleaseUnitTest
 
       # BETA
-      - name: Build release build and run tests
+      - name: Build beta build and run tests
         if: startsWith(env.VERSION_TAG, 'v') && github.event.inputs.beta == 'true'
         run: ./gradlew assembleStandardBeta testStandardBetaUnitTest
 

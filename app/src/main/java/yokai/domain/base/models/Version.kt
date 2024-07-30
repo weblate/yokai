@@ -24,10 +24,10 @@ data class Version(
         var rt = (major.compareTo(other.major) +
             minor.compareTo(other.minor) +
             patch.compareTo(other.patch)).compareTo(0)
-        // if semver is equal, check version stage (release (3) > beta (2) > alpha (1))
-        if (rt == 0) rt = stage.weight.compareTo(other.stage.weight)
         // check if it's a hotfix (1.2.3 vs 1.2.3.1)
         if (rt == 0) rt = hotfix.compareTo(other.hotfix)
+        // if semver is equal, check version stage (release (3) > beta (2) > alpha (1))
+        if (rt == 0) rt = stage.weight.compareTo(other.stage.weight)
         // if everything are equal, we compare build number. This only matters on unstable (beta and nightly) releases
         if (rt == 0) rt = build.compareTo(other.build)
 

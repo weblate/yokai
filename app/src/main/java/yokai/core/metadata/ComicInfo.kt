@@ -1,7 +1,6 @@
 package yokai.core.metadata
 
 import eu.kanade.tachiyomi.data.database.models.Chapter
-import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.model.SManga
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.serialization.XmlElement
@@ -12,7 +11,7 @@ const val COMIC_INFO_EDITS_FILE = "ComicInfoEdits.xml"
 const val COMIC_INFO_FILE = "ComicInfo.xml"
 
 fun getComicInfo(
-    manga: Manga,
+    manga: SManga,
     chapter: Chapter,
     urls: List<String>,
     categories: List<String>?,
@@ -101,6 +100,7 @@ fun SManga.copyFromComicInfo(comicInfo: ComicInfo) {
     status = ComicInfoPublishingStatus.toSMangaValue(comicInfo.publishingStatus?.value)
 }
 
+// TODO: Move to core module
 // REF: https://anansi-project.github.io/docs/comicinfo/schemas/v2.0
 @Serializable
 @XmlSerialName("ComicInfo", "", "")

@@ -55,7 +55,6 @@ mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version = "v3.1
 nucleus-support-v7 = { module = "info.android15.nucleus:nucleus-support-v7", version.ref = "nucleus" }
 nucleus = { module = "info.android15.nucleus:nucleus", version.ref = "nucleus" }
 java-nat-sort = { module = "com.github.gpanther:java-nat-sort", version = "natural-comparator-1.1" }
-java-string-similarity = { module = "info.debatty:java-string-similarity", version = "2.0.0" }
 jsoup = { module = "org.jsoup:jsoup", version = "1.17.1" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }

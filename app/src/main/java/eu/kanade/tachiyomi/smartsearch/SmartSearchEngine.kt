@@ -6,12 +6,12 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.CatalogueSource
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.util.lang.toNormalized
-import info.debatty.java.stringsimilarity.NormalizedLevenshtein
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.supervisorScope
 import uy.kohesive.injekt.injectLazy
+import yokai.util.normalizedLevenshteinSimilarity
 import kotlin.coroutines.CoroutineContext
 
 class SmartSearchEngine(
@@ -21,8 +21,6 @@ class SmartSearchEngine(
     override val coroutineContext: CoroutineContext = parentContext + Job() + Dispatchers.Default
 
     private val db: DatabaseHelper by injectLazy()
-
-    private val normalizedLevenshtein = NormalizedLevenshtein()
 
     /*suspend fun smartSearch(source: CatalogueSource, title: String): SManga? {
         val cleanedTitle = cleanSmartSearchTitle(title)
@@ -40,7 +38,7 @@ class SmartSearchEngine(
 
                     searchResults.mangas.map {
                         val cleanedMangaTitle = cleanSmartSearchTitle(it.title)
-                        val normalizedDistance = normalizedLevenshtein.similarity(cleanedTitle, cleanedMangaTitle)
+                        val normalizedDistance = normalizedLevenshteinSimilarity(cleanedTitle, cleanedMangaTitle)
                         SearchEntry(it, normalizedDistance)
                     }.filter { (_, normalizedDistance) ->
                         normalizedDistance >= MIN_SMART_ELIGIBLE_THRESHOLD
@@ -68,7 +66,7 @@ class SmartSearchEngine(
             }
 
             searchResults.mangas.map {
-                val normalizedDistance = normalizedLevenshtein.similarity(titleNormalized, it.title.toNormalized())
+                val normalizedDistance = normalizedLevenshteinSimilarity(titleNormalized, it.title.toNormalized())
                 SearchEntry(it, normalizedDistance)
             }.filter { (_, normalizedDistance) ->
                 normalizedDistance >= MIN_NORMAL_ELIGIBLE_THRESHOLD
@@ -77,6 +75,7 @@ class SmartSearchEngine(
 
         return eligibleManga.maxByOrNull { it.dist }?.manga
     }
+
     private fun removeTextInBrackets(text: String, readForward: Boolean): String {
         val bracketPairs = listOf(
             '(' to ')',

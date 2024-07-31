@@ -267,9 +267,6 @@ dependencies {
     implementation(platform(kotlinx.coroutines.bom))
     implementation(kotlinx.bundles.coroutines)
 
-    // Text distance
-    implementation(libs.java.string.similarity)
-
     // TLS 1.3 support for Android < 10
     implementation(libs.conscrypt)
 

@@ -13,7 +13,6 @@ import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.preference.PreferenceScreen
 import co.touchlab.kermit.Logger
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.data.updater.AppUpdateChecker
@@ -37,6 +36,7 @@ import eu.kanade.tachiyomi.util.view.setNegativeButton
 import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.snack
+import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -126,7 +126,7 @@ class AboutController : SettingsLegacyController() {
                 titleMRes = MR.strings.open_source_licenses
 
                 onClick {
-                    startActivity(Intent(activity, OssLicensesMenuActivity::class.java))
+                    router.pushController(AboutLicenseController().withFadeTransaction())
                 }
             }
         }

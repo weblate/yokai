@@ -12,7 +12,7 @@ plugins {
     alias(kotlinx.plugins.compose.compiler)
     alias(kotlinx.plugins.serialization)
     alias(kotlinx.plugins.parcelize)
-    alias(libs.plugins.google.oss)
+    alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.google.services) apply false
 }
@@ -236,6 +236,8 @@ dependencies {
     // Sort
     implementation(libs.java.nat.sort)
 
+    implementation(libs.aboutlibraries)
+
     // UI
     implementation(libs.material.design.dimens)
     implementation(libs.loading.button)
@@ -267,8 +269,6 @@ dependencies {
 
     // Text distance
     implementation(libs.java.string.similarity)
-
-    implementation(libs.play.services.oss.licenses)
 
     // TLS 1.3 support for Android < 10
     implementation(libs.conscrypt)

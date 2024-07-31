@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.more
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -28,9 +29,11 @@ class AboutLicenseController : BaseComposeController() {
                 onLibraryClick = {
                     router.pushController(
                         AboutLibraryLicenseController(
-                            it.name,
-                            it.website,
-                            it.licenses.firstOrNull()?.htmlReadyLicenseContent.orEmpty(),
+                            Bundle().apply {
+                                this.putString(LIBRARY_NAME, it.name)
+                                it.website?.let { website -> this.putString(LIBRARY_WEBSITE, website) }
+                                this.putString(LIBRARY_LICENSE, it.licenses.firstOrNull()?.htmlReadyLicenseContent.orEmpty())
+                            }
                         ).withFadeTransaction(),
                     )
                 }

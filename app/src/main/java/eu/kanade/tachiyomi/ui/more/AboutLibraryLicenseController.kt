@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.more
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -22,13 +23,13 @@ import yokai.presentation.AppBarType
 import yokai.presentation.YokaiScaffold
 import yokai.presentation.component.ToolTipButton
 
-class AboutLibraryLicenseController(
-    private val name: String,
-    private val website: String?,
-    private val license: String,
-) : BaseComposeController() {
+class AboutLibraryLicenseController(private val bundle: Bundle) : BaseComposeController(bundle) {
     @Composable
     override fun ScreenContent() {
+        val name = bundle.getString(LIBRARY_NAME) ?: throw RuntimeException("Missing library name")
+        val website = bundle.getString(LIBRARY_WEBSITE)
+        val license = bundle.getString(LIBRARY_LICENSE) ?: throw RuntimeException("Missing library license")
+
         val uriHandler = LocalUriHandler.current
 
         YokaiScaffold(
@@ -71,3 +72,7 @@ class AboutLibraryLicenseController(
         )
     }
 }
+
+const val LIBRARY_NAME = "aboutLibraries__LibraryName"
+const val LIBRARY_WEBSITE = "aboutLibraries__LibraryWebsite"
+const val LIBRARY_LICENSE = "aboutLibraries__LibraryLicense"

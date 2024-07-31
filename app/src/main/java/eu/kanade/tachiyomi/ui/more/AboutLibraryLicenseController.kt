@@ -32,6 +32,7 @@ class AboutLibraryLicenseController(private val bundle: Bundle) : BaseComposeCon
 
         val uriHandler = LocalUriHandler.current
 
+        // FIXME: For some reason AppBar is offscreen
         YokaiScaffold(
             onNavigationIconClicked = router::handleBack,
             title = name,
@@ -52,8 +53,8 @@ class AboutLibraryLicenseController(private val bundle: Bundle) : BaseComposeCon
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(innerPadding)
-                    .padding(16.dp),
+                    .padding(innerPadding),
+                    // .padding(16.dp),
             ) {
                 HtmlLicenseText(html = license)
             }

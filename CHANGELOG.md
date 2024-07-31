@@ -34,7 +34,7 @@
   - Split the project into several modules
   - Migrated i18n to use Moko Resources
 - Update firebase bom to v33.1.0
-- Update dependency com.google.android.gms:play-services-oss-licenses to v17.1.0
+- Replace com.google.android.gms:play-services-oss-licenses with com.mikepenz:aboutlibraries
 - Update dependency com.google.gms:google-services to v4.4.2
 - Add crashlytics integration for Kermit
 - Replace ProgressBar with ProgressIndicator from Material3 to improve UI consistency
@@ -51,3 +51,4 @@
 - Bump dependency com.github.tachiyomiorg:image-decoder revision to 41c059e540
 - Update dependency io.coil-kt.coil3 to v3.0.0-alpha08
 - Update Android Gradle Plugin to v8.5.1
+- Update gradle to v8.9

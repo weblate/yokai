@@ -98,17 +98,17 @@ fun Manga.defaultReaderType(): Int {
             )
     ) {
         ReadingModeType.LONG_STRIP.flagValue
-    } else if (currentTags.any {
-                tag -> tag == "chinese" || tag == "manhua" || tag == "comic"
-        } || (
-            isComicSource(sourceName) &&
-                !sourceName.contains("tapas", true) &&
-                currentTags.none { tag -> isMangaTag(tag) }
-            ) || (
-            sourceName.contains("manhua", true) && currentTags.none { tag -> isMangaTag(tag) }
-            )
-    ) {
-        ReadingModeType.LEFT_TO_RIGHT.flagValue
+    // } else if (currentTags.any {
+    //             tag -> tag == "chinese" || tag == "manhua" || tag == "comic"
+    //     } || (
+    //         isComicSource(sourceName) &&
+    //             !sourceName.contains("tapas", true) &&
+    //             currentTags.none { tag -> isMangaTag(tag) }
+    //         ) || (
+    //         sourceName.contains("manhua", true) && currentTags.none { tag -> isMangaTag(tag) }
+    //         )
+    // ) {
+    //     ReadingModeType.LEFT_TO_RIGHT.flagValue
     } else {
         0
     }

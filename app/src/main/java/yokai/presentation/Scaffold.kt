@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.LargeTopAppBar
@@ -25,12 +24,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowInsetsControllerCompat
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
+import yokai.i18n.MR
 import yokai.presentation.component.ToolTipButton
 
 @Composable
@@ -67,7 +63,7 @@ fun YokaiScaffold(
                     title = {
                         Text(text = title)
                     },
-                    modifier = Modifier.statusBarsPadding(),
+                    // modifier = Modifier.statusBarsPadding(),
                     colors = topAppBarColors(
                         containerColor = color,
                         scrolledContainerColor = color,
@@ -86,7 +82,7 @@ fun YokaiScaffold(
                     title = {
                         Text(text = title)
                     },
-                    modifier = Modifier.statusBarsPadding(),
+                    // modifier = Modifier.statusBarsPadding(),
                     colors = topAppBarColors(
                         containerColor = color,
                         scrolledContainerColor = color,

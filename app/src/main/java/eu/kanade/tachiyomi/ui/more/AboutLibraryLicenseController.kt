@@ -53,8 +53,8 @@ class AboutLibraryLicenseController(private val bundle: Bundle) : BaseComposeCon
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(innerPadding),
-                    // .padding(16.dp),
+                    .padding(innerPadding)
+                    .padding(16.dp),
             ) {
                 HtmlLicenseText(html = license)
             }

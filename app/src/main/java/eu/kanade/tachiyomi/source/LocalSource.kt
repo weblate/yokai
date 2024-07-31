@@ -196,6 +196,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
     override suspend fun getLatestUpdates(page: Int) = getSearchManga(page, "", latestFilters)
 
     override suspend fun getMangaDetails(manga: SManga): SManga = withIOContext {
+        // Making sure that we have the latest cover file path, in case user use different file format
+        invalidateCover(manga)
+
         try {
             val localMangaDir = getBaseDirectory()?.findFile(manga.url) ?: throw Exception("${manga.url} is not a valid directory")
             val localMangaFiles = localMangaDir.listFiles().orEmpty().filter { !it.isDirectory }
@@ -205,14 +208,12 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             if (comicInfoFile != null)
                 return@withIOContext manga.copy().apply {
                     setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), this)
-                    invalidateCover(this)
                 }
 
             // TODO: Remove after awhile
             if (legacyJsonFile != null) {
                 val rt = manga.copy().apply {
                     setMangaDetailsFromLegacyJsonFile(legacyJsonFile.openInputStream(), this)
-                    invalidateCover(this)
                 }
                 val comicInfo = rt.toComicInfo()
                 localMangaDir.createFile(COMIC_INFO_FILE)

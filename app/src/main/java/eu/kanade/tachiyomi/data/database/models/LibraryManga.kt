@@ -10,9 +10,9 @@ data class LibraryManga(
     var category: Int = 0,
     var bookmarkCount: Int = 0,
     var totalChapters: Int = 0,
-    var latestUpdate: Int = 0,
-    var lastRead: Int = 0,
-    var lastFetch: Int = 0,
+    var latestUpdate: Long = 0,
+    var lastRead: Long = 0,
+    var lastFetch: Long = 0,
 ) : MangaImpl() {
 
     var realMangaCount = 0
@@ -99,9 +99,9 @@ data class LibraryManga(
             this.unread = maxOf((total - readCount).roundToInt(), 0)
             this.totalChapters = readCount.roundToInt()
             this.bookmarkCount = bookmarkCount.roundToInt()
-            this.latestUpdate = latestUpdate.toInt()
-            this.lastRead = lastRead.toInt()
-            this.lastFetch = lastFetch.toInt()
+            this.latestUpdate = latestUpdate
+            this.lastRead = lastRead
+            this.lastFetch = lastFetch
         }
     }
 }

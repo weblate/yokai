@@ -36,7 +36,6 @@ class AboutLibraryLicenseScreen(
         val backPress = LocalBackPress.currentOrThrow
         val uriHandler = LocalUriHandler.current
 
-        // FIXME: For some reason AppBar is offscreen
         YokaiScaffold(
             onNavigationIconClicked = {
                 when {

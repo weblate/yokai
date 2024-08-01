@@ -65,13 +65,8 @@ import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
-import com.google.common.primitives.Floats.max
-import com.google.common.primitives.Ints.max
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
@@ -147,9 +142,11 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import yokai.core.migration.Migrator
 import yokai.domain.base.BasePreferences
+import yokai.i18n.MR
 import yokai.presentation.core.Constants
 import yokai.presentation.extension.repo.ExtensionRepoController
 import yokai.presentation.onboarding.OnboardingController
+import yokai.util.lang.getString
 import kotlin.collections.set
 import kotlin.math.abs
 import kotlin.math.min
@@ -242,7 +239,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     val toolbarHeight: Int
-        get() = max(binding.toolbar.height, binding.cardFrame.height, binding.appBar.attrToolbarHeight)
+        get() = maxOf(binding.toolbar.height, binding.cardFrame.height, binding.appBar.attrToolbarHeight)
 
     private var actionMode: ActionMode? = null
     private var backPressedCallback: OnBackPressedCallback? = null
@@ -310,7 +307,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                     motionEvent.recycle()
                     velocityTracker.computeCurrentVelocity(1, 5f)
                     backVelocity =
-                        max(0.5f, abs(velocityTracker.getAxisVelocity(MotionEvent.AXIS_X)) * 0.5f)
+                        maxOf(0.5f, abs(velocityTracker.getAxisVelocity(MotionEvent.AXIS_X)) * 0.5f)
                 }
                 lastX = 0f
                 lastY = 0f

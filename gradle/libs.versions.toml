@@ -41,7 +41,6 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx"
 flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
 flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter", version.ref = "flexible-adapter" }
-guava = { module = "com.google.guava:guava", version = "31.1-android" }
 image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "41c059e540" }
 injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65b0440" }
 

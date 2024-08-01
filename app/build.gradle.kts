@@ -213,9 +213,6 @@ dependencies {
     // HTML parser
     implementation(libs.jsoup)
 
-    // Job scheduling
-    implementation(libs.guava)
-
     implementation(libs.play.services.gcm)
 
     // Database

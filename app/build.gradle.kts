@@ -224,8 +224,8 @@ dependencies {
     implementation("com.github.inorichi.storio:storio-sqlite:8be19de@aar")
 
     // Model View Presenter
-    implementation(libs.nucleus)
-    implementation(libs.nucleus.support.v7)
+    implementation(libs.conductor)
+    implementation(libs.conductor.support.preference)
 
     // Image library
     implementation(libs.bundles.coil)
@@ -250,10 +250,6 @@ dependencies {
     implementation(libs.directionalviewpager)
     implementation(libs.viewtooltip)
     implementation(libs.taptargetview)
-
-    // Conductor
-    implementation(libs.conductor)
-    implementation(libs.conductor.support.preference)
 
     // Navigation
     implementation(libs.bundles.voyager)

@@ -34,6 +34,7 @@
   - Rewrite Migrator
   - Split the project into several modules
   - Migrated i18n to use Moko Resources
+  - Removed unnecessary dependencies
 - Update firebase bom to v33.1.0
 - Replace com.google.android.gms:play-services-oss-licenses with com.mikepenz:aboutlibraries
 - Update dependency com.google.gms:google-services to v4.4.2

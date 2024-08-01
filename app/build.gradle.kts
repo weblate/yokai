@@ -258,6 +258,9 @@ dependencies {
     implementation(libs.conductor)
     implementation(libs.conductor.support.preference)
 
+    // Navigation
+    implementation(libs.bundles.voyager)
+
     // Shizuku
     implementation(libs.shizuku.api)
     implementation(libs.shizuku.provider)

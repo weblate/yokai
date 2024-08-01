@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.more
 
-import android.os.Bundle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -15,26 +14,36 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.android.material.textview.MaterialTextView
 import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
+import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import yokai.i18n.MR
 import yokai.presentation.AppBarType
 import yokai.presentation.YokaiScaffold
 import yokai.presentation.component.ToolTipButton
+import yokai.util.Screen
 
-class AboutLibraryLicenseController(private val bundle: Bundle) : BaseComposeController(bundle) {
+class AboutLibraryLicenseScreen(
+    private val name: String,
+    private val website: String?,
+    private val license: String,
+) : Screen() {
     @Composable
-    override fun ScreenContent() {
-        val name = bundle.getString(LIBRARY_NAME) ?: throw RuntimeException("Missing library name")
-        val website = bundle.getString(LIBRARY_WEBSITE)
-        val license = bundle.getString(LIBRARY_LICENSE) ?: throw RuntimeException("Missing library license")
-
+    override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val backPress = LocalBackPress.currentOrThrow
         val uriHandler = LocalUriHandler.current
 
         // FIXME: For some reason AppBar is offscreen
         YokaiScaffold(
-            onNavigationIconClicked = router::handleBack,
+            onNavigationIconClicked = {
+                when {
+                    navigator.canPop -> navigator.pop()
+                    else -> backPress()
+                }
+            },
             title = name,
             appBarType = AppBarType.SMALL,
             scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
@@ -73,7 +82,3 @@ class AboutLibraryLicenseController(private val bundle: Bundle) : BaseComposeCon
         )
     }
 }
-
-const val LIBRARY_NAME = "aboutLibraries__LibraryName"
-const val LIBRARY_WEBSITE = "aboutLibraries__LibraryWebsite"
-const val LIBRARY_LICENSE = "aboutLibraries__LibraryLicense"

@@ -1,43 +1,27 @@
 package eu.kanade.tachiyomi.ui.more
 
-import android.os.Bundle
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
-import com.mikepenz.aboutlibraries.ui.compose.m3.util.htmlReadyLicenseContent
-import dev.icerock.moko.resources.compose.stringResource
+import androidx.compose.runtime.CompositionLocalProvider
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.ScreenTransition
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
-import eu.kanade.tachiyomi.util.view.withFadeTransaction
-import yokai.i18n.MR
-import yokai.presentation.AppBarType
-import yokai.presentation.YokaiScaffold
+import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import soup.compose.material.motion.animation.materialSharedAxisZ
 
 class AboutLicenseController : BaseComposeController() {
     @Composable
     override fun ScreenContent() {
-        YokaiScaffold(
-            onNavigationIconClicked = router::handleBack,
-            title = stringResource(MR.strings.open_source_licenses),
-            appBarType = AppBarType.SMALL,
-            scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-        ) { innerPadding ->
-            LibrariesContainer(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = innerPadding,
-                onLibraryClick = {
-                    router.pushController(
-                        AboutLibraryLicenseController(
-                            Bundle().apply {
-                                this.putString(LIBRARY_NAME, it.name)
-                                it.website?.let { website -> this.putString(LIBRARY_WEBSITE, website) }
-                                this.putString(LIBRARY_LICENSE, it.licenses.firstOrNull()?.htmlReadyLicenseContent.orEmpty())
-                            }
-                        ).withFadeTransaction(),
+        Navigator(
+            screen = AboutLicenseScreen(),
+            content = {
+                CompositionLocalProvider(LocalBackPress provides router::handleBack) {
+                    ScreenTransition(
+                        navigator = it,
+                        transition = { materialSharedAxisZ(forward = it.lastEvent != StackEvent.Pop) },
                     )
                 }
-            )
-        }
+            },
+        )
     }
 }

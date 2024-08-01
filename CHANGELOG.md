@@ -54,3 +54,4 @@
 - Update dependency io.coil-kt.coil3 to v3.0.0-alpha08
 - Update Android Gradle Plugin to v8.5.1
 - Update gradle to v8.9
+- Start using Voyager for navigation

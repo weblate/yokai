@@ -96,7 +96,7 @@ class AboutController : SettingsLegacyController() {
         preference {
             key = "pref_version"
             titleMRes = MR.strings.version
-            summary = if (BuildConfig.DEBUG || BuildConfig.BETA) {
+            summary = if (BuildConfig.DEBUG || BuildConfig.NIGHTLY) {
                 "r" + BuildConfig.COMMIT_COUNT
             } else {
                 BuildConfig.VERSION_NAME

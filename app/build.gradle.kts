@@ -35,12 +35,12 @@ val _versionName = "1.8.5"
 val betaCount by lazy {
     val betaTags = runCommand("git tag -l --sort=refname v${_versionName}-b*")
 
-    String.format("%02d", if (betaTags.isNotEmpty()) {
+    if (betaTags.isNotEmpty()) {
         val betaTag = betaTags.split("\n").last().substringAfter("-b").toIntOrNull()
         ((betaTag ?: 0) + 1)
     } else {
         1
-    })
+    }.toString()
 }
 val commitCount by lazy { runCommand("git rev-list --count HEAD") }
 val commitHash by lazy { runCommand("git rev-parse --short HEAD") }

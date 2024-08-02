@@ -159,6 +159,22 @@ object DeviceUtil {
             }
             CutoutSupport.LEGACY -> {
                 if (isVivo) {
+                    /*
+                    // REF: https://github.com/SivanLiu/VivoFramework/blob/8d31381e/Vivo_y93/src/main/java/android/util/FtDeviceInfo.java#L28-L30
+                    try {
+                        @SuppressLint("PrivateApi")
+                        val ftDeviceInfo = context?.classLoader
+                            ?.loadClass("android.util.FtDeviceInfo")
+                        val getEarHeightMethod = ftDeviceInfo?.getMethod(
+                            "getEarHeight",
+                            Context::class.java
+                        )
+                        val notchHeight = getEarHeightMethod?.invoke(ftDeviceInfo, context) as Int
+                    } catch (_: Exception) {
+                        // fallback
+                    }
+                    */
+
                     val insetCompat = context?.window?.decorView?.rootWindowInsets?.let {
                         WindowInsetsCompat.toWindowInsetsCompat(it)
                     }

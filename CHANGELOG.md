@@ -13,8 +13,9 @@
 - Add more info to WorkerInfo page
   - Added "next scheduled run"
   - Added attempt count
-- Disable LTR/Comic/Manhua auto detection
-  - `english` tag no longer cause reading mode to switch to LTR (mangkoran)
+- `english` tag no longer cause reading mode to switch to LTR (mangkoran)
+- `chinese` tag no longer cause reading mode to switch to LTR
+- `manhua` tag no longer cause reading mode to switch to LTR
 - Local source manga's cover now being invalidated on refresh
 
 ## Fixes

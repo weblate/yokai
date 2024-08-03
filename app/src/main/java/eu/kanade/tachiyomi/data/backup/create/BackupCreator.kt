@@ -69,33 +69,30 @@ class BackupCreator(
 
         var file: UniFile? = null
         try {
-            file = (
-                if (isAutoBackup) {
-                    // Get dir of file and create
-                    val dir = storageManager.getAutomaticBackupsDirectory()
+            file = if (isAutoBackup) {
+                // Get dir of file and create
+                val dir = storageManager.getAutomaticBackupsDirectory()
 
-                    // Delete older backups
-                    val numberOfBackups = preferences.numberOfBackups().get()
-                    dir?.listFiles { _, filename -> Backup.filenameRegex.matches(filename) }
-                        .orEmpty()
-                        .sortedByDescending { it.name }
-                        .drop(numberOfBackups - 1)
-                        .forEach { it.delete() }
+                // Delete older backups
+                val numberOfBackups = preferences.numberOfBackups().get()
+                dir?.listFiles { _, filename -> Backup.filenameRegex.matches(filename) }
+                    .orEmpty()
+                    .sortedByDescending { it.name }
+                    .drop(numberOfBackups - 1)
+                    .forEach { it.delete() }
 
-                    // Create new file to place backup
-                    dir?.createFile(Backup.getBackupFilename())
-                } else {
-                    UniFile.fromUri(context, uri)
-                }
-                )
-                ?: throw Exception("Couldn't create backup file")
+                // Create new file to place backup
+                dir?.createFile(Backup.getBackupFilename())
+            } else {
+                UniFile.fromUri(context, uri)
+            }
 
-            if (!file.isFile) {
+            if (file == null || !file.isFile) {
                 throw IllegalStateException("Failed to get handle on file")
             }
 
-            val byteArray = parser.encodeToByteArray(Backup.serializer(), backup!!)
-            if (byteArray.isEmpty()) {
+            val byteArray = backup?.let { parser.encodeToByteArray(Backup.serializer(), it) }
+            if (byteArray == null || byteArray.isEmpty()) {
                 throw IllegalStateException(context.getString(MR.strings.empty_backup_error))
             }
 

@@ -46,26 +46,24 @@ class BackupCreator(
      */
     @Suppress("RedundantSuspendModifier")
     suspend fun createBackup(uri: Uri, options: BackupOptions, isAutoBackup: Boolean): String {
-        // Create root object
-        var backup: Backup? = null
-
-        db.inTransaction {
-            val databaseManga = db.getFavoriteMangas().executeAsBlocking() +
+        val databaseManga = db.inTransactionReturn {
+            db.getFavoriteMangas().executeAsBlocking() +
                 if (options.readManga) {
                     db.getReadNotInLibraryMangas().executeAsBlocking()
                 } else {
                     emptyList()
                 }
-
-            backup = Backup(
-                mangaBackupCreator.backupMangas(databaseManga, options),
-                categoriesBackupCreator.backupCategories(options),
-                emptyList(),
-                sourcesBackupCreator.backupExtensionInfo(databaseManga, options),
-                preferenceBackupCreator.backupAppPreferences(options),
-                preferenceBackupCreator.backupSourcePreferences(options),
-            )
         }
+
+        val backupManga = mangaBackupCreator.backupMangas(databaseManga, options)
+        val backup = Backup(
+            backupManga,
+            categoriesBackupCreator.backupCategories(options),
+            emptyList(),
+            sourcesBackupCreator.backupExtensionInfo(backupManga),
+            preferenceBackupCreator.backupAppPreferences(options),
+            preferenceBackupCreator.backupSourcePreferences(options),
+        )
 
         var file: UniFile? = null
         try {
@@ -91,8 +89,8 @@ class BackupCreator(
                 throw IllegalStateException("Failed to get handle on file")
             }
 
-            val byteArray = backup?.let { parser.encodeToByteArray(Backup.serializer(), it) }
-            if (byteArray == null || byteArray.isEmpty()) {
+            val byteArray = parser.encodeToByteArray(Backup.serializer(), backup)
+            if (byteArray.isEmpty()) {
                 throw IllegalStateException(context.getString(MR.strings.empty_backup_error))
             }
 

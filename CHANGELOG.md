@@ -9,6 +9,9 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
+## Additions
+- Add missing "Max automatic backups" option on experimental Data and Storage setting menu
+
 ## Changes
 - Add more info to WorkerInfo page
   - Added "next scheduled run"
@@ -17,6 +20,7 @@
 - `chinese` tag no longer cause reading mode to switch to LTR
 - `manhua` tag no longer cause reading mode to switch to LTR
 - Local source manga's cover now being invalidated on refresh
+- You can now create a backup without any entries using experimental Data and Storage setting menu
 
 ## Fixes
 - Fixed auto backup, auto extension update, and app update checker stop working
@@ -44,7 +48,7 @@
 - More StorIO to SQLDelight migrations
   - Merge lastFetch and lastRead query into library_view VIEW
   - Migrated a few more chapter related queries
-  - Migrated most of manga related queries
+  - Migrated most of the manga related queries
 - Bump dependency com.github.tachiyomiorg:unifile revision to a9de196cc7
 - Update project to Kotlin 2.0
 - Update compose bom to v2024.07.00-alpha02

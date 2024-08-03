@@ -23,13 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import co.touchlab.kermit.Logger
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
+import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
@@ -46,12 +43,14 @@ import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.storage.StorageManager
 import yokai.domain.storage.StoragePreferences
+import yokai.i18n.MR
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.storageLocationText
 import yokai.presentation.component.preference.widget.BasePreferenceWidget
@@ -61,6 +60,7 @@ import yokai.presentation.settings.screen.data.CreateBackup
 import yokai.presentation.settings.screen.data.RestoreBackup
 import yokai.presentation.settings.screen.data.StorageInfo
 import yokai.presentation.settings.screen.data.storageLocationPicker
+import yokai.util.lang.getString
 
 object SettingsDataScreen : ComposableSettings {
     @Composable
@@ -132,6 +132,8 @@ object SettingsDataScreen : ComposableSettings {
                 )
             }
         }
+
+        val backupInterval by preferences.backupInterval().collectAsState()
 
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.backup_and_restore),
@@ -217,6 +219,12 @@ object SettingsDataScreen : ComposableSettings {
                         BackupCreatorJob.setupTask(context, it)
                         true
                     },
+                ),
+                Preference.PreferenceItem.ListPreference(
+                    pref = preferences.numberOfBackups(),
+                    title = stringResource(MR.strings.max_auto_backups),
+                    entries = (1..5).associateWith { it.toString() }.toImmutableMap(),
+                    enabled = backupInterval > 0,
                 ),
                 Preference.PreferenceItem.InfoPreference(
                     stringResource(MR.strings.backup_info)

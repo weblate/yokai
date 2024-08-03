@@ -45,6 +45,7 @@ import eu.kanade.tachiyomi.util.view.setTitle
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.backup.BackupPreferences
 import yokai.domain.storage.StorageManager
 import yokai.domain.storage.StoragePreferences
 import yokai.i18n.MR
@@ -63,6 +64,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
     internal val storagePreferences: StoragePreferences by injectLazy()
     internal val storageManager: StorageManager by injectLazy()
     internal val extensionManager: ExtensionManager by injectLazy()
+    internal val backupPreferences: BackupPreferences by injectLazy()
 
     private val coverCache: CoverCache by injectLazy()
     private val chapterCache: ChapterCache by injectLazy()
@@ -142,7 +144,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
             titleRes = MR.strings.automatic_backups
 
             intListPreference(activity) {
-                bindTo(preferences.backupInterval())
+                bindTo(backupPreferences.backupInterval())
                 titleRes = MR.strings.backup_frequency
                 entriesRes = arrayOf(
                     MR.strings.manual,
@@ -161,12 +163,12 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                 }
             }
             intListPreference(activity) {
-                bindTo(preferences.numberOfBackups())
+                bindTo(backupPreferences.numberOfBackups())
                 titleRes = MR.strings.max_auto_backups
                 entries = (1..5).map(Int::toString)
                 entryRange = 1..5
 
-                visibleIf(preferences.backupInterval()) { it > 0 }
+                visibleIf(backupPreferences.backupInterval()) { it > 0 }
             }
         }
 

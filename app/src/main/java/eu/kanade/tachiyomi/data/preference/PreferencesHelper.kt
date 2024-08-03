@@ -204,9 +204,6 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun lastLibrarySuggestion() = preferenceStore.getLong("last_library_suggestion", 0L)
 
-    fun numberOfBackups() = preferenceStore.getInt(Keys.numberOfBackups, 2)
-
-    fun backupInterval() = preferenceStore.getInt(Keys.backupInterval, 0)
     fun removeAfterReadSlots() = preferenceStore.getInt(Keys.removeAfterReadSlots, -1)
 
     fun removeAfterMarkedAsRead() = preferenceStore.getBoolean(Keys.removeAfterMarkedAsRead, false)

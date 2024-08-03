@@ -12,6 +12,7 @@ import uy.kohesive.injekt.api.InjektModule
 import uy.kohesive.injekt.api.InjektRegistrar
 import uy.kohesive.injekt.api.addSingletonFactory
 import uy.kohesive.injekt.api.get
+import yokai.domain.backup.BackupPreferences
 import yokai.domain.base.BasePreferences
 import yokai.domain.download.DownloadPreferences
 import yokai.domain.recents.RecentsPreferences
@@ -41,6 +42,8 @@ class PreferenceModule(val application: Application) : InjektModule {
         addSingletonFactory { NetworkPreferences(get()) }
 
         addSingletonFactory { SecurityPreferences(get()) }
+
+        addSingletonFactory { BackupPreferences(get()) }
 
         addSingletonFactory {
             PreferencesHelper(

@@ -16,13 +16,13 @@ import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
 import eu.kanade.tachiyomi.data.notification.Notifications
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notificationManager
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.backup.BackupPreferences
 import yokai.domain.storage.StorageManager
 import java.util.concurrent.*
 
@@ -58,7 +58,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
         }
 
         fun setupTask(context: Context, prefInterval: Int? = null) {
-            val preferences = Injekt.get<PreferencesHelper>()
+            val preferences = Injekt.get<BackupPreferences>()
             val interval = prefInterval ?: preferences.backupInterval().get()
             val workManager = WorkManager.getInstance(context)
             if (interval > 0) {

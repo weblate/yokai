@@ -32,7 +32,6 @@ import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
@@ -48,6 +47,7 @@ import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.backup.BackupPreferences
 import yokai.domain.storage.StorageManager
 import yokai.domain.storage.StoragePreferences
 import yokai.i18n.MR
@@ -69,7 +69,7 @@ object SettingsDataScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val storagePreferences: StoragePreferences by injectLazy()
-        val preferences: PreferencesHelper by injectLazy()
+        val preferences: BackupPreferences by injectLazy()
 
         return persistentListOf(
             getStorageLocationPreference(storagePreferences = storagePreferences),
@@ -97,7 +97,7 @@ object SettingsDataScreen : ComposableSettings {
     }
 
     @Composable
-    private fun getBackupAndRestoreGroup(preferences: PreferencesHelper): Preference.PreferenceGroup {
+    private fun getBackupAndRestoreGroup(preferences: BackupPreferences): Preference.PreferenceGroup {
         val scope = rememberCoroutineScope()
         val context = LocalContext.current
         val alertDialog = LocalAlertDialog.currentOrThrow

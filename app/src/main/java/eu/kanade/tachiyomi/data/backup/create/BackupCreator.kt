@@ -11,7 +11,6 @@ import eu.kanade.tachiyomi.data.backup.create.creators.PreferenceBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.SourcesBackupCreator
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.e
 import kotlinx.serialization.protobuf.ProtoBuf
 import okio.buffer
@@ -20,6 +19,7 @@ import okio.sink
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.backup.BackupPreferences
 import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -35,7 +35,7 @@ class BackupCreator(
 
     val parser = ProtoBuf
     private val db: DatabaseHelper = Injekt.get()
-    private val preferences: PreferencesHelper = Injekt.get()
+    private val preferences: BackupPreferences = Injekt.get()
     private val storageManager: StorageManager by injectLazy()
 
     @Suppress("RedundantSuspendModifier")

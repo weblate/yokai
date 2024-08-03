@@ -7,7 +7,6 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.BackupUtil
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import yokai.i18n.MR
 import yokai.util.lang.getString
 
 class BackupFileValidator(
@@ -28,11 +27,7 @@ class BackupFileValidator(
             throw IllegalStateException(e)
         }
 
-        if (backup.backupManga.isEmpty()) {
-            throw IllegalStateException(context.getString(MR.strings.backup_has_no_manga))
-        }
-
-        val sources = backup.backupSources.map { it.sourceId to it.name }.toMap()
+        val sources = backup.backupSources.associate { it.sourceId to it.name }
         val missingSources = sources
             .filter { sourceManager.get(it.key) == null }
             .map { sourceManager.getOrStub(it.key).name }

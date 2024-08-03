@@ -820,12 +820,12 @@ class MangaDetailsPresenter(
                 updateManga.await(
                     MangaUpdate(
                         manga.id!!,
-                        title = manga.originalTitle,
+                        title = manga.ogTitle,
                         author = manga.originalAuthor,
                         artist = manga.originalArtist,
                         description = manga.originalDescription,
                         genres = manga.originalGenre?.split(", ").orEmpty(),
-                        status = manga.originalStatus,
+                        status = manga.ogStatus,
                     )
                 )
             }
@@ -848,7 +848,7 @@ class MangaDetailsPresenter(
                 artist?.trimOrNull(),
                 description?.trimOrNull(),
                 genre?.joinToString(),
-                if (status != this.manga.originalStatus) status else null,
+                if (status != this.manga.ogStatus) status else null,
             )
             launchNow {
                 customMangaManager.saveMangaInfo(manga)

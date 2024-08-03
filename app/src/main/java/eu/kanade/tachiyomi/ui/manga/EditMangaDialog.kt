@@ -135,7 +135,7 @@ class EditMangaDialog : DialogController {
                     .takeIf { it > -1 } ?: 0,
             )
         } else {
-            if (manga.title != manga.originalTitle) {
+            if (manga.title != manga.ogTitle) {
                 binding.title.append(manga.title)
             }
             if (manga.author != manga.originalAuthor) {

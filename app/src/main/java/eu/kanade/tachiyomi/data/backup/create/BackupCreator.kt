@@ -38,33 +38,23 @@ class BackupCreator(
     private val preferences: PreferencesHelper = Injekt.get()
     private val storageManager: StorageManager by injectLazy()
 
+    @Suppress("RedundantSuspendModifier")
+    private suspend fun getDatabaseManga(includeReadManga: Boolean) = db.inTransactionReturn {
+        db.getFavoriteMangas().executeAsBlocking() +
+            if (includeReadManga) {
+                db.getReadNotInLibraryMangas().executeAsBlocking()
+            } else {
+                emptyList()
+            }
+    }
+
     /**
      * Create backup Json file from database
      *
      * @param uri path of Uri
      * @param isAutoBackup backup called from scheduled backup job
      */
-    @Suppress("RedundantSuspendModifier")
     suspend fun createBackup(uri: Uri, options: BackupOptions, isAutoBackup: Boolean): String {
-        val databaseManga = db.inTransactionReturn {
-            db.getFavoriteMangas().executeAsBlocking() +
-                if (options.readManga) {
-                    db.getReadNotInLibraryMangas().executeAsBlocking()
-                } else {
-                    emptyList()
-                }
-        }
-
-        val backupManga = mangaBackupCreator(databaseManga, options)
-        val backup = Backup(
-            backupManga = backupManga,
-            backupCategories = categoriesBackupCreator(options),
-            backupBrokenSources = emptyList(),
-            backupSources = sourcesBackupCreator(backupManga),
-            backupPreferences = preferenceBackupCreator.backupAppPreferences(options),
-            backupSourcePreferences = preferenceBackupCreator.backupSourcePreferences(options),
-        )
-
         var file: UniFile? = null
         try {
             file = if (isAutoBackup) {
@@ -88,6 +78,16 @@ class BackupCreator(
             if (file == null || !file.isFile) {
                 throw IllegalStateException("Failed to get handle on file")
             }
+
+            val backupManga = mangaBackupCreator(getDatabaseManga(options.readManga), options)
+            val backup = Backup(
+                backupManga = backupManga,
+                backupCategories = categoriesBackupCreator(options),
+                backupBrokenSources = emptyList(),
+                backupSources = sourcesBackupCreator(backupManga),
+                backupPreferences = preferenceBackupCreator.backupAppPreferences(options),
+                backupSourcePreferences = preferenceBackupCreator.backupSourcePreferences(options),
+            )
 
             val byteArray = parser.encodeToByteArray(Backup.serializer(), backup)
             if (byteArray.isEmpty()) {

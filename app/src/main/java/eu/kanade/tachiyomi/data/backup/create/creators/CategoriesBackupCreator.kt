@@ -14,7 +14,7 @@ class CategoriesBackupCreator(
      *
      * @return list of [BackupCategory] to be backed up
      */
-    fun backupCategories(options: BackupOptions): List<BackupCategory> {
+    operator fun invoke(options: BackupOptions): List<BackupCategory> {
         if (!options.libraryEntries) return emptyList()
 
         return db.getCategories()

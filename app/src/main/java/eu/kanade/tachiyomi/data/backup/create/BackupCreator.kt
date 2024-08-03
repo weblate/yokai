@@ -55,14 +55,14 @@ class BackupCreator(
                 }
         }
 
-        val backupManga = mangaBackupCreator.backupMangas(databaseManga, options)
+        val backupManga = mangaBackupCreator(databaseManga, options)
         val backup = Backup(
-            backupManga,
-            categoriesBackupCreator.backupCategories(options),
-            emptyList(),
-            sourcesBackupCreator.backupExtensionInfo(backupManga),
-            preferenceBackupCreator.backupAppPreferences(options),
-            preferenceBackupCreator.backupSourcePreferences(options),
+            backupManga = backupManga,
+            backupCategories = categoriesBackupCreator(options),
+            backupBrokenSources = emptyList(),
+            backupSources = sourcesBackupCreator(backupManga),
+            backupPreferences = preferenceBackupCreator.backupAppPreferences(options),
+            backupSourcePreferences = preferenceBackupCreator.backupSourcePreferences(options),
         )
 
         var file: UniFile? = null

@@ -35,6 +35,7 @@ import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
+import eu.kanade.tachiyomi.util.relativeTimeSpanString
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
@@ -69,11 +70,11 @@ object SettingsDataScreen : ComposableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val storagePreferences: StoragePreferences by injectLazy()
-        val preferences: BackupPreferences by injectLazy()
+        val backupPreferences: BackupPreferences by injectLazy()
 
         return persistentListOf(
             getStorageLocationPreference(storagePreferences = storagePreferences),
-            getBackupAndRestoreGroup(preferences = preferences),
+            getBackupAndRestoreGroup(backupPreferences = backupPreferences),
             getDataGroup(),
         )
     }
@@ -97,7 +98,7 @@ object SettingsDataScreen : ComposableSettings {
     }
 
     @Composable
-    private fun getBackupAndRestoreGroup(preferences: BackupPreferences): Preference.PreferenceGroup {
+    private fun getBackupAndRestoreGroup(backupPreferences: BackupPreferences): Preference.PreferenceGroup {
         val scope = rememberCoroutineScope()
         val context = LocalContext.current
         val alertDialog = LocalAlertDialog.currentOrThrow
@@ -133,7 +134,8 @@ object SettingsDataScreen : ComposableSettings {
             }
         }
 
-        val backupInterval by preferences.backupInterval().collectAsState()
+        val backupInterval by backupPreferences.backupInterval().collectAsState()
+        val lastAutoBackup by backupPreferences.lastAutoBackupTimestamp().collectAsState()
 
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.backup_and_restore),
@@ -205,7 +207,7 @@ object SettingsDataScreen : ComposableSettings {
 
                 // Automatic backups
                 Preference.PreferenceItem.ListPreference(
-                    pref = preferences.backupInterval(),
+                    pref = backupPreferences.backupInterval(),
                     title = stringResource(MR.strings.backup_frequency),
                     entries = persistentMapOf(
                         0 to stringResource(MR.strings.manual),
@@ -221,14 +223,14 @@ object SettingsDataScreen : ComposableSettings {
                     },
                 ),
                 Preference.PreferenceItem.ListPreference(
-                    pref = preferences.numberOfBackups(),
+                    pref = backupPreferences.numberOfBackups(),
                     title = stringResource(MR.strings.max_auto_backups),
                     entries = (1..5).associateWith { it.toString() }.toImmutableMap(),
                     enabled = backupInterval > 0,
                 ),
                 Preference.PreferenceItem.InfoPreference(
-                    stringResource(MR.strings.backup_info)
-                    /*+ "\n\n" + stringResource(MR.strings.last_auto_backup_info, relativeTimeSpanString(lastAutoBackup))*/,
+                    stringResource(MR.strings.backup_info) +
+                        "\n\n" + stringResource(MR.strings.last_auto_backup_info, relativeTimeSpanString(lastAutoBackup)),
                 ),
             ),
         )

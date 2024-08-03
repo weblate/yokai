@@ -11,6 +11,7 @@
 -->
 ## Additions
 - Add missing "Max automatic backups" option on experimental Data and Storage setting menu
+- Add information on when was the last time backup automatically created
 
 ## Changes
 - Add more info to WorkerInfo page
@@ -21,6 +22,7 @@
 - `manhua` tag no longer cause reading mode to switch to LTR
 - Local source manga's cover now being invalidated on refresh
 - You can now create a backup without any entries using experimental Data and Storage setting menu
+- Increased default maximum automatic backup files to 5
 
 ## Fixes
 - Fixed auto backup, auto extension update, and app update checker stop working

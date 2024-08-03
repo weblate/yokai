@@ -24,6 +24,7 @@ import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.io.FileOutputStream
+import java.time.Instant
 
 class BackupCreator(
     val context: Context,
@@ -35,7 +36,7 @@ class BackupCreator(
 
     val parser = ProtoBuf
     private val db: DatabaseHelper = Injekt.get()
-    private val preferences: BackupPreferences = Injekt.get()
+    private val backupPreferences: BackupPreferences = Injekt.get()
     private val storageManager: StorageManager by injectLazy()
 
     @Suppress("RedundantSuspendModifier")
@@ -62,7 +63,7 @@ class BackupCreator(
                 val dir = storageManager.getAutomaticBackupsDirectory()
 
                 // Delete older backups
-                val numberOfBackups = preferences.numberOfBackups().get()
+                val numberOfBackups = backupPreferences.numberOfBackups().get()
                 dir?.listFiles { _, filename -> Backup.filenameRegex.matches(filename) }
                     .orEmpty()
                     .sortedByDescending { it.name }
@@ -102,6 +103,10 @@ class BackupCreator(
 
             // Make sure it's a valid backup file
             BackupFileValidator().validate(context, fileUri)
+
+            if (isAutoBackup) {
+                backupPreferences.lastAutoBackupTimestamp().set(Instant.now().toEpochMilli())
+            }
 
             return fileUri.toString()
         } catch (e: Exception) {

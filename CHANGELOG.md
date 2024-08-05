@@ -12,6 +12,7 @@
 ## Additions
 - Add missing "Max automatic backups" option on experimental Data and Storage setting menu
 - Add information on when was the last time backup automatically created to experimental Data and Storage setting menu
+- Add monochrome icon
 
 ## Changes
 - Add more info to WorkerInfo page

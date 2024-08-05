@@ -13,12 +13,7 @@ import eu.kanade.tachiyomi.ui.reader.ReaderActivity
  * This layout manager uses the same package name as the support library in order to use a package
  * protected method.
  */
-class WebtoonLayoutManager(activity: ReaderActivity) : LinearLayoutManager(activity) {
-
-    /**
-     * Extra layout space is set to half the screen height.
-     */
-    private val extraLayoutSpace = activity.resources.displayMetrics.heightPixels / 2
+class WebtoonLayoutManager(activity: ReaderActivity, private val extraLayoutSpace: Int) : LinearLayoutManager(activity) {
 
     init {
         isItemPrefetchEnabled = false
@@ -27,7 +22,8 @@ class WebtoonLayoutManager(activity: ReaderActivity) : LinearLayoutManager(activ
     /**
      * Returns the custom extra layout space.
      */
-    override fun getExtraLayoutSpace(state: androidx.recyclerview.widget.RecyclerView.State): Int {
+    @Deprecated("Deprecated in Java")
+    override fun getExtraLayoutSpace(state: RecyclerView.State): Int {
         return extraLayoutSpace
     }
 
@@ -37,7 +33,7 @@ class WebtoonLayoutManager(activity: ReaderActivity) : LinearLayoutManager(activ
     fun findLastEndVisibleItemPosition(): Int {
         ensureLayoutState()
         @ViewBoundsCheck.ViewBounds val preferredBoundsFlag =
-            (androidx.recyclerview.widget.ViewBoundsCheck.FLAG_CVE_LT_PVE or androidx.recyclerview.widget.ViewBoundsCheck.FLAG_CVE_EQ_PVE)
+            (ViewBoundsCheck.FLAG_CVE_LT_PVE or ViewBoundsCheck.FLAG_CVE_EQ_PVE)
 
         val fromIndex = childCount - 1
         val toIndex = -1

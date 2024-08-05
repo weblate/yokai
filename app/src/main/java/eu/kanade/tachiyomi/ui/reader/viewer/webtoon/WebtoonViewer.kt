@@ -44,19 +44,19 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
     private val frame = WebtoonFrame(activity)
 
     /**
+     * Distance to scroll when the user taps on one side of the recycler view.
+     */
+    private var scrollDistance = activity.resources.displayMetrics.heightPixels * 3 / 4
+
+    /**
      * Layout manager of the recycler view.
      */
-    private val layoutManager = WebtoonLayoutManager(activity)
+    private val layoutManager = WebtoonLayoutManager(activity, scrollDistance)
 
     /**
      * Adapter of the recycler view.
      */
     private val adapter = WebtoonAdapter(this)
-
-    /**
-     * Distance to scroll when the user taps on one side of the recycler view.
-     */
-    private var scrollDistance = activity.resources.displayMetrics.heightPixels * 3 / 4
 
     /**
      * Currently active item. It can be a chapter page or a chapter transition.
@@ -69,6 +69,7 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
     val config = WebtoonConfig(scope)
 
     init {
+        recycler.setItemViewCacheSize(RECYCLER_VIEW_CACHE_SIZE)
         recycler.isVisible = false // Don't let the recycler layout yet
         recycler.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         recycler.itemAnimator = null
@@ -328,3 +329,5 @@ class WebtoonViewer(val activity: ReaderActivity, val hasMargins: Boolean = fals
         )
     }
 }
+
+private const val RECYCLER_VIEW_CACHE_SIZE = 4

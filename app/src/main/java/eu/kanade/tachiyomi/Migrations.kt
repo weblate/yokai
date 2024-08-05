@@ -274,13 +274,7 @@ object Migrations {
                 val basePreferences: BasePreferences = Injekt.get()
                 try {
                     val oldExtensionInstall = prefs.getInt("extension_installer", 0)
-                    basePreferences.extensionInstaller().set(
-                        when (oldExtensionInstall) {
-                            1 -> BasePreferences.ExtensionInstaller.SHIZUKU
-                            2 -> BasePreferences.ExtensionInstaller.PRIVATE
-                            else -> BasePreferences.ExtensionInstaller.PACKAGEINSTALLER
-                        }
-                    )
+                    basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.migrate(oldExtensionInstall))
                 } catch (_: Exception) {
                     basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.PACKAGEINSTALLER)
                 }
@@ -289,25 +283,14 @@ object Migrations {
                 val readerPreferences: ReaderPreferences = Injekt.get()
                 try {
                     val oldCutoutBehaviour = prefs.getInt(PreferenceKeys.pagerCutoutBehavior, 0)
-                    readerPreferences.pagerCutoutBehavior().set(
-                        when (oldCutoutBehaviour) {
-                            PagerConfig.CUTOUT_PAD -> CutoutBehaviour.HIDE
-                            PagerConfig.CUTOUT_IGNORE -> CutoutBehaviour.IGNORE
-                            else -> CutoutBehaviour.SHOW
-                        }
-                    )
+                    readerPreferences.pagerCutoutBehavior().set(CutoutBehaviour.migrate(oldCutoutBehaviour))
                 } catch (_: Exception) {
                     readerPreferences.pagerCutoutBehavior().set(CutoutBehaviour.SHOW)
                 }
 
                 try {
                     val oldCutoutBehaviour = prefs.getInt("landscape_cutout_behavior", 0)
-                    readerPreferences.landscapeCutoutBehavior().set(
-                        when (oldCutoutBehaviour) {
-                            0 -> LandscapeCutoutBehaviour.HIDE
-                            else -> LandscapeCutoutBehaviour.DEFAULT
-                        }
-                    )
+                    readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.migrate(oldCutoutBehaviour))
                 } catch (_: Exception) {
                     readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.DEFAULT)
                 }

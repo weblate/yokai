@@ -15,6 +15,16 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
         SHIZUKU(R.string.ext_installer_shizuku, false),
         PRIVATE(R.string.ext_installer_private, false),
         LEGACY(R.string.ext_installer_legacy, true),  // Technically useless, but just in case it being missing crashes the app
+        ;
+
+        companion object {
+            fun migrate(oldValue: Int) =
+                when (oldValue) {
+                    1 -> BasePreferences.ExtensionInstaller.SHIZUKU
+                    2 -> BasePreferences.ExtensionInstaller.PRIVATE
+                    else -> BasePreferences.ExtensionInstaller.PACKAGEINSTALLER
+                }
+        }
     }
 
     fun displayProfile() = preferenceStore.getString("pref_display_profile_key", "")

@@ -8,4 +8,4 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Fixes
-- Fixed "Open source repo" icon's colour
+- Fixed incompatibility with J2K backup file

@@ -45,6 +45,9 @@ class WebtoonConfig(
 
     var menuThreshold = PreferenceValues.ReaderHideThreshold.LOW.threshold
 
+    var readerTheme = 0
+        private set
+
     init {
         preferences.navigationModeWebtoon()
             .register({ navigationMode = it }, { updateNavigation(it) })
@@ -89,6 +92,9 @@ class WebtoonConfig(
         if (navigationOverlayForNewUser) {
             preferences.showNavigationOverlayNewUserWebtoon().set(false)
         }
+
+        preferences.readerTheme()
+            .register({ readerTheme = it }, { imagePropertyChangedListener?.invoke() })
     }
 
     override var navigator: ViewerNavigation = defaultNavigation()

@@ -284,6 +284,9 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         }
     }
 
+    init {
+    }
+
     /**
      * Called when the activity is created. Initializes the view model and configuration.
      */
@@ -1288,13 +1291,6 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         }
 
         binding.navigationOverlay.isLTR = viewer !is R2LPagerViewer
-        binding.viewerContainer.setBackgroundColor(
-            if (viewer is WebtoonViewer) {
-                Color.BLACK
-            } else {
-                getResourceColor(R.attr.background)
-            },
-        )
 
         supportActionBar?.title = manga.title
 
@@ -1950,6 +1946,15 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
          * Initializes the reader subscriptions.
          */
         init {
+            preferences.readerTheme().changesIn(scope) { theme ->
+                    binding.viewerContainer.setBackgroundColor(
+                        ThemeUtil.readerBackgroundColor(
+                            theme,
+                            getResourceColor(R.attr.background),
+                        )
+                    )
+                }
+
             preferences.defaultOrientationType().changes()
                 .drop(1)
                 .onEach {

@@ -24,6 +24,7 @@
 - It is now possible to create a backup without any entries using experimental Data and Storage setting menu
 - Increased default maximum automatic backup files to 5
 - It is now possible to edit a local source entry without adding it to library
+- Long Strip and Continuous Vertical background color now respect user setting
 
 ## Fixes
 - Fixed auto backup, auto extension update, and app update checker stop working

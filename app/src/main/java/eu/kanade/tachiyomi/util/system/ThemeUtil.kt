@@ -9,9 +9,6 @@ import androidx.core.content.edit
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.PreferenceManager
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.reader.settings.ReaderBackgroundColor
@@ -50,11 +47,21 @@ object ThemeUtil {
         return context.isInNightMode() && preferences.themeDarkAmoled().get()
     }
 
-    fun readerBackgroundColor(theme: Int): Int {
+    fun readerBackgroundColor(theme: Int, default: Int = Color.WHITE): Int {
         return when (ReaderBackgroundColor.fromPreference(theme)) {
             ReaderBackgroundColor.GRAY -> Color.rgb(32, 33, 37)
             ReaderBackgroundColor.BLACK -> Color.BLACK
-            else -> Color.WHITE
+            ReaderBackgroundColor.WHITE -> Color.WHITE
+            else -> default
+        }
+    }
+
+    fun readerContentColor(theme: Int, default: Int = Color.BLACK): Int {
+        return when (ReaderBackgroundColor.fromPreference(theme)) {
+            ReaderBackgroundColor.GRAY -> Color.WHITE
+            ReaderBackgroundColor.BLACK -> Color.WHITE
+            ReaderBackgroundColor.WHITE -> Color.BLACK
+            else -> default
         }
     }
 }

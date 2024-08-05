@@ -14,11 +14,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.updatePaddingRelative
+import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderButton
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderTransitionView
+import eu.kanade.tachiyomi.util.system.ThemeUtil
 import eu.kanade.tachiyomi.util.system.dpToPx
+import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.setText
 import eu.kanade.tachiyomi.widget.ViewPagerAdapter
 import kotlinx.coroutines.Job
@@ -64,6 +67,13 @@ class PagerTransitionHolder(
         setPadding(sidePadding, 0, sidePadding, 0)
 
         val transitionView = ReaderTransitionView(context)
+        transitionView.setTextColors(
+            ThemeUtil.readerContentColor(
+                viewer.config.readerTheme,
+                context.getResourceColor(R.attr.colorOnBackground),
+            )
+        )
+
         addView(transitionView)
         addView(pagesContainer)
 

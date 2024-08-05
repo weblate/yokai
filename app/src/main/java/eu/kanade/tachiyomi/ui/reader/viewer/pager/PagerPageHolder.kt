@@ -122,12 +122,6 @@ class PagerPageHolder(
             }
         }
         launchLoadJob()
-        setBackgroundColor(
-            when (val theme = viewer.config.readerTheme) {
-                ReaderBackgroundColor.SMART_THEME.prefValue -> Color.TRANSPARENT
-                else -> ThemeUtil.readerBackgroundColor(theme)
-            },
-        )
         progressIndicator.setInvertMode(isInvertedFromTheme())
     }
 

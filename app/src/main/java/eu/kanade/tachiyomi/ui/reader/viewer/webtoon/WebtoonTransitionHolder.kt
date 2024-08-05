@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.reader.viewer.webtoon
 
-import android.graphics.Color
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -13,10 +12,13 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
+import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderTransitionView
+import eu.kanade.tachiyomi.util.system.ThemeUtil
 import eu.kanade.tachiyomi.util.system.dpToPx
+import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.setText
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -62,7 +64,6 @@ class WebtoonTransitionHolder(
             setMargins(0, childMargins, 0, childMargins)
         }
 
-        transitionView.setTextColors(Color.WHITE)
         layout.addView(transitionView)
         layout.addView(pagesContainer, childParams)
     }
@@ -71,6 +72,12 @@ class WebtoonTransitionHolder(
      * Binds the given [transition] with this view holder, subscribing to its state.
      */
     fun bind(transition: ChapterTransition) {
+        transitionView.setTextColors(
+            ThemeUtil.readerContentColor(
+                viewer.config.readerTheme,
+                context.getResourceColor(R.attr.colorOnBackground),
+            )
+        )
         transitionView.bind(transition, viewer.downloadManager, viewer.activity.viewModel.manga)
 
         transition.to?.let { observeStatus(it, transition) }

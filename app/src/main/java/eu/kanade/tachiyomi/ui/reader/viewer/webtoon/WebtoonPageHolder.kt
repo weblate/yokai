@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.ui.reader.viewer.webtoon
 
 import android.content.res.Resources
-import android.graphics.Color
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -86,7 +85,6 @@ class WebtoonPageHolder(
 
     init {
         refreshLayoutParams()
-        frame.setBackgroundColor(Color.BLACK)
 
         frame.onImageLoaded = { onImageDecoded() }
         frame.onImageLoadError = { onImageDecodeError() }

@@ -11,7 +11,6 @@ import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
-import androidx.core.view.updatePaddingRelative
 import co.touchlab.kermit.Logger
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import eu.kanade.tachiyomi.databinding.ReaderErrorBinding
@@ -105,12 +104,13 @@ class WebtoonPageHolder(
 
     private fun refreshLayoutParams() {
         frame.layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+            if (viewer.hasMargins) {
+                bottomMargin = 15.dpToPx
+            }
+
             val margin = Resources.getSystem().displayMetrics.widthPixels * (viewer.config.sidePadding / 100f)
             marginEnd = margin.toInt()
             marginStart = margin.toInt()
-        }
-        if (viewer.hasMargins) {
-            frame.updatePaddingRelative(bottom = 15.dpToPx)
         }
     }
 

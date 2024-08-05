@@ -210,29 +210,30 @@ class WebtoonPageHolder(
 
         val streamFn = page?.stream ?: return
 
-        val (source, isAnimated) = try {
-            withIOContext {
+        try {
+            val (source, isAnimated) = withIOContext {
                 val source = streamFn().use { process(Buffer().readFrom(it)) }
                 val isAnimated = ImageUtil.isAnimatedAndSupported(source)
                 Pair(source, isAnimated)
             }
+            withUIContext {
+                frame.setImage(
+                    source,
+                    isAnimated,
+                    ReaderPageImageView.Config(
+                        zoomDuration = viewer.config.doubleTapAnimDuration,
+                        minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_FIT_WIDTH,
+                        cropBorders = viewer.config.run {
+                            if (viewer.hasMargins) { verticalCropBorders } else { webtoonCropBorders }
+                        },
+                    ),
+                )
+            }
         } catch (e: Exception) {
             Logger.e(e)
-            setError()
-            return
-        }
-        withUIContext {
-            frame.setImage(
-                source,
-                isAnimated,
-                ReaderPageImageView.Config(
-                    zoomDuration = viewer.config.doubleTapAnimDuration,
-                    minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_FIT_WIDTH,
-                    cropBorders = viewer.config.run {
-                        if (viewer.hasMargins) { verticalCropBorders } else { webtoonCropBorders }
-                    },
-                ),
-            )
+            withUIContext {
+                setError()
+            }
         }
     }
 

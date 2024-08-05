@@ -284,9 +284,6 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         }
     }
 
-    init {
-    }
-
     /**
      * Called when the activity is created. Initializes the view model and configuration.
      */

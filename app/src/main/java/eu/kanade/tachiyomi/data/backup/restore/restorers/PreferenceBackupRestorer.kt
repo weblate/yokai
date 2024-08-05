@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.data.backup.restore.restorers
 import android.content.Context
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
+import eu.kanade.tachiyomi.core.preference.getEnum
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
 import eu.kanade.tachiyomi.data.backup.models.BackupPreference
 import eu.kanade.tachiyomi.data.backup.models.BackupSourcePreferences
@@ -13,11 +14,14 @@ import eu.kanade.tachiyomi.data.backup.models.LongPreferenceValue
 import eu.kanade.tachiyomi.data.backup.models.StringPreferenceValue
 import eu.kanade.tachiyomi.data.backup.models.StringSetPreferenceValue
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
+import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
 import eu.kanade.tachiyomi.source.sourcePreferences
 import eu.kanade.tachiyomi.ui.library.LibrarySort
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.base.BasePreferences
+import yokai.domain.ui.settings.ReaderPreferences
 
 class PreferenceBackupRestorer(
     private val context: Context,
@@ -55,6 +59,26 @@ class PreferenceBackupRestorer(
                 return@forEach
             }
             // end j2k fork differences
+
+            // << Yokai-J2K compat
+            if (key == "extension_installer" && value is IntPreferenceValue) {
+                val enum = BasePreferences.ExtensionInstaller.migrate(value.value)
+                preferenceStore.getEnum(key, enum).set(enum)
+                return@forEach
+            }
+
+            if (key == PreferenceKeys.pagerCutoutBehavior && value is IntPreferenceValue) {
+                val enum = ReaderPreferences.CutoutBehaviour.migrate(value.value)
+                preferenceStore.getEnum(key, enum).set(enum)
+                return@forEach
+            }
+
+            if (key == "landscape_cutout_behavior" && value is IntPreferenceValue) {
+                val enum = ReaderPreferences.LandscapeCutoutBehaviour.migrate(value.value)
+                preferenceStore.getEnum(key, enum).set(enum)
+                return@forEach
+            }
+            // >> Yokai-J2K compat
 
             when (value) {
                 is IntPreferenceValue -> {

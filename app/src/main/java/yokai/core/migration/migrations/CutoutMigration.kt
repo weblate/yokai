@@ -3,7 +3,6 @@ package yokai.core.migration.migrations
 import androidx.preference.PreferenceManager
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
-import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import yokai.core.migration.Migration
 import yokai.core.migration.MigrationContext
 import yokai.domain.ui.settings.ReaderPreferences
@@ -20,25 +19,14 @@ class CutoutMigration : Migration {
 
         try {
             val oldCutoutBehaviour = prefs.getInt(PreferenceKeys.pagerCutoutBehavior, 0)
-            readerPreferences.pagerCutoutBehavior().set(
-                when (oldCutoutBehaviour) {
-                    PagerConfig.CUTOUT_PAD -> CutoutBehaviour.HIDE
-                    PagerConfig.CUTOUT_IGNORE -> CutoutBehaviour.IGNORE
-                    else -> CutoutBehaviour.SHOW
-                }
-            )
+            readerPreferences.pagerCutoutBehavior().set(CutoutBehaviour.migrate(oldCutoutBehaviour))
         } catch (_: Exception) {
             readerPreferences.pagerCutoutBehavior().set(CutoutBehaviour.SHOW)
         }
 
         try {
             val oldCutoutBehaviour = prefs.getInt("landscape_cutout_behavior", 0)
-            readerPreferences.landscapeCutoutBehavior().set(
-                when (oldCutoutBehaviour) {
-                    0 -> LandscapeCutoutBehaviour.HIDE
-                    else -> LandscapeCutoutBehaviour.DEFAULT
-                }
-            )
+            readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.migrate(oldCutoutBehaviour))
         } catch (_: Exception) {
             readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.DEFAULT)
         }

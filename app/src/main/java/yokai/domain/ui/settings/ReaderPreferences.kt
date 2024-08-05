@@ -1,14 +1,11 @@
 package yokai.domain.ui.settings
 
-import androidx.annotation.StringRes
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.preference.getEnum
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
+import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
+import yokai.i18n.MR
 
 class ReaderPreferences(private val preferenceStore: PreferenceStore) {
     fun cutoutShort() = preferenceStore.getBoolean("cutout_short", true)
@@ -21,10 +18,29 @@ class ReaderPreferences(private val preferenceStore: PreferenceStore) {
         HIDE(MR.strings.pad_cutout_areas),  // Similar to CUTOUT_MODE_NEVER / J2K's pad
         SHOW(MR.strings.start_past_cutout), // Similar to CUTOUT_MODE_SHORT_EDGES / J2K's start past
         IGNORE(MR.strings.cutout_ignore),   // Similar to CUTOUT_MODE_DEFAULT / J2K's ignore
+        ;
+
+        companion object {
+            fun migrate(oldValue: Int) =
+                when (oldValue) {
+                    PagerConfig.CUTOUT_PAD -> CutoutBehaviour.HIDE
+                    PagerConfig.CUTOUT_IGNORE -> CutoutBehaviour.IGNORE
+                    else -> CutoutBehaviour.SHOW
+                }
+        }
     }
 
     enum class LandscapeCutoutBehaviour(val titleResId: StringResource) {
         HIDE(MR.strings.pad_cutout_areas),  // Similar to CUTOUT_MODE_NEVER / J2K's pad
         DEFAULT(MR.strings.cutout_ignore),  // Similar to CUTOUT_MODE_SHORT_EDGES / J2K's ignore
+        ;
+
+        companion object {
+            fun migrate(oldValue: Int) =
+                when (oldValue) {
+                    0 -> LandscapeCutoutBehaviour.HIDE
+                    else -> LandscapeCutoutBehaviour.DEFAULT
+                }
+        }
     }
 }

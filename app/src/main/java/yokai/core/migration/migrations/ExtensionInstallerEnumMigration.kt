@@ -19,13 +19,7 @@ class ExtensionInstallerEnumMigration : Migration {
 
         try {
             val oldExtensionInstall = prefs.getInt("extension_installer", 0)
-            basePreferences.extensionInstaller().set(
-                when (oldExtensionInstall) {
-                    1 -> BasePreferences.ExtensionInstaller.SHIZUKU
-                    2 -> BasePreferences.ExtensionInstaller.PRIVATE
-                    else -> BasePreferences.ExtensionInstaller.PACKAGEINSTALLER
-                }
-            )
+            basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.migrate(oldExtensionInstall))
         } catch (_: Exception) {
             basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.PACKAGEINSTALLER)
         }

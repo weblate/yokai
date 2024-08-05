@@ -20,7 +20,7 @@ open class WebtoonRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
-) : androidx.recyclerview.widget.RecyclerView(context, attrs, defStyle) {
+) : RecyclerView(context, attrs, defStyle) {
 
     private var isZooming = false
     private var atLastPosition = false

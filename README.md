@@ -17,7 +17,7 @@ A free and open source manga reader
 [![Discord: Mihon](https://img.shields.io/discord/1195734228319617024.svg?label=&labelColor=6A7EC2&color=7389D8&logo=discord&logoColor=FFFFFF)](https://discord.gg/mihon)
 [![Mirror: GitLab](https://img.shields.io/badge/mirror-GitLab-orange.svg)](https://gitlab.com/null2264/yokai)
 
-<img src="./.github/readme-images/screens.gif" alt="Yokai screenshot" height="412px" width="800px" />
+<img src="./.github/readme-images/screens.gif" alt="Yokai screenshots" />
 
 ## Download
 

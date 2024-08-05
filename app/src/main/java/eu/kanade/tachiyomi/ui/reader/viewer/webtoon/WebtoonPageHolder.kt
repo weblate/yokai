@@ -98,7 +98,8 @@ class WebtoonPageHolder(
      */
     fun bind(page: ReaderPage) {
         this.page = page
-        launchLoadJob()
+        loadJob?.cancel()
+        loadJob = scope.launch { loadPageAndProcessStatus() }
         refreshLayoutParams()
     }
 
@@ -118,22 +119,12 @@ class WebtoonPageHolder(
      * Called when the view is recycled and added to the view pool.
      */
     override fun recycle() {
-        cancelLoadJob()
-        cancelProgressJob()
+        loadJob?.cancel()
+        progressJob?.cancel()
 
         removeErrorLayout()
         frame.recycle()
         progressIndicator.setProgress(0)
-    }
-
-    /**
-     * Observes the status of the page and notify the changes.
-     *
-     * @see processStatus
-     */
-    private fun launchLoadJob() {
-        cancelLoadJob()
-        loadJob = scope.launch { loadPageAndProcessStatus() }
     }
 
     private suspend fun loadPageAndProcessStatus() {
@@ -149,7 +140,7 @@ class WebtoonPageHolder(
      * Observes the progress of the page and updates view.
      */
     private fun launchProgressJob() {
-        cancelProgressJob()
+        progressJob?.cancel()
 
         val page = page ?: return
         progressJob = scope.launch {
@@ -172,27 +163,13 @@ class WebtoonPageHolder(
             }
             Page.State.READY -> {
                 setImage()
-                cancelProgressJob()
+                progressJob?.cancel()
             }
             Page.State.ERROR -> {
                 setError()
-                cancelProgressJob()
+                progressJob?.cancel()
             }
         }
-    }
-
-    /**
-     * Cancels loading the page and processing changes to the page's status.
-     */
-    private fun cancelLoadJob() {
-        loadJob?.cancel()
-    }
-
-    /**
-     * Unsubscribes from the progress subscription.
-     */
-    private fun cancelProgressJob() {
-        progressJob?.cancel()
     }
 
     /**

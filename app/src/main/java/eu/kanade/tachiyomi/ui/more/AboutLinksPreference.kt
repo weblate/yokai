@@ -30,6 +30,14 @@ class AboutLinksPreference @JvmOverloads constructor(context: Context, attrs: At
             }
         }
          */
+        holder.findViewById(R.id.btn_website).apply {
+            compatToolTipText = (contentDescription.toString())
+            setOnClickListener { context.openInBrowser("https://mihon.app") }
+        }
+        holder.findViewById(R.id.btn_discord).apply {
+            compatToolTipText = (contentDescription.toString())
+            setOnClickListener { context.openInBrowser("https://discord.gg/mihon") }
+        }
         holder.findViewById(R.id.btn_github).apply {
             compatToolTipText = (contentDescription.toString())
             setOnClickListener { context.openInBrowser("https://github.com/null2264/yokai") }

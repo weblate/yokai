@@ -210,7 +210,7 @@ class PagerViewerAdapter(private val viewer: PagerViewer) : ViewPagerAdapter() {
                 this.joinedItems = pagedItems.map {
                     Pair<ReaderItem, ReaderItem?>(
                         it,
-                        if ((it as? ReaderPage)?.fullPage == true && it.firstHalf == true) SplitPage() else null,
+                        if ((it as? ReaderPage)?.fullPage == true && it.firstHalf == true) SplitPage else null,
                     )
                 }.toMutableList()
             } else {

@@ -594,11 +594,14 @@ class PagerPageHolder(
 
     private suspend fun mergeOrSplitPages(imageSource: BufferedSource, imageSource2: BufferedSource?): BufferedSource {
         if (ImageUtil.isAnimatedAndSupported(imageSource)) {
+            // FIXME: Animated images is duplicating instead of being split
             if (page.longPage == null) {
                 page.longPage = true
+                /*
                 if (viewer.config.splitPages || imageSource2 != null) {
                     splitDoublePages()
                 }
+                 */
             }
             scope.launchUI { progressIndicator.completeAndFadeOut() }
             return imageSource

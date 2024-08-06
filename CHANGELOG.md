@@ -31,6 +31,7 @@
 - Fixed auto backup, auto extension update, and app update checker stop working
   if it crash/failed
 - Fixed crashes when trying to reload extension repo due to connection issue
+- Fixed tap controls not working properly after zoom
 
 ## Translation
 - Update Japanese translation (akir45)

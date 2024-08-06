@@ -41,6 +41,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
@@ -406,6 +407,7 @@ fun setLocaleByAppCompat() {
 suspend fun CoroutineWorker.tryToSetForeground() {
     try {
         setForeground(getForegroundInfo())
+        delay(500)
     } catch (e: IllegalStateException) {
         Logger.e(e) { "Not allowed to set foreground job" }
     }

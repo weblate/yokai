@@ -13,9 +13,6 @@ import androidx.activity.addCallback
 import androidx.core.graphics.ColorUtils
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.online.HttpSource
@@ -24,8 +21,10 @@ import eu.kanade.tachiyomi.util.system.extensionIntentForText
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
-import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 open class WebViewActivity : BaseWebViewActivity() {
 
@@ -173,19 +172,15 @@ open class WebViewActivity : BaseWebViewActivity() {
             R.id.action_web_share -> shareWebpage()
             R.id.action_web_browser -> openInBrowser()
             R.id.action_open_in_app -> openUrlInApp()
-            R.id.action_web_clear_cookies -> clearCookies()
+            R.id.action_web_clear_cookies -> clearCookies(binding.webview.url)
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun clearCookies() {
-        val url = binding.webview.url ?: return
-        try {
-            val cleared = network.cookieJar.remove(url.toHttpUrl())
+    private fun clearCookies(url: String?) {
+        url?.toHttpUrlOrNull()?.let {
+            val cleared = network.cookieJar.remove(it)
             toast("Cleared $cleared cookies for: $url")
-        } catch (e: IllegalArgumentException) {
-            Logger.w(e) { "Somehow getting non http url: $url" }
-            toast("Unable to clear cookies for: $url (Invalid url)")
         }
     }
 

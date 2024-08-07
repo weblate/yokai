@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://github.com/null2264/yokai">
-    <img src="./.github/readme-images/app-icon.png" alt="Yokai logo" height="200px" width="200px" />
+    <img src="./.github/readme-images/app-icon.webp" alt="Yokai logo" height="200px" width="200px" />
 </a>
 
 # Yōkai

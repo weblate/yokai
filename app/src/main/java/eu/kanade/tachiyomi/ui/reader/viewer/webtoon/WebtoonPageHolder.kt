@@ -179,7 +179,6 @@ class WebtoonPageHolder(
         progressContainer.isVisible = true
         progressIndicator.show()
         progressIndicator.completeAndFadeOut()
-        removeErrorLayout()
 
         val streamFn = page?.stream ?: return
 
@@ -201,6 +200,7 @@ class WebtoonPageHolder(
                         },
                     ),
                 )
+                removeErrorLayout()
             }
         } catch (e: Exception) {
             Logger.e(e)
@@ -236,6 +236,7 @@ class WebtoonPageHolder(
      */
     private fun onImageDecoded() {
         progressContainer.isVisible = false
+        removeErrorLayout()
     }
 
     /**

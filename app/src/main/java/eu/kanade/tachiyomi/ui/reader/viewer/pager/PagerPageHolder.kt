@@ -586,91 +586,45 @@ class PagerPageHolder(
         return errorLayout!!.configureView(imageUrl)
     }
 
-    private suspend fun mergeOrSplitPages(imageSource: BufferedSource, imageSource2: BufferedSource?): BufferedSource {
-        if (ImageUtil.isAnimatedAndSupported(imageSource)) {
-            // FIXME: Animated images is duplicating instead of being split
-            if (page.longPage == null) {
-                page.longPage = true
-                /*
-                if (viewer.config.splitPages || imageSource2 != null) {
-                    splitDoublePages()
-                }
-                 */
-            }
-            scope.launchUI { progressIndicator.completeAndFadeOut() }
-            return imageSource
-        }
-        if (page.longPage == true && viewer.config.splitPages) {
-            val imageBitmap = try {
-                BitmapFactory.decodeStream(imageSource.peek().inputStream())
-            } catch (e: Exception) {
-                Logger.e { "Cannot split page ${e.message}" }
-                return imageSource
-            }
-            val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
-            return ImageUtil.splitBitmap(imageBitmap, (page.firstHalf == false).xor(!isLTR)) {
-                scope.launchUI {
-                    if (it == 100) {
-                        progressIndicator.completeAndFadeOut()
-                    } else {
-                        progressIndicator.setProgress(it)
-                    }
-                }
-            }
-        }
-        if (imageSource2 == null) {
-            if (viewer.config.splitPages && page.longPage == null) {
-                val imageBitmap = try {
-                    BitmapFactory.decodeStream(imageSource.peek().inputStream())
-                } catch (e: Exception) {
-                    page.longPage = true
-                    splitDoublePages()
-                    Logger.e { "Cannot split page ${e.message}" }
-                    return imageSource
-                }
-                val height = imageBitmap.height
-                val width = imageBitmap.width
-                return if (height < width) {
-                    closeSources(imageSource)
-                    page.longPage = true
-                    splitDoublePages()
-                    val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
-                    return ImageUtil.splitBitmap(imageBitmap, !isLTR) {
-                        scope.launchUI {
-                            if (it == 100) {
-                                progressIndicator.completeAndFadeOut()
-                            } else {
-                                progressIndicator.setProgress(it)
-                            }
-                        }
-                    }
-                } else {
-                    page.longPage = false
-                    imageSource
-                }
-            }
-            return supportHingeIfThere(imageSource)
-        }
-        if (page.fullPage == true) return supportHingeIfThere(imageSource)
-        val imageBitmap = try {
-            BitmapFactory.decodeStream(imageSource.peek().inputStream())
+    private fun BufferedSource.bitmapSafe(): Bitmap? {
+        return try {
+            BitmapFactory.decodeStream(this.peek().inputStream())
         } catch (e: Exception) {
+            Logger.e { "Failed to decode image ${e.message}" }
+            null
+        }
+    }
+
+    private suspend fun splitPage(imageSource: BufferedSource, isLTR: Boolean): BufferedSource {
+        val imageBitmap = imageSource.bitmapSafe() ?: return imageSource
+        closeSources(imageSource)
+        return ImageUtil.splitBitmap(imageBitmap, (page.firstHalf == false).xor(!isLTR)) {
+            scope.launchUI {
+                if (it == 100) {
+                    progressIndicator.completeAndFadeOut()
+                } else {
+                    progressIndicator.setProgress(it)
+                }
+            }
+        }
+    }
+
+    private suspend fun mergePages(imageSource: BufferedSource, imageSource2: BufferedSource, isLTR: Boolean): BufferedSource {
+        if (page.fullPage == true) return supportHingeIfThere(imageSource)
+
+        val imageBitmap = imageSource.bitmapSafe()
+        if (imageBitmap == null) {
             closeSources(imageSource2)
             page.fullPage = true
             splitDoublePages()
-            Logger.e { "Cannot combine pages ${e.message}" }
             return supportHingeIfThere(imageSource)
         }
         scope.launchUI { progressIndicator.setProgress(96) }
-        val height = imageBitmap.height
-        val width = imageBitmap.width
-
-        val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
 
         val pages = page.chapter.pages
-        if (height < width) {
+        if (imageBitmap.height < imageBitmap.width) {
             if (extraPage?.index == 1) {
-                setExtraPageBitmap(imageSource2.inputStream(), isLTR)
+                setExtraPageBitmap(imageSource2, isLTR)
             }
             closeSources(imageSource2)
             val oldValue = page.fullPage
@@ -692,16 +646,19 @@ class PagerPageHolder(
             }
             return supportHingeIfThere(imageSource)
         }
+
+        var earlyImageBitmap2: Bitmap? = null
+
         val isNotEndPage: ReaderPage.() -> Boolean =
             { isEndPage != true || (page.endPageConfidence ?: 0) > (endPageConfidence ?: 0) }
-        var earlyImageBitmap2: Bitmap? = null
-        val isFirstPageNotEnd by lazy { pages?.get(0)?.let { it.isNotEndPage() } != false }
-        val isThirdPageNotEnd by lazy { pages?.getOrNull(2)?.let { it.isNotEndPage() } == true }
+        val isFirstPageNotEnd by lazy { pages?.get(0)?.isNotEndPage() != false }
+        val isThirdPageNotEnd by lazy { pages?.getOrNull(2)?.isNotEndPage() == true }
+
         val shouldShiftAnyway = !viewer.activity.manuallyShiftedPages && page.endPageConfidence == 3
         if (page.index <= 2 && page.isEndPage == null && page.fullPage == null) {
             page.endPageConfidence = imageBitmap.isPagePadded(rightSide = !isLTR)
             if (extraPage?.index == 1 && extraPage?.isEndPage == null) {
-                earlyImageBitmap2 = setExtraPageBitmap(imageSource2.peek().inputStream(), isLTR)
+                earlyImageBitmap2 = setExtraPageBitmap(imageSource2, isLTR)
             }
             if (page.index == 1 && page.isEndPage == true && viewer.config.shiftDoublePage &&
                 (isFirstPageNotEnd || isThirdPageNotEnd)
@@ -735,29 +692,18 @@ class PagerPageHolder(
             return supportHingeIfThere(imageSource)
         }
 
-        val imageBitmap2 = earlyImageBitmap2 ?: try {
-            BitmapFactory.decodeStream(imageSource2.peek().inputStream())
-        } catch (e: Exception) {
-            closeSources(imageSource2)
-            extraPage?.fullPage = true
-            page.isolatedPage = true
-            splitDoublePages()
-            Logger.e { "Cannot combine pages ${e.message}" }
-            return supportHingeIfThere(imageSource)
-        }
-        scope.launchUI { progressIndicator.setProgress(97) }
-        val height2 = imageBitmap2.height
-        val width2 = imageBitmap2.width
+        val imageBitmap2 = earlyImageBitmap2 ?: imageSource2.bitmapSafe()
 
-        if (height2 < width2) {
-            closeSources(imageSource2)
+        closeSources(imageSource2)
+        scope.launchUI { progressIndicator.setProgress(97) }
+
+        if (imageBitmap2 == null || imageBitmap2.height < imageBitmap2.width) {
             extraPage?.fullPage = true
             page.isolatedPage = true
             splitDoublePages()
             return supportHingeIfThere(imageSource)
         }
-        val bg = ThemeUtil.readerBackgroundColor(viewer.config.readerTheme)
-        closeSources(imageSource2)
+
         extraPage?.let { extraPage ->
             val shouldSubShiftAnyway = !viewer.activity.manuallyShiftedPages &&
                 extraPage.isStartPage == true && extraPage.endPageConfidence == 0
@@ -779,10 +725,16 @@ class PagerPageHolder(
             }
         }
         // If page has been removed in another thread, don't show it
-        if (extraPage == null) {
-            return supportHingeIfThere(imageSource)
-        }
-        return ImageUtil.mergeBitmaps(imageBitmap, imageBitmap2, isLTR, bg, viewer.config.hingeGapSize, context) {
+        if (extraPage == null) return supportHingeIfThere(imageSource)
+
+        return ImageUtil.mergeBitmaps(
+            imageBitmap,
+            imageBitmap2,
+            isLTR,
+            ThemeUtil.readerBackgroundColor(viewer.config.readerTheme),
+            viewer.config.hingeGapSize,
+            context,
+        ) {
             scope.launchUI {
                 if (it == 100) {
                     progressIndicator.completeAndFadeOut()
@@ -793,12 +745,59 @@ class PagerPageHolder(
         }
     }
 
-    private fun setExtraPageBitmap(imageStream: InputStream, isLTR: Boolean): Bitmap? {
-        val earlyImageBitmap2 = try {
-            BitmapFactory.decodeStream(imageStream)
-        } catch (_: Exception) {
-            return null
+    private suspend fun handleSinglePage(imageSource: BufferedSource, isLTR: Boolean): BufferedSource {
+        if (viewer.config.splitPages && page.longPage == null) {
+            val imageBitmap = imageSource.bitmapSafe()
+            if (imageBitmap == null) {
+                page.longPage = true
+                splitDoublePages()
+                return imageSource
+            }
+
+            return if (imageBitmap.height < imageBitmap.width) {
+                closeSources(imageSource)
+                page.longPage = true
+                splitDoublePages()
+                return ImageUtil.splitBitmap(imageBitmap, !isLTR) {
+                    scope.launchUI {
+                        if (it == 100) {
+                            progressIndicator.completeAndFadeOut()
+                        } else {
+                            progressIndicator.setProgress(it)
+                        }
+                    }
+                }
+            } else {
+                page.longPage = false
+                imageSource
+            }
         }
+        return supportHingeIfThere(imageSource)
+    }
+
+    private suspend fun mergeOrSplitPages(imageSource: BufferedSource, imageSource2: BufferedSource?): BufferedSource {
+        if (ImageUtil.isAnimatedAndSupported(imageSource)) {
+            // Don't do anything with animated images, splitting may cause the animation to de-sync with one another,
+            // and merging would only cause lag
+            scope.launchUI { progressIndicator.completeAndFadeOut() }
+            return imageSource
+        }
+
+        val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
+
+        if (page.longPage == true && viewer.config.splitPages) {
+            return splitPage(imageSource, isLTR)
+        }
+
+        if (imageSource2 != null) {
+            mergePages(imageSource, imageSource2, isLTR)
+        }
+
+        return handleSinglePage(imageSource, isLTR)
+    }
+
+    private fun setExtraPageBitmap(imageSource: BufferedSource, isLTR: Boolean): Bitmap? {
+        val earlyImageBitmap2 = imageSource.bitmapSafe() ?: return null
         val paddedPageConfidence = earlyImageBitmap2.isPagePadded(rightSide = !isLTR)
         if (paddedPageConfidence == 3) {
             extraPage?.endPageConfidence = paddedPageConfidence

@@ -78,11 +78,6 @@ class WebtoonPageHolder(
      */
     private var loadJob: Job? = null
 
-    /**
-     * Job for progress changes of the page.
-     */
-    private var progressJob: Job? = null
-
     init {
         refreshLayoutParams()
 
@@ -118,7 +113,7 @@ class WebtoonPageHolder(
      */
     override fun recycle() {
         loadJob?.cancel()
-        progressJob?.cancel()
+        loadJob = null
 
         removeErrorLayout()
         frame.recycle()
@@ -131,42 +126,21 @@ class WebtoonPageHolder(
         val loader = page.chapter.pageLoader ?: return
         supervisorScope {
             launchIO { loader.loadPage(page) }
-            page.statusFlow.collectLatest { processStatus(it) }
-        }
-    }
-
-    /**
-     * Observes the progress of the page and updates view.
-     */
-    private fun launchProgressJob() {
-        progressJob?.cancel()
-
-        val page = page ?: return
-        progressJob = scope.launch {
-            page.progressFlow.collectLatest { value -> progressIndicator.setProgress(value) }
-        }
-    }
-
-    /**
-     * Called when the status of the page changes.
-     *
-     * @param status the new status of the page.
-     */
-    private suspend fun processStatus(status: Page.State) {
-        when (status) {
-            Page.State.QUEUE -> setQueued()
-            Page.State.LOAD_PAGE -> setLoading()
-            Page.State.DOWNLOAD_IMAGE -> {
-                launchProgressJob()
-                setDownloading()
-            }
-            Page.State.READY -> {
-                setImage()
-                progressJob?.cancel()
-            }
-            Page.State.ERROR -> {
-                setError()
-                progressJob?.cancel()
+            page.statusFlow.collectLatest { status ->
+                when (status) {
+                    Page.State.QUEUE -> setQueued()
+                    Page.State.LOAD_PAGE -> setLoading()
+                    Page.State.DOWNLOAD_IMAGE -> {
+                        setDownloading()
+                        scope.launch {
+                            page.progressFlow.collectLatest { value ->
+                                progressIndicator.setProgress(value)
+                            }
+                        }
+                    }
+                    Page.State.READY -> setImage()
+                    Page.State.ERROR -> setError()
+                }
             }
         }
     }

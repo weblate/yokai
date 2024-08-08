@@ -18,9 +18,6 @@ import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
@@ -54,9 +51,7 @@ import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.e
@@ -86,8 +81,12 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences.ExtensionInstaller
 import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.manga.interactor.GetManga
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import java.io.File
 import android.R as AR
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 
 class SettingsAdvancedController : SettingsLegacyController() {
 
@@ -376,21 +375,19 @@ class SettingsAdvancedController : SettingsLegacyController() {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            preferenceCategory {
-                titleRes = MR.strings.reader
+        preferenceCategory {
+            titleRes = MR.strings.reader
 
-                preference {
-                    key = "pref_display_profile"
-                    titleRes = MR.strings.pref_display_profile
-                    onClick {
-                        (activity as? MainActivity)?.showColourProfilePicker()
-                    }
+            preference {
+                key = "pref_display_profile"
+                titleRes = MR.strings.pref_display_profile
+                onClick {
+                    (activity as? MainActivity)?.showColourProfilePicker()
+                }
 
-                    basePreferences.displayProfile().changesIn(viewScope) { path ->
-                        val actualPath = UniFile.fromUri(context, path.toUri())?.filePath ?: path
-                        if (actualPath.isNotEmpty()) summary = actualPath
-                    }
+                basePreferences.displayProfile().changesIn(viewScope) { path ->
+                    val actualPath = UniFile.fromUri(context, path.toUri())?.filePath ?: path
+                    if (actualPath.isNotEmpty()) summary = actualPath
                 }
             }
         }

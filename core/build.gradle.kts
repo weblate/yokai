@@ -8,8 +8,11 @@ plugins {
 
 kotlin {
     androidTarget()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(projects.i18n)
 
@@ -27,7 +30,7 @@ kotlin {
                 implementation(libs.jsoup)
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 // Dependency injection
                 api(libs.injekt.core)
@@ -45,6 +48,10 @@ kotlin {
                 api(libs.unifile)
 
                 implementation(libs.libarchive)
+            }
+        }
+        iosMain {
+            dependencies {
             }
         }
     }

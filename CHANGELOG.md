@@ -56,7 +56,7 @@
   - Migrated a few more chapter related queries
   - Migrated most of the manga related queries
 - Bump dependency com.github.tachiyomiorg:unifile revision to a9de196cc7
-- Update project to Kotlin 2.0
+- Update project to Kotlin 2.0 (v2.0.10)
 - Update compose bom to v2024.07.00-alpha02
 - Refactor archive support to use `libarchive`
 - Use version catalog for gradle plugins

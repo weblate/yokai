@@ -70,3 +70,4 @@
 - Update Android Gradle Plugin to v8.5.1
 - Update gradle to v8.9
 - Start using Voyager for navigation
+- Update dependency androidx.work:work-runtime-ktx to v2.9.1

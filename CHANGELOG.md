@@ -26,12 +26,16 @@
 - Increased default maximum automatic backup files to 5
 - It is now possible to edit a local source entry without adding it to library
 - Long Strip and Continuous Vertical background color now respect user setting
+- Display Color Profile setting no longer limited to Android 8 or newer
+- Increased long strip cache size to 4 for Android 8 or newer
+- Use Coil pipeline to handle HEIF images
 
 ## Fixes
 - Fixed auto backup, auto extension update, and app update checker stop working
   if it crash/failed
 - Fixed crashes when trying to reload extension repo due to connection issue
 - Fixed tap controls not working properly after zoom
+- Fixed (sorta, more like workaround) ANR issues when running background tasks, such as updating extensions
 
 ## Translation
 - Update Japanese translation (akir45)

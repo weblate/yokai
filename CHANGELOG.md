@@ -8,4 +8,4 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Fixes
-- Fixed incompatibility with J2K backup file
+- Fixed incorrect library entry chapter count

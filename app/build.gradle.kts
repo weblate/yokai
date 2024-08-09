@@ -47,7 +47,7 @@ android {
         targetSdk = AndroidConfig.targetSdk
         applicationId = "eu.kanade.tachiyomi"
         versionCode = 139
-        versionName = "1.8.4.4"
+        versionName = "1.8.4.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 

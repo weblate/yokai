@@ -235,7 +235,6 @@ dependencies {
     implementation(libs.aboutlibraries)
 
     // UI
-    implementation(libs.material.design.dimens)
     implementation(libs.loading.button)
     implementation(libs.fastadapter)
     implementation(libs.fastadapter.extensions.binding)

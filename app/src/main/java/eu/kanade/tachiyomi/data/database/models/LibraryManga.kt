@@ -97,7 +97,7 @@ data class LibraryManga(
             this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
             this.read = readCount.roundToInt()
             this.unread = maxOf((total - readCount).roundToInt(), 0)
-            this.totalChapters = readCount.roundToInt()
+            this.totalChapters = total.toInt()
             this.bookmarkCount = bookmarkCount.roundToInt()
             this.latestUpdate = latestUpdate
             this.lastRead = lastRead

@@ -71,3 +71,4 @@
 - Update gradle to v8.9
 - Start using Voyager for navigation
 - Update dependency androidx.work:work-runtime-ktx to v2.9.1
+- Update dependency androidx.annotation:annotation to v1.8.2

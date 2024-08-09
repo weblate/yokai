@@ -170,12 +170,6 @@ dependencies {
     implementation(libs.compose.theme.adapter3)
     implementation(libs.accompanist.webview)
 
-    // Modified dependencies
-    implementation(libs.subsamplingscaleimageview) {
-        exclude(module = "image-decoder")
-    }
-    implementation(libs.image.decoder)
-
     implementation(libs.flexbox)
 
     implementation(libs.material)
@@ -228,7 +222,12 @@ dependencies {
     implementation(libs.conductor.support.preference)
 
     // Image library
+    implementation(platform(libs.coil3.bom))
     implementation(libs.bundles.coil)
+    implementation(libs.subsamplingscaleimageview) {  // modified
+        exclude(module = "image-decoder")
+    }
+    implementation(libs.image.decoder)
 
     // Sort
     implementation(libs.java.nat.sort)

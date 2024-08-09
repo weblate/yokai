@@ -42,7 +42,6 @@ image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "e
 injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65b0440" }
 kermit = { module = "co.touchlab:kermit", version = "2.0.3" }
 material = { module = "com.google.android.material:material", version = "1.12.0" }
-material-design-dimens = { module = "com.dmitrymalkovich.android:material-design-dimens", version = "1.4" }
 markwon = { module = "io.noties.markwon:core", version = "4.6.2" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version = "v3.1.0" }
 nucleus-support-v7 = { module = "info.android15.nucleus:nucleus-support-v7", version.ref = "nucleus" }
@@ -54,7 +53,7 @@ junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref 
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
 junrar = { module = "com.github.junrar:junrar", version = "7.5.5" }
-loading-button = { module = "br.com.simplepass:loading-button-android", version = "2.2.0" }
+loading-button = { module = "com.github.leandroBorgesFerreira:LoadingButtonAndroid", version = "2.2.0" }  # FIXME: Don't depends on this
 mockk = { module = "io.mockk:mockk", version = "1.13.11" }
 okio = { module = "com.squareup.okio:okio", version = "3.8.0" }
 okhttp-brotli = { module = "com.squareup.okhttp3:okhttp-brotli", version.ref = "okhttp" }
@@ -87,7 +86,7 @@ taptargetview = { module = "com.getkeepsafe.taptargetview:taptargetview", versio
 oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version = "0.10.6" }
 unifile = { module = "com.github.tachiyomiorg:unifile", version = "7c257e1c64" }
 viewstatepageradapter = { module = "com.nightlynexus.viewstatepageradapter:viewstatepageradapter", version = "1.1.0" }
-viewtooltip = { module = "com.github.florent37:viewtooltip", version = "1.2.2" }
+viewtooltip = { module = "com.github.CarlosEsco:ViewTooltip", version = "f79a8955ef" }  # FIXME: Don't depends on this
 
 [plugins]
 kotlinter = { id = "org.jmailen.kotlinter", version = "4.1.1" }

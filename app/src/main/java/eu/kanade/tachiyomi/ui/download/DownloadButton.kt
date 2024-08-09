@@ -34,7 +34,7 @@ class DownloadButton @JvmOverloads constructor(context: Context, attrs: Attribut
         ContextCompat.getColor(context, R.color.material_on_surface_disabled)
     }
     private val downloadedTextColor = context.getResourceColor(R.attr.background)
-    private val errorColor by lazy { ContextCompat.getColor(context, R.color.material_red_500) }
+    private val errorColor by lazy { ContextCompat.getColor(context, R.color.md_red_500) }
     private val filledCircle by lazy {
         ContextCompat.getDrawable(context, R.drawable.filled_circle)?.mutate()
     }

@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:background="@color/material_red_400" />
+        tools:background="@color/md_red_400" />
 
     <ImageView
         android:id="@+id/backdrop"
@@ -82,7 +82,7 @@
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:maxHeight="500dp"
-            tools:background="@color/material_grey_700"
+            tools:background="@color/md_grey_700"
             tools:src="@mipmap/ic_launcher" />
     </com.google.android.material.card.MaterialCardView>
 

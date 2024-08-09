@@ -22,7 +22,7 @@ jobs:
           ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;29.0.3"
 
       - name: Setup Gradle
-        uses: null2264/actions/gradle-setup@c63d62af63686cb442114b979d4bedb96a514881
+        uses: null2264/actions/gradle-setup@a4d662095a2f2af1ed24f1228eb6e55b0f9f1f29
         with:
           java: 17
           distro: adopt

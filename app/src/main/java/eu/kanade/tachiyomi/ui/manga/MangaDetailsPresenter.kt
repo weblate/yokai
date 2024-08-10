@@ -175,8 +175,8 @@ class MangaDetailsPresenter(
     }
 
     private suspend fun getChapters() {
-        val chapters = getChapter.awaitAll(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
-        allChapters = if (!isScanlatorFiltered()) chapters else getChapter.awaitAll(manga.id!!, false).map { it.toModel() }
+        val chapters = getChapters.await(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
+        allChapters = if (!isScanlatorFiltered()) chapters else getChapters.await(manga.id!!, false).map { it.toModel() }
 
         // Find downloaded chapters
         setDownloadedChapters(chapters)

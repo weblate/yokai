@@ -86,10 +86,11 @@ class ChapterFilter(val preferences: PreferencesHelper = Injekt.get(), val downl
         /** filters chapters for scanlators */
         @Deprecated("Filter it from SQL instead if possible")
         fun <T : Chapter> List<T>.filterChaptersByScanlators(manga: Manga): List<T> {
-            return manga.filtered_scanlators?.let { filteredScanlatorString ->
-                val filteredScanlators = ChapterUtil.getScanlators(filteredScanlatorString)
-                filter { ChapterUtil.getScanlators(it.scanlator).none { group -> filteredScanlators.contains(group) } }
-            } ?: this
+            if (manga.filtered_scanlators == null) return this
+
+            return this.filter { chapter ->
+                !ChapterUtil.getScanlators(manga.filtered_scanlators).contains(chapter.scanlator)
+            }
         }
     }
 }

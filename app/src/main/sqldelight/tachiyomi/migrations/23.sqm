@@ -1,4 +1,4 @@
--- FIXME: Turn this to its own table
+DROP VIEW IF EXISTS scanlators_view;
 CREATE VIEW scanlators_view AS
 SELECT S.* FROM (
     WITH RECURSIVE split(seq, _id, name, str) AS (
@@ -12,3 +12,9 @@ SELECT S.* FROM (
     )
     SELECT _id AS manga_id, name FROM split WHERE split.seq != 0 ORDER BY split.seq ASC
 ) AS S;
+
+-- Replace seperator from ' & ' to less common ' [.] '
+WITH tmp(_id, filtered_scanlators) AS (SELECT _id, replace(filtered_scanlators, ' & ', ' [.] ') FROM mangas)
+UPDATE mangas
+SET filtered_scanlators = (SELECT filtered_scanlators FROM tmp)
+WHERE _id IN (SELECT _id FROM tmp);

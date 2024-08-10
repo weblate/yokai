@@ -175,18 +175,13 @@ class MangaDetailsPresenter(
     }
 
     private suspend fun getChapters() {
-        val chapters = getChapters.await(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
+        val chapters = getChapter.awaitAll(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
+        allChapters = if (!isScanlatorFiltered()) chapters else getChapter.awaitAll(manga.id!!, false).map { it.toModel() }
 
         // Find downloaded chapters
         setDownloadedChapters(chapters)
-        allChapterScanlators =
-            if (!isScanlatorFiltered()) {
-                chapters.flatMap { ChapterUtil.getScanlators(it.chapter.scanlator) }
-            } else {
-                getAvailableScanlators.await(manga.id!!)
-            }.toSet()
-        // Store the last emission
-        allChapters = if (!isScanlatorFiltered()) chapters else getChapters.await(manga.id!!, false).map { it.toModel() }
+        allChapterScanlators = allChapters.mapNotNull { it.chapter.scanlator }.toSet()
+
         this.chapters = applyChapterFilters(chapters)
     }
 

@@ -8,4 +8,4 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Fixes
-- Fixed incorrect library entry chapter count
+- Fixed scanlator filter not working properly if it contains " & "

@@ -206,10 +206,7 @@ private fun List<Chapter>.filterChaptersByScanlators(manga: Manga): List<Chapter
     if (manga.filtered_scanlators == null) return this
 
     return this.filter { chapter ->
-        ChapterUtil.getScanlators(chapter.scanlator)
-            .none { group ->
-                ChapterUtil.getScanlators(manga.filtered_scanlators).contains(group)
-            }
+        !ChapterUtil.getScanlators(manga.filtered_scanlators).contains(chapter.scanlator)
     }
 }
 

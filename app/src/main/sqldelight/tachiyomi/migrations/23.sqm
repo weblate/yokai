@@ -14,7 +14,6 @@ SELECT S.* FROM (
 ) AS S;
 
 -- Replace seperator from ' & ' to less common ' [.] '
-WITH tmp(_id, filtered_scanlators) AS (SELECT _id, replace(filtered_scanlators, ' & ', ' [.] ') FROM mangas)
 UPDATE mangas
-SET filtered_scanlators = (SELECT filtered_scanlators FROM tmp)
-WHERE _id IN (SELECT _id FROM tmp);
+SET filtered_scanlators = replace(filtered_scanlators, ' & ', ' [.] ')
+WHERE filtered_scanlators IS NOT NULL;

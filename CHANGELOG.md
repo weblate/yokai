@@ -72,7 +72,3 @@
 - Start using Voyager for navigation
 - Update dependency androidx.work:work-runtime-ktx to v2.9.1
 - Update dependency androidx.annotation:annotation to v1.8.2
-- Replace dependency br.com.simplepass:loading-button-android with
-  com.github.leandroBorgesFerreira:LoadingButtonAndroid
-- Replace dependency com.github.florent37:viewtooltip with
-  com.github.CarlosEsco:ViewTooltip

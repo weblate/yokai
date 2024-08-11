@@ -42,6 +42,7 @@
 - Fixed kitsu tracker issue due to domain change
 - Fixed entry custom cover won't load if entry doesn't have cover from source
 - Fixed unread badge doesn't work properly for some sources (notably Komga)
+- Fixed MAL start date parsing (@MajorTanya)
 
 ## Translation
 - Update Japanese translation (@akir45)

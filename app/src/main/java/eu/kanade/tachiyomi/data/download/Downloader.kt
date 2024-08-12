@@ -55,6 +55,7 @@ import yokai.domain.download.DownloadPreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.io.File
+import java.util.*
 import java.util.zip.*
 
 /**
@@ -540,23 +541,20 @@ class Downloader(
         return ImageUtil.getExtensionFromMimeType(mime) { file.openInputStream() }
     }
 
-    private fun splitTallImageIfNeeded(page: Page, tmpDir: UniFile): Boolean {
-        if (!preferences.splitTallImages().get()) return true
+    private fun splitTallImageIfNeeded(page: Page, tmpDir: UniFile) {
+        if (!preferences.splitTallImages().get()) return
 
-        val filename = String.format("%03d", page.number)
-        val imageFile = tmpDir.listFiles()?.find { it.name.orEmpty().startsWith(filename) }
-            ?: throw Error(context.getString(MR.strings.download_notifier_split_page_not_found, page.number))
-        val imageFilePath = imageFile.filePath
-            ?: throw Error(context.getString(MR.strings.download_notifier_split_page_not_found, page.number))
+        try {
+            val fileName = "%03d".format(Locale.ENGLISH, page.number)
+            val imageFile = tmpDir.listFiles()?.firstOrNull { it.name.orEmpty().startsWith(fileName) }
+                ?: throw Error(context.getString(MR.strings.download_notifier_split_page_not_found, page.number))
 
-        // check if the original page was previously split before then skip.
-        if (imageFile.name.orEmpty().contains("__")) return true
+            // Check if the original page was previously split before then skip.
+            if (imageFile.name.orEmpty().startsWith("${fileName}__")) return
 
-        return try {
-            ImageUtil.splitTallImage(imageFile, imageFilePath)
+            ImageUtil.splitTallImage(tmpDir, imageFile, fileName)
         } catch (e: Exception) {
-            Logger.e(e)
-            false
+            Logger.e(e) { "Failed to split downloaded image"}
         }
     }
 
@@ -582,7 +580,7 @@ class Downloader(
         val downloadedImagesCount = tmpDir.listFiles().orEmpty().count {
             val fileName = it.name.orEmpty()
             when {
-                fileName in listOf(/*COMIC_INFO_FILE, */NOMEDIA_FILE) -> false
+                fileName in listOf(COMIC_INFO_FILE, NOMEDIA_FILE) -> false
                 fileName.endsWith(".tmp") -> false
                 // Only count the first split page and not the others
                 fileName.contains("__") && !fileName.endsWith("__001.jpg") -> false

@@ -15,7 +15,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.webkit.MimeTypeMap
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.alpha
@@ -26,17 +25,12 @@ import androidx.core.graphics.scale
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import okio.Buffer
 import okio.BufferedSource
 import tachiyomi.decoder.Format
 import tachiyomi.decoder.ImageDecoder
-import java.io.File
-import java.io.FileOutputStream
 import java.io.InputStream
-import java.net.URLConnection
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -539,7 +533,7 @@ object ImageUtil {
     /**
      * Splits tall images to improve performance of reader
      */
-    fun splitTallImage(imageFile: UniFile, imageFilePath: String): Boolean {
+    fun splitTallImage(tmpDir: UniFile, imageFile: UniFile, fileName: String): Boolean {
         val imageSource = imageFile.openInputStream().use { Buffer().readFrom(it) }
         if (isAnimatedAndSupported(imageSource) || !isTallImage(imageSource)) {
             return true
@@ -564,17 +558,22 @@ object ImageUtil {
 
         return try {
             splitDataList.forEach { splitData ->
-                val splitPath = splitImagePath(imageFilePath, splitData.index)
+                val splitImageName = splitImageName(fileName, splitData.index)
+                // Remove pre-existing split if exists (this split shouldn't exist under normal circumstances)
+                tmpDir.findFile(splitImageName)?.delete()
+
+                val splitFile = tmpDir.createFile(splitImageName)!!
 
                 val region = Rect(0, splitData.topOffset, splitData.splitWidth, splitData.bottomOffset)
 
-                FileOutputStream(splitPath).use { outputStream ->
+                splitFile.openOutputStream().use { outputStream ->
                     val splitBitmap = bitmapRegionDecoder.decodeRegion(region, options)
                     splitBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                     splitBitmap.recycle()
                 }
                 Logger.d {
-                    "Success: Split #${splitData.index + 1} with topOffset=${splitData.topOffset} height=${splitData.splitHeight} bottomOffset=${splitData.bottomOffset}"
+                    "Success: Split #${splitData.index + 1} with topOffset=${splitData.topOffset} " +
+                        "height=${splitData.splitHeight} bottomOffset=${splitData.bottomOffset}"
                 }
             }
             imageFile.delete()
@@ -582,8 +581,8 @@ object ImageUtil {
         } catch (e: Exception) {
             // Image splits were not successfully saved so delete them and keep the original image
             splitDataList
-                .map { splitImagePath(imageFilePath, it.index) }
-                .forEach { File(it).delete() }
+                .map { splitImageName(fileName, it.index) }
+                .forEach { tmpDir.findFile(it)?.delete() }
             Logger.e(e)
             false
         } finally {
@@ -591,8 +590,8 @@ object ImageUtil {
         }
     }
 
-    private fun splitImagePath(imageFilePath: String, index: Int) =
-        imageFilePath.substringBeforeLast(".") + "__${"%03d".format(index + 1)}.jpg"
+    private fun splitImageName(fileName: String, index: Int) =
+        "${fileName}__${"%03d".format(Locale.ENGLISH, index + 1)}.jpg"
 
     private val BitmapFactory.Options.splitData
         get(): List<SplitData> {

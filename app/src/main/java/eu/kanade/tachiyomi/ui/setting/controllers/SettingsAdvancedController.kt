@@ -67,6 +67,7 @@ import eu.kanade.tachiyomi.util.view.setMessage
 import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import java.io.File
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +84,6 @@ import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.manga.interactor.GetManga
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.File
 import android.R as AR
 import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
@@ -338,8 +338,17 @@ class SettingsAdvancedController : SettingsLegacyController() {
             }
             infoPreference(MR.strings.ext_installer_summary).apply {
                 basePreferences.extensionInstaller().changesIn(viewScope) {
-                    isVisible =
-                        it != ExtensionInstaller.PACKAGEINSTALLER && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+                    when (it) {
+                        ExtensionInstaller.SHIZUKU -> {
+                            summary = context.getString(MR.strings.ext_installer_summary)
+                            isVisible = true && Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+                        }
+                        ExtensionInstaller.LEGACY -> {
+                            summary = context.getString(MR.strings.ext_installer_summary_legacy)
+                            isVisible = true
+                        }
+                        else -> isVisible = false
+                    }
                 }
             }
             preference {

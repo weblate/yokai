@@ -44,7 +44,7 @@ Updates are sporadic, sometime fast, sometime slow.
 * Tracker support:
   [MyAnimeList](https://myanimelist.net/),
   [AniList](https://anilist.co/),
-  [Kitsu](https://kitsu.io/explore/anime),
+  [Kitsu](https://kitsu.app/explore/anime),
   [Manga Updates](https://www.mangaupdates.com/),
   [Shikimori](https://shikimori.one),
   and [Bangumi](https://bgm.tv/) support.

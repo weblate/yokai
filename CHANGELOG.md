@@ -38,6 +38,8 @@
 - Fixed (sorta, more like workaround) ANR issues when running background tasks, such as updating extensions
 - Fixed split (downloaded) tall images sometimes doesn't work
 - Fixed status bar stuck in dark mode when app is following system theme
+- Fixed splash screen state only getting updates if library is empty (Should slightly reduce splash screen duration)
+- Fixed kitsu tracker issue due to domain change
 
 ## Translation
 - Update Japanese translation (akir45)

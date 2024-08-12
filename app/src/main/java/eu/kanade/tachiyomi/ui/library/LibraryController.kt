@@ -1138,7 +1138,6 @@ open class LibraryController(
                     emptyList()
                 },
             )
-            (activity as? MainActivity)?.splashState?.ready = true
         }
         adapter.setItems(mangaMap)
         if (binding.libraryGridRecycler.recycler.translationX != 0f) {
@@ -1151,7 +1150,10 @@ open class LibraryController(
             }
         }
         singleCategory = presenter.categories.size <= 1
+
         binding.progress.isVisible = false
+        (activity as? MainActivity)?.splashState?.ready = true
+
         if (!freshStart) {
             justStarted = false
         } // else binding.recyclerLayout.alpha = 1f

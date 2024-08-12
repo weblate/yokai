@@ -1,4 +1,4 @@
--- FIXME: Turn this to its own table
+DROP VIEW IF EXISTS scanlators_view;
 CREATE VIEW scanlators_view AS
 SELECT S.* FROM (
     WITH RECURSIVE split(seq, _id, name, str) AS (

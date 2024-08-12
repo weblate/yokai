@@ -41,6 +41,7 @@
 - Fixed splash screen state only getting updates if library is empty (Should slightly reduce splash screen duration)
 - Fixed kitsu tracker issue due to domain change
 - Fixed entry custom cover won't load if entry doesn't have cover from source
+- Fixed unread badge doesn't work properly for some sources (notably Komga)
 
 ## Translation
 - Update Japanese translation (akir45)

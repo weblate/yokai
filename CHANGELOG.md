@@ -36,6 +36,8 @@
 - Fixed crashes when trying to reload extension repo due to connection issue
 - Fixed tap controls not working properly after zoom
 - Fixed (sorta, more like workaround) ANR issues when running background tasks, such as updating extensions
+- Fixed split (downloaded) tall images sometimes doesn't work
+- Fixed status bar stuck in dark mode when app is following system theme
 
 ## Translation
 - Update Japanese translation (akir45)

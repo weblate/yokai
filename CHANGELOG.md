@@ -40,6 +40,7 @@
 - Fixed status bar stuck in dark mode when app is following system theme
 - Fixed splash screen state only getting updates if library is empty (Should slightly reduce splash screen duration)
 - Fixed kitsu tracker issue due to domain change
+- Fixed entry custom cover won't load if entry doesn't have cover from source
 
 ## Translation
 - Update Japanese translation (akir45)

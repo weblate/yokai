@@ -20,6 +20,9 @@ import eu.kanade.tachiyomi.network.await
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
+import java.io.File
+import java.net.HttpURLConnection
+import java.util.Date
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,9 +38,6 @@ import okio.buffer
 import okio.sink
 import okio.source
 import uy.kohesive.injekt.injectLazy
-import java.io.File
-import java.net.HttpURLConnection
-import java.util.*
 
 class MangaCoverFetcher(
     private val manga: Manga,
@@ -56,7 +56,7 @@ class MangaCoverFetcher(
 
     override suspend fun fetch(): FetchResult {
         // diskCacheKey is thumbnail_url
-        url = manga.thumbnail_url ?: error("No cover specified")
+        url = manga.thumbnail_url.orEmpty()
         return when (getResourceType(url)) {
             Type.URL -> httpLoader()
             Type.File -> {
@@ -64,8 +64,18 @@ class MangaCoverFetcher(
                 fileLoader(File(url.substringAfter("file://")))
             }
             Type.URI -> fileUriLoader(url)
-            null -> error("Invalid image")
+            null -> tryCustomCover() ?: error("No cover specified")
         }
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    private suspend fun tryCustomCover(): FetchResult? {
+        val customCoverFile by lazy { coverCache.getCustomCoverFile(manga) }
+        if (options.extras.getOrDefault(USE_CUSTOM_COVER_KEY) && customCoverFile.exists()) {
+            setRatioAndColorsInScope(manga, customCoverFile)
+            return fileLoader(customCoverFile)
+        }
+        return null
     }
 
     private suspend fun httpLoader(): FetchResult {
@@ -73,14 +83,9 @@ class MangaCoverFetcher(
         val networkRead = options.networkCachePolicy.readEnabled
         val onlyCache = !networkRead && diskRead
         val shouldFetchRemotely = networkRead && !diskRead && !onlyCache
-        val useCustomCover = options.extras.getOrDefault(USE_CUSTOM_COVER_KEY)
-        // Use custom cover if exists
         if (!shouldFetchRemotely) {
-            val customCoverFile by lazy { coverCache.getCustomCoverFile(manga) }
-            if (useCustomCover && customCoverFile.exists()) {
-                setRatioAndColorsInScope(manga, customCoverFile)
-                return fileLoader(customCoverFile)
-            }
+            val customCoverLoader = tryCustomCover()
+            if (customCoverLoader != null) return customCoverLoader
         }
         val coverFile = coverCache.getCoverFile(manga)
         if (!shouldFetchRemotely && coverFile.exists() && options.diskCachePolicy.readEnabled) {

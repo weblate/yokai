@@ -1,8 +1,8 @@
 package yokai.core.migration.migrations
 
+import android.app.Application
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -13,8 +13,8 @@ class ShortcutsMigration : Migration {
     override val version: Float = 75f
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
-        val context: App = migrationContext.get() ?: return false
-        val preferences: PreferencesHelper = migrationContext.get() ?: return false
+        val context = migrationContext.get<Application>() ?: return false
+        val preferences = migrationContext.get<PreferencesHelper>() ?: return false
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
         val wasShortcutsDisabled = !prefs.getBoolean("show_manga_app_shortcuts", true)

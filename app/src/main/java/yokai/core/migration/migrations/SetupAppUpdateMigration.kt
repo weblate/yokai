@@ -1,6 +1,6 @@
 package yokai.core.migration.migrations
 
-import eu.kanade.tachiyomi.App
+import android.app.Application
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.updater.AppUpdateJob
 import yokai.core.migration.Migration
@@ -12,7 +12,7 @@ class SetupAppUpdateMigration : Migration {
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
         if (!BuildConfig.INCLUDE_UPDATER) return false
 
-        val context: App = migrationContext.get() ?: return false
+        val context = migrationContext.get<Application>() ?: return false
         AppUpdateJob.setupTask(context)
         return true
     }

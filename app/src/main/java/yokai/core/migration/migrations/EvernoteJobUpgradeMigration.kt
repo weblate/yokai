@@ -1,6 +1,6 @@
 package yokai.core.migration.migrations
 
-import eu.kanade.tachiyomi.App
+import android.app.Application
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.updater.AppUpdateJob
@@ -14,7 +14,7 @@ class EvernoteJobUpgradeMigration : Migration {
     override val version: Float = 14f
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
-        val context: App = migrationContext.get() ?: return false
+        val context = migrationContext.get<Application>() ?: return false
         if (BuildConfig.INCLUDE_UPDATER) {
             AppUpdateJob.setupTask(context)
         }

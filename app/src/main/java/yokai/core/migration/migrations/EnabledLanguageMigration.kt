@@ -1,6 +1,5 @@
 package yokai.core.migration.migrations
 
-import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.plusAssign
 import yokai.core.migration.Migration
@@ -10,7 +9,6 @@ class EnabledLanguageMigration : Migration {
     override val version: Float = 83f
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
-        val context: App = migrationContext.get() ?: return false
         val preferences: PreferencesHelper = migrationContext.get() ?: return false
 
         if (preferences.enabledLanguages().isSet()) {

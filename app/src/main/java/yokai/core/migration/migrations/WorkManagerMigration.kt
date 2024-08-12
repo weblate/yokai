@@ -1,6 +1,6 @@
 package yokai.core.migration.migrations
 
-import eu.kanade.tachiyomi.App
+import android.app.Application
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.backup.create.BackupCreatorJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -18,7 +18,7 @@ class WorkManagerMigration : Migration {
     override val version: Float = 62f
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
-        val context: App = migrationContext.get() ?: return false
+        val context = migrationContext.get<Application>() ?: return false
         withIOContext {
             LibraryPresenter.updateDB()
         }

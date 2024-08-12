@@ -1,7 +1,7 @@
 package yokai.core.migration.migrations
 
+import android.app.Application
 import androidx.preference.PreferenceManager
-import eu.kanade.tachiyomi.App
 import yokai.core.migration.Migration
 import yokai.core.migration.MigrationContext
 import yokai.domain.base.BasePreferences
@@ -13,8 +13,8 @@ class ExtensionInstallerEnumMigration : Migration {
     override val version: Float = 119f
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
-        val basePreferences: BasePreferences = migrationContext.get() ?: return false
-        val context: App = migrationContext.get() ?: return false
+        val basePreferences = migrationContext.get<BasePreferences>() ?: return false
+        val context = migrationContext.get<Application>() ?: return false
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
         try {

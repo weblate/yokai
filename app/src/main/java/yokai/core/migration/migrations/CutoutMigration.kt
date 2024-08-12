@@ -1,7 +1,7 @@
 package yokai.core.migration.migrations
 
+import android.app.Application
 import androidx.preference.PreferenceManager
-import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import yokai.core.migration.Migration
 import yokai.core.migration.MigrationContext
@@ -13,8 +13,8 @@ class CutoutMigration : Migration {
     override val version: Float = 121f
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
-        val readerPreferences: ReaderPreferences = migrationContext.get() ?: return false
-        val context: App = migrationContext.get() ?: return false
+        val readerPreferences = migrationContext.get<ReaderPreferences>() ?: return false
+        val context = migrationContext.get<Application>() ?: return false
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
         try {

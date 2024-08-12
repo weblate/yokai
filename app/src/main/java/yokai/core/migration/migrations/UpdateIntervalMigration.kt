@@ -1,6 +1,6 @@
 package yokai.core.migration.migrations
 
-import eu.kanade.tachiyomi.App
+import android.app.Application
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import yokai.core.migration.Migration
@@ -10,8 +10,8 @@ class UpdateIntervalMigration : Migration {
     override val version: Float = 86f
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
-        val context: App = migrationContext.get() ?: return false
-        val preferences: PreferencesHelper = migrationContext.get() ?: return false
+        val context = migrationContext.get<Application>() ?: return false
+        val preferences = migrationContext.get<PreferencesHelper>() ?: return false
 
         // Handle removed every 3, 4, 6, and 8 hour library updates
         val updateInterval = preferences.libraryUpdateInterval().get()

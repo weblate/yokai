@@ -132,8 +132,7 @@ jobs:
           stage=""
           case "${{ env.VERSION_TAG }}" in
             v*)
-              _test=$(echo "${{ env.VERSION_TAG }}" | grep "v*-b")
-              [ "$_test" = "" ] && stage="release" || stage="beta"
+              [ "$(echo '${{ env.VERSION_TAG }}' | grep 'v*-b')" = "" ] && stage="release" || stage="beta"
               ;;
             r*) stage="nightly" ;;
           esac

@@ -14,6 +14,11 @@ on:
         default: false
         required: false
         type: boolean
+      message:
+        description: 'Message for releases (the text at the top of changelog)'
+        default: ''
+        required: false
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' }}
@@ -185,8 +190,9 @@ jobs:
           tag_name: ${{ env.VERSION_TAG }}
           name: Yōkai ${{ env.VERSION_TAG }}
           body: |
-            ${{ steps.changelog.outputs.CHANGELOG }}
+            ${{ github.event.inputs.message }}
 
+            ${{ steps.changelog.outputs.CHANGELOG }}
             ---
 
             ### Checksums
@@ -229,7 +235,6 @@ jobs:
             It is not ready for daily use and we do not guarantee its usability. Please download the latest stable releases instead (https://github.com/null2264/yokai/releases/latest). If you insist, please be sure to ALWAYS backup before updating.
             
             ${{ steps.changelog.outputs.CHANGELOG }}
-            
             ---
 
             ### Checksums

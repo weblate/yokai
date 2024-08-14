@@ -18,7 +18,7 @@
 - Add more info to WorkerInfo page
   - Added "next scheduled run"
   - Added attempt count
-- `english` tag no longer cause reading mode to switch to LTR (mangkoran)
+- `english` tag no longer cause reading mode to switch to LTR (@mangkoran)
 - `chinese` tag no longer cause reading mode to switch to LTR
 - `manhua` tag no longer cause reading mode to switch to LTR
 - Local source manga's cover now being invalidated on refresh
@@ -27,15 +27,15 @@
 - It is now possible to edit a local source entry without adding it to library
 - Long Strip and Continuous Vertical background color now respect user setting
 - Display Color Profile setting no longer limited to Android 8 or newer
-- Increased long strip cache size to 4 for Android 8 or newer
+- Increased long strip cache size to 4 for Android 8 or newer (@FooIbar)
 - Use Coil pipeline to handle HEIF images
 
 ## Fixes
 - Fixed auto backup, auto extension update, and app update checker stop working
   if it crash/failed
 - Fixed crashes when trying to reload extension repo due to connection issue
-- Fixed tap controls not working properly after zoom
-- Fixed (sorta, more like workaround) ANR issues when running background tasks, such as updating extensions
+- Fixed tap controls not working properly after zoom (@arkon, @Paloys, @FooIbar)
+- Fixed (sorta, more like workaround) ANR issues when running background tasks, such as updating extensions (@ivaniskandar)
 - Fixed split (downloaded) tall images sometimes doesn't work
 - Fixed status bar stuck in dark mode when app is following system theme
 - Fixed splash screen state only getting updates if library is empty (Should slightly reduce splash screen duration)
@@ -44,18 +44,19 @@
 - Fixed unread badge doesn't work properly for some sources (notably Komga)
 
 ## Translation
-- Update Japanese translation (akir45)
-- Update Brazilian Portuguese translation (AshbornXS)
-- Update Filipino translation (infyProductions)
+- Update Japanese translation (@akir45)
+- Update Brazilian Portuguese translation (@AshbornXS)
+- Update Filipino translation (@infyProductions)
 
 ## Other
+- Re-added several social media links to Mihon
 - Some code refactors
   - Simplify some messy code
   - Rewrite version checker
-  - Rewrite Migrator (ghostbear)
+  - Rewrite Migrator (@ghostbear)
   - Split the project into several modules
   - Migrated i18n to use Moko Resources
-  - Removed unnecessary dependencies
+  - Removed unnecessary dependencies (@null2264, @nonproto)
 - Update firebase bom to v33.1.0
 - Replace com.google.android.gms:play-services-oss-licenses with com.mikepenz:aboutlibraries
 - Update dependency com.google.gms:google-services to v4.4.2
@@ -68,7 +69,7 @@
 - Bump dependency com.github.tachiyomiorg:unifile revision to a9de196cc7
 - Update project to Kotlin 2.0 (v2.0.10)
 - Update compose bom to v2024.08.00-alpha01
-- Refactor archive support to use `libarchive`
+- Refactor archive support to use `libarchive` (@FooIbar)
 - Use version catalog for gradle plugins
 - Update dependency org.jsoup:jsoup to v1.7.1
 - Bump dependency com.github.tachiyomiorg:image-decoder revision to 41c059e540

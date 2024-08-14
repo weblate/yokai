@@ -21,14 +21,12 @@ class CutoutMigration : Migration {
             val oldCutoutBehaviour = prefs.getInt(PreferenceKeys.pagerCutoutBehavior, 0)
             readerPreferences.pagerCutoutBehavior().set(CutoutBehaviour.migrate(oldCutoutBehaviour))
         } catch (_: Exception) {
-            readerPreferences.pagerCutoutBehavior().set(CutoutBehaviour.SHOW)
         }
 
         try {
             val oldCutoutBehaviour = prefs.getInt("landscape_cutout_behavior", 0)
             readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.migrate(oldCutoutBehaviour))
         } catch (_: Exception) {
-            readerPreferences.landscapeCutoutBehavior().set(LandscapeCutoutBehaviour.DEFAULT)
         }
         return true
     }

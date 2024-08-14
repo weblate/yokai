@@ -172,12 +172,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             Preference.appStateKey("last_version_code"),
             0,
         )
-        // TODO: Remove later
-        val old = preferenceStore.getInt("last_version_code", -1)
-        if (old.get() >= preference.get()) {
-            preference.set(old.get())
-            old.delete()
-        }
+        if (preference.get() < 141) preference.set(0)
 
         Logger.i { "Migration from ${preference.get()} to ${BuildConfig.VERSION_CODE}" }
         Migrator.initialize(

@@ -52,7 +52,7 @@
 - Some code refactors
   - Simplify some messy code
   - Rewrite version checker
-  - Rewrite Migrator
+  - Rewrite Migrator (ghostbear)
   - Split the project into several modules
   - Migrated i18n to use Moko Resources
   - Removed unnecessary dependencies

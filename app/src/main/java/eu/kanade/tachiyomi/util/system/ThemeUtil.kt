@@ -68,9 +68,11 @@ object ThemeUtil {
 
 fun AppCompatActivity.setThemeByPref(preferences: PreferencesHelper) {
     setTheme(getPrefTheme(preferences).styleRes)
-    val wic = WindowInsetsControllerCompat(window, window.decorView)
-    wic.isAppearanceLightStatusBars = !isDarkMode(preferences)
-    wic.isAppearanceLightNavigationBars = !isDarkMode(preferences)
+    if (preferences.nightMode().get() != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+        val wic = WindowInsetsControllerCompat(window, window.decorView)
+        wic.isAppearanceLightStatusBars = !isDarkMode(preferences)
+        wic.isAppearanceLightNavigationBars = !isDarkMode(preferences)
+    }
 }
 
 fun AppCompatActivity.getThemeWithExtras(theme: Resources.Theme, preferences: PreferencesHelper, oldTheme: Resources.Theme?): Resources.Theme {

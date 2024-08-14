@@ -21,7 +21,6 @@ class ExtensionInstallerEnumMigration : Migration {
             val oldExtensionInstall = prefs.getInt("extension_installer", 0)
             basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.migrate(oldExtensionInstall))
         } catch (_: Exception) {
-            basePreferences.extensionInstaller().set(BasePreferences.ExtensionInstaller.PACKAGEINSTALLER)
         }
         return true
     }

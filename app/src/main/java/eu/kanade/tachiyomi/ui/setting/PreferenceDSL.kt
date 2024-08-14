@@ -18,9 +18,6 @@ import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.startAuthentication
@@ -32,6 +29,7 @@ import eu.kanade.tachiyomi.widget.preference.IntListMatPreference
 import eu.kanade.tachiyomi.widget.preference.ListMatPreference
 import eu.kanade.tachiyomi.widget.preference.MultiListMatPreference
 import eu.kanade.tachiyomi.widget.preference.TriStateListPreference
+import yokai.util.lang.getString
 import android.R as AR
 
 @DslMarker
@@ -199,6 +197,7 @@ fun <T> ListMatPreference.bindTo(preference: eu.kanade.tachiyomi.core.preference
     key = preference.key()
     val defValue = preference.defaultValue()
     defaultValue = if (defValue is Set<*>) defValue else defValue.toString()
+    preferenceStore = preference
 }
 
 @Deprecated(

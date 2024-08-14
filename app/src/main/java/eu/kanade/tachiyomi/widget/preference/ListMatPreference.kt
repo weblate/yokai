@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import androidx.core.content.edit
+import androidx.preference.Preference.SummaryProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.icerock.moko.resources.StringResource
 import yokai.util.lang.getString
@@ -26,6 +27,8 @@ open class ListMatPreference @JvmOverloads constructor(
     var tempValue: Int? = null
     var entries: List<String> = emptyList()
 
+    var preferenceStore: eu.kanade.tachiyomi.core.preference.Preference<*>? = null
+
     override fun onSetInitialValue(defaultValue: Any?) {
         super.onSetInitialValue(defaultValue)
         defValue = defaultValue as? String ?: defValue
@@ -39,7 +42,8 @@ open class ListMatPreference @JvmOverloads constructor(
     private val indexOfPref: Int
         get() = tempValue ?: entryValues.indexOf(
             if (isPersistent || preferenceDataStore != null) {
-                preferenceDataStore?.getString(key, defValue)
+                preferenceStore?.get()?.toString()
+                    ?: preferenceDataStore?.getString(key, defValue)
                     ?: sharedPreferences?.getString(key, defValue)
             } else {
                 tempEntry

@@ -49,6 +49,10 @@ import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
+import java.util.*
+import java.util.concurrent.*
+import kotlin.math.roundToInt
+import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -71,10 +75,6 @@ import yokai.domain.manga.models.MangaUpdate
 import yokai.i18n.MR
 import yokai.util.isLewd
 import yokai.util.lang.getString
-import java.util.*
-import java.util.concurrent.*
-import kotlin.math.roundToInt
-import kotlin.random.Random
 
 /**
  * Typealias for the library manga, using the category as keys, and list of manga as values.
@@ -1178,7 +1178,7 @@ class LibraryPresenter(
         }
 
         val unknown = context.getString(MR.strings.unknown)
-        val items = libraryManga.map { manga ->
+        val items = libraryManga.distinctBy { it.id }.map { manga ->
             when (groupType) {
                 BY_TAG -> {
                     val tags = if (manga.genre.isNullOrBlank()) {

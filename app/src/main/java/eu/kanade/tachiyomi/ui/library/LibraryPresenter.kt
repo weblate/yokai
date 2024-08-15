@@ -1563,16 +1563,10 @@ class LibraryPresenter(
                 Random(cal.time.time)
             }
 
-            val recentManga by lazy {
-                runBlocking {
-                    RecentsPresenter.getRecentManga(true).map { it.first }
-                }
-            }
-            val libraryManga by lazy { runBlocking { getLibraryManga.await() } }
             preferences.librarySearchSuggestion().set(
                 when (val value = random.nextInt(0, 5)) {
                     randomSource -> {
-                        val distinctSources = libraryManga.distinctBy { it.source }
+                        val distinctSources = getLibraryManga.await().distinctBy { it.source }
                         val randomSource =
                             sourceManager.get(
                                 distinctSources.randomOrNull(random)?.source ?: 0L,
@@ -1580,12 +1574,11 @@ class LibraryPresenter(
                         randomSource?.chopByWords(30)
                     }
                     randomTitle -> {
-                        libraryManga.randomOrNull(random)?.title?.chopByWords(30)
+                        getLibraryManga.await().randomOrNull(random)?.title?.chopByWords(30)
                     }
                     in randomTags -> {
-                        val tags = recentManga.map {
-                            it.genre.orEmpty().split(",").map(String::trim)
-                        }
+                        val tags = RecentsPresenter.getRecentManga(true)
+                            .map { it.first.genre.orEmpty().split(",").map(String::trim) }
                             .flatten()
                             .filter { it.isNotBlank() }
                         val distinctTags = tags.distinct()

@@ -1055,7 +1055,7 @@ class LibraryPresenter(
 
         // In default grouping, which uses category as group, a manga can be in multiple categories.
         // So before we group it by different type, we should make the list unique.
-        val libraryManga = getLibraryManga.await().apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
+        val libraryManga = getLibraryManga.await()
         val showAll = showAllCategories
 
         val (items, categories, hiddenItems) = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
@@ -1066,7 +1066,7 @@ class LibraryPresenter(
                 showAll,
             )
         } else {
-            getCustomMangaItems(
+            getDynamicLibraryItems(
                 libraryManga,
                 preferences.librarySortingMode().get(),
                 preferences.librarySortingAscending().get(),
@@ -1177,7 +1177,7 @@ class LibraryPresenter(
         )
     }
 
-    private fun getCustomMangaItems(
+    private fun getDynamicLibraryItems(
         libraryManga: List<LibraryManga>,
         sortingMode: Int,
         isAscending: Boolean,

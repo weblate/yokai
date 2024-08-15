@@ -9,5 +9,5 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
-## Fixes
-- Fixed library showing duplicate entry when using dynamic category
+## Other
+- Update gradle to v8.10

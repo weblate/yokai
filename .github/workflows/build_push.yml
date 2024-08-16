@@ -1,4 +1,7 @@
 name: Build app
+
+run-name: Build and Release v${{ github.event.inputs.version }}
+
 on:
   push:
     branches:

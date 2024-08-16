@@ -887,7 +887,7 @@ class LibraryPresenter(
         return items to hiddenItems
     }
 
-    private suspend fun getLibraryItems(
+    private fun getLibraryItems(
         allCategories: List<Category>,
         libraryManga: List<LibraryManga>,
         sortingMode: Int,

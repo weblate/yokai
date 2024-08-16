@@ -54,11 +54,11 @@ inline fun <reified T, R : T> Preference<T>.getAndSet(crossinline block: (T) -> 
 )
 
 operator fun <T> Preference<Set<T>>.plusAssign(item: Collection<T>) {
-    get() + item
+    set(get() + item)
 }
 
 operator fun <T> Preference<Set<T>>.minusAssign(item: Collection<T>) {
-    get() - item
+    set(get() - item)
 }
 
 operator fun <T> Preference<Set<T>>.plusAssign(item: T) {

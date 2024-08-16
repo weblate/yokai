@@ -32,6 +32,17 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 );
 
+getChaptersByUrl:
+SELECT C.*
+FROM chapters AS C
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE C.url = :url
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+);
+
 getRecents:
 SELECT
     M.*,

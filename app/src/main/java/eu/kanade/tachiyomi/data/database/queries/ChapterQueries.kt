@@ -67,8 +67,6 @@ interface ChapterQueries : DbProvider {
         )
         .prepare()
 
-    fun insertChapter(chapter: Chapter) = db.put().`object`(chapter).prepare()
-
     fun insertChapters(chapters: List<Chapter>) = db.put().objects(chapters).prepare()
 
     fun updateKnownChaptersBackup(chapters: List<Chapter>) = db.put()

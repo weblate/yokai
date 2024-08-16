@@ -48,12 +48,13 @@ import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.e
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
+import java.util.Date
+import java.util.concurrent.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -76,14 +77,15 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.download.DownloadPreferences
+import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
-import java.util.concurrent.*
 
 /**
  * Presenter used by the activity to perform background operations.
@@ -100,6 +102,9 @@ class ReaderViewModel(
     private val downloadPreferences: DownloadPreferences = Injekt.get(),
 ) : ViewModel() {
     private val getChapter: GetChapter by injectLazy()
+    private val insertChapter: InsertChapter by injectLazy()
+    private val getManga: GetManga by injectLazy()
+    private val insertManga: InsertManga by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
     private val mutableState = MutableStateFlow(State())
@@ -310,8 +315,8 @@ class ReaderViewModel(
             context.getString(MR.strings.source_not_installed),
         )
         if (chapterUrl != null) {
-            val dbChapter = db.getChapters(chapterUrl).executeOnIO().find {
-                val source = db.getManga(it.manga_id!!).executeOnIO()?.source ?: return@find false
+            val dbChapter = getChapter.awaitAllByUrl(chapterUrl, false).find {
+                val source = getManga.awaitById(it.manga_id!!)?.source ?: return@find false
                 if (source == sourceId) {
                     true
                 } else {
@@ -327,11 +332,11 @@ class ReaderViewModel(
         val info = delegatedSource.fetchMangaFromChapterUrl(url)
         if (info != null) {
             val (chapter, manga, chapters) = info
-            val id = db.insertManga(manga).executeOnIO().insertedId()
+            val id = insertManga.await(manga)
             manga.id = id ?: manga.id
             chapter.manga_id = manga.id
             val matchingChapterId =
-                db.getChapters(manga).executeOnIO().find { it.url == chapter.url }?.id
+                getChapter.awaitAll(manga.id!!, false).find { it.url == chapter.url }?.id
             if (matchingChapterId != null) {
                 withContext(Dispatchers.Main) {
                     this@ReaderViewModel.init(manga.id!!, matchingChapterId)
@@ -348,7 +353,7 @@ class ReaderViewModel(
                         ?: error(context.getString(MR.strings.chapter_not_found))
                 } else {
                     chapter.date_fetch = Date().time
-                    chapterId = db.insertChapter(chapter).executeOnIO().insertedId() ?: error(
+                    chapterId = insertChapter.await(chapter) ?: error(
                         context.getString(MR.strings.unknown_error),
                     )
                 }

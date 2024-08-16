@@ -13,4 +13,5 @@
 - Fixed chapter number parsing (@Naputt1)
 
 ## Other
+- Refactor chapter recognition (@stevenyomi)
 - (Re)added unit test for chapter recognition

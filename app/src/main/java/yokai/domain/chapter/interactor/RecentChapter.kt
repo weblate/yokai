@@ -13,7 +13,7 @@ class RecentChapter(
 
         return chapterRepository.getRecents(
             filterScanlators,
-            "%${search.sqLite}%",
+            search.sqLite,
             limit,
             actualOffset,
         )

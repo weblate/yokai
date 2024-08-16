@@ -17,7 +17,7 @@ plugins {
     alias(libs.plugins.google.services) apply false
 }
 
-if (gradle.startParameter.taskRequests.toString().contains("Standard")) {
+if (gradle.startParameter.taskRequests.toString().contains("standard", true)) {
     apply<CrashlyticsPlugin>()
     apply<GoogleServicesPlugin>()
 }

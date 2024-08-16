@@ -2,41 +2,36 @@ package eu.kanade.tachiyomi.util.chapter
 
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
-import eu.kanade.tachiyomi.source.models.originalTitle
 
 /**
  * -R> = regex conversion.
  */
 object ChapterRecognition {
+
+    private const val NUMBER_PATTERN = """([0-9]+)(\.[0-9]+)?(\.?[a-z]+)?"""
+
     /**
      * All cases with Ch.xx
      * Mokushiroku Alice Vol.1 Ch. 4: Misrepresentation -R> 4
      */
-    private val basic = Regex("""(?<=ch\.) *([0-9]+)(\.[0-9]+)?(\.?[a-z]+)?""")
+    private val basic = Regex("""(?<=ch\.) *$NUMBER_PATTERN""")
 
     /**
-     * Regex used when only one number occurrence
      * Example: Bleach 567: Down With Snowwhite -R> 567
      */
-    private val occurrence = Regex("""([0-9]+)(\.[0-9]+)?(\.?[a-z]+)?""")
-
-    /**
-     * Regex used when manga title removed
-     * Example: Solanin 028 Vol. 2 -> 028 Vol.2 -> 028Vol.2 -R> 028
-     */
-    private val withoutManga = Regex("""^([0-9]+)(\.[0-9]+)?(\.?[a-z]+)?""")
+    private val number = Regex(NUMBER_PATTERN)
 
     /**
      * Regex used to remove unwanted tags
      * Example Prison School 12 v.1 vol004 version1243 volume64 -R> Prison School 12
      */
-    private val unwanted = Regex("""(?<![a-z])(v|ver|vol|version|volume|season|s).?[0-9]+""")
+    private val unwanted = Regex("""\b(?:v|ver|vol|version|volume|season|s)[^a-z]?[0-9]+""")
 
     /**
      * Regex used to remove unwanted whitespace
      * Example One Piece 12 special -R> One Piece 12special
      */
-    private val unwantedWhiteSpace = Regex("""(\s)(extra|special|omake)""")
+    private val unwantedWhiteSpace = Regex("""\s(?=extra|special|omake)""")
 
     fun parseChapterNumber(chapter: SChapter, manga: SManga) {
         // If chapter number is known return.
@@ -47,66 +42,44 @@ object ChapterRecognition {
         // Get chapter title with lower case
         var name = chapter.name.lowercase()
 
+        // Remove manga title from chapter title.
+        name = name.replace(manga.title.lowercase(), "").trim()
+
         // Remove comma's or hyphens.
         name = name.replace(',', '.').replace('-', '.')
 
         // Remove unwanted white spaces.
-        unwantedWhiteSpace.findAll(name).let {
-            it.forEach { occurrence -> name = name.replace(occurrence.value, occurrence.value.trim()) }
-        }
+        name = unwantedWhiteSpace.replace(name, "")
 
         // Remove unwanted tags.
-        unwanted.findAll(name).let {
-            it.forEach { occurrence -> name = name.replace(occurrence.value, "") }
-        }
+        name = unwanted.replace(name, "")
 
-        // Check base case ch.xx
-        if (updateChapter(basic.find(name), chapter)) {
+        basic.find(name)?.let {
+            chapter.chapter_number = getChapterNumberFromMatch(it)
             return
         }
 
-        // Check one number occurrence.
-        val occurrences: MutableList<MatchResult> = arrayListOf()
-        occurrence.findAll(name).let {
-            it.forEach { occurrence -> occurrences.add(occurrence) }
-        }
-
-        if (occurrences.size == 1) {
-            if (updateChapter(occurrences[0], chapter)) {
-                return
-            }
-        }
-
-        // Remove manga title from chapter title.
-        val nameWithoutManga = name.replace(manga.originalTitle.lowercase(), "").trim()
-
-        // Check if first value is number after title remove.
-        if (updateChapter(withoutManga.find(nameWithoutManga), chapter)) {
+        number.find(name)?.let {
+            chapter.chapter_number = getChapterNumberFromMatch(it)
             return
         }
 
-        // Take the first number encountered.
-        if (updateChapter(occurrence.find(nameWithoutManga), chapter)) {
-            return
-        }
+        // if (chapter.chapter_number == null) chapter.chapter_number = -1f
     }
 
     /**
-     * Check if volume is found and update chapter
+     * Check if volume is found and return it
      * @param match result of regex
-     * @param chapter chapter object
-     * @return true if volume is found
+     * @return chapter number if found else null
      */
-    private fun updateChapter(match: MatchResult?, chapter: SChapter): Boolean {
-        match?.let {
+    private fun getChapterNumberFromMatch(match: MatchResult): Float {
+        return match.let {
             val initial = it.groups[1]?.value?.toFloat()!!
             val subChapterDecimal = it.groups[2]?.value
             val subChapterAlpha = it.groups[3]?.value
             val addition = checkForDecimal(subChapterDecimal, subChapterAlpha)
-            chapter.chapter_number = initial.plus(addition)
-            return true
+            initial.plus(addition)
         }
-        return false
     }
 
     /**
@@ -133,11 +106,9 @@ object ChapterRecognition {
                 return .97f
             }
 
-            return if (alpha[0] == '.') {
-                // Take value after (.)
-                parseAlphaPostFix(alpha[1])
-            } else {
-                parseAlphaPostFix(alpha[0])
+            val trimmedAlpha = alpha.trimStart('.')
+            if (trimmedAlpha.length == 1) {
+                return parseAlphaPostFix(trimmedAlpha[0])
             }
         }
 
@@ -148,6 +119,8 @@ object ChapterRecognition {
      * x.a -> x.1, x.b -> x.2, etc
      */
     private fun parseAlphaPostFix(alpha: Char): Float {
-        return ("0." + (alpha.code - 96).toString()).toFloat()
+        val number = alpha.code - ('a'.code - 1)
+        if (number >= 10) return 0f
+        return number / 10f
     }
 }

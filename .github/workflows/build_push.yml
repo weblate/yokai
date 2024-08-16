@@ -1,6 +1,6 @@
 name: Build app
 
-run-name: Build and Release v${{ github.event.inputs.version }}
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('Build and Release v{0}', github.event.inputs.version) || github.event.commits[0].message }}
 
 on:
   push:

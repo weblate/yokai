@@ -272,6 +272,6 @@ class ChapterRecognitionTest {
     }
 
     private fun assertChapter(mangaTitle: String, name: String, expected: Float) {
-        ChapterRecognition.parseChapterNumber(mangaTitle, name) shouldBe expected
+        ChapterRecognition.parseChapterNumber(name, mangaTitle) shouldBe expected
     }
 }

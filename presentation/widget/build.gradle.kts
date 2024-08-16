@@ -29,6 +29,7 @@ dependencies {
 
     implementation(androidx.glance.appwidget)
 
+    implementation(platform(libs.coil3.bom))
     implementation(libs.coil3)
 }
 

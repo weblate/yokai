@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.HttpSource
+import java.util.*
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -15,9 +16,9 @@ import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
+import yokai.domain.chapter.services.ChapterRecognition
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
-import java.util.*
 
 /**
  * Helper method for syncing the list of chapters from the source with the ones from the database.
@@ -76,7 +77,8 @@ suspend fun syncChaptersWithSource(
                 source.prepareNewChapter(sourceChapter, manga)
             }
 
-            ChapterRecognition.parseChapterNumber(sourceChapter, manga)
+            sourceChapter.chapter_number =
+                ChapterRecognition.parseChapterNumber(sourceChapter.name, manga.title, sourceChapter.chapter_number)
 
             if (shouldUpdateDbChapter(dbChapter, sourceChapter)) {
                 if ((dbChapter.name != sourceChapter.name || dbChapter.scanlator != sourceChapter.scanlator) &&
@@ -102,7 +104,7 @@ suspend fun syncChaptersWithSource(
         if (source is HttpSource) {
             source.prepareNewChapter(it, manga)
         }
-        ChapterRecognition.parseChapterNumber(it, manga)
+        it.chapter_number = ChapterRecognition.parseChapterNumber(it.name, manga.title, it.chapter_number)
     }
 
     // Chapters from the db not in the source.

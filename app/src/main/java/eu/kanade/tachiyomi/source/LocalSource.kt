@@ -9,7 +9,6 @@ import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
-import eu.kanade.tachiyomi.util.chapter.ChapterRecognition
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import eu.kanade.tachiyomi.util.storage.EpubFile
 import eu.kanade.tachiyomi.util.storage.fillMetadata
@@ -19,6 +18,10 @@ import eu.kanade.tachiyomi.util.system.extension
 import eu.kanade.tachiyomi.util.system.nameWithoutExtension
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.writeText
+import java.io.FileInputStream
+import java.io.InputStream
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.serialization.Serializable
@@ -34,13 +37,10 @@ import yokai.core.metadata.COMIC_INFO_FILE
 import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.copyFromComicInfo
 import yokai.core.metadata.toComicInfo
+import yokai.domain.chapter.services.ChapterRecognition
 import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.FileInputStream
-import java.io.InputStream
-import java.nio.charset.StandardCharsets
-import java.util.concurrent.*
 
 class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSource {
     companion object {
@@ -101,9 +101,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             val comicInfo = decodeComicInfo(stream)
 
             comicInfo.title?.let { chapter.name = it.value }
-            comicInfo.number?.value?.toFloatOrNull()?.let {
-                chapter.chapter_number = it
-            } ?: ChapterRecognition.parseChapterNumber(chapter, manga)
+            chapter.chapter_number =
+                comicInfo.number?.value?.toFloatOrNull()
+                    ?: ChapterRecognition.parseChapterNumber(chapter.name, manga.title, chapter.chapter_number)
             comicInfo.translator?.let { chapter.scanlator = it.value }
         }
 
@@ -297,7 +297,10 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     date_upload = chapterFile.lastModified()
 
                     val success = updateMetadata(this, manga, chapterFile)
-                    if (!success) ChapterRecognition.parseChapterNumber(this, manga)
+                    if (!success) {
+                        chapter_number =
+                            ChapterRecognition.parseChapterNumber(this.name, manga.title, this.chapter_number)
+                    }
                 }
             }
             .sortedWith { c1, c2 ->

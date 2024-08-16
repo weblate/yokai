@@ -1,7 +1,4 @@
-package eu.kanade.tachiyomi.util.chapter
-
-import eu.kanade.tachiyomi.source.model.SChapter
-import eu.kanade.tachiyomi.source.model.SManga
+package yokai.domain.chapter.services
 
 /**
  * -R> = regex conversion.
@@ -33,17 +30,17 @@ object ChapterRecognition {
      */
     private val unwantedWhiteSpace = Regex("""\s(?=extra|special|omake)""")
 
-    fun parseChapterNumber(chapter: SChapter, manga: SManga) {
+    fun parseChapterNumber(chapterName: String, mangaTitle: String, chapterNumber: Float? = null): Float {
         // If chapter number is known return.
-        if (chapter.chapter_number == -2f || chapter.chapter_number > -1f) {
-            return
+        if (chapterNumber != null && (chapterNumber == -2f || chapterNumber > -1f)) {
+            return chapterNumber
         }
 
         // Get chapter title with lower case
-        var name = chapter.name.lowercase()
+        var name = chapterName.lowercase()
 
         // Remove manga title from chapter title.
-        name = name.replace(manga.title.lowercase(), "").trim()
+        name = name.replace(mangaTitle.lowercase(), "").trim()
 
         // Remove comma's or hyphens.
         name = name.replace(',', '.').replace('-', '.')
@@ -54,17 +51,11 @@ object ChapterRecognition {
         // Remove unwanted tags.
         name = unwanted.replace(name, "")
 
-        basic.find(name)?.let {
-            chapter.chapter_number = getChapterNumberFromMatch(it)
-            return
-        }
+        basic.find(name)?.let { return getChapterNumberFromMatch(it) }
 
-        number.find(name)?.let {
-            chapter.chapter_number = getChapterNumberFromMatch(it)
-            return
-        }
+        number.find(name)?.let { return getChapterNumberFromMatch(it) }
 
-        // if (chapter.chapter_number == null) chapter.chapter_number = -1f
+        return chapterNumber ?: -1f
     }
 
     /**

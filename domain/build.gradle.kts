@@ -7,12 +7,18 @@ plugins {
 kotlin {
     androidTarget()
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(projects.source.api)
             }
         }
-        val androidMain by getting {
+        commonTest {
+            dependencies {
+                implementation(libs.bundles.test)
+                implementation(kotlinx.coroutines.test)
+            }
+        }
+        androidMain {
             dependencies {
             }
         }
@@ -21,4 +27,8 @@ kotlin {
 
 android {
     namespace = "yokai.domain"
+
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }

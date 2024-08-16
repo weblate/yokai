@@ -45,6 +45,8 @@ injekt-core = { module = "com.github.inorichi.injekt:injekt-core", version = "65
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
+kotest-assertions = { module = "io.kotest:kotest-assertions-core", version = "5.9.1" }
+
 libarchive = { module = "me.zhanghai.android.libarchive:library", version = "1.1.0" }
 
 material = { module = "com.google.android.material:material", version = "1.12.0" }
@@ -112,7 +114,7 @@ logging = [ "kermit" ]
 # FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
 #sqlite = [ "sqlite", "sqlite-ktx" ]
 sqlite = [ "sqlite-ktx" ]
-test = [ "junit-api", "mockk" ]
+test = [ "junit-api", "kotest-assertions", "mockk" ]
 test-android = [ "junit-android" ]
 test-runtime = [ "junit-engine" ]
 voyager = ["voyager-navigator", "voyager-transitions"]

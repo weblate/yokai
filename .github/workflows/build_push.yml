@@ -99,17 +99,17 @@ jobs:
       # PROD
       - name: Build release build and run tests
         if: startsWith(env.VERSION_TAG, 'v') && github.event.inputs.beta != 'true'
-        run: ./gradlew assembleStandardRelease testStandardReleaseUnitTest
+        run: ./gradlew assembleStandardRelease testReleaseUnitTest testStandardReleaseUnitTest
 
       # BETA
       - name: Build beta build and run tests
         if: startsWith(env.VERSION_TAG, 'v') && github.event.inputs.beta == 'true'
-        run: ./gradlew assembleStandardBeta testStandardBetaUnitTest
+        run: ./gradlew assembleStandardBeta testReleaseUnitTest testStandardBetaUnitTest
 
       # NIGHTLY
       - name: Build nightly build and run tests
         if: startsWith(env.VERSION_TAG, 'r')
-        run: ./gradlew assembleStandardNightly testStandardNightlyUnitTest
+        run: ./gradlew assembleStandardNightly testReleaseUnitTest testStandardNightlyUnitTest
 
       - name: Upload R8 APK to artifact
         uses: actions/upload-artifact@v4

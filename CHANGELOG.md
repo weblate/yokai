@@ -10,8 +10,7 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Fixes
-- Fixed some preference not being saved properly
+- Fixed chapter number parsing (@Naputt1)
 
 ## Other
-- Update dependency co.touchlab:kermit to v2.0.4
-- Update lifecycle to v2.8.4
+- (Re)added unit test for chapter recognition

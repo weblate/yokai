@@ -240,7 +240,7 @@ class ChapterRecognitionTest {
     fun `Chapter title containing hyphens`() {
         val mangaTitle = "Solo Leveling"
 
-        assertChapter(mangaTitle, "ch 122-a", 122f)
+        assertChapter(mangaTitle, "ch 122-a", 122.1f)
         assertChapter(mangaTitle, "Solo Leveling Ch.123-extra", 123.99f)
         assertChapter(mangaTitle, "Solo Leveling, 024-005", 24.005f)
         assertChapter(mangaTitle, "Ch.191-200 Read Online", 191.200f)

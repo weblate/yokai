@@ -1,16 +1,12 @@
 package eu.kanade.tachiyomi.data.database.queries
 
 import com.pushtorefresh.storio.sqlite.queries.Query
-import com.pushtorefresh.storio.sqlite.queries.RawQuery
 import eu.kanade.tachiyomi.data.database.DbProvider
 import eu.kanade.tachiyomi.data.database.models.Chapter
-import eu.kanade.tachiyomi.data.database.models.MangaChapter
 import eu.kanade.tachiyomi.data.database.resolvers.ChapterKnownBackupPutResolver
 import eu.kanade.tachiyomi.data.database.resolvers.ChapterProgressPutResolver
-import eu.kanade.tachiyomi.data.database.resolvers.MangaChapterGetResolver
 import eu.kanade.tachiyomi.data.database.tables.ChapterTable
 import eu.kanade.tachiyomi.domain.manga.models.Manga
-import eu.kanade.tachiyomi.util.lang.sqLite
 
 interface ChapterQueries : DbProvider {
 
@@ -25,17 +21,6 @@ interface ChapterQueries : DbProvider {
                 .whereArgs(mangaId)
                 .build(),
         )
-        .prepare()
-
-    fun getRecentChapters(search: String = "", offset: Int, isResuming: Boolean) = db.get()
-        .listOfObjects(MangaChapter::class.java)
-        .withQuery(
-            RawQuery.builder()
-                .query(getRecentsQuery(search.sqLite, offset, isResuming))
-                .observesTables(ChapterTable.TABLE)
-                .build(),
-        )
-        .withGetResolver(MangaChapterGetResolver.INSTANCE)
         .prepare()
 
     fun getChapter(id: Long) = db.get()

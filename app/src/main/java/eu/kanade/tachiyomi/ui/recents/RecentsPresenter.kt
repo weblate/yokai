@@ -22,6 +22,14 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TreeMap
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
+import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.drop
@@ -33,14 +41,10 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.RecentChapter
 import yokai.domain.recents.RecentsPreferences
 import yokai.domain.ui.UiPreferences
 import yokai.i18n.MR
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.*
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 class RecentsPresenter(
     val uiPreferences: UiPreferences = Injekt.get(),
@@ -51,6 +55,7 @@ class RecentsPresenter(
     private val chapterFilter: ChapterFilter = Injekt.get(),
 ) : BaseCoroutinePresenter<RecentsController>(), DownloadQueue.DownloadListener {
     private val getChapter: GetChapter by injectLazy()
+    private val recentChapter: RecentChapter by injectLazy()
 
     private var recentsJob: Job? = null
     var recentItems = listOf<RecentMangaItem>()
@@ -235,11 +240,12 @@ class RecentsPresenter(
                 dateFormat.applyPattern("yyyy-MM-dd")
                 dateFormat.calendar.firstDayOfWeek =
                     Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-                db.getRecentChapters(
-                    query,
-                    if (isCustom) ENDLESS_LIMIT else pageOffset,
+                recentChapter.await(
+                    true,
                     !updatePageCount && !isOnFirstPage,
-                ).executeOnIO().groupBy {
+                    query,
+                    (if (isCustom) ENDLESS_LIMIT else pageOffset).toLong(),
+                ).groupBy {
                     val date = it.chapter.date_fetch
                     it.manga.id to if (date <= 0L) "-1" else dateFormat.format(Date(date))
                 }

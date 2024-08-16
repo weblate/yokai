@@ -2,6 +2,7 @@ package yokai.data.chapter
 
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.Chapter
+import eu.kanade.tachiyomi.data.database.models.MangaChapter
 import eu.kanade.tachiyomi.util.system.toInt
 import kotlinx.coroutines.flow.Flow
 import yokai.data.DatabaseHandler
@@ -14,6 +15,9 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
 
     override fun getChaptersAsFlow(mangaId: Long, filterScanlators: Boolean): Flow<List<Chapter>> =
         handler.subscribeToList { chaptersQueries.getChaptersByMangaId(mangaId, filterScanlators.toInt().toLong(), Chapter::mapper) }
+
+    override suspend fun getRecents(filterScanlators: Boolean, search: String, limit: Long, offset: Long): List<MangaChapter> =
+        handler.awaitList { chaptersQueries.getRecents(search, filterScanlators.toInt().toLong(), limit, offset, MangaChapter::mapper) }
 
     override suspend fun getScanlatorsByChapter(mangaId: Long): List<String> =
         handler.awaitList { chaptersQueries.getScanlatorsByMangaId(mangaId) { it.orEmpty() } }

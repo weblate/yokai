@@ -17,6 +17,7 @@ import yokai.domain.chapter.interactor.DeleteChapter
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
+import yokai.domain.chapter.interactor.RecentChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.extension.repo.ExtensionRepoRepository
@@ -66,6 +67,7 @@ class DomainModule : InjektModule {
         addFactory { GetAvailableScanlators(get()) }
         addFactory { GetChapter(get()) }
         addFactory { InsertChapter(get()) }
+        addFactory { RecentChapter(get()) }
         addFactory { UpdateChapter(get()) }
 
         addSingletonFactory<CategoryRepository> { CategoryRepositoryImpl(get()) }

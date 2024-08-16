@@ -23,4 +23,5 @@ interface ChapterRepository {
     suspend fun updateAll(updates: List<ChapterUpdate>): Boolean
 
     suspend fun insert(chapter: Chapter): Long?
+    suspend fun insertBulk(chapters: List<Chapter>)
 }

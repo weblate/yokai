@@ -116,4 +116,24 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
             chaptersQueries.selectLastInsertedRowId()
         }
     }
+
+    override suspend fun insertBulk(chapters: List<Chapter>) =
+        handler.await(true) {
+            chapters.forEach { chapter ->
+                chaptersQueries.insert(
+                    mangaId = chapter.manga_id!!,
+                    url = chapter.url,
+                    name = chapter.name,
+                    scanlator = chapter.scanlator,
+                    read = chapter.read,
+                    bookmark = chapter.bookmark,
+                    lastPageRead = chapter.last_page_read.toLong(),
+                    pagesLeft = chapter.pages_left.toLong(),
+                    chapterNumber = chapter.chapter_number.toDouble(),
+                    sourceOrder = chapter.source_order.toLong(),
+                    dateFetch = chapter.date_fetch,
+                    dateUpload = chapter.date_upload,
+                )
+            }
+        }
 }

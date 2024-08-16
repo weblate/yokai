@@ -15,21 +15,23 @@ import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.util.chapter.ChapterUtil
 import eu.kanade.tachiyomi.util.manga.MangaUtil
 import eu.kanade.tachiyomi.util.system.launchNow
+import kotlin.math.max
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
-import kotlin.math.max
 
 class MangaBackupRestorer(
     private val db: DatabaseHelper = Injekt.get(),
     private val customMangaManager: CustomMangaManager = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
     private val getChapter: GetChapter = Injekt.get(),
+    private val insertChapter: InsertChapter = Injekt.get(),
     private val getManga: GetManga = Injekt.get(),
     private val insertManga: InsertManga = Injekt.get(),
     private val updateManga: UpdateManga = Injekt.get(),
@@ -137,7 +139,7 @@ class MangaBackupRestorer(
 
         val newChapters = chapters.groupBy { it.id != null }
         newChapters[true]?.let { db.updateKnownChaptersBackup(it).executeAsBlocking() }
-        newChapters[false]?.let { db.insertChapters(it).executeAsBlocking() }
+        newChapters[false]?.let { insertChapter.awaitBulk(it) }
     }
 
     private suspend fun restoreExtras(

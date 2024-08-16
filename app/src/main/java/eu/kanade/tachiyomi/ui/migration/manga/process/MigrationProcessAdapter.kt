@@ -16,6 +16,7 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.migration.MigrationFlags
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.launchUI
+import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
@@ -24,7 +25,6 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.library.custom.model.CustomMangaInfo.Companion.getMangaInfo
 import yokai.domain.ui.UiPreferences
-import java.util.*
 
 class MigrationProcessAdapter(
     val controller: MigrationListController,
@@ -129,6 +129,7 @@ class MigrationProcessAdapter(
         sourceFinished()
     }
 
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     private fun migrateMangaInternal(
         prevSource: Source?,
         source: Source,
@@ -143,6 +144,7 @@ class MigrationProcessAdapter(
 
     companion object {
 
+        // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
         fun migrateMangaInternal(
             flags: Int,
             db: DatabaseHelper,

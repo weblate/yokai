@@ -67,6 +67,7 @@ interface ChapterQueries : DbProvider {
         )
         .prepare()
 
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     fun insertChapters(chapters: List<Chapter>) = db.put().objects(chapters).prepare()
 
     fun updateKnownChaptersBackup(chapters: List<Chapter>) = db.put()

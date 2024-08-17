@@ -200,9 +200,7 @@ class LibraryItem(
     }
 
     override fun hashCode(): Int {
-        var result = manga.id!!.hashCode()
-        result = 31 * result + (header?.hashCode() ?: 0)
-        return result
+        return 31 * manga.id!!.hashCode() + header!!.hashCode()
     }
 
     companion object {

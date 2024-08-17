@@ -9,6 +9,18 @@
         "dev.chrisbanes.compose:compose-bom"
       ],
       "ignoreUnstable": false
+    },
+    {
+      "matchPackageNames": [
+        "com.github.arkon.FlexibleAdapter:flexible-adapter-ui",
+        "com.github.arkon.FlexibleAdapter:flexible-adapter",
+        "com.github.tachiyomiorg:image-decoder",
+        "com.github.null2264:subsampling-scale-image-view",
+        "com.github.tachiyomiorg:unifile",
+        "com.github.tachiyomiorg:conductor-support-preference",
+        "com.github.CarlosEsco:ViewTooltip"
+      ],
+      "enabled": false
     }
   ],
   "dependencyDashboardApproval": true,

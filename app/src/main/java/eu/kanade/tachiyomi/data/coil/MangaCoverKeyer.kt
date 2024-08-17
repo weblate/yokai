@@ -9,13 +9,15 @@ import eu.kanade.tachiyomi.util.storage.DiskUtil
 class MangaCoverKeyer : Keyer<Manga> {
     override fun key(data: Manga, options: Options): String? {
         val hasCustomCover by lazy { data.hasCustomCover() }
+        val suffix by lazy { ";${data.cover_last_modified}" }
+
         if (data.thumbnail_url.isNullOrBlank() && !hasCustomCover) return null
-        if (hasCustomCover) return data.key()
+        if (hasCustomCover) return "${data.id}$suffix"
 
         return if (!data.favorite) {
             data.thumbnail_url!!
         } else {
             DiskUtil.hashKeyForDisk(data.thumbnail_url!!)
-        }
+        } + suffix
     }
 }

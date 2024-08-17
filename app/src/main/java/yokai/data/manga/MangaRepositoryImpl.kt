@@ -4,7 +4,6 @@ import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.mapper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
-import eu.kanade.tachiyomi.util.system.toInt
 import kotlinx.coroutines.flow.Flow
 import yokai.data.DatabaseHandler
 import yokai.data.updateStrategyAdapter
@@ -66,15 +65,16 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
                     title = update.title,
                     status = update.status?.toLong(),
                     thumbnailUrl = update.thumbnailUrl,
-                    favorite = update.favorite?.toInt()?.toLong(),
+                    favorite = update.favorite,
                     lastUpdate = update.lastUpdate,
                     initialized = update.initialized,
                     viewer = update.viewerFlags?.toLong(),
-                    hideTitle = update.hideTitle?.toInt()?.toLong(),
+                    hideTitle = update.hideTitle,
                     chapterFlags = update.chapterFlags?.toLong(),
                     dateAdded = update.dateAdded,
                     filteredScanlators = update.filteredScanlators,
                     updateStrategy = update.updateStrategy?.let(updateStrategyAdapter::encode),
+                    coverLastModified = update.coverLastModified,
                     mangaId = update.id,
                 )
             }
@@ -93,15 +93,16 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
                 title = manga.title,
                 status = manga.status.toLong(),
                 thumbnailUrl = manga.thumbnail_url,
-                favorite = manga.favorite.toInt().toLong(),
+                favorite = manga.favorite,
                 lastUpdate = manga.last_update,
                 initialized = manga.initialized,
                 viewer = manga.viewer_flags.toLong(),
-                hideTitle = manga.hide_title.toInt().toLong(),
+                hideTitle = manga.hide_title,
                 chapterFlags = manga.chapter_flags.toLong(),
                 dateAdded = manga.date_added,
                 filteredScanlators = manga.filtered_scanlators,
                 updateStrategy = manga.update_strategy.let(updateStrategyAdapter::encode),
+                coverLastModified = manga.cover_last_modified,
             )
             mangasQueries.selectLastInsertedRowId()
         }

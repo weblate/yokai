@@ -1,8 +1,8 @@
 package eu.kanade.tachiyomi.data.database.models
 
 import eu.kanade.tachiyomi.ui.library.LibraryItem
-import yokai.data.updateStrategyAdapter
 import kotlin.math.roundToInt
+import yokai.data.updateStrategyAdapter
 
 data class LibraryManga(
     var unread: Int = 0,
@@ -49,6 +49,7 @@ data class LibraryManga(
             }
 
         fun mapper(
+            // manga
             id: Long,
             source: Long,
             url: String,
@@ -59,15 +60,17 @@ data class LibraryManga(
             title: String,
             status: Long,
             thumbnailUrl: String?,
-            favorite: Long,
+            favorite: Boolean,
             lastUpdate: Long?,
             initialized: Boolean,
             viewerFlags: Long,
-            hideTitle: Long,
+            hideTitle: Boolean,
             chapterFlags: Long,
             dateAdded: Long?,
             filteredScanlators: String?,
             updateStrategy: Long,
+            coverLastModified: Long,
+            // libraryManga
             total: Long,
             readCount: Double,
             bookmarkCount: Double,
@@ -86,15 +89,16 @@ data class LibraryManga(
             this.title = title
             this.status = status.toInt()
             this.thumbnail_url = thumbnailUrl
-            this.favorite = favorite > 0
+            this.favorite = favorite
             this.last_update = lastUpdate ?: 0L
             this.initialized = initialized
             this.viewer_flags = viewerFlags.toInt()
-            this.hide_title = hideTitle > 0
+            this.hide_title = hideTitle
             this.chapter_flags = chapterFlags.toInt()
             this.date_added = dateAdded ?: 0L
             this.filtered_scanlators = filteredScanlators
             this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
+            this.cover_last_modified = coverLastModified
             this.read = readCount.roundToInt()
             this.unread = maxOf((total - readCount).roundToInt(), 0)
             this.totalChapters = total.toInt()

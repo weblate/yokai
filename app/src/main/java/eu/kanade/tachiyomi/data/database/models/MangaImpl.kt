@@ -81,6 +81,8 @@ open class MangaImpl : Manga {
     override var ogGenre: String? = null
     override var ogStatus: Int = 0
 
+    override var cover_last_modified: Long = 0L
+
     override fun copyFrom(other: SManga) {
         if (other is MangaImpl && other::ogTitle.isInitialized &&
             other.title.isNotBlank() && other.ogTitle != ogTitle

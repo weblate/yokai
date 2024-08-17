@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.data.database
 
+import android.database.Cursor
 import com.pushtorefresh.storio.sqlite.StorIOSQLite
 
 inline fun StorIOSQLite.inTransaction(block: () -> Unit) {
@@ -22,3 +23,5 @@ inline fun <T> StorIOSQLite.inTransactionReturn(block: () -> T): T {
         lowLevel().endTransaction()
     }
 }
+
+fun Cursor.getBoolean(index: Int) = getLong(index) > 0

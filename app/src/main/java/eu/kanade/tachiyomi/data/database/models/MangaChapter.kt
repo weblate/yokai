@@ -5,6 +5,7 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 class MangaChapter(val manga: Manga, val chapter: Chapter) {
     companion object {
         fun mapper(
+            // manga
             mangaId: Long,
             source: Long,
             mangaUrl: String,
@@ -15,15 +16,17 @@ class MangaChapter(val manga: Manga, val chapter: Chapter) {
             title: String,
             status: Long,
             thumbnailUrl: String?,
-            favorite: Long,
+            favorite: Boolean,
             lastUpdate: Long?,
             initialized: Boolean,
             viewer: Long,
-            hideTitle: Long,
+            hideTitle: Boolean,
             chapterFlags: Long,
             dateAdded: Long?,
             filteredScanlators: String?,
             updateStrategy: Long,
+            coverLastModified: Long,
+            // chapter
             chapterId: Long,
             _mangaId: Long,
             chapterUrl: String,
@@ -58,6 +61,7 @@ class MangaChapter(val manga: Manga, val chapter: Chapter) {
                 dateAdded = dateAdded,
                 filteredScanlators = filteredScanlators,
                 updateStrategy = updateStrategy,
+                coverLastModified = coverLastModified,
             ),
             Chapter.mapper(
                 id = chapterId,

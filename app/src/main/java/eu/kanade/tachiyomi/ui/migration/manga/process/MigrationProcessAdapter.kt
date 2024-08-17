@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.MangaCategory
+import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
@@ -229,6 +230,7 @@ class MigrationProcessAdapter(
             if (MigrationFlags.hasCustomMangaInfo(flags)) {
                 if (coverCache.getCustomCoverFile(prevManga).exists()) {
                     coverCache.setCustomCoverToCache(manga, coverCache.getCustomCoverFile(prevManga).inputStream())
+                    launchNow { manga.updateCoverLastModified() }
                 }
                 customMangaManager.getManga(prevManga)?.let { customManga ->
                     launchNow {

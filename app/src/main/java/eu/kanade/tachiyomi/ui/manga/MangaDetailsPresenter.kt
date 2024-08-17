@@ -20,9 +20,11 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.bookmarkedFilter
 import eu.kanade.tachiyomi.data.database.models.chapterOrder
 import eu.kanade.tachiyomi.data.database.models.downloadedFilter
-import eu.kanade.tachiyomi.data.database.models.hasCustomCover
+import eu.kanade.tachiyomi.data.database.models.prepareCoverUpdate
 import eu.kanade.tachiyomi.data.database.models.readFilter
+import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.database.models.sortDescending
+import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
 import eu.kanade.tachiyomi.data.download.model.DownloadQueue
@@ -59,6 +61,7 @@ import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
@@ -375,7 +378,6 @@ class MangaDetailsPresenter(
                     emptyList()
                 }
             }
-            val thumbnailUrl = manga.thumbnail_url
             val nManga = async(Dispatchers.IO) {
                 try {
                     source.getMangaDetails(manga.copy())
@@ -387,12 +389,13 @@ class MangaDetailsPresenter(
 
             val networkManga = nManga.await()
             if (networkManga != null) {
+                if (manga.thumbnail_url != networkManga.thumbnail_url) {
+                    manga.prepareCoverUpdate()
+                }
+
                 manga.copyFrom(networkManga)
                 manga.initialized = true
 
-                if (thumbnailUrl != networkManga.thumbnail_url) {
-                    coverCache.deleteFromCache(thumbnailUrl)
-                }
                 db.insertManga(manga).executeAsBlocking()
 
                 launchIO {
@@ -403,7 +406,6 @@ class MangaDetailsPresenter(
                             .build()
 
                     if (preferences.context.imageLoader.execute(request) is SuccessResult) {
-                        coverCache.removeFromMemory(manga, manga.hasCustomCover(coverCache))
                         withContext(Dispatchers.Main) {
                             view?.setPaletteColor()
                         }
@@ -735,7 +737,7 @@ class MangaDetailsPresenter(
 
     fun confirmDeletion() {
         launchIO {
-            coverCache.deleteFromCache(manga)
+            manga.removeCover(coverCache)
             customMangaManager.saveMangaInfo(CustomMangaInfo(
                 mangaId = manga.id!!,
                 title = null,
@@ -858,6 +860,7 @@ class MangaDetailsPresenter(
             editCoverWithStream(uri)
         } else if (resetCover) {
             coverCache.deleteCustomCover(manga)
+            presenterScope.launchIO { manga.updateCoverLastModified() }
             view?.setPaletteColor()
         }
         view?.updateHeader()
@@ -881,12 +884,14 @@ class MangaDetailsPresenter(
             downloadManager.context.contentResolver.openInputStream(uri) ?: return false
         if (manga.isLocal()) {
             LocalSource.updateCover(manga, inputStream)
+            presenterScope.launchNonCancellableIO { manga.updateCoverLastModified() }
             view?.setPaletteColor()
             return true
         }
 
         if (manga.favorite) {
             coverCache.setCustomCoverToCache(manga, inputStream)
+            presenterScope.launchNonCancellableIO { manga.updateCoverLastModified() }
             view?.setPaletteColor()
             return true
         }

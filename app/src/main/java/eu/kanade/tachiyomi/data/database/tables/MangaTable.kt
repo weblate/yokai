@@ -42,4 +42,5 @@ object MangaTable {
 
     const val COL_UPDATE_STRATEGY = "update_strategy"
 
+    const val COL_COVER_LAST_MODIFIED = "cover_last_modified"
 }

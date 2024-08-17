@@ -16,6 +16,7 @@ import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.defaultReaderType
 import eu.kanade.tachiyomi.data.database.models.orientationType
 import eu.kanade.tachiyomi.data.database.models.readingModeType
+import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.download.model.Download
@@ -938,14 +939,15 @@ class ReaderViewModel(
         viewModelScope.launchNonCancellableIO {
             val result = try {
                 if (manga.isLocal()) {
-                    val context = Injekt.get<Application>()
                     coverCache.deleteFromCache(manga)
                     LocalSource.updateCover(manga, stream())
+                    manga.updateCoverLastModified()
                     MR.strings.cover_updated
                     SetAsCoverResult.Success
                 } else {
                     if (manga.favorite) {
                         coverCache.setCustomCoverToCache(manga, stream())
+                        manga.updateCoverLastModified()
                         SetAsCoverResult.Success
                     } else {
                         SetAsCoverResult.AddToLibraryFirst

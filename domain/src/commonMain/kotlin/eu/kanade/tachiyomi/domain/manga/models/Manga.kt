@@ -1,9 +1,9 @@
 package eu.kanade.tachiyomi.domain.manga.models
 
 import eu.kanade.tachiyomi.source.model.SManga
-import yokai.domain.manga.models.MangaUpdate
-import java.util.*
+import java.util.Locale
 import kotlin.collections.set
+import yokai.domain.manga.models.MangaUpdate
 
 // TODO: Transform into data class
 interface Manga : SManga {
@@ -32,6 +32,8 @@ interface Manga : SManga {
     var ogDesc: String?
     var ogGenre: String?
     var ogStatus: Int
+
+    var cover_last_modified: Long
 
     @Deprecated("Use ogTitle directly instead", ReplaceWith("ogTitle"))
     val originalTitle: String

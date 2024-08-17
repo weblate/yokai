@@ -13,6 +13,7 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
 import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
+import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.system.withIOContext
 import java.util.Locale
@@ -21,6 +22,8 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.data.updateStrategyAdapter
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaUpdate
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -193,15 +196,16 @@ fun Manga.Companion.mapper(
     title: String,
     status: Long,
     thumbnailUrl: String?,
-    favorite: Long,
+    favorite: Boolean,
     lastUpdate: Long?,
     initialized: Boolean,
     viewerFlags: Long,
-    hideTitle: Long,
+    hideTitle: Boolean,
     chapterFlags: Long,
     dateAdded: Long?,
     filteredScanlators: String?,
-    updateStrategy: Long
+    updateStrategy: Long,
+    coverLastModified: Long,
 ) = create(source).apply {
     this.id = id
     this.url = url
@@ -212,17 +216,41 @@ fun Manga.Companion.mapper(
     this.title = title
     this.status = status.toInt()
     this.thumbnail_url = thumbnailUrl
-    this.favorite = favorite > 0
+    this.favorite = favorite
     this.last_update = lastUpdate ?: 0L
     this.initialized = initialized
     this.viewer_flags = viewerFlags.toInt()
     this.chapter_flags = chapterFlags.toInt()
-    this.hide_title = hideTitle > 0
+    this.hide_title = hideTitle
     this.date_added = dateAdded ?: 0L
     this.filtered_scanlators = filteredScanlators
     this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
+    this.cover_last_modified = coverLastModified
 }
 
 fun Manga.hasCustomCover(coverCache: CoverCache = Injekt.get()): Boolean {
     return coverCache.getCustomCoverFile(this).exists()
+}
+
+/**
+ * Call before updating [Manga.thumbnail_url] to ensure old cover can be cleared from cache
+ */
+fun Manga.prepareCoverUpdate(coverCache: CoverCache = Injekt.get()) {
+    cover_last_modified = System.currentTimeMillis()
+
+    if (!isLocal()) {
+        coverCache.deleteFromCache(this, true)
+    }
+}
+
+fun Manga.removeCover(coverCache: CoverCache = Injekt.get(), deleteCustom: Boolean = true) {
+    if (isLocal()) return
+
+    cover_last_modified = System.currentTimeMillis()
+    coverCache.deleteFromCache(this, deleteCustom)
+}
+
+suspend fun Manga.updateCoverLastModified(updateManga: UpdateManga = Injekt.get()) {
+    cover_last_modified = System.currentTimeMillis()
+    updateManga.await(MangaUpdate(id = id!!, coverLastModified = cover_last_modified))
 }

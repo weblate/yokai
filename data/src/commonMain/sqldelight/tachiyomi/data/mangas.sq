@@ -1,5 +1,4 @@
 import kotlin.Boolean;
-import kotlin.Long;
 
 CREATE TABLE mangas(
     _id INTEGER NOT NULL PRIMARY KEY,
@@ -12,15 +11,16 @@ CREATE TABLE mangas(
     title TEXT NOT NULL,
     status INTEGER NOT NULL,
     thumbnail_url TEXT,
-    favorite INTEGER NOT NULL,
-    last_update INTEGER AS Long,
+    favorite INTEGER AS Boolean NOT NULL,
+    last_update INTEGER,
     initialized INTEGER AS Boolean NOT NULL,
     viewer INTEGER NOT NULL,
-    hide_title INTEGER NOT NULL,
+    hide_title INTEGER AS Boolean NOT NULL,
     chapter_flags INTEGER NOT NULL,
-    date_added INTEGER AS Long,
+    date_added INTEGER,
     filtered_scanlators TEXT,
-    update_strategy INTEGER NOT NULL DEFAULT 0
+    update_strategy INTEGER NOT NULL DEFAULT 0,
+    cover_last_modified INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE INDEX mangas_url_index ON mangas(url);
@@ -51,8 +51,8 @@ FROM mangas
 WHERE favorite = 1;
 
 insert:
-INSERT INTO mangas (source, url, artist, author, description, genre, title, status, thumbnail_url, favorite, last_update, initialized, viewer, hide_title, chapter_flags, date_added, filtered_scanlators, update_strategy)
-VALUES (:source, :url, :artist, :author, :description, :genre, :title, :status, :thumbnailUrl, :favorite, :lastUpdate, :initialized, :viewer, :hideTitle, :chapterFlags, :dateAdded, :filteredScanlators, :updateStrategy);
+INSERT INTO mangas (source, url, artist, author, description, genre, title, status, thumbnail_url, favorite, last_update, initialized, viewer, hide_title, chapter_flags, date_added, filtered_scanlators, update_strategy, cover_last_modified)
+VALUES (:source, :url, :artist, :author, :description, :genre, :title, :status, :thumbnailUrl, :favorite, :lastUpdate, :initialized, :viewer, :hideTitle, :chapterFlags, :dateAdded, :filteredScanlators, :updateStrategy, :coverLastModified);
 
 update:
 UPDATE mangas SET
@@ -73,7 +73,8 @@ UPDATE mangas SET
     chapter_flags = coalesce(:chapterFlags, chapter_flags),
     date_added = coalesce(:dateAdded, date_added),
     filtered_scanlators = coalesce(:filteredScanlators, filtered_scanlators),
-    update_strategy = coalesce(:updateStrategy, update_strategy)
+    update_strategy = coalesce(:updateStrategy, update_strategy),
+    cover_last_modified = coalesce(:coverLastModified, cover_last_modified)
 WHERE _id = :mangaId;
 
 selectLastInsertedRowId:

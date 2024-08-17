@@ -10,6 +10,7 @@ import eu.kanade.tachiyomi.data.database.models.Chapter.Companion.copy
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.models.Track
+import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
@@ -1260,7 +1261,7 @@ class LibraryPresenter(
             val mangaToDelete = mangas.distinctBy { it.id }
             mangaToDelete.forEach { manga ->
                 if (coverCacheToo) {
-                    coverCache.deleteFromCache(manga)
+                    manga.removeCover(coverCache)
                 }
                 val source = sourceManager.get(manga.source) as? HttpSource
                 if (source != null) {

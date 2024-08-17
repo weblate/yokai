@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.ui.source.globalsearch
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.create
+import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -16,6 +17,8 @@ import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withUIContext
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -26,7 +29,6 @@ import kotlinx.coroutines.sync.withPermit
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import java.util.*
 
 /**
  * Presenter of [GlobalSearchController]
@@ -138,7 +140,7 @@ open class GlobalSearchPresenter(
     }
 
     fun confirmDeletion(manga: Manga) {
-        coverCache.deleteFromCache(manga)
+        manga.removeCover(coverCache)
         val downloadManager: DownloadManager = Injekt.get()
         sourceManager.get(manga.source)?.let { source ->
             downloadManager.deleteManga(manga, source)

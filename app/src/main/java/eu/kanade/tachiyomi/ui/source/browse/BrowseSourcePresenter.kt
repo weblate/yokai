@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.create
+import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -283,7 +284,7 @@ open class BrowseSourcePresenter(
 
     fun confirmDeletion(manga: Manga) {
         launchIO {
-            coverCache.deleteFromCache(manga)
+            manga.removeCover(coverCache)
             val downloadManager: DownloadManager = Injekt.get()
             downloadManager.deleteManga(manga, source)
         }

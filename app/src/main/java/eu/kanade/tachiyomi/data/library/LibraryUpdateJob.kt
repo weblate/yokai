@@ -25,6 +25,7 @@ import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
+import eu.kanade.tachiyomi.data.database.models.prepareCoverUpdate
 import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -55,6 +56,12 @@ import eu.kanade.tachiyomi.util.system.isConnectedToWifi
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.tryToSetForeground
 import eu.kanade.tachiyomi.util.system.withIOContext
+import java.io.File
+import java.lang.ref.WeakReference
+import java.util.Date
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -79,11 +86,6 @@ import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.File
-import java.lang.ref.WeakReference
-import java.util.*
-import java.util.concurrent.*
-import java.util.concurrent.atomic.*
 
 class LibraryUpdateJob(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
@@ -267,11 +269,13 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                         }
                         if (networkManga != null) {
                             val thumbnailUrl = manga.thumbnail_url
+                            if (thumbnailUrl != networkManga.thumbnail_url) {
+                                manga.prepareCoverUpdate()
+                            }
                             manga.copyFrom(networkManga)
                             manga.initialized = true
                             val request: ImageRequest =
                                 if (thumbnailUrl != manga.thumbnail_url) {
-                                    coverCache.deleteFromCache(thumbnailUrl)
                                     // load new covers in background
                                     ImageRequest.Builder(context).data(manga)
                                         .memoryCachePolicy(CachePolicy.DISABLED).build()

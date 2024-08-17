@@ -6,7 +6,6 @@ import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.memory.MemoryCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.e
@@ -14,16 +13,16 @@ import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.util.concurrent.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.util.concurrent.*
 
 /**
  * Class used to create cover cache.
@@ -171,7 +170,7 @@ class CoverCache(val context: Context) {
     fun setCustomCoverToCache(manga: Manga, inputStream: InputStream) {
         getCustomCoverFile(manga).outputStream().use {
             inputStream.copyTo(it)
-            context.imageLoader.memoryCache?.remove(MemoryCache.Key(manga.key()))
+            removeFromMemory(manga, true)
         }
     }
 
@@ -185,7 +184,7 @@ class CoverCache(val context: Context) {
         val result = getCustomCoverFile(manga).let {
             it.exists() && it.delete()
         }
-        context.imageLoader.memoryCache?.remove(MemoryCache.Key(manga.key()))
+        removeFromMemory(manga, true)
         return result
     }
 
@@ -195,18 +194,28 @@ class CoverCache(val context: Context) {
      * @param thumbnailUrl the thumbnail url.
      * @return cover image.
      */
-    fun getCoverFile(manga: Manga): File {
-        val hashKey = DiskUtil.hashKeyForDisk((manga.thumbnail_url.orEmpty()))
-        return if (manga.favorite) {
-            File(cacheDir, hashKey)
-        } else {
-            File(onlineCoverDirectory, hashKey)
+    fun getCoverFile(mangaThumbnailUrl: String?, isOnline: Boolean = false): File? {
+        return mangaThumbnailUrl?.let {
+            File(if (!isOnline) cacheDir else onlineCoverDirectory, DiskUtil.hashKeyForDisk(it))
+        }
+    }
+
+    fun removeFromMemory(manga: Manga, custom: Boolean = false) {
+        if (custom) {
+            context.imageLoader.memoryCache?.remove(MemoryCache.Key(manga.key()))
+            return
+        }
+
+        manga.thumbnail_url?.let {
+            if (it.isEmpty()) return
+            context.imageLoader.memoryCache
+                ?.remove(MemoryCache.Key(if (!manga.favorite) it else DiskUtil.hashKeyForDisk(it)))
         }
     }
 
     fun deleteFromCache(name: String?) {
         if (name.isNullOrEmpty()) return
-        val file = getCoverFile(MangaImpl().apply { thumbnail_url = name })
+        val file = getCoverFile(name, true) ?: return
         context.imageLoader.memoryCache?.remove(MemoryCache.Key(file.name))
         if (file.exists()) file.delete()
     }
@@ -225,12 +234,11 @@ class CoverCache(val context: Context) {
         if (manga.thumbnail_url.isNullOrEmpty()) return
 
         // Remove file
-        val file = getCoverFile(manga)
-        if (deleteCustom) deleteCustomCover(manga)
-        if (file.exists()) {
-            context.imageLoader.memoryCache?.remove(MemoryCache.Key(manga.key()))
-            file.delete()
+        getCoverFile(manga.thumbnail_url, !manga.favorite)?.let {
+            removeFromMemory(manga)
+            it.delete()
         }
+        if (deleteCustom) deleteCustomCover(manga)
     }
 
     private fun getCacheDir(dir: String): File {

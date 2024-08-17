@@ -53,6 +53,7 @@ import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notification
+import java.security.Security
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -69,7 +70,6 @@ import yokai.core.migration.migrations.migrations
 import yokai.domain.base.BasePreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.security.Security
 
 open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factory {
 
@@ -251,7 +251,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             }
 
             diskCache(diskCacheLazy::value)
-            // memoryCache { MemoryCache.Builder().maxSizePercent(this@App, 0.40).build() }
+            //memoryCache { MemoryCache.Builder().maxSizePercent(this@App, 0.40).build() }
             crossfade(true)
             allowRgb565(this@App.getSystemService<ActivityManager>()!!.isLowRamDevice)
             allowHardware(true)

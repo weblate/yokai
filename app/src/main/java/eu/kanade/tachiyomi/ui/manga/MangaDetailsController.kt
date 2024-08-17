@@ -136,6 +136,11 @@ import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.toolbarHeight
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
+import java.io.File
+import java.io.IOException
+import java.util.Locale
+import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import uy.kohesive.injekt.Injekt
@@ -143,11 +148,6 @@ import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.presentation.core.Constants
 import yokai.util.lang.getString
-import java.io.File
-import java.io.IOException
-import java.util.*
-import kotlin.math.max
-import kotlin.math.roundToInt
 import android.R as AR
 
 class MangaDetailsController :
@@ -580,7 +580,6 @@ class MangaDetailsController :
         val view = view ?: return
 
         val request = ImageRequest.Builder(view.context).data(presenter.manga).allowHardware(false)
-            .memoryCacheKey(presenter.manga.key())
             .target(
                 onSuccess = { image ->
                     val drawable = image.asDrawable(view.context.resources)
@@ -619,8 +618,8 @@ class MangaDetailsController :
                     getHeader()?.updateCover(manga!!)
                 },
                 onError = {
-                    val file = presenter.coverCache.getCoverFile(manga!!)
-                    if (file.exists()) {
+                    val file = presenter.coverCache.getCoverFile(manga!!.thumbnail_url, !manga!!.favorite)
+                    if (file != null && file.exists()) {
                         file.delete()
                         setPaletteColor()
                     }

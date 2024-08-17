@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.net.toFile
 import coil3.imageLoader
-import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
@@ -21,6 +20,7 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.bookmarkedFilter
 import eu.kanade.tachiyomi.data.database.models.chapterOrder
 import eu.kanade.tachiyomi.data.database.models.downloadedFilter
+import eu.kanade.tachiyomi.data.database.models.hasCustomCover
 import eu.kanade.tachiyomi.data.database.models.readFilter
 import eu.kanade.tachiyomi.data.database.models.sortDescending
 import eu.kanade.tachiyomi.data.download.DownloadManager
@@ -403,7 +403,7 @@ class MangaDetailsPresenter(
                             .build()
 
                     if (preferences.context.imageLoader.execute(request) is SuccessResult) {
-                        preferences.context.imageLoader.memoryCache?.remove(MemoryCache.Key(manga.key()))
+                        coverCache.removeFromMemory(manga, manga.hasCustomCover(coverCache))
                         withContext(Dispatchers.Main) {
                             view?.setPaletteColor()
                         }
@@ -920,8 +920,8 @@ class MangaDetailsPresenter(
     }
 
     private fun saveCover(directory: UniFile): UniFile {
-        val cover = coverCache.getCustomCoverFile(manga).takeIf { it.exists() } ?: coverCache.getCoverFile(manga)
-        val type = ImageUtil.findImageType(cover.inputStream())
+        val cover = coverCache.getCustomCoverFile(manga).takeIf { it.exists() } ?: coverCache.getCoverFile(manga.thumbnail_url, !manga.favorite)
+        val type = cover?.let { ImageUtil.findImageType(it.inputStream()) }
             ?: throw Exception("Not an image")
 
         // Build destination file.

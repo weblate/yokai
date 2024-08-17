@@ -1646,8 +1646,8 @@ class LibraryPresenter(
             libraryManga.forEach { manga ->
                 if (manga.id == null) return@forEach
                 if (manga.thumbnail_url?.startsWith("custom", ignoreCase = true) == true) {
-                    val file = cc.getCoverFile(manga)
-                    if (file.exists()) {
+                    val file = cc.getCoverFile(manga.thumbnail_url, !manga.favorite)
+                    if (file != null && file.exists()) {
                         file.renameTo(cc.getCustomCoverFile(manga))
                     }
                     manga.thumbnail_url =

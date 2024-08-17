@@ -87,8 +87,8 @@ class MangaCoverFetcher(
             val customCoverLoader = tryCustomCover()
             if (customCoverLoader != null) return customCoverLoader
         }
-        val coverFile = coverCache.getCoverFile(manga)
-        if (!shouldFetchRemotely && coverFile.exists() && options.diskCachePolicy.readEnabled) {
+        val coverFile = coverCache.getCoverFile(manga.thumbnail_url, !manga.favorite)
+        if (!shouldFetchRemotely && coverFile != null && coverFile.exists() && options.diskCachePolicy.readEnabled) {
             if (!manga.favorite) {
                 coverFile.setLastModified(Date().time)
             }

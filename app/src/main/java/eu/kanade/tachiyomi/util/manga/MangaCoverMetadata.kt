@@ -8,9 +8,9 @@ import eu.kanade.tachiyomi.data.coil.getBestColor
 import eu.kanade.tachiyomi.data.database.models.dominantCoverColors
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
-import uy.kohesive.injekt.injectLazy
 import java.io.File
-import java.util.concurrent.*
+import java.util.concurrent.ConcurrentHashMap
+import uy.kohesive.injekt.injectLazy
 
 /** Object that holds info about a covers size ratio + dominant colors */
 object MangaCoverMetadata {
@@ -54,9 +54,9 @@ object MangaCoverMetadata {
             remove(manga)
         }
         if (manga.vibrantCoverColor != null && !manga.favorite) return
-        val file = ogFile ?: coverCache.getCustomCoverFile(manga).takeIf { it.exists() } ?: coverCache.getCoverFile(manga)
+        val file = ogFile ?: coverCache.getCustomCoverFile(manga).takeIf { it.exists() } ?: coverCache.getCoverFile(manga.thumbnail_url, !manga.favorite)
         // if the file exists and the there was still an error then the file is corrupted
-        if (file.exists()) {
+        if (file != null && file.exists()) {
             val options = BitmapFactory.Options()
             val hasVibrantColor = if (manga.favorite) manga.vibrantCoverColor != null else true
             if (manga.dominantCoverColors != null && hasVibrantColor && !force) {

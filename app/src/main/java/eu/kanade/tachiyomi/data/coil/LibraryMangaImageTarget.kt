@@ -6,7 +6,6 @@ import androidx.palette.graphics.Palette
 import coil3.Image
 import coil3.ImageLoader
 import coil3.imageLoader
-import coil3.memory.MemoryCache
 import coil3.request.Disposable
 import coil3.request.ImageRequest
 import coil3.target.ImageViewTarget
@@ -26,15 +25,15 @@ class LibraryMangaImageTarget(
         super.onError(error)
         if (manga.favorite) {
             launchIO {
-                val file = coverCache.getCoverFile(manga)
+                val file = coverCache.getCoverFile(manga.thumbnail_url, false)
                 // if the file exists and the there was still an error then the file is corrupted
-                if (file.exists()) {
+                if (file != null && file.exists()) {
                     val options = BitmapFactory.Options()
                     options.inJustDecodeBounds = true
                     BitmapFactory.decodeFile(file.path, options)
                     if (options.outWidth == -1 || options.outHeight == -1) {
+                        coverCache.removeFromMemory(manga)
                         file.delete()
-                        view.context.imageLoader.memoryCache?.remove(MemoryCache.Key(manga.key()))
                     }
                 }
             }
@@ -52,7 +51,6 @@ inline fun ImageView.loadManga(
         .data(manga)
         .target(LibraryMangaImageTarget(this, manga))
         .apply(builder)
-        .memoryCacheKey(manga.key())
         .build()
     return imageLoader.enqueue(request)
 }

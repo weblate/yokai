@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.data.database.models
 
 import android.content.Context
+import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.domain.manga.models.Manga.Companion.TYPE_COMIC
@@ -14,6 +15,7 @@ import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
 import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.system.withIOContext
+import java.util.Locale
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -21,7 +23,6 @@ import yokai.data.updateStrategyAdapter
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
 
 fun Manga.sortDescending(preferences: PreferencesHelper): Boolean =
     if (usesLocalSort) sortDescending else preferences.chaptersDescAsDefault().get()
@@ -220,4 +221,8 @@ fun Manga.Companion.mapper(
     this.date_added = dateAdded ?: 0L
     this.filtered_scanlators = filteredScanlators
     this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
+}
+
+fun Manga.hasCustomCover(coverCache: CoverCache = Injekt.get()): Boolean {
+    return coverCache.getCustomCoverFile(this).exists()
 }

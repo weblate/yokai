@@ -1,6 +1,10 @@
 [*]
 insert_final_newline=true
 
+[*.{json,json5}]
+indent_style=space
+indent_size=2
+
 [*.{kt,kts}]
 indent_style=space
 indent_size=4

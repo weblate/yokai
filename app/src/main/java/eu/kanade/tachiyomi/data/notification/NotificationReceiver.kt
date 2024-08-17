@@ -8,7 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.content.IntentCompat
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
@@ -28,11 +27,15 @@ import eu.kanade.tachiyomi.util.chapter.updateTrackChapterMarkedAsRead
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.storage.getUriCompat
 import eu.kanade.tachiyomi.util.system.getParcelableCompat
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.notificationManager
+import java.io.File
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import java.io.File
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.UpdateChapter
+import yokai.domain.manga.interactor.GetManga
 import eu.kanade.tachiyomi.BuildConfig.APPLICATION_ID as ID
 
 /**
@@ -41,6 +44,10 @@ import eu.kanade.tachiyomi.BuildConfig.APPLICATION_ID as ID
  * NOTE: Use local broadcasts if possible.
  */
 class NotificationReceiver : BroadcastReceiver() {
+    private val getChapter: GetChapter by injectLazy()
+    private val updateChapter: UpdateChapter by injectLazy()
+    private val getManga: GetManga by injectLazy()
+
     /**
      * Download manager.
      */
@@ -204,23 +211,25 @@ class NotificationReceiver : BroadcastReceiver() {
      * @param notificationId id of notification
      */
     private fun markAsRead(chapterUrls: Array<String>, mangaId: Long) {
-        val db: DatabaseHelper = Injekt.get()
         val preferences: PreferencesHelper = Injekt.get()
-        val manga = db.getManga(mangaId).executeAsBlocking() ?: return
-        val chapters = chapterUrls.map {
-            val chapter = db.getChapter(it, mangaId).executeAsBlocking() ?: return
-            chapter.read = true
-            db.updateChapterProgress(chapter).executeAsBlocking()
-            if (preferences.removeAfterMarkedAsRead().get()) {
-                val sourceManager: SourceManager = Injekt.get()
-                val source = sourceManager.get(manga.source) ?: return
-                downloadManager.deleteChapters(listOf(chapter), manga, source)
+
+        launchIO {
+            val manga = getManga.awaitById(mangaId) ?: return@launchIO
+            val chapters = chapterUrls.map {
+                val chapter = getChapter.awaitByUrlAndMangaId(it, mangaId, false) ?: return@launchIO
+                chapter.read = true
+                updateChapter.await(chapter.toProgressUpdate())
+                if (preferences.removeAfterMarkedAsRead().get()) {
+                    val sourceManager: SourceManager = Injekt.get()
+                    val source = sourceManager.get(manga.source) ?: return@launchIO
+                    downloadManager.deleteChapters(listOf(chapter), manga, source)
+                }
+                return@map chapter
             }
-            return@map chapter
+            val newLastChapter = chapters.maxByOrNull { it.chapter_number.toInt() }
+            LibraryUpdateJob.updateMutableFlow.tryEmit(manga.id)
+            updateTrackChapterMarkedAsRead(Injekt.get(), preferences, newLastChapter, mangaId, 0)
         }
-        val newLastChapter = chapters.maxByOrNull { it.chapter_number.toInt() }
-        LibraryUpdateJob.updateMutableFlow.tryEmit(manga.id)
-        updateTrackChapterMarkedAsRead(db, preferences, newLastChapter, mangaId, 0)
     }
 
     /** Method called when user wants to stop a restore

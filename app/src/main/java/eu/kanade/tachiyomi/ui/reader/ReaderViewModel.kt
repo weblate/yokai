@@ -78,6 +78,8 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
+import yokai.domain.chapter.interactor.UpdateChapter
+import yokai.domain.chapter.models.ChapterUpdate
 import yokai.domain.download.DownloadPreferences
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
@@ -103,6 +105,7 @@ class ReaderViewModel(
 ) : ViewModel() {
     private val getChapter: GetChapter by injectLazy()
     private val insertChapter: InsertChapter by injectLazy()
+    private val updateChapter: UpdateChapter by injectLazy()
     private val getManga: GetManga by injectLazy()
     private val insertManga: InsertManga by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
@@ -444,7 +447,16 @@ class ReaderViewModel(
 
     fun toggleBookmark(chapter: Chapter) {
         chapter.bookmark = !chapter.bookmark
-        db.updateChapterProgress(chapter).executeAsBlocking()
+        viewModelScope.launchNonCancellableIO {
+            updateChapter.await(
+                ChapterUpdate(
+                    id = chapter.id!!,
+                    bookmark = chapter.bookmark,
+                    lastPageRead = chapter.last_page_read.toLong(),
+                    pagesLeft = chapter.pages_left.toLong(),
+                )
+            )
+        }
     }
 
     /**
@@ -617,6 +629,7 @@ class ReaderViewModel(
      * Saves this [readerChapter]'s progress (last read page and whether it's read).
      * If incognito mode isn't on or has at least 1 tracker
      */
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     private fun saveChapterProgress(readerChapter: ReaderChapter) {
         readerChapter.requestedPage = readerChapter.chapter.last_page_read
         db.getChapter(readerChapter.chapter.id!!).executeAsBlocking()?.let { dbChapter ->
@@ -630,6 +643,7 @@ class ReaderViewModel(
     /**
      * Saves this [readerChapter] last read history.
      */
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     private fun saveChapterHistory(readerChapter: ReaderChapter) {
         if (!preferences.incognitoMode().get()) {
             val readAt = Date().time

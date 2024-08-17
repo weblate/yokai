@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.database.models
 
 import eu.kanade.tachiyomi.source.model.SChapter
 import java.io.Serializable
+import yokai.domain.chapter.models.ChapterUpdate
 
 interface Chapter : SChapter, Serializable {
 
@@ -23,6 +24,15 @@ interface Chapter : SChapter, Serializable {
 
     val isRecognizedNumber: Boolean
         get() = chapter_number >= 0f
+
+    fun toProgressUpdate() =
+        ChapterUpdate(
+            id = this.id!!,
+            read = this.read,
+            bookmark = this.bookmark,
+            lastPageRead = this.last_page_read.toLong(),
+            pagesLeft = this.pages_left.toLong(),
+        )
 
     companion object {
 

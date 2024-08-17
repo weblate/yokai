@@ -16,8 +16,32 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
     override fun getChaptersAsFlow(mangaId: Long, filterScanlators: Boolean): Flow<List<Chapter>> =
         handler.subscribeToList { chaptersQueries.getChaptersByMangaId(mangaId, filterScanlators.toInt().toLong(), Chapter::mapper) }
 
+    override suspend fun getChapterById(id: Long): Chapter? =
+        handler.awaitOneOrNull { chaptersQueries.getChaptersById(id, Chapter::mapper) }
+
     override suspend fun getChaptersByUrl(url: String, filterScanlators: Boolean): List<Chapter> =
         handler.awaitList { chaptersQueries.getChaptersByUrl(url, filterScanlators.toInt().toLong(), Chapter::mapper) }
+
+    override suspend fun getChapterByUrl(url: String, filterScanlators: Boolean): Chapter? =
+        handler.awaitOneOrNull { chaptersQueries.getChaptersByUrl(url, filterScanlators.toInt().toLong(), Chapter::mapper) }
+
+    override suspend fun getChaptersByUrlAndMangaId(
+        url: String,
+        mangaId: Long,
+        filterScanlators: Boolean
+    ): List<Chapter> =
+        handler.awaitList {
+            chaptersQueries.getChaptersByUrlAndMangaId(url, mangaId, filterScanlators.toInt().toLong(), Chapter::mapper)
+        }
+
+    override suspend fun getChapterByUrlAndMangaId(
+        url: String,
+        mangaId: Long,
+        filterScanlators: Boolean
+    ): Chapter? =
+        handler.awaitOneOrNull {
+            chaptersQueries.getChaptersByUrlAndMangaId(url, mangaId, filterScanlators.toInt().toLong(), Chapter::mapper)
+        }
 
     override suspend fun getRecents(filterScanlators: Boolean, search: String, limit: Long, offset: Long): List<MangaChapter> =
         handler.awaitList { chaptersQueries.getRecents(search, filterScanlators.toInt().toLong(), limit, offset, MangaChapter::mapper) }

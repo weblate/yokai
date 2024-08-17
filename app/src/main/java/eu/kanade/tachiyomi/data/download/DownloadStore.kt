@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
 import androidx.core.content.edit
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.model.Download
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.SourceManager
@@ -11,6 +10,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.manga.interactor.GetManga
 
 /**
  * This class is used to persist active downloads across application restarts.
@@ -28,7 +29,8 @@ class DownloadStore(
     private val preferences = context.getSharedPreferences("active_downloads", Context.MODE_PRIVATE)
 
     private val json: Json by injectLazy()
-    private val db: DatabaseHelper by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
+    private val getManga: GetManga by injectLazy()
 
     /**
      * Counter used to keep the queue order.
@@ -78,7 +80,7 @@ class DownloadStore(
     /**
      * Returns the list of downloads to restore. It should be called in a background thread.
      */
-    fun restore(): List<Download> {
+    suspend fun restore(): List<Download> {
         val objs = preferences.all
             .mapNotNull { it.value as? String }
             .mapNotNull { deserialize(it) }
@@ -89,10 +91,10 @@ class DownloadStore(
             val cachedManga = mutableMapOf<Long, Manga?>()
             for ((mangaId, chapterId) in objs) {
                 val manga = cachedManga.getOrPut(mangaId) {
-                    db.getManga(mangaId).executeAsBlocking()
+                    getManga.awaitById(mangaId)
                 } ?: continue
                 val source = sourceManager.get(manga.source) as? HttpSource ?: continue
-                val chapter = db.getChapter(chapterId).executeAsBlocking() ?: continue
+                val chapter = getChapter.awaitById(chapterId) ?: continue
                 downloads.add(Download(source, manga, chapter))
             }
         }

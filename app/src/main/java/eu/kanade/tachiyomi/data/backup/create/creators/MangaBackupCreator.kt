@@ -10,12 +10,14 @@ import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.chapter.interactor.GetChapter
 
 class MangaBackupCreator(
     private val db: DatabaseHelper = Injekt.get(),
     private val customMangaManager: CustomMangaManager = Injekt.get(),
+    private val getChapter: GetChapter = Injekt.get(),
 ) {
-    operator fun invoke(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
+    suspend operator fun invoke(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
         if (!options.libraryEntries) return emptyList()
 
         return mangas.map {
@@ -30,14 +32,14 @@ class MangaBackupCreator(
      * @param options options for the backup
      * @return [BackupManga] containing manga in a serializable form
      */
-    private fun backupManga(manga: Manga, options: BackupOptions): BackupManga {
+    private suspend fun backupManga(manga: Manga, options: BackupOptions): BackupManga {
         // Entry for this manga
         val mangaObject = BackupManga.copyFrom(manga, if (options.customInfo) customMangaManager else null)
 
         // Check if user wants chapter information in backup
         if (options.chapters) {
             // Backup all the chapters
-            val chapters = db.getChapters(manga).executeAsBlocking()
+            val chapters = manga.id?.let { getChapter.awaitAll(it, false) }.orEmpty()
             if (chapters.isNotEmpty()) {
                 mangaObject.chapters = chapters.map { BackupChapter.copyFrom(it) }
             }
@@ -65,7 +67,7 @@ class MangaBackupCreator(
             val historyForManga = db.getHistoryByMangaId(manga.id!!).executeAsBlocking()
             if (historyForManga.isNotEmpty()) {
                 val history = historyForManga.mapNotNull { history ->
-                    val url = db.getChapter(history.chapter_id).executeAsBlocking()?.url
+                    val url = getChapter.awaitById(history.chapter_id)?.url
                     url?.let { BackupHistory(url, history.last_read, history.time_read) }
                 }
                 if (history.isNotEmpty()) {

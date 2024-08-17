@@ -16,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.chapter.interactor.UpdateChapter
 
 /**
  * Helper method for syncing a remote track with the local chapters, and back
@@ -25,20 +26,26 @@ import uy.kohesive.injekt.api.get
  * @param remoteTrack the remote Track object.
  * @param service the tracker service.
  */
-fun syncChaptersWithTrackServiceTwoWay(db: DatabaseHelper, chapters: List<Chapter>, remoteTrack: Track, service: TrackService) {
-    val sortedChapters = chapters.sortedBy { it.chapter_number }
-    sortedChapters
-        .filter { chapter -> chapter.chapter_number <= remoteTrack.last_chapter_read && !chapter.read }
-        .forEach { it.read = true }
-    db.updateChaptersProgress(sortedChapters).executeAsBlocking()
-
-    // only take into account continuous reading
-    val localLastRead = sortedChapters.takeWhile { it.read }.lastOrNull()?.chapter_number ?: 0F
-
-    // update remote
-    remoteTrack.last_chapter_read = localLastRead
-
+fun syncChaptersWithTrackServiceTwoWay(
+    db: DatabaseHelper,
+    chapters: List<Chapter>,
+    remoteTrack: Track,
+    service: TrackService,
+    updateChapter: UpdateChapter = Injekt.get(),
+) {
     launchIO {
+        val sortedChapters = chapters.sortedBy { it.chapter_number }
+        sortedChapters
+            .filter { chapter -> chapter.chapter_number <= remoteTrack.last_chapter_read && !chapter.read }
+            .forEach { it.read = true }
+        updateChapter.awaitAll(sortedChapters.map(Chapter::toProgressUpdate))
+
+        // only take into account continuous reading
+        val localLastRead = sortedChapters.takeWhile { it.read }.lastOrNull()?.chapter_number ?: 0F
+
+        // update remote
+        remoteTrack.last_chapter_read = localLastRead
+
         try {
             service.update(remoteTrack)
             db.insertTrack(remoteTrack).executeAsBlocking()

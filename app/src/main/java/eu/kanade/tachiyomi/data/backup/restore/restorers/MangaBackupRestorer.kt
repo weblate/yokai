@@ -21,6 +21,7 @@ import uy.kohesive.injekt.api.get
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
+import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
@@ -32,6 +33,7 @@ class MangaBackupRestorer(
     private val getCategories: GetCategories = Injekt.get(),
     private val getChapter: GetChapter = Injekt.get(),
     private val insertChapter: InsertChapter = Injekt.get(),
+    private val updateChapter: UpdateChapter = Injekt.get(),
     private val getManga: GetManga = Injekt.get(),
     private val insertManga: InsertManga = Injekt.get(),
     private val updateManga: UpdateManga = Injekt.get(),
@@ -138,7 +140,7 @@ class MangaBackupRestorer(
         }
 
         val newChapters = chapters.groupBy { it.id != null }
-        newChapters[true]?.let { db.updateKnownChaptersBackup(it).executeAsBlocking() }
+        newChapters[true]?.let { updateChapter.awaitAll(it.map(Chapter::toProgressUpdate)) }
         newChapters[false]?.let { insertChapter.awaitBulk(it) }
     }
 
@@ -210,7 +212,7 @@ class MangaBackupRestorer(
                 historyToBeUpdated.add(dbHistory)
             } else {
                 // If not in database create
-                db.getChapter(url).executeAsBlocking()?.let {
+                getChapter.awaitByUrl(url, false)?.let {
                     val historyToAdd = History.create(it).apply {
                         last_read = lastRead
                         time_read = readDuration

@@ -64,6 +64,11 @@ import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -78,16 +83,13 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.util.*
 
 class MangaDetailsPresenter(
     val manga: Manga,
@@ -101,6 +103,7 @@ class MangaDetailsPresenter(
 ) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
     private val getChapter: GetChapter by injectLazy()
+    private val updateChapter: UpdateChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
     private val customMangaManager: CustomMangaManager by injectLazy()
@@ -508,10 +511,11 @@ class MangaDetailsPresenter(
      */
     fun bookmarkChapters(selectedChapters: List<ChapterItem>, bookmarked: Boolean) {
         presenterScope.launch(Dispatchers.IO) {
-            selectedChapters.forEach {
+            val updates = selectedChapters.map {
                 it.bookmark = bookmarked
+                it.toProgressUpdate()
             }
-            db.updateChaptersProgress(selectedChapters).executeAsBlocking()
+            updateChapter.awaitAll(updates)
             getChapters()
             withContext(Dispatchers.Main) { view?.updateChapters(chapters) }
         }
@@ -529,15 +533,16 @@ class MangaDetailsPresenter(
         lastRead: Int? = null,
         pagesLeft: Int? = null,
     ) {
-        presenterScope.launch(Dispatchers.IO) {
-            selectedChapters.forEach {
+        presenterScope.launchIO {
+            val updates = selectedChapters.map {
                 it.read = read
                 if (!read) {
                     it.last_page_read = lastRead ?: 0
                     it.pages_left = pagesLeft ?: 0
                 }
+                it.toProgressUpdate()
             }
-            db.updateChaptersProgress(selectedChapters).executeAsBlocking()
+            updateChapter.awaitAll(updates)
             if (read && deleteNow && preferences.removeAfterMarkedAsRead().get()) {
                 deleteChapters(selectedChapters, false)
             }

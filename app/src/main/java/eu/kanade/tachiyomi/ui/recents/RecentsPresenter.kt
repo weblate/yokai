@@ -42,6 +42,7 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.RecentChapter
+import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.recents.RecentsPreferences
 import yokai.domain.ui.UiPreferences
 import yokai.i18n.MR
@@ -56,6 +57,7 @@ class RecentsPresenter(
 ) : BaseCoroutinePresenter<RecentsController>(), DownloadQueue.DownloadListener {
     private val getChapter: GetChapter by injectLazy()
     private val recentChapter: RecentChapter by injectLazy()
+    private val updateChapter: UpdateChapter by injectLazy()
 
     private var recentsJob: Job? = null
     var recentItems = listOf<RecentMangaItem>()
@@ -639,7 +641,7 @@ class RecentsPresenter(
                     pages_left = pagesLeft ?: 0
                 }
             }
-            db.updateChaptersProgress(listOf(chapter)).executeAsBlocking()
+            updateChapter.await(chapter.toProgressUpdate())
             getRecents()
         }
     }

@@ -32,6 +32,10 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 );
 
+getChaptersById:
+SELECT * FROM chapters
+WHERE _id = :id;
+
 getChaptersByUrl:
 SELECT C.*
 FROM chapters AS C
@@ -39,6 +43,17 @@ LEFT JOIN scanlators_view AS S
 ON C.manga_id = S.manga_id
 AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
 WHERE C.url = :url
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+);
+
+getChaptersByUrlAndMangaId:
+SELECT C.*
+FROM chapters AS C
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE C.url = :url AND C.manga_id = :manga_id
 AND (
     :apply_filter = 0 OR S.name IS NULL
 );

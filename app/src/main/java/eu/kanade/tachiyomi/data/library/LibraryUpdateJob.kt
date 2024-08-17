@@ -268,10 +268,8 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                             null
                         }
                         if (networkManga != null) {
+                            manga.prepareCoverUpdate(coverCache, networkManga, false)
                             val thumbnailUrl = manga.thumbnail_url
-                            if (thumbnailUrl != networkManga.thumbnail_url) {
-                                manga.prepareCoverUpdate()
-                            }
                             manga.copyFrom(networkManga)
                             manga.initialized = true
                             val request: ImageRequest =

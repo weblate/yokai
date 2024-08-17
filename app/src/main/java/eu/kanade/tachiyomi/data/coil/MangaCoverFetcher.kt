@@ -43,13 +43,15 @@ class MangaCoverFetcher(
     private val manga: Manga,
     private val sourceLazy: Lazy<HttpSource?>,
     private val options: Options,
-    private val coverCache: CoverCache,
     private val callFactoryLazy: Lazy<Call.Factory>,
     private val diskCacheLazy: Lazy<DiskCache>,
+    private val diskCacheKeyLazy: Lazy<String>,
+    private val coverFileLazy: Lazy<File?>,
+    private val customCoverFileLazy: Lazy<File>,
 ) : Fetcher {
 
-    // For non-custom cover
-    private val diskCacheKey: String? by lazy { MangaCoverKeyer().key(manga, options) }
+    private val diskCacheKey: String
+        get() = diskCacheKeyLazy.value
     private lateinit var url: String
 
     val fileScope = CoroutineScope(Job() + Dispatchers.IO)
@@ -68,12 +70,13 @@ class MangaCoverFetcher(
         }
     }
 
-    @Suppress("RedundantSuspendModifier")
     private suspend fun tryCustomCover(): FetchResult? {
-        val customCoverFile by lazy { coverCache.getCustomCoverFile(manga) }
-        if (options.extras.getOrDefault(USE_CUSTOM_COVER_KEY) && customCoverFile.exists()) {
-            setRatioAndColorsInScope(manga, customCoverFile)
-            return fileLoader(customCoverFile)
+        if (options.extras.getOrDefault(USE_CUSTOM_COVER_KEY)) {
+            val customCoverFile = customCoverFileLazy.value
+            if (customCoverFile.exists()) {
+                setRatioAndColorsInScope(manga, customCoverFile)
+                return fileLoader(customCoverFile)
+            }
         }
         return null
     }
@@ -87,7 +90,7 @@ class MangaCoverFetcher(
             val customCoverLoader = tryCustomCover()
             if (customCoverLoader != null) return customCoverLoader
         }
-        val coverFile = coverCache.getCoverFile(manga.thumbnail_url, !manga.favorite)
+        val coverFile = coverFileLazy.value
         if (!shouldFetchRemotely && coverFile != null && coverFile.exists() && options.diskCachePolicy.readEnabled) {
             if (!manga.favorite) {
                 coverFile.setLastModified(Date().time)
@@ -343,8 +346,16 @@ class MangaCoverFetcher(
         private val sourceManager: SourceManager by injectLazy()
 
         override fun create(data: Manga, options: Options, imageLoader: ImageLoader): Fetcher {
-            val source = lazy { sourceManager.get(data.source) as? HttpSource }
-            return MangaCoverFetcher(data, source, options, coverCache, callFactoryLazy, diskCacheLazy)
+            return MangaCoverFetcher(
+                manga = data,
+                sourceLazy = lazy { sourceManager.get(data.source) as? HttpSource },
+                options = options,
+                callFactoryLazy = callFactoryLazy,
+                diskCacheLazy = diskCacheLazy,
+                diskCacheKeyLazy = lazy { MangaCoverKeyer().key(data, options) },
+                coverFileLazy = lazy { coverCache.getCoverFile(data.thumbnail_url, !data.favorite) },
+                customCoverFileLazy = lazy { coverCache.getCustomCoverFile(data) },
+            )
         }
     }
 

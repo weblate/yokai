@@ -389,10 +389,7 @@ class MangaDetailsPresenter(
 
             val networkManga = nManga.await()
             if (networkManga != null) {
-                if (manga.thumbnail_url != networkManga.thumbnail_url) {
-                    manga.prepareCoverUpdate()
-                }
-
+                manga.prepareCoverUpdate(coverCache, networkManga, false)
                 manga.copyFrom(networkManga)
                 manga.initialized = true
 

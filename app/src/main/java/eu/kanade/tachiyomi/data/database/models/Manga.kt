@@ -235,11 +235,26 @@ fun Manga.hasCustomCover(coverCache: CoverCache = Injekt.get()): Boolean {
 /**
  * Call before updating [Manga.thumbnail_url] to ensure old cover can be cleared from cache
  */
-fun Manga.prepareCoverUpdate(coverCache: CoverCache = Injekt.get()) {
-    cover_last_modified = System.currentTimeMillis()
+fun Manga.prepareCoverUpdate(coverCache: CoverCache, remoteManga: SManga, refreshSameUrl: Boolean) {
+    // Never refresh covers if the new url is null, as the current url has possibly become invalid
+    val newUrl = remoteManga.thumbnail_url ?: return
 
-    if (!isLocal()) {
-        coverCache.deleteFromCache(this, true)
+    // Never refresh covers if the url is empty to avoid "losing" existing covers
+    if (newUrl.isEmpty()) return
+
+    if (!refreshSameUrl && thumbnail_url == newUrl) return
+
+    when {
+        isLocal() -> {
+            cover_last_modified = System.currentTimeMillis()
+        }
+        hasCustomCover(coverCache) -> {
+            coverCache.deleteFromCache(this, false)
+        }
+        else -> {
+            cover_last_modified = System.currentTimeMillis()
+            coverCache.deleteFromCache(this, false)
+        }
     }
 }
 

@@ -1,10 +1,6 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.preference.PreferenceScreen
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -29,9 +25,7 @@ import eu.kanade.tachiyomi.ui.setting.onChange
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.ui.setting.triStateListPreference
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
@@ -40,12 +34,18 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.ui.UiPreferences
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 
 class SettingsLibraryController : SettingsLegacyController() {
 
     private val db: DatabaseHelper by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
+    private val uiPreferences: UiPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
         titleRes = MR.strings.library
@@ -205,6 +205,15 @@ class SettingsLibraryController : SettingsLegacyController() {
                 titleRes = MR.strings.auto_refresh_covers
                 summaryRes = MR.strings.auto_refresh_covers_summary
                 defaultValue = true
+            }
+        }
+
+        preferenceCategory {
+            titleRes = MR.strings.chapters
+
+            switchPreference {
+                bindTo(uiPreferences.enableChapterSwipeAction())
+                titleRes = MR.strings.enable_chapter_swipe_action
             }
         }
     }

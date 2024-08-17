@@ -9,4 +9,6 @@ class UiPreferences(private val preferenceStore: PreferenceStore) {
     fun outlineOnCovers() = preferenceStore.getBoolean(PreferenceKeys.outlineOnCovers, true)
 
     fun uniformGrid() = preferenceStore.getBoolean(PreferenceKeys.uniformGrid, true)
+
+    fun enableChapterSwipeAction() = preferenceStore.getBoolean("enable_chapter_swipe_action", true)
 }

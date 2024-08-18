@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.ui.settings.ReaderPreferences
 
 /**
  * Configuration used by webtoon viewers.
@@ -23,6 +24,7 @@ import uy.kohesive.injekt.api.get
 class WebtoonConfig(
     scope: CoroutineScope,
     preferences: PreferencesHelper = Injekt.get(),
+    readerPreferences: ReaderPreferences = Injekt.get(),
 ) : ViewerConfig(preferences, scope) {
 
     var webtoonCropBorders = false
@@ -38,6 +40,11 @@ class WebtoonConfig(
         private set
 
     var zoomPropertyChangedListener: ((Boolean) -> Unit)? = null
+
+    var doubleTapZoom = true
+        private set
+
+    var doubleTapZoomChangedListener: ((Boolean) -> Unit)? = null
 
     var splitPages = preferences.webtoonPageLayout().get() == PageLayout.SPLIT_PAGES.webtoonValue
 
@@ -78,6 +85,9 @@ class WebtoonConfig(
 
         preferences.webtoonEnableZoomOut()
             .register({ enableZoomOut = it }, { zoomPropertyChangedListener?.invoke(it) })
+
+        readerPreferences.webtoonDoubleTapZoomEnabled()
+            .register({ doubleTapZoom = it }, { doubleTapZoomChangedListener?.invoke(it) })
 
         preferences.webtoonPageLayout()
             .register(

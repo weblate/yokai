@@ -7,15 +7,14 @@ import android.util.AttributeSet
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.ReaderPagedLayoutBinding
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.widget.BaseReaderSettingsView
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     BaseReaderSettingsView<ReaderPagedLayoutBinding>(context, attrs) {
@@ -61,6 +60,7 @@ class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: Attribu
                 R.array.webtoon_side_padding_values,
             )
             webtoonEnableZoomOut.bindToPreference(preferences.webtoonEnableZoomOut())
+            webtoonEnableDoubleTapZoom.bindToPreference(readerPreferences.webtoonDoubleTapZoomEnabled())
             webtoonNav.bindToPreference(preferences.navigationModeWebtoon())
             webtoonInvert.bindToPreference(preferences.webtoonNavInverted())
             webtoonPageLayout.bindToPreference(preferences.webtoonPageLayout())
@@ -94,6 +94,7 @@ class ReaderPagedView @JvmOverloads constructor(context: Context, attrs: Attribu
             binding.cropBordersWebtoon,
             binding.webtoonSidePadding,
             binding.webtoonEnableZoomOut,
+            binding.webtoonEnableDoubleTapZoom,
             binding.webtoonNav,
             binding.webtoonInvert,
             binding.webtoonPageLayout,

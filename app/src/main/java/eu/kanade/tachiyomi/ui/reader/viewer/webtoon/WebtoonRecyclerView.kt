@@ -40,6 +40,7 @@ open class WebtoonRecyclerView @JvmOverloads constructor(
                 zoom(currentScale, DEFAULT_RATE, x, 0f, y, 0f)
             }
         }
+    var doubleTapZoom = true
 
     private val minRate
         get() = if (canZoomOut) MIN_RATE else DEFAULT_RATE
@@ -231,7 +232,7 @@ open class WebtoonRecyclerView @JvmOverloads constructor(
         }
 
         fun onDoubleTapConfirmed(ev: MotionEvent) {
-            if (!isZooming) {
+            if (!isZooming && doubleTapZoom) {
                 if (scaleX != DEFAULT_RATE) {
                     zoom(currentScale, DEFAULT_RATE, x, 0f, y, 0f)
                 } else {

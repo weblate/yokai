@@ -43,4 +43,6 @@ class ReaderPreferences(private val preferenceStore: PreferenceStore) {
                 }
         }
     }
+
+    fun webtoonDoubleTapZoomEnabled() = preferenceStore.getBoolean("pref_enable_double_tap_zoom_webtoon", true)
 }

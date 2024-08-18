@@ -4,9 +4,6 @@ import android.content.ComponentName
 import android.content.Intent
 import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.reader.settings.OrientationType
@@ -25,9 +22,7 @@ import eu.kanade.tachiyomi.ui.setting.multiSelectListPreferenceMat
 import eu.kanade.tachiyomi.ui.setting.onClick
 import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
-import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
 import eu.kanade.tachiyomi.ui.setting.switchPreference
-import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.DeviceUtil
 import eu.kanade.tachiyomi.util.system.isTablet
@@ -36,7 +31,11 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.ui.settings.ReaderPreferences
 import yokai.domain.ui.settings.ReaderPreferences.CutoutBehaviour
 import yokai.domain.ui.settings.ReaderPreferences.LandscapeCutoutBehaviour
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
+import eu.kanade.tachiyomi.ui.setting.summaryMRes as summaryRes
+import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 
 class SettingsReaderController : SettingsLegacyController() {
 
@@ -375,15 +374,18 @@ class SettingsReaderController : SettingsLegacyController() {
             }
 
             switchPreference {
-                key = Keys.webtoonInvertDoublePages
+                bindTo(preferences.webtoonInvertDoublePages())
                 titleRes = MR.strings.invert_double_pages
-                defaultValue = false
             }
 
             switchPreference {
-                key = Keys.webtoonEnableZoomOut
+                bindTo(preferences.webtoonEnableZoomOut())
                 titleRes = MR.strings.enable_zoom_out
-                defaultValue = false
+            }
+
+            switchPreference {
+                bindTo(readerPreferences.webtoonDoubleTapZoomEnabled())
+                titleRes = MR.strings.pref_double_tap_zoom
             }
         }
         preferenceCategory {

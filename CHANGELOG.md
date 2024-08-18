@@ -11,6 +11,7 @@
 -->
 ## Additions
 - Add toggle to enable/disable chapter swipe action(s)
+- Add toggle to enable/disable webtoon double tap to zoom
 
 ## Fixes
 - Fixed chapter number parsing (@Naputt1)

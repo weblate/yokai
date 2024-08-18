@@ -31,6 +31,13 @@ class WebtoonFrame(context: Context) : FrameLayout(context) {
             recycler?.canZoomOut = value
         }
 
+    var doubleTapZoom = true
+        set(value) {
+            field = value
+            recycler?.doubleTapZoom = value
+            scaleDetector.isQuickScaleEnabled = value
+        }
+
     /**
      * Recycler view added in this frame.
      */

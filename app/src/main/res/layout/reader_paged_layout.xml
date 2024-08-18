@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <eu.kanade.tachiyomi.ui.reader.settings.ReaderPagedView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/filter_bottom_sheet"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bottom_sheet_rounded_background"
-    android:clipToPadding="false">
+                                                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                        android:id="@+id/filter_bottom_sheet"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content"
+                                                        android:background="@drawable/bottom_sheet_rounded_background"
+                                                        android:clipToPadding="false">
 
     <LinearLayout
         android:id="@+id/filter_linear_layout"
@@ -153,8 +152,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/enable_zoom_out"
-            android:textColor="?attr/colorOnBackground"
-            app:layout_constraintTop_toBottomOf="@id/webtoon_side_padding" />
+            android:textColor="?attr/colorOnBackground" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/webtoon_enable_double_tap_zoom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/pref_double_tap_zoom"
+            android:textColor="?attr/colorOnBackground" />
 
         <eu.kanade.tachiyomi.widget.MaterialSpinnerView
             android:id="@+id/webtoon_page_layout"

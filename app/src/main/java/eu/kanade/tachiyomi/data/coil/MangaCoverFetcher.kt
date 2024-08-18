@@ -196,6 +196,7 @@ class MangaCoverFetcher(
         val networkRead = options.networkCachePolicy.readEnabled
         val onlyCache = !networkRead && diskRead
         val forceNetwork = networkRead && !diskRead
+        val none = !networkRead && !diskRead
         when {
             onlyCache -> {
                 request.cacheControl(CacheControl.FORCE_CACHE)
@@ -205,7 +206,7 @@ class MangaCoverFetcher(
             } else {
                 request.cacheControl(CACHE_CONTROL_FORCE_NETWORK_NO_CACHE)
             }
-            else -> {
+            none -> {
                 // This causes the request to fail with a 504 Unsatisfiable Request.
                 request.cacheControl(CACHE_CONTROL_NO_NETWORK_NO_CACHE)
             }

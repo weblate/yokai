@@ -78,6 +78,30 @@ class MangaCoverFetcher(
         }
     }
 
+    private fun fileLoader(file: File): FetchResult {
+        return SourceFetchResult(
+            source = ImageSource(
+                file = file.toOkioPath(),
+                fileSystem = FileSystem.SYSTEM,
+                diskCacheKey = diskCacheKey,
+            ),
+            mimeType = "image/*",
+            dataSource = DataSource.DISK,
+        )
+    }
+
+    private fun fileUriLoader(uri: String): FetchResult {
+        val source = UniFile.fromUri(options.context, uri.toUri())!!
+            .openInputStream()
+            .source()
+            .buffer()
+        return SourceFetchResult(
+            source = ImageSource(source = source, fileSystem = FileSystem.SYSTEM),
+            mimeType = "image/*",
+            dataSource = DataSource.DISK,
+        )
+    }
+
     private suspend fun httpLoader(): FetchResult {
         val coverFile = coverFileLazy.value
         if (coverFile?.exists() == true && options.diskCachePolicy.readEnabled) {
@@ -283,30 +307,6 @@ class MangaCoverFetcher(
             .substringAfterLast('.', missingDelimiterValue = "") // Get the file extension.
 
         return getMimeTypeFromExtension(extension)
-    }
-
-    private fun fileLoader(file: File): FetchResult {
-        return SourceFetchResult(
-            source = ImageSource(
-                file = file.toOkioPath(),
-                fileSystem = FileSystem.SYSTEM,
-                diskCacheKey = diskCacheKey,
-            ),
-            mimeType = "image/*",
-            dataSource = DataSource.DISK,
-        )
-    }
-
-    private fun fileUriLoader(uri: String): FetchResult {
-        val source = UniFile.fromUri(options.context, uri.toUri())!!
-            .openInputStream()
-            .source()
-            .buffer()
-        return SourceFetchResult(
-            source = ImageSource(source = source, fileSystem = FileSystem.SYSTEM),
-            mimeType = "image/*",
-            dataSource = DataSource.DISK,
-        )
     }
 
     private fun getResourceType(cover: String?): Type? {

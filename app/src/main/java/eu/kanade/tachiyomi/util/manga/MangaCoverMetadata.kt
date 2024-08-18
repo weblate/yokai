@@ -3,12 +3,12 @@ package eu.kanade.tachiyomi.util.manga
 import android.graphics.BitmapFactory
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
+import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.coil.getBestColor
 import eu.kanade.tachiyomi.data.database.models.dominantCoverColors
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
-import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import uy.kohesive.injekt.injectLazy
 
@@ -49,14 +49,16 @@ object MangaCoverMetadata {
         )
     }
 
-    fun setRatioAndColors(manga: Manga, ogFile: File? = null, force: Boolean = false) {
+    fun setRatioAndColors(manga: Manga, ogFile: UniFile? = null, force: Boolean = false) {
         if (!manga.favorite) {
             remove(manga)
         }
         if (manga.vibrantCoverColor != null && !manga.favorite) return
-        val file = ogFile ?: coverCache.getCustomCoverFile(manga).takeIf { it.exists() } ?: coverCache.getCoverFile(manga.thumbnail_url, !manga.favorite)
+        val file = ogFile
+            ?: UniFile.fromFile(coverCache.getCustomCoverFile(manga))?.takeIf { it.exists() }
+            ?: UniFile.fromFile(coverCache.getCoverFile(manga.thumbnail_url, !manga.favorite))
         // if the file exists and the there was still an error then the file is corrupted
-        if (file != null && file.exists()) {
+        if (file?.exists() == true) {
             val options = BitmapFactory.Options()
             val hasVibrantColor = if (manga.favorite) manga.vibrantCoverColor != null else true
             if (manga.dominantCoverColors != null && hasVibrantColor && !force) {
@@ -64,7 +66,7 @@ object MangaCoverMetadata {
             } else {
                 options.inSampleSize = 4
             }
-            val bitmap = BitmapFactory.decodeFile(file.path, options)
+            val bitmap = BitmapFactory.decodeFile(file.filePath, options)
             if (bitmap != null) {
                 Palette.from(bitmap).generate {
                     if (it == null) return@generate

@@ -61,7 +61,7 @@ class MangaCoverFetcher(
         if (options.extras.getOrDefault(USE_CUSTOM_COVER_KEY)) {
             val customCoverFile = customCoverFileLazy.value
             if (customCoverFile.exists()) {
-                setRatioAndColorsInScope(manga, customCoverFile)
+                setRatioAndColorsInScope(manga, UniFile.fromFile(customCoverFile))
                 return fileLoader(customCoverFile)
             }
         }
@@ -70,10 +70,14 @@ class MangaCoverFetcher(
         return when (getResourceType(url)) {
             Type.URL -> httpLoader()
             Type.File -> {
-                setRatioAndColorsInScope(manga, File(url.substringAfter("file://")))
-                fileLoader(File(url.substringAfter("file://")))
+                val file = File(url.substringAfter("file://"))
+                setRatioAndColorsInScope(manga, UniFile.fromFile(file))
+                fileLoader(file)
             }
-            Type.URI -> fileUriLoader(url)
+            Type.URI -> {
+                setRatioAndColorsInScope(manga, UniFile.fromUri(options.context, url.toUri()))
+                fileUriLoader(url)
+            }
             null -> error("Invalid image")
         }
     }
@@ -108,7 +112,7 @@ class MangaCoverFetcher(
             if (!manga.favorite) {
                 coverFile.setLastModified(Date().time)
             }
-            setRatioAndColorsInScope(manga, coverFile)
+            setRatioAndColorsInScope(manga, UniFile.fromFile(coverFile))
             return fileLoader(coverFile)
         }
 
@@ -119,7 +123,7 @@ class MangaCoverFetcher(
                 val snapshotCoverCache = moveSnapshotToCoverCache(snapshot, coverFile)
                 if (snapshotCoverCache != null) {
                     // Read from cover cache after added to library
-                    setRatioAndColorsInScope(manga, snapshotCoverCache)
+                    setRatioAndColorsInScope(manga, UniFile.fromFile(snapshotCoverCache))
                     return fileLoader(snapshotCoverCache)
                 }
 
@@ -288,7 +292,7 @@ class MangaCoverFetcher(
         )
     }
 
-    private fun setRatioAndColorsInScope(manga: Manga, ogFile: File? = null, force: Boolean = false) {
+    private fun setRatioAndColorsInScope(manga: Manga, ogFile: UniFile? = null, force: Boolean = false) {
         fileScope.launch {
             MangaCoverMetadata.setRatioAndColors(manga, ogFile, force)
         }

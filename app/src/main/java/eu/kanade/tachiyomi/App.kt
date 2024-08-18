@@ -37,7 +37,6 @@ import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.data.coil.BufferedSourceFetcher
-import eu.kanade.tachiyomi.data.coil.CoilDiskCache
 import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
 import eu.kanade.tachiyomi.data.coil.MangaCoverKeyer
 import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
@@ -237,7 +236,6 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(this@App).apply {
             val callFactoryLazy = lazy { Injekt.get<NetworkHelper>().client }
-            val diskCacheLazy = lazy { CoilDiskCache.get(this@App) }
             components {
                 // NetworkFetcher.Factory
                 add(OkHttpNetworkFetcherFactory(callFactoryLazy::value))
@@ -245,13 +243,10 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
                 add(TachiyomiImageDecoder.Factory())
                 // Fetcher.Factory
                 add(BufferedSourceFetcher.Factory())
-                add(MangaCoverFetcher.Factory(callFactoryLazy, diskCacheLazy))
+                add(MangaCoverFetcher.Factory(callFactoryLazy))
                 // Keyer
                 add(MangaCoverKeyer())
             }
-
-            diskCache(diskCacheLazy::value)
-            //memoryCache { MemoryCache.Builder().maxSizePercent(this@App, 0.40).build() }
             crossfade(true)
             allowRgb565(this@App.getSystemService<ActivityManager>()!!.isLowRamDevice)
             allowHardware(true)

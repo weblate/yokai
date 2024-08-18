@@ -22,3 +22,4 @@
 - More StorIO to SQLDelight migration effort
 - Target Android 15
 - Adjust manga cover cache key
+- Refactor manga cover fetcher (@ivaniskandar, @AntsyLich, @null2264)

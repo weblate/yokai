@@ -9,6 +9,7 @@ import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.MangaListItemBinding
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.util.view.setCards
+import yokai.domain.manga.models.cover
 
 class MangaHolder(
     view: View,
@@ -29,6 +30,6 @@ class MangaHolder(
 
         // Update the cover.
         binding.coverThumbnail.dispose()
-        binding.coverThumbnail.loadManga(item.manga)
+        binding.coverThumbnail.loadManga(item.manga.cover())
     }
 }

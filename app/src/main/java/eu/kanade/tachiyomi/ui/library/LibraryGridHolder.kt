@@ -25,6 +25,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.setCards
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
+import yokai.domain.manga.models.cover
 
 /**
  * Class used to hold the displayed data of a manga in the library, like the cover or the title.
@@ -125,7 +126,7 @@ class LibraryGridHolder(
 
     private fun setCover(manga: Manga) {
         if ((adapter.recyclerView.context as? Activity)?.isDestroyed == true) return
-        binding.coverThumbnail.loadManga(manga) {
+        binding.coverThumbnail.loadManga(manga.cover()) {
             val hasRatio = binding.coverThumbnail.layoutParams.height != ViewGroup.LayoutParams.WRAP_CONTENT
             if (!fixedSize && !hasRatio) {
                 precision(Precision.INEXACT)

@@ -2,11 +2,15 @@ package eu.kanade.tachiyomi.data.coil
 
 import coil3.key.Keyer
 import coil3.request.Options
+import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.models.hasCustomCover
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.storage.DiskUtil
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
+import yokai.domain.manga.models.MangaCover
 
-class MangaCoverKeyer : Keyer<Manga> {
+class MangaKeyer : Keyer<Manga> {
     override fun key(data: Manga, options: Options): String {
         val key = when {
             data.hasCustomCover() -> data.id
@@ -15,5 +19,17 @@ class MangaCoverKeyer : Keyer<Manga> {
         }
 
         return "${key};${data.cover_last_modified}"
+    }
+}
+
+class MangaCoverKeyer(private val coverCache: CoverCache = Injekt.get()) : Keyer<MangaCover> {
+    override fun key(data: MangaCover, options: Options): String {
+        val key = when {
+            coverCache.getCustomCoverFile(data.mangaId).exists() -> data.mangaId
+            data.inLibrary -> DiskUtil.hashKeyForDisk(data.url)
+            else -> data.url
+        }
+
+        return "${key};${data.lastModified}"
     }
 }

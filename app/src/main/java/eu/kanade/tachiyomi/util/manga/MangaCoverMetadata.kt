@@ -6,7 +6,6 @@ import androidx.palette.graphics.Palette
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.coil.getBestColor
-import eu.kanade.tachiyomi.data.database.models.dominantCoverColors
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import java.util.concurrent.ConcurrentHashMap
@@ -16,6 +15,7 @@ import uy.kohesive.injekt.injectLazy
 object MangaCoverMetadata {
     private var coverRatioMap = ConcurrentHashMap<Long, Float>()
     private var coverColorMap = ConcurrentHashMap<Long, Pair<Int, Int>>()
+    private var vibrantCoverColorMap = ConcurrentHashMap<Long, Int>()
     private val preferences by injectLazy<PreferencesHelper>()
     private val coverCache by injectLazy<CoverCache>()
 
@@ -49,19 +49,19 @@ object MangaCoverMetadata {
         )
     }
 
-    fun setRatioAndColors(manga: Manga, ogFile: UniFile? = null, force: Boolean = false) {
-        if (!manga.favorite) {
-            remove(manga)
+    fun setRatioAndColors(mangaId: Long?, mangaThumbnailUrl: String?, isInLibrary: Boolean, ogFile: UniFile? = null, force: Boolean = false) {
+        if (!isInLibrary) {
+            remove(mangaId)
         }
-        if (manga.vibrantCoverColor != null && !manga.favorite) return
+        if (getVibrantColor(mangaId) != null && !isInLibrary) return
         val file = ogFile
-            ?: UniFile.fromFile(coverCache.getCustomCoverFile(manga))?.takeIf { it.exists() }
-            ?: UniFile.fromFile(coverCache.getCoverFile(manga.thumbnail_url, !manga.favorite))
+            ?: UniFile.fromFile(coverCache.getCustomCoverFile(mangaId))?.takeIf { it.exists() }
+            ?: UniFile.fromFile(coverCache.getCoverFile(mangaThumbnailUrl, !isInLibrary))
         // if the file exists and the there was still an error then the file is corrupted
         if (file?.exists() == true) {
             val options = BitmapFactory.Options()
-            val hasVibrantColor = if (manga.favorite) manga.vibrantCoverColor != null else true
-            if (manga.dominantCoverColors != null && hasVibrantColor && !force) {
+            val hasVibrantColor = if (isInLibrary) vibrantCoverColorMap[mangaId] != null else true
+            if (getColors(mangaId) != null && hasVibrantColor && !force) {
                 options.inJustDecodeBounds = true
             } else {
                 options.inSampleSize = 4
@@ -70,43 +70,72 @@ object MangaCoverMetadata {
             if (bitmap != null) {
                 Palette.from(bitmap).generate {
                     if (it == null) return@generate
-                    if (manga.favorite) {
+                    if (isInLibrary) {
                         it.dominantSwatch?.let { swatch ->
-                            manga.dominantCoverColors = swatch.rgb to swatch.titleTextColor
+                            addCoverColor(mangaId, swatch.rgb, swatch.titleTextColor)
                         }
                     }
                     val color = it.getBestColor() ?: return@generate
-                    manga.vibrantCoverColor = color
+                    setVibrantColor(mangaId, color)
                 }
             }
-            if (manga.favorite && !(options.outWidth == -1 || options.outHeight == -1)) {
-                addCoverRatio(manga, options.outWidth / options.outHeight.toFloat())
+            if (isInLibrary && !(options.outWidth == -1 || options.outHeight == -1)) {
+                addCoverRatio(mangaId, options.outWidth / options.outHeight.toFloat())
             }
         }
     }
 
     fun remove(manga: Manga) {
-        val id = manga.id ?: return
-        coverRatioMap.remove(id)
-        coverColorMap.remove(id)
+        remove(manga.id)
+    }
+
+    fun remove(mangaId: Long?) {
+        mangaId ?: return
+        coverRatioMap.remove(mangaId)
+        coverColorMap.remove(mangaId)
     }
 
     fun addCoverRatio(manga: Manga, ratio: Float) {
-        val id = manga.id ?: return
-        coverRatioMap[id] = ratio
+        addCoverRatio(manga.id, ratio)
+    }
+
+    fun addCoverRatio(mangaId: Long?, ratio: Float) {
+        mangaId ?: return
+        coverRatioMap[mangaId] = ratio
     }
 
     fun addCoverColor(manga: Manga, @ColorInt color: Int, @ColorInt textColor: Int) {
-        val id = manga.id ?: return
-        coverColorMap[id] = color to textColor
+        addCoverColor(manga.id, color, textColor)
     }
 
-    fun getColors(manga: Manga): Pair<Int, Int>? {
-        return coverColorMap[manga.id]
+    fun addCoverColor(mangaId: Long?, @ColorInt color: Int, @ColorInt textColor: Int) {
+        mangaId ?: return
+        coverColorMap[mangaId] = color to textColor
+    }
+
+    fun getColors(manga: Manga): Pair<Int, Int>? = getColors(manga.id)
+
+    fun getColors(mangaId: Long?): Pair<Int, Int>? {
+        return coverColorMap[mangaId]
     }
 
     fun getRatio(manga: Manga): Float? {
         return coverRatioMap[manga.id]
+    }
+
+    fun setVibrantColor(mangaId: Long?, @ColorInt color: Int?) {
+        mangaId ?: return
+
+        if (color == null) {
+            vibrantCoverColorMap.remove(mangaId)
+            return
+        }
+
+        vibrantCoverColorMap[mangaId] = color
+    }
+
+    fun getVibrantColor(mangaId: Long?): Int? {
+        return vibrantCoverColorMap[mangaId]
     }
 
     fun savePrefs() {

@@ -47,6 +47,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
+import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import android.R as AR
@@ -671,7 +672,7 @@ class MangaHeaderHolder(
         if (!manga.initialized) return
         val drawable = adapter.controller.binding.mangaCoverFull.drawable
         binding.mangaCover.loadManga(
-            manga,
+            manga.cover(),
             builder = {
                 placeholder(drawable)
                 error(drawable)
@@ -680,7 +681,7 @@ class MangaHeaderHolder(
             },
         )
         binding.backdrop.loadManga(
-            manga,
+            manga.cover(),
             builder = {
                 placeholder(drawable)
                 error(drawable)

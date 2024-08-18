@@ -1633,7 +1633,7 @@ class LibraryPresenter(
         ) {
             val libraryManga = getManga.awaitFavorites()
             libraryManga.forEach { manga ->
-                try { withUIContext { MangaCoverMetadata.setRatioAndColors(manga) } } catch (_: Exception) { }
+                try { withUIContext { MangaCoverMetadata.setRatioAndColors(manga.id, manga.thumbnail_url, manga.favorite) } } catch (_: Exception) { }
             }
             MangaCoverMetadata.savePrefs()
         }

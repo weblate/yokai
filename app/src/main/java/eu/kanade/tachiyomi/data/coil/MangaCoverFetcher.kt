@@ -39,9 +39,12 @@ import okio.buffer
 import okio.sink
 import okio.source
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.models.MangaCover
 
 class MangaCoverFetcher(
-    private val manga: Manga,
+    private val mangaId: Long?,
+    private val url: String?,
+    private val isInLibrary: Boolean,
     private val sourceLazy: Lazy<HttpSource?>,
     private val options: Options,
     private val callFactoryLazy: Lazy<Call.Factory>,
@@ -53,7 +56,6 @@ class MangaCoverFetcher(
 
     private val diskCacheKey: String
         get() = diskCacheKeyLazy.value
-    private lateinit var url: String
 
     private val fileScope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -61,21 +63,21 @@ class MangaCoverFetcher(
         if (options.extras.getOrDefault(USE_CUSTOM_COVER_KEY)) {
             val customCoverFile = customCoverFileLazy.value
             if (customCoverFile.exists()) {
-                setRatioAndColorsInScope(manga, UniFile.fromFile(customCoverFile))
+                setRatioAndColorsInScope(mangaId, url, isInLibrary, UniFile.fromFile(customCoverFile))
                 return fileLoader(customCoverFile)
             }
         }
 
-        url = manga.thumbnail_url ?: error("No cover specified")
+        if (url == null) error("No cover specified")
         return when (getResourceType(url)) {
             Type.URL -> httpLoader()
             Type.File -> {
                 val file = File(url.substringAfter("file://"))
-                setRatioAndColorsInScope(manga, UniFile.fromFile(file))
+                setRatioAndColorsInScope(mangaId, url, isInLibrary, UniFile.fromFile(file))
                 fileLoader(file)
             }
             Type.URI -> {
-                setRatioAndColorsInScope(manga, UniFile.fromUri(options.context, url.toUri()))
+                setRatioAndColorsInScope(mangaId, url, isInLibrary, UniFile.fromUri(options.context, url.toUri()))
                 fileUriLoader(url)
             }
             null -> error("Invalid image")
@@ -109,10 +111,10 @@ class MangaCoverFetcher(
     private suspend fun httpLoader(): FetchResult {
         val coverFile = coverFileLazy.value
         if (coverFile?.exists() == true && options.diskCachePolicy.readEnabled) {
-            if (!manga.favorite) {
+            if (!isInLibrary) {
                 coverFile.setLastModified(Date().time)
             }
-            setRatioAndColorsInScope(manga, UniFile.fromFile(coverFile))
+            setRatioAndColorsInScope(mangaId, url, isInLibrary, UniFile.fromFile(coverFile))
             return fileLoader(coverFile)
         }
 
@@ -123,12 +125,12 @@ class MangaCoverFetcher(
                 val snapshotCoverCache = moveSnapshotToCoverCache(snapshot, coverFile)
                 if (snapshotCoverCache != null) {
                     // Read from cover cache after added to library
-                    setRatioAndColorsInScope(manga, UniFile.fromFile(snapshotCoverCache))
+                    setRatioAndColorsInScope(mangaId, url, isInLibrary, UniFile.fromFile(snapshotCoverCache))
                     return fileLoader(snapshotCoverCache)
                 }
 
                 // Read from snapshot
-                setRatioAndColorsInScope(manga)
+                setRatioAndColorsInScope(mangaId, url, isInLibrary)
                 return SourceFetchResult(
                     source = snapshot.toImageSource(),
                     mimeType = "image/*",
@@ -142,7 +144,7 @@ class MangaCoverFetcher(
             try {
                 // Read from cover cache after library manga cover updated
                 val responseCoverCache = writeResponseToCoverCache(response, coverFile)
-                setRatioAndColorsInScope(manga)
+                setRatioAndColorsInScope(mangaId, url, isInLibrary)
                 if (responseCoverCache != null) {
                     return fileLoader(responseCoverCache)
                 }
@@ -185,7 +187,7 @@ class MangaCoverFetcher(
 
     private fun newRequest(): Request {
         val request = Request.Builder().apply {
-            url(url)
+            url(url!!)
 
             val sourceHeaders = sourceLazy.value?.headers
             if (sourceHeaders != null)
@@ -293,9 +295,9 @@ class MangaCoverFetcher(
         )
     }
 
-    private fun setRatioAndColorsInScope(manga: Manga, ogFile: UniFile? = null, force: Boolean = false) {
+    private fun setRatioAndColorsInScope(mangaId: Long?, mangaThumbnailUrl: String?, isInLibrary: Boolean, ogFile: UniFile? = null, force: Boolean = false) {
         fileScope.launch {
-            MangaCoverMetadata.setRatioAndColors(manga, ogFile, force)
+            MangaCoverMetadata.setRatioAndColors(mangaId, mangaThumbnailUrl, isInLibrary, ogFile, force)
         }
     }
 
@@ -324,7 +326,7 @@ class MangaCoverFetcher(
         }
     }
 
-    class Factory(
+    class MangaFactory(
         private val callFactoryLazy: Lazy<Call.Factory>,
     ) : Fetcher.Factory<Manga> {
 
@@ -333,13 +335,38 @@ class MangaCoverFetcher(
 
         override fun create(data: Manga, options: Options, imageLoader: ImageLoader): Fetcher {
             return MangaCoverFetcher(
-                manga = data,
+                mangaId = data.id,
+                url = data.thumbnail_url,
+                isInLibrary = data.favorite,
                 sourceLazy = lazy { sourceManager.get(data.source) as? HttpSource },
                 options = options,
                 callFactoryLazy = callFactoryLazy,
                 diskCacheKeyLazy = lazy { imageLoader.components.key(data, options)!! },
                 coverFileLazy = lazy { coverCache.getCoverFile(data.thumbnail_url, !data.favorite) },
                 customCoverFileLazy = lazy { coverCache.getCustomCoverFile(data) },
+                imageLoader = imageLoader,
+            )
+        }
+    }
+
+    class MangaCoverFactory(
+        private val callFactoryLazy: Lazy<Call.Factory>,
+    ) : Fetcher.Factory<MangaCover> {
+
+        private val coverCache: CoverCache by injectLazy()
+        private val sourceManager: SourceManager by injectLazy()
+
+        override fun create(data: MangaCover, options: Options, imageLoader: ImageLoader): Fetcher {
+            return MangaCoverFetcher(
+                mangaId = data.mangaId,
+                url = data.url,
+                isInLibrary = data.inLibrary,
+                sourceLazy = lazy { sourceManager.get(data.sourceId) as? HttpSource },
+                options = options,
+                callFactoryLazy = callFactoryLazy,
+                diskCacheKeyLazy = lazy { imageLoader.components.key(data, options)!! },
+                coverFileLazy = lazy { coverCache.getCoverFile(data.url, !data.inLibrary) },
+                customCoverFileLazy = lazy { coverCache.getCustomCoverFile(data.mangaId) },
                 imageLoader = imageLoader,
             )
         }

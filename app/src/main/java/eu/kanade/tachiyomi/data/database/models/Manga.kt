@@ -23,6 +23,7 @@ import uy.kohesive.injekt.injectLazy
 import yokai.data.updateStrategyAdapter
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaCover
 import yokai.domain.manga.models.MangaUpdate
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -175,6 +176,12 @@ var Manga.dominantCoverColors: Pair<Int, Int>?
         MangaCoverMetadata.addCoverColor(this, value.first, value.second)
     }
 
+var Manga.vibrantCoverColor: Int?
+    get() = MangaCoverMetadata.getVibrantColor(id)
+    set(value) {
+        id?.let { MangaCoverMetadata.setVibrantColor(it, value) }
+    }
+
 fun Manga.Companion.create(source: Long) = MangaImpl().apply {
     this.source = source
 }
@@ -268,4 +275,8 @@ fun Manga.removeCover(coverCache: CoverCache = Injekt.get(), deleteCustom: Boole
 suspend fun Manga.updateCoverLastModified(updateManga: UpdateManga = Injekt.get()) {
     cover_last_modified = System.currentTimeMillis()
     updateManga.await(MangaUpdate(id = id!!, coverLastModified = cover_last_modified))
+}
+
+suspend fun MangaCover.updateCoverLastModified(updateManga: UpdateManga = Injekt.get()) {
+    updateManga.await(MangaUpdate(id = mangaId!!, coverLastModified = System.currentTimeMillis()))
 }

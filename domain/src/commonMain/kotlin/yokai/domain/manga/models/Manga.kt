@@ -23,4 +23,5 @@ data class Manga(
     var chapterFlags: Int,
     var hideTitle: Boolean,
     var filteredScanlators: String?,
+    var coverLastModified: Long,
 ): Serializable

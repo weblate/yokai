@@ -16,9 +16,6 @@ import androidx.core.view.updatePaddingRelative
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
@@ -37,6 +34,9 @@ import eu.kanade.tachiyomi.util.view.setAnimVectorCompat
 import eu.kanade.tachiyomi.util.view.setCards
 import java.util.*
 import java.util.concurrent.*
+import yokai.domain.manga.models.cover
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class RecentMangaHolder(
@@ -213,7 +213,7 @@ class RecentMangaHolder(
             else -> context.timeSpanFromNow(MR.strings.read_, item.mch.history.last_read)
         }
         if ((context as? Activity)?.isDestroyed != true) {
-            binding.coverThumbnail.loadManga(item.mch.manga)
+            binding.coverThumbnail.loadManga(item.mch.manga.cover())
         }
         if (!item.mch.manga.isLocal()) {
             notifyStatus(

@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.domain.manga.models
 
 import eu.kanade.tachiyomi.source.model.SManga
 import java.util.Locale
-import kotlin.collections.set
 import yokai.domain.manga.models.MangaUpdate
 
 // TODO: Transform into data class
@@ -197,12 +196,6 @@ interface Manga : SManga {
         get() = chapter_flags and CHAPTER_SORTING_MASK
         set(sort) = setChapterFlags(sort, CHAPTER_SORTING_MASK)
 
-    var vibrantCoverColor: Int?
-        get() = vibrantCoverColorMap[id]
-        set(value) {
-            id?.let { vibrantCoverColorMap[it] = value }
-        }
-
     fun toMangaUpdate(): MangaUpdate {
         return MangaUpdate(
             id = id!!,
@@ -268,7 +261,5 @@ interface Manga : SManga {
         const val TYPE_MANHUA = 3
         const val TYPE_COMIC = 4
         const val TYPE_WEBTOON = 5
-
-        private val vibrantCoverColorMap: HashMap<Long, Int?> = hashMapOf()
     }
 }

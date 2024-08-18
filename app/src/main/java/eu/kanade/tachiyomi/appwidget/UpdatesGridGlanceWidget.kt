@@ -37,10 +37,12 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.launchIO
+import java.util.Calendar
+import java.util.Date
+import kotlin.math.min
 import kotlinx.coroutines.MainScope
 import uy.kohesive.injekt.injectLazy
-import java.util.*
-import kotlin.math.min
+import yokai.domain.manga.models.cover
 
 class UpdatesGridGlanceWidget : GlanceAppWidget() {
     private val app: Application by injectLazy()
@@ -97,7 +99,7 @@ class UpdatesGridGlanceWidget : GlanceAppWidget() {
             .map { it.first }
             .map { updatesView ->
                 val request = ImageRequest.Builder(app)
-                    .data(updatesView)
+                    .data(updatesView.cover())
                     .memoryCachePolicy(CachePolicy.DISABLED)
                     .precision(Precision.EXACT)
                     .size(widthPx, heightPx)

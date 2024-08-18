@@ -158,8 +158,10 @@ class CoverCache(val context: Context) {
      * @param manga the manga.
      * @return cover image.
      */
-    fun getCustomCoverFile(manga: Manga): File {
-        return File(customCoverCacheDir, DiskUtil.hashKeyForDisk(manga.id.toString()))
+    fun getCustomCoverFile(manga: Manga): File = getCustomCoverFile(manga.id)
+
+    fun getCustomCoverFile(mangaId: Long?): File {
+        return File(customCoverCacheDir, DiskUtil.hashKeyForDisk(mangaId.toString()))
     }
 
     /**

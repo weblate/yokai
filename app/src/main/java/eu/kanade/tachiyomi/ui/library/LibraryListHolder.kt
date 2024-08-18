@@ -5,15 +5,14 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import coil3.dispose
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.MangaListItemBinding
 import eu.kanade.tachiyomi.util.lang.highlightText
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.view.setCards
+import yokai.domain.manga.models.cover
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * Class used to hold the displayed data of a manga in the library, like the cover or the binding.title.
@@ -97,7 +96,7 @@ class LibraryListHolder(
 
         // Update the cover.
         binding.coverThumbnail.dispose()
-        binding.coverThumbnail.loadManga(item.manga)
+        binding.coverThumbnail.loadManga(item.manga.cover())
     }
 
     override fun onActionStateChanged(position: Int, actionState: Int) {

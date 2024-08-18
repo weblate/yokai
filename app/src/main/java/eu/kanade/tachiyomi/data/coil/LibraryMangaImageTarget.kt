@@ -11,29 +11,29 @@ import coil3.request.ImageRequest
 import coil3.target.ImageViewTarget
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
-import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.system.launchIO
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.models.MangaCover
 
 class LibraryMangaImageTarget(
     override val view: ImageView,
-    val manga: Manga,
+    val cover: MangaCover,
 ) : ImageViewTarget(view) {
 
     private val coverCache: CoverCache by injectLazy()
 
     override fun onError(error: Image?) {
         super.onError(error)
-        if (manga.favorite) {
+        if (cover.inLibrary) {
             launchIO {
-                val file = coverCache.getCoverFile(manga.thumbnail_url, false)
+                val file = coverCache.getCoverFile(cover.url, false)
                 // if the file exists and the there was still an error then the file is corrupted
                 if (file != null && file.exists()) {
                     val options = BitmapFactory.Options()
                     options.inJustDecodeBounds = true
                     BitmapFactory.decodeFile(file.path, options)
                     if (options.outWidth == -1 || options.outHeight == -1) {
-                        manga.updateCoverLastModified()
+                        cover.updateCoverLastModified()
                         file.delete()
                     }
                 }
@@ -44,13 +44,13 @@ class LibraryMangaImageTarget(
 
 @JvmSynthetic
 inline fun ImageView.loadManga(
-    manga: Manga,
+    cover: MangaCover,
     imageLoader: ImageLoader = context.imageLoader,
     builder: ImageRequest.Builder.() -> Unit = {},
 ): Disposable {
     val request = ImageRequest.Builder(context)
-        .data(manga)
-        .target(LibraryMangaImageTarget(this, manga))
+        .data(cover)
+        .target(LibraryMangaImageTarget(this, cover))
         .apply(builder)
         .build()
     return imageLoader.enqueue(request)

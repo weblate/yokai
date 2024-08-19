@@ -90,6 +90,7 @@ import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
+import yokai.domain.manga.models.cover
 import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -397,7 +398,7 @@ class MangaDetailsPresenter(
 
                 launchIO {
                     val request =
-                        ImageRequest.Builder(preferences.context).data(manga)
+                        ImageRequest.Builder(preferences.context).data(manga.cover())
                             .memoryCachePolicy(CachePolicy.DISABLED)
                             .diskCachePolicy(CachePolicy.WRITE_ONLY)
                             .build()

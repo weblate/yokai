@@ -17,6 +17,7 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.ui.library.LibraryCategoryAdapter
 import eu.kanade.tachiyomi.util.system.setExtras
 import eu.kanade.tachiyomi.util.view.setCards
+import yokai.domain.manga.models.cover
 
 /**
  * Class used to hold the displayed data of a manga in the library, like the cover or the title.
@@ -66,7 +67,7 @@ class BrowseSourceGridHolder(
             binding.coverThumbnail.dispose()
         } else {
             manga.id ?: return
-            val request = ImageRequest.Builder(view.context).data(manga)
+            val request = ImageRequest.Builder(view.context).data(manga.cover())
                 .target(CoverViewTarget(binding.coverThumbnail, binding.progress))
                 .setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)
                 .build()

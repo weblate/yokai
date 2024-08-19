@@ -32,6 +32,7 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.MainScope
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.manga.models.cover
 import yokai.presentation.widget.components.CoverHeight
 import yokai.presentation.widget.components.CoverWidth
 import yokai.presentation.widget.components.LockedWidget
@@ -97,7 +98,7 @@ class UpdatesGridGlanceWidget(
             .map { it.first }
             .map { updatesView ->
                 val request = ImageRequest.Builder(app)
-                    .data(updatesView)
+                    .data(updatesView.cover())
                     .memoryCachePolicy(CachePolicy.DISABLED)
                     .precision(Precision.EXACT)
                     .size(widthPx, heightPx)

@@ -146,6 +146,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.presentation.core.Constants
 import yokai.util.lang.getString
@@ -580,7 +581,7 @@ class MangaDetailsController :
     fun setPaletteColor() {
         val view = view ?: return
 
-        val request = ImageRequest.Builder(view.context).data(presenter.manga).allowHardware(false)
+        val request = ImageRequest.Builder(view.context).data(presenter.manga.cover()).allowHardware(false)
             .target(
                 onSuccess = { image ->
                     val drawable = image.asDrawable(view.context.resources)

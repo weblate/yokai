@@ -84,6 +84,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -275,10 +276,10 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                             val request: ImageRequest =
                                 if (thumbnailUrl != manga.thumbnail_url) {
                                     // load new covers in background
-                                    ImageRequest.Builder(context).data(manga)
+                                    ImageRequest.Builder(context).data(manga.cover())
                                         .memoryCachePolicy(CachePolicy.DISABLED).build()
                                 } else {
-                                    ImageRequest.Builder(context).data(manga)
+                                    ImageRequest.Builder(context).data(manga.cover())
                                         .memoryCachePolicy(CachePolicy.DISABLED)
                                         .diskCachePolicy(CachePolicy.WRITE_ONLY)
                                         .build()

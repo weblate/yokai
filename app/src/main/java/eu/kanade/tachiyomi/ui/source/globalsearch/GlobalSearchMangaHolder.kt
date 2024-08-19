@@ -17,6 +17,7 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.setExtras
 import eu.kanade.tachiyomi.util.view.makeShapeCorners
 import eu.kanade.tachiyomi.util.view.setCards
+import yokai.domain.manga.models.cover
 import android.R as AR
 
 class GlobalSearchMangaHolder(view: View, adapter: GlobalSearchCardAdapter) :
@@ -56,7 +57,7 @@ class GlobalSearchMangaHolder(view: View, adapter: GlobalSearchCardAdapter) :
     fun setImage(manga: Manga) {
         binding.itemImage.dispose()
         if (!manga.thumbnail_url.isNullOrEmpty()) {
-            val request = ImageRequest.Builder(itemView.context).data(manga)
+            val request = ImageRequest.Builder(itemView.context).data(manga.cover())
                 .placeholder(AR.color.transparent)
                 .memoryCachePolicy(CachePolicy.DISABLED)
                 .target(CoverViewTarget(binding.itemImage, binding.progress))

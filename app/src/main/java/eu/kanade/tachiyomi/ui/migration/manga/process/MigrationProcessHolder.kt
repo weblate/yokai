@@ -27,6 +27,7 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.text.DecimalFormat
@@ -148,7 +149,7 @@ class MigrationProcessHolder(
         (root.layoutParams as ConstraintLayout.LayoutParams).verticalBias = 1f
         progress.isVisible = false
 
-        val request = ImageRequest.Builder(view.context).data(manga)
+        val request = ImageRequest.Builder(view.context).data(manga.cover())
             .target(CoverViewTarget(coverThumbnail, progress))
             .setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)
             .build()

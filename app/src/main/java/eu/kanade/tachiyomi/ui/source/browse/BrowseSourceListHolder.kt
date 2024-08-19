@@ -14,6 +14,7 @@ import eu.kanade.tachiyomi.databinding.MangaListItemBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.system.setExtras
 import eu.kanade.tachiyomi.util.view.setCards
+import yokai.domain.manga.models.cover
 
 /**
  * Class used to hold the displayed data of a manga in the catalogue, like the cover or the title.
@@ -55,7 +56,7 @@ class BrowseSourceListHolder(
             binding.coverThumbnail.dispose()
         } else {
             manga.id ?: return
-            val request = ImageRequest.Builder(view.context).data(manga)
+            val request = ImageRequest.Builder(view.context).data(manga.cover())
                 .target(CoverViewTarget(binding.coverThumbnail))
                 .setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)
                 .build()

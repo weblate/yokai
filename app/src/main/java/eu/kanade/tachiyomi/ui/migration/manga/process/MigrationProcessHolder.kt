@@ -6,7 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
+import eu.kanade.tachiyomi.data.coil.useCustomCover
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.databinding.MangaGridItemBinding
 import eu.kanade.tachiyomi.databinding.MigrationProcessItemBinding
@@ -17,7 +17,6 @@ import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.ui.library.setFreeformCoverRatio
 import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
 import eu.kanade.tachiyomi.util.system.launchUI
-import eu.kanade.tachiyomi.util.system.setExtras
 import eu.kanade.tachiyomi.util.view.setCards
 import eu.kanade.tachiyomi.util.view.setVectorCompat
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
@@ -148,15 +147,13 @@ class MigrationProcessHolder(
         progress.isVisible = false
 
         coverThumbnail.loadManga(manga.cover(), progress) {
-            setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)
+            useCustomCover(false)
         }
 
         compactTitle.isVisible = true
         gradient.isVisible = true
-        compactTitle.text = if (manga.title.isBlank()) {
+        compactTitle.text = manga.title.ifBlank {
             view.context.getString(MR.strings.unknown)
-        } else {
-            manga.title
         }
 
         gradient.isVisible = true

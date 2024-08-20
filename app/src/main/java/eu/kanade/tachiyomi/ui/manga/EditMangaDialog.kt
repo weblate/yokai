@@ -17,7 +17,7 @@ import coil3.load
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
+import eu.kanade.tachiyomi.data.coil.useCustomCover
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.databinding.EditMangaDialogBinding
@@ -40,7 +40,9 @@ import eu.kanade.tachiyomi.widget.TachiyomiTextInputEditText
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.models.cover
 import yokai.i18n.MR
+import yokai.presentation.core.util.coil.asTarget
 import yokai.presentation.core.util.coil.loadManga
 import yokai.util.lang.getString
 import android.R as AR
@@ -219,10 +221,11 @@ class EditMangaDialog : DialogController {
 
         binding.resetCover.isVisible = !isLocal
         binding.resetCover.setOnClickListener {
-            binding.mangaCover.load(
-                manga,
+            binding.mangaCover.loadManga(
+                manga.cover(),
+                target = binding.mangaCover.asTarget(),
             ) {
-                extras[MangaCoverFetcher.USE_CUSTOM_COVER_KEY] = false
+                useCustomCover(false)
             }
             customCoverUri = null
             willResetCover = true

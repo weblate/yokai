@@ -32,6 +32,7 @@ import coil3.request.placeholder
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.data.coil.useCustomCover
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.databinding.ChapterHeaderItemBinding
 import eu.kanade.tachiyomi.databinding.MangaHeaderItemBinding
@@ -675,6 +676,7 @@ class MangaHeaderHolder(
             error(drawable)
             if (manga.favorite) networkCachePolicy(CachePolicy.READ_ONLY)
             diskCachePolicy(CachePolicy.READ_ONLY)
+            useCustomCover(manga.favorite)
         }
         binding.backdrop.loadManga(manga) {
             placeholder(drawable)
@@ -698,6 +700,7 @@ class MangaHeaderHolder(
                     applyBlur()
                 },
             )
+            useCustomCover(manga.favorite)
         }
     }
 

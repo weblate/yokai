@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.data.coil
 import android.webkit.MimeTypeMap
 import androidx.core.net.toUri
 import co.touchlab.kermit.Logger
-import coil3.Extras
 import coil3.ImageLoader
 import coil3.decode.DataSource
 import coil3.decode.ImageSource
@@ -11,7 +10,6 @@ import coil3.disk.DiskCache
 import coil3.fetch.FetchResult
 import coil3.fetch.Fetcher
 import coil3.fetch.SourceFetchResult
-import coil3.getOrDefault
 import coil3.request.Options
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -60,7 +58,7 @@ class MangaCoverFetcher(
     private val fileScope = CoroutineScope(Job() + Dispatchers.IO)
 
     override suspend fun fetch(): FetchResult {
-        if (options.extras.getOrDefault(USE_CUSTOM_COVER_KEY)) {
+        if (options.useCustomCover) {
             val customCoverFile = customCoverFileLazy.value
             if (customCoverFile.exists()) {
                 setRatioAndColorsInScope(mangaId, url, isInLibrary, UniFile.fromFile(customCoverFile))
@@ -377,8 +375,6 @@ class MangaCoverFetcher(
     }
 
     companion object {
-        val USE_CUSTOM_COVER_KEY = Extras.Key(true)
-
         private val CACHE_CONTROL_FORCE_NETWORK_NO_CACHE = CacheControl.Builder().noCache().noStore().build()
         private val CACHE_CONTROL_NO_NETWORK_NO_CACHE = CacheControl.Builder().noCache().onlyIfCached().build()
     }

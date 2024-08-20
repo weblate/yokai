@@ -30,6 +30,8 @@ fun ImageView.loadManga(
     return imageLoader.enqueue(request)
 }
 
+fun ImageView.asTarget() = ImageViewTarget(this)
+
 fun ImageView.loadManga(
     cover: MangaCover,
     progress: View? = null,

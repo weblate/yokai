@@ -6,18 +6,14 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import coil3.dispose
-import coil3.imageLoader
-import coil3.request.ImageRequest
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
-import eu.kanade.tachiyomi.data.coil.CoverViewTarget
-import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
 import eu.kanade.tachiyomi.databinding.MangaGridItemBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.ui.library.LibraryCategoryAdapter
-import eu.kanade.tachiyomi.util.system.setExtras
 import eu.kanade.tachiyomi.util.view.setCards
 import yokai.domain.manga.models.cover
+import yokai.presentation.core.util.coil.loadManga
 
 /**
  * Class used to hold the displayed data of a manga in the library, like the cover or the title.
@@ -67,12 +63,7 @@ class BrowseSourceGridHolder(
             binding.coverThumbnail.dispose()
         } else {
             manga.id ?: return
-            val request = ImageRequest.Builder(view.context).data(manga.cover())
-                .target(CoverViewTarget(binding.coverThumbnail, binding.progress))
-                .setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)
-                .build()
-            view.context.imageLoader.enqueue(request)
-
+            binding.coverThumbnail.loadManga(manga.cover(), binding.progress)
             binding.coverThumbnail.alpha = if (manga.favorite) 0.34f else 1.0f
             binding.card.strokeColorStateList?.defaultColor?.let { color ->
                 binding.card.strokeColor = ColorUtils.setAlphaComponent(color, if (manga.favorite) 87 else 255)

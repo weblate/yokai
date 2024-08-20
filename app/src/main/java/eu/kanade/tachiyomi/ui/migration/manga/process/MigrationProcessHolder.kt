@@ -5,10 +5,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import coil3.imageLoader
-import coil3.request.ImageRequest
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.coil.CoverViewTarget
 import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.databinding.MangaGridItemBinding
@@ -24,13 +21,14 @@ import eu.kanade.tachiyomi.util.system.setExtras
 import eu.kanade.tachiyomi.util.view.setCards
 import eu.kanade.tachiyomi.util.view.setVectorCompat
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import java.text.DecimalFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.models.cover
 import yokai.i18n.MR
+import yokai.presentation.core.util.coil.loadManga
 import yokai.util.lang.getString
-import java.text.DecimalFormat
 
 class MigrationProcessHolder(
     private val view: View,
@@ -149,11 +147,9 @@ class MigrationProcessHolder(
         (root.layoutParams as ConstraintLayout.LayoutParams).verticalBias = 1f
         progress.isVisible = false
 
-        val request = ImageRequest.Builder(view.context).data(manga.cover())
-            .target(CoverViewTarget(coverThumbnail, progress))
-            .setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)
-            .build()
-        view.context.imageLoader.enqueue(request)
+        coverThumbnail.loadManga(manga.cover(), progress) {
+            setExtras(MangaCoverFetcher.USE_CUSTOM_COVER_KEY, false)
+        }
 
         compactTitle.isVisible = true
         gradient.isVisible = true

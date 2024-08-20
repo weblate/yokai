@@ -15,6 +15,7 @@
 
 ## Fixes
 - Fixed chapter number parsing (@Naputt1)
+- Fixed (or at least reduced) library flickering
 
 ## Other
 - Refactor chapter recognition (@stevenyomi)

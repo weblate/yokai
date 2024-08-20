@@ -13,6 +13,7 @@ import androidx.core.view.updateLayoutParams
 import coil3.dispose
 import coil3.size.Precision
 import coil3.size.Scale
+import coil3.size.Size
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.dominantCoverColors
@@ -131,6 +132,8 @@ class LibraryGridHolder(
             if (!fixedSize && !hasRatio) {
                 precision(Precision.INEXACT)
                 scale(Scale.FIT)
+            } else if (hasRatio) {
+                size(Size.ORIGINAL)
             }
             listener(
                 onSuccess = { _, _ ->

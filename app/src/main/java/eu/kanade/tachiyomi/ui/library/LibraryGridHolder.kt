@@ -129,13 +129,10 @@ class LibraryGridHolder(
         if ((adapter.recyclerView.context as? Activity)?.isDestroyed == true) return
         binding.coverThumbnail.loadManga(manga.cover()) {
             val hasRatio = binding.coverThumbnail.layoutParams.height != ViewGroup.LayoutParams.WRAP_CONTENT
-            if (!fixedSize) {
-                if (!hasRatio) {
-                    precision(Precision.INEXACT)
-                    scale(Scale.FIT)
-                } else {
-                    size(Size.ORIGINAL)
-                }
+            size(Size.ORIGINAL)
+            precision(Precision.INEXACT)
+            if (!fixedSize && !hasRatio) {
+                scale(Scale.FIT)
             }
             listener(
                 onSuccess = { _, _ ->

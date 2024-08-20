@@ -11,9 +11,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
 import coil3.dispose
-import coil3.size.Precision
 import coil3.size.Scale
-import coil3.size.Size
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.dominantCoverColors
@@ -129,8 +127,6 @@ class LibraryGridHolder(
         if ((adapter.recyclerView.context as? Activity)?.isDestroyed == true) return
         binding.coverThumbnail.loadManga(manga.cover()) {
             val hasRatio = binding.coverThumbnail.layoutParams.height != ViewGroup.LayoutParams.WRAP_CONTENT
-            size(Size.ORIGINAL)
-            precision(Precision.INEXACT)
             if (!fixedSize && !hasRatio) {
                 scale(Scale.FIT)
             }

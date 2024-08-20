@@ -8,6 +8,8 @@ import coil3.ImageLoader
 import coil3.imageLoader
 import coil3.request.Disposable
 import coil3.request.ImageRequest
+import coil3.size.Precision
+import coil3.size.SizeResolver
 import coil3.target.ImageViewTarget
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
@@ -51,6 +53,8 @@ inline fun ImageView.loadManga(
     val request = ImageRequest.Builder(context)
         .data(cover)
         .target(LibraryMangaImageTarget(this, cover))
+        .size(SizeResolver.ORIGINAL)
+        .precision(Precision.INEXACT)
         .apply(builder)
         .build()
     return imageLoader.enqueue(request)

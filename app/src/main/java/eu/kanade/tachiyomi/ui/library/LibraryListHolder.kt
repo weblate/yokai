@@ -5,13 +5,12 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import coil3.dispose
-import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.databinding.MangaListItemBinding
 import eu.kanade.tachiyomi.util.lang.highlightText
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.view.setCards
-import yokai.domain.manga.models.cover
 import yokai.i18n.MR
+import yokai.presentation.core.util.coil.loadManga
 import yokai.util.lang.getString
 
 /**
@@ -96,7 +95,7 @@ class LibraryListHolder(
 
         // Update the cover.
         binding.coverThumbnail.dispose()
-        binding.coverThumbnail.loadManga(item.manga.cover())
+        binding.coverThumbnail.loadManga(item.manga)
     }
 
     override fun onActionStateChanged(position: Int, actionState: Int) {

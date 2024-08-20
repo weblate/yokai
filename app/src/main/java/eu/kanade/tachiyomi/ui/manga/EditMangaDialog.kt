@@ -18,7 +18,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.coil.MangaCoverFetcher
-import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.databinding.EditMangaDialogBinding
@@ -41,8 +40,8 @@ import eu.kanade.tachiyomi.widget.TachiyomiTextInputEditText
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.manga.models.cover
 import yokai.i18n.MR
+import yokai.presentation.core.util.coil.loadManga
 import yokai.util.lang.getString
 import android.R as AR
 
@@ -99,7 +98,7 @@ class EditMangaDialog : DialogController {
     fun onViewCreated() {
         val context = binding.root.context
 
-        binding.mangaCover.loadManga(manga.cover())
+        binding.mangaCover.loadManga(manga)
         val isLocal = manga.isLocal()
 
         binding.mangaLang.isVisible = isLocal

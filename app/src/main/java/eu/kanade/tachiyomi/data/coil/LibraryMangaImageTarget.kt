@@ -4,60 +4,38 @@ import android.graphics.BitmapFactory
 import android.widget.ImageView
 import androidx.palette.graphics.Palette
 import coil3.Image
-import coil3.ImageLoader
-import coil3.imageLoader
-import coil3.request.Disposable
-import coil3.request.ImageRequest
-import coil3.size.Precision
-import coil3.size.SizeResolver
 import coil3.target.ImageViewTarget
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.system.launchIO
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.manga.models.MangaCover
 
 class LibraryMangaImageTarget(
     override val view: ImageView,
-    val cover: MangaCover,
+    val libraryManga: Manga,
 ) : ImageViewTarget(view) {
 
     private val coverCache: CoverCache by injectLazy()
 
     override fun onError(error: Image?) {
         super.onError(error)
-        if (cover.inLibrary) {
+        if (libraryManga.favorite) {
             launchIO {
-                val file = coverCache.getCoverFile(cover.url, false)
+                val file = coverCache.getCoverFile(libraryManga.thumbnail_url, false)
                 // if the file exists and the there was still an error then the file is corrupted
                 if (file != null && file.exists()) {
                     val options = BitmapFactory.Options()
                     options.inJustDecodeBounds = true
                     BitmapFactory.decodeFile(file.path, options)
                     if (options.outWidth == -1 || options.outHeight == -1) {
-                        cover.updateCoverLastModified()
+                        libraryManga.updateCoverLastModified()
                         file.delete()
                     }
                 }
             }
         }
     }
-}
-
-@JvmSynthetic
-inline fun ImageView.loadManga(
-    cover: MangaCover,
-    imageLoader: ImageLoader = context.imageLoader,
-    builder: ImageRequest.Builder.() -> Unit = {},
-): Disposable {
-    val request = ImageRequest.Builder(context)
-        .data(cover)
-        .target(LibraryMangaImageTarget(this, cover))
-        .size(SizeResolver.ORIGINAL)
-        .precision(Precision.INEXACT)
-        .apply(builder)
-        .build()
-    return imageLoader.enqueue(request)
 }
 
 fun Palette.getBestColor(defaultColor: Int) = getBestColor() ?: defaultColor

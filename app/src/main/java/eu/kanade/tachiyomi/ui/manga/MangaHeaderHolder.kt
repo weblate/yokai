@@ -32,7 +32,6 @@ import coil3.request.placeholder
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.databinding.ChapterHeaderItemBinding
 import eu.kanade.tachiyomi.databinding.MangaHeaderItemBinding
@@ -47,8 +46,8 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
-import yokai.domain.manga.models.cover
 import yokai.i18n.MR
+import yokai.presentation.core.util.coil.loadManga
 import yokai.util.lang.getString
 import android.R as AR
 
@@ -671,41 +670,35 @@ class MangaHeaderHolder(
         binding ?: return
         if (!manga.initialized) return
         val drawable = adapter.controller.binding.mangaCoverFull.drawable
-        binding.mangaCover.loadManga(
-            manga.cover(),
-            builder = {
-                placeholder(drawable)
-                error(drawable)
-                if (manga.favorite) networkCachePolicy(CachePolicy.READ_ONLY)
-                diskCachePolicy(CachePolicy.READ_ONLY)
-            },
-        )
-        binding.backdrop.loadManga(
-            manga.cover(),
-            builder = {
-                placeholder(drawable)
-                error(drawable)
-                if (manga.favorite) networkCachePolicy(CachePolicy.READ_ONLY)
-                diskCachePolicy(CachePolicy.READ_ONLY)
-                target(
-                    onSuccess = {
-                        val result = it.asDrawable(itemView.resources)
-                        val bitmap = (result as? BitmapDrawable)?.bitmap
-                        if (bitmap == null) {
-                            binding.backdrop.setImageDrawable(result)
-                            return@target
-                        }
-                        val yOffset = (bitmap.height / 2 * 0.33).toInt()
+        binding.mangaCover.loadManga(manga) {
+            placeholder(drawable)
+            error(drawable)
+            if (manga.favorite) networkCachePolicy(CachePolicy.READ_ONLY)
+            diskCachePolicy(CachePolicy.READ_ONLY)
+        }
+        binding.backdrop.loadManga(manga) {
+            placeholder(drawable)
+            error(drawable)
+            if (manga.favorite) networkCachePolicy(CachePolicy.READ_ONLY)
+            diskCachePolicy(CachePolicy.READ_ONLY)
+            target(
+                onSuccess = {
+                    val result = it.asDrawable(itemView.resources)
+                    val bitmap = (result as? BitmapDrawable)?.bitmap
+                    if (bitmap == null) {
+                        binding.backdrop.setImageDrawable(result)
+                        return@target
+                    }
+                    val yOffset = (bitmap.height / 2 * 0.33).toInt()
 
-                        binding.backdrop.setImageDrawable(
-                            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height - yOffset)
-                                .toDrawable(itemView.resources),
-                        )
-                        applyBlur()
-                    },
-                )
-            },
-        )
+                    binding.backdrop.setImageDrawable(
+                        Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height - yOffset)
+                            .toDrawable(itemView.resources),
+                    )
+                    applyBlur()
+                },
+            )
+        }
     }
 
     fun expand() {

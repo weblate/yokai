@@ -13,7 +13,6 @@ import androidx.core.view.updateLayoutParams
 import coil3.dispose
 import coil3.size.Scale
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.coil.loadManga
 import eu.kanade.tachiyomi.data.database.models.dominantCoverColors
 import eu.kanade.tachiyomi.databinding.MangaGridItemBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -24,7 +23,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.setCards
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
-import yokai.domain.manga.models.cover
+import yokai.presentation.core.util.coil.loadManga
 
 /**
  * Class used to hold the displayed data of a manga in the library, like the cover or the title.
@@ -125,7 +124,7 @@ class LibraryGridHolder(
 
     private fun setCover(manga: Manga) {
         if ((adapter.recyclerView.context as? Activity)?.isDestroyed == true) return
-        binding.coverThumbnail.loadManga(manga.cover()) {
+        binding.coverThumbnail.loadManga(manga) {
             val hasRatio = binding.coverThumbnail.layoutParams.height != ViewGroup.LayoutParams.WRAP_CONTENT
             if (!fixedSize && !hasRatio) {
                 scale(Scale.FIT)

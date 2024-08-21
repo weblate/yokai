@@ -18,7 +18,7 @@
 
 ## Fixes
 - Fixed chapter number parsing (@Naputt1)
-- Fixed (or at least reduced) library flickering
+- Reduced library flickering
 - Fixed entry details header didn't update when being removed from library
 
 ## Other

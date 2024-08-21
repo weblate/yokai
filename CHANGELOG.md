@@ -11,6 +11,3 @@
 -->
 ## Fixes
 - Fixed custom cover set from reader didn't show up on manga details
-
-## Other
-- Initial migration to use Flow on MangaDetailsPresenter

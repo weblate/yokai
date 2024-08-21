@@ -75,8 +75,6 @@ import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -114,11 +112,10 @@ class MangaDetailsPresenter(
     private val updateChapter: UpdateChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
-    private val currentMangaInternal: MutableStateFlow<Manga?> = MutableStateFlow(null)
-    val currentManga get() = currentMangaInternal.asStateFlow()
+//    private val currentMangaInternal: MutableStateFlow<Manga?> = MutableStateFlow(null)
+//    val currentManga get() = currentMangaInternal.asStateFlow()
 
-    val manga: Manga
-        get() = currentManga.value!!
+    lateinit var manga: Manga
 
     private val customMangaManager: CustomMangaManager by injectLazy()
     private val mangaShortcutManager: MangaShortcutManager by injectLazy()
@@ -156,8 +153,8 @@ class MangaDetailsPresenter(
     fun onFirstLoad() {
         val controller = view ?: return
         isLockedFromSearch = controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
-        if (currentManga.value == null) runBlocking { refreshMangaFromDb() }
-        if (currentManga.value == null) return
+        if (!::manga.isInitialized) runBlocking { refreshMangaFromDb() }
+//        if (currentManga.value == null) return
         syncData()
         downloadManager.addListener(this)
         LibraryUpdateJob.updateFlow
@@ -198,7 +195,8 @@ class MangaDetailsPresenter(
     }
 
     fun setCurrentManga(manga: Manga?) {
-        currentMangaInternal.value = manga
+//        currentMangaInternal.update { manga }
+        this.manga = manga!!
     }
 
     // TODO: Use flow to "sync" data instead

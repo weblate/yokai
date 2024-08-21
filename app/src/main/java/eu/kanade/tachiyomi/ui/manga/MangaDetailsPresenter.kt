@@ -736,6 +736,7 @@ class MangaDetailsPresenter(
     fun confirmDeletion() {
         launchIO {
             manga.removeCover(coverCache)
+            withIOContext { view?.updateHeader() }
             customMangaManager.saveMangaInfo(CustomMangaInfo(
                 mangaId = manga.id!!,
                 title = null,
@@ -747,7 +748,6 @@ class MangaDetailsPresenter(
             ))
             downloadManager.deleteManga(manga, source)
             asyncUpdateMangaAndChapters(true)
-            withIOContext { view?.updateHeader() }
         }
     }
 

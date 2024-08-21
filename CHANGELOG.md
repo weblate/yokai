@@ -13,9 +13,13 @@
 - Add toggle to enable/disable chapter swipe action(s)
 - Add toggle to enable/disable webtoon double tap to zoom
 
+## Changes
+- Custom cover now shown globally
+
 ## Fixes
 - Fixed chapter number parsing (@Naputt1)
 - Fixed (or at least reduced) library flickering
+- Fixed entry details header didn't update when being removed from library
 
 ## Other
 - Refactor chapter recognition (@stevenyomi)

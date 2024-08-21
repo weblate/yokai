@@ -9,22 +9,8 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
-## Additions
-- Add toggle to enable/disable chapter swipe action(s)
-- Add toggle to enable/disable webtoon double tap to zoom
-
-## Changes
-- Custom cover now shown globally
-
 ## Fixes
-- Fixed chapter number parsing (@Naputt1)
-- Reduced library flickering
-- Fixed entry details header didn't update when being removed from library
+- Fixed custom cover set from reader didn't show up on manga details
 
 ## Other
-- Refactor chapter recognition (@stevenyomi)
-- (Re)added unit test for chapter recognition
-- More StorIO to SQLDelight migration effort
-- Target Android 15
-- Adjust manga cover cache key
-- Refactor manga cover fetcher (@ivaniskandar, @AntsyLich, @null2264)
+- Initial migration to use Flow on MangaDetailsPresenter

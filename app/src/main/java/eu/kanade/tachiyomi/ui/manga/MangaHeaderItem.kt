@@ -6,9 +6,8 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.domain.manga.models.Manga
 
-class MangaHeaderItem(val manga: Manga, var startExpanded: Boolean) :
+class MangaHeaderItem(val mangaId: Long, var startExpanded: Boolean) :
     AbstractFlexibleItem<MangaHeaderHolder>() {
 
     var isChapterHeader = false
@@ -40,7 +39,7 @@ class MangaHeaderItem(val manga: Manga, var startExpanded: Boolean) :
         if (isChapterHeader) {
             holder.bindChapters()
         } else {
-            holder.bind(this, manga)
+            holder.bind(this)
         }
     }
 
@@ -49,6 +48,6 @@ class MangaHeaderItem(val manga: Manga, var startExpanded: Boolean) :
     }
 
     override fun hashCode(): Int {
-        return -(manga.id).hashCode()
+        return -(mangaId).hashCode()
     }
 }

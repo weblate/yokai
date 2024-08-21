@@ -75,6 +75,8 @@ import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -88,6 +90,7 @@ import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.manga.models.cover
@@ -96,25 +99,32 @@ import yokai.i18n.MR
 import yokai.util.lang.getString
 
 class MangaDetailsPresenter(
-    val manga: Manga,
+    val mangaId: Long,
     val source: Source,
     val preferences: PreferencesHelper = Injekt.get(),
     val coverCache: CoverCache = Injekt.get(),
     val db: DatabaseHelper = Injekt.get(),
     private val downloadManager: DownloadManager = Injekt.get(),
-    chapterFilter: ChapterFilter = Injekt.get(),
+    private val chapterFilter: ChapterFilter = Injekt.get(),
     internal val storageManager: StorageManager = Injekt.get(),
 ) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
     private val getChapter: GetChapter by injectLazy()
+    private val getManga: GetManga by injectLazy()
     private val updateChapter: UpdateChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
+
+    private val currentMangaInternal: MutableStateFlow<Manga?> = MutableStateFlow(null)
+    val currentManga get() = currentMangaInternal.asStateFlow()
+
+    val manga: Manga
+        get() = currentManga.value!!
 
     private val customMangaManager: CustomMangaManager by injectLazy()
     private val mangaShortcutManager: MangaShortcutManager by injectLazy()
     val sourceManager: SourceManager by injectLazy()
 
-    private val chapterSort = ChapterSort(manga, chapterFilter, preferences)
+    private lateinit var chapterSort: ChapterSort
     val extension by lazy { (source as? HttpSource)?.getExtension() }
 
     var isLockedFromSearch = false
@@ -136,23 +146,24 @@ class MangaDetailsPresenter(
     var allHistory: List<History> = emptyList()
         private set
 
-    val headerItem by lazy { MangaHeaderItem(manga, view?.fromCatalogue == true) }
+    lateinit var headerItem: MangaHeaderItem
+        private set
     var tabletChapterHeaderItem: MangaHeaderItem? = null
+        private set
+
     var allChapterScanlators: Set<String> = emptySet()
 
     fun onFirstLoad() {
         val controller = view ?: return
-        headerItem.isTablet = controller.isTablet
-        if (controller.isTablet) {
-            tabletChapterHeaderItem = MangaHeaderItem(manga, false)
-            tabletChapterHeaderItem?.isChapterHeader = true
-        }
-        isLockedFromSearch =
-            controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
-        headerItem.isLocked = isLockedFromSearch
+        isLockedFromSearch = controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
+        if (currentManga.value == null) runBlocking { refreshMangaFromDb() }
+        if (currentManga.value == null) return
+        syncData()
         downloadManager.addListener(this)
-        LibraryUpdateJob.updateFlow.filter { it == manga.id }
-            .onEach(::onUpdateManga).launchIn(presenterScope)
+        LibraryUpdateJob.updateFlow
+            .filter { it == mangaId }
+            .onEach(::onUpdateManga)
+            .launchIn(presenterScope)
         tracks = db.getTracks(manga).executeAsBlocking()
         if (manga.isLocal()) {
             refreshAll()
@@ -186,14 +197,32 @@ class MangaDetailsPresenter(
         }
     }
 
+    fun setCurrentManga(manga: Manga?) {
+        currentMangaInternal.value = manga
+    }
+
+    // TODO: Use flow to "sync" data instead
+    fun syncData() {
+        chapterSort = ChapterSort(manga, chapterFilter, preferences)
+        headerItem = MangaHeaderItem(mangaId, view?.fromCatalogue == true).apply {
+            isTablet = view?.isTablet == true
+            isLocked = isLockedFromSearch
+        }
+        if (view?.isTablet == true) {
+            tabletChapterHeaderItem = MangaHeaderItem(mangaId, false).apply {
+                isChapterHeader = true
+            }
+        }
+    }
+
     suspend fun getChaptersNow(): List<ChapterItem> {
         getChapters()
         return chapters
     }
 
     private suspend fun getChapters() {
-        val chapters = getChapter.awaitAll(manga.id!!, isScanlatorFiltered()).map { it.toModel() }
-        allChapters = if (!isScanlatorFiltered()) chapters else getChapter.awaitAll(manga.id!!, false).map { it.toModel() }
+        val chapters = getChapter.awaitAll(mangaId, isScanlatorFiltered()).map { it.toModel() }
+        allChapters = if (!isScanlatorFiltered()) chapters else getChapter.awaitAll(mangaId, false).map { it.toModel() }
 
         // Find downloaded chapters
         setDownloadedChapters(chapters)
@@ -204,7 +233,7 @@ class MangaDetailsPresenter(
 
     private fun getHistory() {
         presenterScope.launchIO {
-            allHistory = manga.id?.let { db.getHistoryByMangaId(it).executeAsBlocking() }.orEmpty()
+            allHistory = db.getHistoryByMangaId(mangaId).executeAsBlocking()
         }
     }
 
@@ -358,9 +387,9 @@ class MangaDetailsPresenter(
         if (update) view?.updateChapters(this.chapters)
     }
 
-    fun refreshMangaFromDb(): Manga {
-        val dbManga = db.getManga(manga.id!!).executeAsBlocking()
-        manga.copyFrom(dbManga!!)
+    suspend fun refreshMangaFromDb(): Manga {
+        val dbManga = getManga.awaitById(mangaId)!!
+        setCurrentManga(dbManga)
         return dbManga
     }
 

@@ -299,8 +299,10 @@ class MangaHeaderHolder(
     }
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
-    fun bind(item: MangaHeaderItem, manga: Manga) {
+    fun bind(item: MangaHeaderItem) {
         val presenter = adapter.delegate.mangaPresenter()
+        val manga = presenter.manga
+
         if (binding == null) {
             if (chapterBinding != null) {
                 val count = presenter.chapters.size

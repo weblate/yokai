@@ -57,7 +57,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.coil.getBestColor
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.seriesType
@@ -146,6 +145,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.presentation.core.Constants
@@ -178,17 +178,19 @@ class MangaDetailsController :
     ) {
         this.manga = manga
         if (manga != null) {
-            source = Injekt.get<SourceManager>().getOrStub(manga.source)
+            this.source = Injekt.get<SourceManager>().getOrStub(manga.source)
         }
         this.shouldLockIfNeeded = shouldLockIfNeeded
-        presenter = MangaDetailsPresenter(manga!!, source!!)
+        this.presenter = MangaDetailsPresenter(manga?.id!!, source!!).apply {
+            setCurrentManga(manga)
+        }
     }
 
     constructor(mangaId: Long) : this(
-        Injekt.get<DatabaseHelper>().getManga(mangaId).executeAsBlocking(),
+        runBlocking { Injekt.get<GetManga>().awaitById(mangaId) },
     )
 
-    constructor(bundle: Bundle) : this(bundle.getLong(MANGA_EXTRA)) {
+    constructor(bundle: Bundle) : this(bundle.getLong(Constants.MANGA_EXTRA)) {
         val notificationId = bundle.getInt("notificationId", -1)
         val context = applicationContext ?: return
         if (notificationId > -1) {
@@ -449,7 +451,7 @@ class MangaDetailsController :
         binding.swipeRefresh.setDistanceToTriggerSync(70.dpToPx)
 
         if (isTablet) {
-            val tHeight = toolbarHeight.takeIf { it ?: 0 > 0 } ?: appbarHeight
+            val tHeight = toolbarHeight.takeIf { (it ?: 0) > 0 } ?: appbarHeight
             val insetsCompat =
                 view.rootWindowInsetsCompat ?: activityBinding?.root?.rootWindowInsetsCompat
             headerHeight = tHeight + (insetsCompat?.getInsets(systemBars())?.top ?: 0)
@@ -650,7 +652,8 @@ class MangaDetailsController :
             presenter.isLockedFromSearch =
                 shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
             presenter.headerItem.isLocked = presenter.isLockedFromSearch
-            manga!!.thumbnail_url = presenter.refreshMangaFromDb().thumbnail_url
+            manga = runBlocking { presenter.refreshMangaFromDb() }
+            presenter.syncData()
             presenter.fetchChapters(refreshTracker == null)
             if (refreshTracker != null) {
                 trackingBottomSheet?.refreshItem(refreshTracker ?: 0)
@@ -676,8 +679,7 @@ class MangaDetailsController :
         returningFromReader = false
         runBlocking {
             val itemAnimator = binding.recycler.itemAnimator
-            val chapters =
-                withTimeoutOrNull(1000) { presenter.getChaptersNow() } ?: return@runBlocking
+            val chapters = withTimeoutOrNull(1000) { presenter.getChaptersNow() } ?: return@runBlocking
             binding.recycler.itemAnimator = null
             tabletAdapter?.notifyItemChanged(0)
             adapter?.setChapters(chapters)

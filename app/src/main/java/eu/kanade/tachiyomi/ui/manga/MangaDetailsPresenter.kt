@@ -747,6 +747,7 @@ class MangaDetailsPresenter(
             ))
             downloadManager.deleteManga(manga, source)
             asyncUpdateMangaAndChapters(true)
+            withIOContext { view?.updateHeader() }
         }
     }
 

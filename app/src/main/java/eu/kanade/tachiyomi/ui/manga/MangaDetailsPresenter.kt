@@ -736,7 +736,6 @@ class MangaDetailsPresenter(
     fun confirmDeletion() {
         presenterScope.launchIO {
             manga.removeCover(coverCache)
-            withIOContext { view?.updateHeader() }
             customMangaManager.saveMangaInfo(CustomMangaInfo(
                 mangaId = manga.id!!,
                 title = null,

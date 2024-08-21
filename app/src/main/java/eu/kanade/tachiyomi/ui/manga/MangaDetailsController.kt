@@ -1669,7 +1669,10 @@ class MangaDetailsController :
                 updateHeader()
                 presenter.fetchChapters(andTracking = true)
             },
-            onMangaDeleted = { presenter.confirmDeletion() },
+            onMangaDeleted = {
+                updateHeader()
+                presenter.confirmDeletion()
+            },
         )
         if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
             val favButton = getHeader()?.binding?.favoriteButton

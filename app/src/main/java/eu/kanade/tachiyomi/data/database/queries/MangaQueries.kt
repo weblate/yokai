@@ -6,9 +6,6 @@ import com.pushtorefresh.storio.sqlite.queries.Query
 import com.pushtorefresh.storio.sqlite.queries.RawQuery
 import eu.kanade.tachiyomi.data.database.DbProvider
 import eu.kanade.tachiyomi.data.database.models.SourceIdMangaCount
-import eu.kanade.tachiyomi.data.database.resolvers.MangaDateAddedPutResolver
-import eu.kanade.tachiyomi.data.database.resolvers.MangaFavoritePutResolver
-import eu.kanade.tachiyomi.data.database.resolvers.MangaTitlePutResolver
 import eu.kanade.tachiyomi.data.database.resolvers.SourceIdMangaCountGetResolver
 import eu.kanade.tachiyomi.data.database.tables.ChapterTable
 import eu.kanade.tachiyomi.data.database.tables.MangaTable
@@ -77,24 +74,6 @@ interface MangaQueries : DbProvider {
         .prepare()
 
     fun insertManga(manga: Manga) = db.put().`object`(manga).prepare()
-
-    // FIXME: Migrate to SQLDelight, on halt: used by StorIO's inTransaction
-    fun updateMangaFavorite(manga: Manga) = db.put()
-        .`object`(manga)
-        .withPutResolver(MangaFavoritePutResolver())
-        .prepare()
-
-    // FIXME: Migrate to SQLDelight, on halt: used by StorIO's inTransaction
-    fun updateMangaAdded(manga: Manga) = db.put()
-        .`object`(manga)
-        .withPutResolver(MangaDateAddedPutResolver())
-        .prepare()
-
-    // FIXME: Migrate to SQLDelight, on halt: used by StorIO's inTransaction
-    fun updateMangaTitle(manga: Manga) = db.put()
-        .`object`(manga)
-        .withPutResolver(MangaTitlePutResolver())
-        .prepare()
 
     fun deleteMangasNotInLibraryBySourceIds(sourceIds: List<Long>) = db.delete()
         .byQuery(

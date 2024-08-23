@@ -226,8 +226,8 @@ class MigrationProcessAdapter(
                 prevManga.favorite = false
                 updateManga.await(
                     MangaUpdate(
-                        id = manga.id!!,
-                        favorite = manga.favorite,
+                        id = prevManga.id!!,
+                        favorite = prevManga.favorite,
                     )
                 )
             }

@@ -30,7 +30,6 @@ import eu.kanade.tachiyomi.ui.migration.manga.process.MigrationProcessAdapter
 import eu.kanade.tachiyomi.util.chapter.syncChaptersWithTrackServiceTwoWay
 import eu.kanade.tachiyomi.util.lang.asButton
 import eu.kanade.tachiyomi.util.system.launchIO
-import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.setCustomTitleAndMessage
 import eu.kanade.tachiyomi.util.system.toast
@@ -330,7 +329,7 @@ private fun showAddDuplicateDialog(
     val source = sourceManager.getOrStub(libraryManga.source)
 
     val titles by lazy { MigrationFlags.titles(activity, libraryManga) }
-    fun migrateManga(mDialog: DialogInterface, replace: Boolean) = launchUI {
+    fun migrateManga(mDialog: DialogInterface, replace: Boolean) {
         val listView = (mDialog as AlertDialog).listView
         val enabled = titles.indices.map { listView.isItemChecked(it) }.toTypedArray()
         val flags = MigrationFlags.getFlagsFromPositions(enabled, libraryManga)

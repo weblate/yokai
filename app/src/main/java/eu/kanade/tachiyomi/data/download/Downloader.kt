@@ -646,12 +646,13 @@ class Downloader(
     ) {
         val categories =
             db.getCategoriesForManga(manga).executeAsBlocking().map { it.name.trim() }.takeUnless { it.isEmpty() }
-        val urls = source.getChapterUrl(manga, chapter)?.let { listOf(it) } ?: listOf()
+        val url = try { source.getChapterUrl(chapter) } catch (_: Exception) { null }
+            ?: source.getChapterUrl(manga, chapter).takeIf { !it.isNullOrBlank() }  // FIXME: Not sure if this is necessary
 
         val comicInfo = getComicInfo(
             manga,
             chapter,
-            urls,
+            url?.let { listOf(it) } ?: listOf(),
             categories,
             source.name,
             source.lang,

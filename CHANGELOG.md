@@ -10,4 +10,4 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Fixes
-- Fixed custom cover set from reader didn't show up on manga details
+- Fixed crashes caused by certain extension implementation

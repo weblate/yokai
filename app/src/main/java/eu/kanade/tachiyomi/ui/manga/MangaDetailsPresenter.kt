@@ -308,7 +308,8 @@ class MangaDetailsPresenter(
     fun getChapterUrl(chapter: Chapter): String? {
         val source = source as? HttpSource ?: return null
         val chapterUrl = try { source.getChapterUrl(chapter) } catch (_: Exception) { null }
-        return chapterUrl.takeIf { !it.isNullOrBlank() } ?: source.getChapterUrl(manga, chapter)
+        return chapterUrl.takeIf { !it.isNullOrBlank() }
+            ?: try { source.getChapterUrl(manga, chapter) } catch (_: Exception) { null }
     }
 
     private fun getScrollType(chapters: List<ChapterItem>) {

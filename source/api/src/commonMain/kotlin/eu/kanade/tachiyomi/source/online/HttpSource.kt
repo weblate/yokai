@@ -448,9 +448,10 @@ abstract class HttpSource : CatalogueSource {
      * @return url of the chapter
      */
     open fun getChapterUrl(chapter: SChapter): String {
-        return ""
+        return pageListRequest(chapter).url.toString()
     }
 
+    // FIXME: Not sure if this is necessary, feels like this should be handled by the extension not by the app
     fun getChapterUrl(manga: SManga?, chapter: SChapter): String? {
         manga ?: return null
 

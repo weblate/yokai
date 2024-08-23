@@ -16,3 +16,5 @@
 - More StorIO to SQLDelight migration effort
 - Update dependency gradle to v8.10
 - Update dependency dev.chrisbanes.compose:compose-bom to v2024.08.00-alpha02
+- Update kotlin monorepo to v2.0.20
+- Update aboutlibraries to v11.2.3

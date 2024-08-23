@@ -82,6 +82,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.cover
@@ -92,6 +93,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     CoroutineWorker(context, workerParams) {
 
     private val db: DatabaseHelper = Injekt.get()
+
+    private val getChapter: GetChapter = Injekt.get()
+
     private val coverCache: CoverCache = Injekt.get()
     private val sourceManager: SourceManager = Injekt.get()
     private val preferences: PreferencesHelper = Injekt.get()
@@ -319,7 +323,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                         db.insertTrack(newTrack).executeAsBlocking()
 
                         if (service is EnhancedTrackService) {
-                            syncChaptersWithTrackServiceTwoWay(db, db.getChapters(manga).executeAsBlocking(), track, service)
+                            syncChaptersWithTrackServiceTwoWay(db, getChapter.awaitAll(manga.id!!, false), track, service)
                         }
                     } catch (e: Exception) {
                         Logger.e(e)

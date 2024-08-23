@@ -40,11 +40,13 @@ import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
+import java.util.Date
+import java.util.Locale
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
 import android.R as AR
 
 fun Manga.isLocal() = source == LocalSource.ID
@@ -411,6 +413,7 @@ private fun showAddDuplicateDialog(
 fun Manga.autoAddTrack(db: DatabaseHelper, onMangaMoved: () -> Unit) {
     val loggedServices = Injekt.get<TrackManager>().services.filter { it.isLogged }
     val source = Injekt.get<SourceManager>().getOrStub(this.source)
+    val getChapter = Injekt.get<GetChapter>()
     loggedServices
         .filterIsInstance<EnhancedTrackService>()
         .filter { it.accept(source) }
@@ -418,11 +421,12 @@ fun Manga.autoAddTrack(db: DatabaseHelper, onMangaMoved: () -> Unit) {
             launchIO {
                 try {
                     service.match(this@autoAddTrack)?.let { track ->
-                        track.manga_id = this@autoAddTrack.id!!
+                        val mangaId = this@autoAddTrack.id!!
+                        track.manga_id = mangaId
                         (service as TrackService).bind(track)
                         db.insertTrack(track).executeAsBlocking()
 
-                        syncChaptersWithTrackServiceTwoWay(db, db.getChapters(this@autoAddTrack).executeAsBlocking(), track, service as TrackService)
+                        syncChaptersWithTrackServiceTwoWay(db, getChapter.awaitAll(mangaId, false), track, service as TrackService)
                         withUIContext {
                             onMangaMoved()
                         }

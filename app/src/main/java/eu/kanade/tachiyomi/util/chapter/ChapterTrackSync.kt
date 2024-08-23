@@ -12,6 +12,7 @@ import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.w
+import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import uy.kohesive.injekt.Injekt
@@ -26,32 +27,30 @@ import yokai.domain.chapter.interactor.UpdateChapter
  * @param remoteTrack the remote Track object.
  * @param service the tracker service.
  */
-fun syncChaptersWithTrackServiceTwoWay(
+suspend fun syncChaptersWithTrackServiceTwoWay(
     db: DatabaseHelper,
     chapters: List<Chapter>,
     remoteTrack: Track,
     service: TrackService,
     updateChapter: UpdateChapter = Injekt.get(),
-) {
-    launchIO {
-        val sortedChapters = chapters.sortedBy { it.chapter_number }
-        sortedChapters
-            .filter { chapter -> chapter.chapter_number <= remoteTrack.last_chapter_read && !chapter.read }
-            .forEach { it.read = true }
-        updateChapter.awaitAll(sortedChapters.map(Chapter::toProgressUpdate))
+) = withIOContext {
+    val sortedChapters = chapters.sortedBy { it.chapter_number }
+    sortedChapters
+        .filter { chapter -> chapter.chapter_number <= remoteTrack.last_chapter_read && !chapter.read }
+        .forEach { it.read = true }
+    updateChapter.awaitAll(sortedChapters.map(Chapter::toProgressUpdate))
 
-        // only take into account continuous reading
-        val localLastRead = sortedChapters.takeWhile { it.read }.lastOrNull()?.chapter_number ?: 0F
+    // only take into account continuous reading
+    val localLastRead = sortedChapters.takeWhile { it.read }.lastOrNull()?.chapter_number ?: 0F
 
-        // update remote
-        remoteTrack.last_chapter_read = localLastRead
+    // update remote
+    remoteTrack.last_chapter_read = localLastRead
 
-        try {
-            service.update(remoteTrack)
-            db.insertTrack(remoteTrack).executeAsBlocking()
-        } catch (e: Throwable) {
-            Logger.w(e)
-        }
+    try {
+        service.update(remoteTrack)
+        db.insertTrack(remoteTrack).executeAsBlocking()
+    } catch (e: Throwable) {
+        Logger.w(e)
     }
 }
 

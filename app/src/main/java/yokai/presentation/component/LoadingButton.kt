@@ -40,7 +40,6 @@ fun LoadingButton(
     text: () -> String,
     loading: () -> Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val transition = updateTransition(
         targetState = loading(),
@@ -57,7 +56,7 @@ fun LoadingButton(
     )
     Button(
         onClick = onClick,
-        modifier = modifier.defaultMinSize(minWidth = 1.dp),
+        modifier = Modifier.defaultMinSize(minWidth = 1.dp),
         contentPadding = PaddingValues(
             horizontal = horizontalContentPadding,
             vertical = 8.dp,
@@ -145,7 +144,6 @@ private fun LoadingButtonPreview() {
         contentAlignment = Alignment.Center,
     ) {
         LoadingButton(
-            modifier = Modifier.fillMaxWidth(),
             text = { "Test" },
             loading = { false },
             onClick = {},

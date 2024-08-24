@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.FrameLayout
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -50,12 +52,16 @@ class LoadingButtonComposeView @JvmOverloads constructor(
     @Composable
     override fun Content() {
         YokaiTheme {
-            LoadingButton(
+            Box(
                 modifier = Modifier.fillMaxWidth(),
-                text = { text },
-                loading = { isLoading },
-                onClick = onClick,
-            )
+                contentAlignment = Alignment.Center,
+            ) {
+                LoadingButton(
+                    text = { text },
+                    loading = { isLoading },
+                    onClick = onClick,
+                )
+            }
         }
     }
 }

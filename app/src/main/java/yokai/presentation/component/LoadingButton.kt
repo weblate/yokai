@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 
 // REF: https://gist.github.com/mmolosay/584ce5c47567cb66228b76ef98c3c4e4
 
-private val SpringStiffness = Spring.StiffnessMediumLow
+private const val SpringStiffness = Spring.StiffnessMediumLow
 
 @Composable
 fun LoadingButton(

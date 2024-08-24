@@ -98,13 +98,13 @@ import yokai.util.lang.getString
 
 class MangaDetailsPresenter(
     val mangaId: Long,
-    val source: Source,
+    val sourceManager: SourceManager = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
     val coverCache: CoverCache = Injekt.get(),
     val db: DatabaseHelper = Injekt.get(),
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
-    internal val storageManager: StorageManager = Injekt.get(),
+    private val storageManager: StorageManager = Injekt.get(),
 ) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
     private val getChapter: GetChapter by injectLazy()
@@ -116,10 +116,12 @@ class MangaDetailsPresenter(
 //    val currentManga get() = currentMangaInternal.asStateFlow()
 
     lateinit var manga: Manga
+    fun isMangaLateInitInitialized() = ::manga.isInitialized
 
     private val customMangaManager: CustomMangaManager by injectLazy()
     private val mangaShortcutManager: MangaShortcutManager by injectLazy()
-    val sourceManager: SourceManager by injectLazy()
+
+    val source: Source by lazy { sourceManager.getOrStub(manga.source) }
 
     private lateinit var chapterSort: ChapterSort
     val extension by lazy { (source as? HttpSource)?.getExtension() }
@@ -143,25 +145,35 @@ class MangaDetailsPresenter(
     var allHistory: List<History> = emptyList()
         private set
 
-    lateinit var headerItem: MangaHeaderItem
-        private set
+    val headerItem: MangaHeaderItem by lazy { MangaHeaderItem(mangaId, view?.fromCatalogue == true)}
     var tabletChapterHeaderItem: MangaHeaderItem? = null
         private set
 
     var allChapterScanlators: Set<String> = emptySet()
 
-    fun onFirstLoad() {
+    override fun onCreate() {
         val controller = view ?: return
+
         isLockedFromSearch = controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
         if (!::manga.isInitialized) runBlocking { refreshMangaFromDb() }
-//        if (currentManga.value == null) return
         syncData()
+
         downloadManager.addListener(this)
+
         LibraryUpdateJob.updateFlow
             .filter { it == mangaId }
-            .onEach(::onUpdateManga)
+            .onEach { onUpdateManga() }
             .launchIn(presenterScope)
+
         tracks = db.getTracks(manga).executeAsBlocking()
+    }
+
+    /**
+     * onCreate but executed after UI layout is ready otherwise it'd only show blank screen
+     */
+    fun onCreateLate() {
+        val controller = view ?: return
+
         if (manga.isLocal()) {
             refreshAll()
         } else if (!manga.initialized) {
@@ -174,9 +186,11 @@ class MangaDetailsPresenter(
             controller.updateChapters(this.chapters)
             getHistory()
         }
+
         presenterScope.launch {
             setTrackItems()
         }
+
         refreshTracking(false)
     }
 
@@ -202,7 +216,7 @@ class MangaDetailsPresenter(
     // TODO: Use flow to "sync" data instead
     fun syncData() {
         chapterSort = ChapterSort(manga, chapterFilter, preferences)
-        headerItem = MangaHeaderItem(mangaId, view?.fromCatalogue == true).apply {
+        headerItem.apply {
             isTablet = view?.isTablet == true
             isLocked = isLockedFromSearch
         }
@@ -778,7 +792,7 @@ class MangaDetailsPresenter(
         }
     }
 
-    private fun onUpdateManga(mangaId: Long?) = fetchChapters()
+    private fun onUpdateManga() = fetchChapters()
 
     fun shareManga() {
         val context = Injekt.get<Application>()

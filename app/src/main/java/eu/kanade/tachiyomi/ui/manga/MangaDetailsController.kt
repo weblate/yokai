@@ -68,8 +68,6 @@ import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.databinding.MangaDetailsControllerBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.CatalogueSource
-import eu.kanade.tachiyomi.source.Source
-import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.icon
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.base.MaterialMenuSheet
@@ -143,9 +141,6 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
-import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.presentation.core.Constants
@@ -168,27 +163,21 @@ class MangaDetailsController :
         smartSearchConfig: BrowseController.SmartSearchConfig? = null,
         update: Boolean = false,
         shouldLockIfNeeded: Boolean = false,
-    ) : super(
-        Bundle().apply {
-            putLong(MANGA_EXTRA, manga?.id ?: 0)
-            putBoolean(FROM_CATALOGUE_EXTRA, fromCatalogue)
-            putParcelable(SMART_SEARCH_CONFIG_EXTRA, smartSearchConfig)
-            putBoolean(UPDATE_EXTRA, update)
-        },
-    ) {
-        this.manga = manga
-        if (manga != null) {
-            this.source = Injekt.get<SourceManager>().getOrStub(manga.source)
-        }
+    ) : super(bundle(manga?.id, fromCatalogue, smartSearchConfig, update)) {
         this.shouldLockIfNeeded = shouldLockIfNeeded
-        this.presenter = MangaDetailsPresenter(manga?.id!!, source!!).apply {
-            setCurrentManga(manga)
-        }
+        this.presenter = MangaDetailsPresenter(manga?.id!!).apply { setCurrentManga(manga) }
     }
 
-    constructor(mangaId: Long) : this(
-        runBlocking { Injekt.get<GetManga>().awaitById(mangaId) },
-    )
+    constructor(
+        mangaId: Long,
+        fromCatalogue: Boolean = false,
+        smartSearchConfig: BrowseController.SmartSearchConfig? = null,
+        update: Boolean = false,
+        shouldLockIfNeeded: Boolean = false,
+    ) : super(bundle(mangaId, fromCatalogue, smartSearchConfig, update)) {
+        this.shouldLockIfNeeded = shouldLockIfNeeded
+        this.presenter = MangaDetailsPresenter(mangaId)
+    }
 
     constructor(bundle: Bundle) : this(bundle.getLong(Constants.MANGA_EXTRA)) {
         val notificationId = bundle.getInt("notificationId", -1)
@@ -202,8 +191,7 @@ class MangaDetailsController :
         }
     }
 
-    private var manga: Manga? = null
-    private var source: Source? = null
+    private val manga: Manga? get() = if (presenter.isMangaLateInitInitialized()) presenter.manga else null
     private var colorAnimator: ValueAnimator? = null
     override val presenter: MangaDetailsPresenter
     private var coverColor: Int? = null
@@ -258,7 +246,7 @@ class MangaDetailsController :
             activityBinding?.appBar?.y = 0f
         }
 
-        presenter.onFirstLoad()
+        presenter.onCreateLate()
         binding.swipeRefresh.isRefreshing = presenter.isLoading
         binding.swipeRefresh.setOnRefreshListener { presenter.refreshAll() }
         updateToolbarTitleAlpha()
@@ -652,7 +640,7 @@ class MangaDetailsController :
             presenter.isLockedFromSearch =
                 shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
             presenter.headerItem.isLocked = presenter.isLockedFromSearch
-            manga = runBlocking { presenter.refreshMangaFromDb() }
+            runBlocking { presenter.refreshMangaFromDb() }
             presenter.syncData()
             presenter.fetchChapters(refreshTracker == null)
             if (refreshTracker != null) {
@@ -1536,7 +1524,7 @@ class MangaDetailsController :
             }
             else -> {
                 if (presenter.source is CatalogueSource) {
-                    val controller = BrowseSourceController(presenter.source)
+                    val controller = BrowseSourceController(presenter.source as CatalogueSource)
                     router.pushController(controller.withFadeTransaction())
                     controller.searchWithGenre(text)
                 }
@@ -1872,14 +1860,24 @@ class MangaDetailsController :
         const val SMART_SEARCH_CONFIG_EXTRA = "smartSearchConfig"
 
         const val FROM_CATALOGUE_EXTRA = "from_catalogue"
-        @Deprecated("Use the one from Constants object instead")
-        const val MANGA_EXTRA = Constants.MANGA_EXTRA
 
         private enum class RangeMode {
             Download,
             RemoveDownload,
             Read,
             Unread,
+        }
+
+        fun bundle(
+            mangaId: Long? = null,
+            fromCatalogue: Boolean = false,
+            smartSearchConfig: BrowseController.SmartSearchConfig? = null,
+            update: Boolean = false,
+        ) = Bundle().apply {
+            putLong(Constants.MANGA_EXTRA, mangaId ?: 0)
+            putBoolean(FROM_CATALOGUE_EXTRA, fromCatalogue)
+            putParcelable(SMART_SEARCH_CONFIG_EXTRA, smartSearchConfig)
+            putBoolean(UPDATE_EXTRA, update)
         }
     }
 

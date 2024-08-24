@@ -9,9 +9,6 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
@@ -33,6 +30,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.presentation.core.Constants
 import yokai.presentation.core.util.IntentCommon
 
 class SearchActivity : MainActivity() {
@@ -156,7 +154,7 @@ class SearchActivity : MainActivity() {
             SHORTCUT_MANGA, SHORTCUT_MANGA_BACK -> {
                 val extras = intent.extras ?: return false
                 if (intent.action == SHORTCUT_MANGA_BACK && preferences.openChapterInShortcuts().get()) {
-                    val mangaId = extras.getLong(MangaDetailsController.MANGA_EXTRA)
+                    val mangaId = extras.getLong(Constants.MANGA_EXTRA)
                     if (mangaId != 0L) {
                         val db = Injekt.get<DatabaseHelper>()
                         db.getManga(mangaId).executeAsBlocking()?.let { manga ->

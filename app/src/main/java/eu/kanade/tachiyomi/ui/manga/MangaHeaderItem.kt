@@ -7,7 +7,7 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
 
-class MangaHeaderItem(val mangaId: Long, var startExpanded: Boolean) :
+class MangaHeaderItem(val mangaId: Long, private var startExpanded: Boolean) :
     AbstractFlexibleItem<MangaHeaderHolder>() {
 
     var isChapterHeader = false

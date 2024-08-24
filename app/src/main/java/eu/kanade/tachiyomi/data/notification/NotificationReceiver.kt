@@ -20,7 +20,6 @@ import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.main.MainActivity
-import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
 import eu.kanade.tachiyomi.ui.more.AboutController
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.util.chapter.updateTrackChapterMarkedAsRead
@@ -36,6 +35,7 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.manga.interactor.GetManga
+import yokai.presentation.core.Constants
 import eu.kanade.tachiyomi.BuildConfig.APPLICATION_ID as ID
 
 /**
@@ -489,7 +489,7 @@ class NotificationReceiver : BroadcastReceiver() {
             val newIntent =
                 Intent(context, MainActivity::class.java).setAction(MainActivity.SHORTCUT_MANGA)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    .putExtra(MangaDetailsController.MANGA_EXTRA, manga.id)
+                    .putExtra(Constants.MANGA_EXTRA, manga.id)
                     .putExtra("notificationId", manga.id.hashCode())
                     .putExtra("groupId", groupId)
             return PendingIntent.getActivity(

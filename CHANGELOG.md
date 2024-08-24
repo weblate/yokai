@@ -11,6 +11,7 @@
 -->
 ## Fixes
 - Fixed crashes caused by certain extension implementation
+- Fixed "Theme buttons based on cover" doesn't work properly
 
 ## Other
 - More StorIO to SQLDelight migration effort

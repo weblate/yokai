@@ -68,14 +68,13 @@ object MangaCoverMetadata {
             }
             val bitmap = BitmapFactory.decodeFile(file.filePath, options)
             if (bitmap != null) {
-                Palette.from(bitmap).generate {
-                    if (it == null) return@generate
+                Palette.from(bitmap).generate { palette ->
                     if (isInLibrary) {
-                        it.dominantSwatch?.let { swatch ->
+                        palette?.dominantSwatch?.let { swatch ->
                             addCoverColor(mangaId, swatch.rgb, swatch.titleTextColor)
                         }
                     }
-                    val color = it.getBestColor() ?: return@generate
+                    val color = palette?.getBestColor() ?: return@generate
                     setVibrantColor(mangaId, color)
                 }
             }

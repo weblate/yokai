@@ -586,15 +586,16 @@ class MangaDetailsController :
                         )
                     } ?: drawable
 
-                    val bitmap = (copy as? BitmapDrawable)?.bitmap
+                    // Don't use 'copy', Palette doesn't like its bitmap, could be caused by mutability is disabled,
+                    // or perhaps because it's HARDWARE configured, not entirely sure why, the behaviour is not
+                    // documented by Google.
+                    val bitmap = (drawable as? BitmapDrawable)?.bitmap
                     // Generate the Palette on a background thread.
                     if (bitmap != null) {
-                        Palette.from(bitmap).generate {
-                            if (it == null) return@generate
+                        Palette.from(bitmap).generate { palette ->
                             if (presenter.preferences.themeMangaDetails().get()) {
                                 launchUI {
-                                    view.context.getResourceColor(R.attr.colorSecondary)
-                                    val vibrantColor = it.getBestColor() ?: return@launchUI
+                                    val vibrantColor = palette?.getBestColor() ?: return@launchUI
                                     manga?.vibrantCoverColor = vibrantColor
                                     setAccentColorValue(vibrantColor)
                                     setHeaderColorValue(vibrantColor)

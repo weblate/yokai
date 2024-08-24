@@ -100,6 +100,8 @@
     <color name="pale_green">#99CC99</color>
     <color name="strong_green">#106010</color>
 
+    <color name="black">#000</color>
+
     <!-- Navigation overlay colors -->
     <color name="navigation_menu">#CC95818D</color>
     <color name="navigation_next">#CCA6CFD5</color>

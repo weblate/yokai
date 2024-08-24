@@ -57,7 +57,6 @@ jsoup = { module = "org.jsoup:jsoup", version = "1.17.1" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-android = { module = "androidx.test.ext:junit", version = "1.1.5" }
-loading-button = { module = "com.github.leandroBorgesFerreira:LoadingButtonAndroid", version = "2.2.0" }  # FIXME: Don't depends on this
 mockk = { module = "io.mockk:mockk", version = "1.13.11" }
 
 moko-resources = { module = "dev.icerock.moko:resources", version.ref = "moko" }

@@ -2,13 +2,7 @@ package eu.kanade.tachiyomi.widget.preference
 
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.StringRes
-import br.com.simplepass.loadingbutton.animatedDrawables.ProgressType
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.util.system.toast
@@ -16,6 +10,8 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class TrackLoginDialog(usernameLabelRes: StringResource? = null, bundle: Bundle? = null) :
     LoginDialogPreference(usernameLabelRes, bundle) {
@@ -36,10 +32,7 @@ class TrackLoginDialog(usernameLabelRes: StringResource? = null, bundle: Bundle?
 
     override fun checkLogin() {
         v?.apply {
-            binding.login.apply {
-                progressType = ProgressType.INDETERMINATE
-                startAnimation()
-            }
+            binding.login.startAnimation()
             if (binding.username.text.isNullOrBlank() || binding.password.text.isNullOrBlank()) {
                 errorResult()
                 context.toast(MR.strings.username_must_not_be_blank)

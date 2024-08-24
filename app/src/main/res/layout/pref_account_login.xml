@@ -49,21 +49,12 @@
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+    <yokai.presentation.component.LoadingButtonComposeView
         android:id="@+id/login"
-        style="@style/Widget.Tachiyomi.Button.Primary"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:scaleType="fitCenter"
-        android:text="@string/log_in"
-        android:textSize="16sp"
-        app:finalCornerAngle="50dp"
-        app:initialCornerAngle="2dp"
-        app:spinning_bar_color="@color/md_white_1000"
-        app:spinning_bar_padding="6dp"
-        app:spinning_bar_width="3dp" />
+        android:text="@string/log_in" />
 
 </LinearLayout>

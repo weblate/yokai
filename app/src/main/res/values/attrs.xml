@@ -49,6 +49,10 @@
         <attr name="endIcon" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="LoadingButtonComposeView">
+        <attr name="android:text" />
+    </declare-styleable>
+
     <bool name="isLightMode">true</bool>
 
     <fraction name="chartRatio">1</fraction>

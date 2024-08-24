@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.widget.preference
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.StringRes
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import dev.icerock.moko.resources.StringResource
@@ -53,7 +52,7 @@ abstract class LoginDialogPreference(
                 binding.usernameInput.hint = view.context.getString(usernameLabelRes)
             }
 
-            binding.login.setOnClickListener {
+            binding.login.setOnClick {
                 checkLogin()
             }
 

@@ -23,7 +23,7 @@ class LoadingButtonComposeView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyleAttr) {
 
-    var text by mutableStateOf("placeholder")
+    var text by mutableStateOf("")
     private var onClick: () -> Unit = {}
     private var isLoading by mutableStateOf(false)
 
@@ -32,7 +32,9 @@ class LoadingButtonComposeView @JvmOverloads constructor(
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
         attrs?.let {
             val arr = context.obtainStyledAttributes(it, R.styleable.LoadingButtonComposeView)
-            text = context.getString(arr.getResourceId(R.styleable.LoadingButtonComposeView_android_text, R.string.log_in))
+            arr.getResourceId(R.styleable.LoadingButtonComposeView_android_text, -1).takeIf { it >= 0 }?.let { resId ->
+                text = context.getString(resId)
+            }
         }
     }
 

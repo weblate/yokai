@@ -1,12 +1,13 @@
 [*]
+charset = utf-8
+end_of_line = lf
+indent_style=space
 insert_final_newline=true
 
 [*.{json,json5}]
-indent_style=space
 indent_size=2
 
 [*.{kt,kts}]
-indent_style=space
 indent_size=4
 ij_kotlin_allow_trailing_comma=true
 ij_kotlin_allow_trailing_comma_on_call_site=true

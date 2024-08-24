@@ -10,7 +10,6 @@ import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
 import com.pushtorefresh.storio.sqlite.queries.InsertQuery
 import com.pushtorefresh.storio.sqlite.queries.UpdateQuery
 import eu.kanade.tachiyomi.data.database.models.History
-import eu.kanade.tachiyomi.data.database.models.HistoryImpl
 import eu.kanade.tachiyomi.data.database.tables.HistoryTable.COL_CHAPTER_ID
 import eu.kanade.tachiyomi.data.database.tables.HistoryTable.COL_ID
 import eu.kanade.tachiyomi.data.database.tables.HistoryTable.COL_LAST_READ
@@ -45,12 +44,12 @@ open class HistoryPutResolver : DefaultPutResolver<History>() {
 
 class HistoryGetResolver : DefaultGetResolver<History>() {
 
-    override fun mapFromCursor(cursor: Cursor): History = HistoryImpl().apply {
-        id = cursor.getLong(cursor.getColumnIndex(COL_ID))
-        chapter_id = cursor.getLong(cursor.getColumnIndex(COL_CHAPTER_ID))
-        last_read = cursor.getLong(cursor.getColumnIndex(COL_LAST_READ))
-        time_read = cursor.getLong(cursor.getColumnIndex(COL_TIME_READ))
-    }
+    override fun mapFromCursor(cursor: Cursor): History = History.mapper(
+        id = cursor.getLong(cursor.getColumnIndex(COL_ID)),
+        chapterId = cursor.getLong(cursor.getColumnIndex(COL_CHAPTER_ID)),
+        lastRead = cursor.getLong(cursor.getColumnIndex(COL_LAST_READ)),
+        timeRead = cursor.getLong(cursor.getColumnIndex(COL_TIME_READ)),
+    )
 }
 
 class HistoryDeleteResolver : DefaultDeleteResolver<History>() {

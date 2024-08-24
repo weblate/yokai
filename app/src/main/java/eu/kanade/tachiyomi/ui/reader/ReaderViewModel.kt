@@ -221,7 +221,9 @@ class ReaderViewModel(
      */
     fun onSaveInstanceState() {
         val currentChapter = getCurrentChapter() ?: return
-        saveChapterProgress(currentChapter)
+        viewModelScope.launchNonCancellableIO {
+            saveChapterProgress(currentChapter)
+        }
     }
 
     /**
@@ -618,9 +620,11 @@ class ReaderViewModel(
      * Called when reader chapter is changed in reader or when activity is paused.
      */
     private fun saveReadingProgress(readerChapter: ReaderChapter) {
-        db.inTransaction {
-            saveChapterProgress(readerChapter)
-            saveChapterHistory(readerChapter)
+        viewModelScope.launchNonCancellableIO {
+            db.inTransaction {
+                saveChapterProgress(readerChapter)
+                saveChapterHistory(readerChapter)
+            }
         }
     }
 
@@ -631,7 +635,7 @@ class ReaderViewModel(
      * If incognito mode isn't on or has at least 1 tracker
      */
     // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
-    private fun saveChapterProgress(readerChapter: ReaderChapter) {
+    private suspend fun saveChapterProgress(readerChapter: ReaderChapter) {
         readerChapter.requestedPage = readerChapter.chapter.last_page_read
         db.getChapter(readerChapter.chapter.id!!).executeAsBlocking()?.let { dbChapter ->
             readerChapter.chapter.bookmark = dbChapter.bookmark
@@ -645,7 +649,7 @@ class ReaderViewModel(
      * Saves this [readerChapter] last read history.
      */
     // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
-    private fun saveChapterHistory(readerChapter: ReaderChapter) {
+    private suspend fun saveChapterHistory(readerChapter: ReaderChapter) {
         if (!preferences.incognitoMode().get()) {
             val readAt = Date().time
             val sessionReadDuration = chapterReadStartTime?.let { readAt - it } ?: 0

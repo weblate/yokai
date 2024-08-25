@@ -10,7 +10,6 @@ import android.graphics.drawable.Icon
 import co.touchlab.kermit.Logger
 import coil3.asDrawable
 import coil3.imageLoader
-import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.size.SizeResolver
 import eu.kanade.tachiyomi.R
@@ -79,7 +78,6 @@ class MangaShortcutManager(
                             val request = ImageRequest.Builder(context)
                                 .data(item.cover())
                                 .size(SizeResolver.ORIGINAL)
-                                .memoryCachePolicy(CachePolicy.DISABLED)
                                 .build()
                             val bitmap = (
                                 context.imageLoader

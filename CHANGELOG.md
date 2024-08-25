@@ -12,6 +12,8 @@
 ## Fixes
 - Fixed crashes caused by certain extension implementation
 - Fixed "Theme buttons based on cover" doesn't work properly
+- Fixed library cover images looks blurry then become sharp after going to
+  entry's detail screen
 
 ## Other
 - More StorIO to SQLDelight migration effort

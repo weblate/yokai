@@ -31,7 +31,7 @@ fun runCommand(command: String): String {
     return String(byteOut.toByteArray()).trim()
 }
 
-val _versionName = "1.8.5.5"
+val _versionName = "1.8.5.6"
 val betaCount by lazy {
     val betaTags = runCommand("git tag -l --sort=refname v${_versionName}-b*")
 
@@ -54,7 +54,7 @@ val supportedAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 android {
     defaultConfig {
         applicationId = "eu.kanade.tachiyomi"
-        versionCode = 146
+        versionCode = 147
         versionName = _versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true

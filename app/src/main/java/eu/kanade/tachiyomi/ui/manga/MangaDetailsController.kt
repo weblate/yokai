@@ -47,6 +47,7 @@ import coil3.asDrawable
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
+import coil3.size.SizeResolver
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.android.material.chip.Chip
@@ -571,7 +572,10 @@ class MangaDetailsController :
     fun setPaletteColor() {
         val view = view ?: return
 
-        val request = ImageRequest.Builder(view.context).data(presenter.manga.cover()).allowHardware(false)
+        val request = ImageRequest.Builder(view.context)
+            .data(presenter.manga.cover())
+            .size(SizeResolver.ORIGINAL)
+            .allowHardware(false)
             .target(
                 onSuccess = { image ->
                     val drawable = image.asDrawable(view.context.resources)

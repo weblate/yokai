@@ -11,6 +11,7 @@ import co.touchlab.kermit.Logger
 import coil3.asDrawable
 import coil3.imageLoader
 import coil3.request.ImageRequest
+import coil3.size.SizeResolver
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.data.cache.CoverCache
@@ -74,7 +75,10 @@ class MangaShortcutManager(
                 val shortcuts = recents.mapNotNull { item ->
                     when (item) {
                         is Manga -> {
-                            val request = ImageRequest.Builder(context).data(item.cover()).build()
+                            val request = ImageRequest.Builder(context)
+                                .data(item.cover())
+                                .size(SizeResolver.ORIGINAL)
+                                .build()
                             val bitmap = (
                                 context.imageLoader
                                     .execute(request).image?.asDrawable(context.resources) as? BitmapDrawable

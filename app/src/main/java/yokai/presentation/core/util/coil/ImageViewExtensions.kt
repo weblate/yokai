@@ -7,6 +7,7 @@ import coil3.imageLoader
 import coil3.request.Disposable
 import coil3.request.ImageRequest
 import coil3.size.Precision
+import coil3.size.SizeResolver
 import coil3.target.ImageViewTarget
 import eu.kanade.tachiyomi.data.coil.CoverViewTarget
 import eu.kanade.tachiyomi.data.coil.LibraryMangaImageTarget
@@ -23,6 +24,7 @@ fun ImageView.loadManga(
         .data(manga.cover())
         .target(LibraryMangaImageTarget(this, manga))
         .precision(Precision.INEXACT)
+        .size(SizeResolver.ORIGINAL)
         .apply(builder)
         .build()
     return imageLoader.enqueue(request)
@@ -41,6 +43,7 @@ fun ImageView.loadManga(
         .data(cover)
         .target(target ?: CoverViewTarget(this, progress))
         .precision(Precision.INEXACT)
+        .size(SizeResolver.ORIGINAL)
         .apply(builder)
         .build()
     return imageLoader.enqueue(request)

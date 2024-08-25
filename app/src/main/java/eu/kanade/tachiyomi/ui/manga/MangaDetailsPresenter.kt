@@ -147,6 +147,19 @@ class MangaDetailsPresenter(
 
     val headerItem: MangaHeaderItem by lazy { MangaHeaderItem(mangaId, view?.fromCatalogue == true)}
     var tabletChapterHeaderItem: MangaHeaderItem? = null
+        get() {
+            when (view?.isTablet) {
+                true -> if (field == null) {
+                    field = MangaHeaderItem(mangaId, false).apply {
+                        isChapterHeader = true
+                    }
+                }
+                else -> if (field != null) {
+                    field = null
+                }
+            }
+            return field
+        }
         private set
 
     var allChapterScanlators: Set<String> = emptySet()
@@ -160,11 +173,6 @@ class MangaDetailsPresenter(
 
         downloadManager.addListener(this)
 
-        LibraryUpdateJob.updateFlow
-            .filter { it == mangaId }
-            .onEach { onUpdateManga() }
-            .launchIn(presenterScope)
-
         tracks = db.getTracks(manga).executeAsBlocking()
     }
 
@@ -173,6 +181,11 @@ class MangaDetailsPresenter(
      */
     fun onCreateLate() {
         val controller = view ?: return
+
+        LibraryUpdateJob.updateFlow
+            .filter { it == mangaId }
+            .onEach { onUpdateManga() }
+            .launchIn(presenterScope)
 
         if (manga.isLocal()) {
             refreshAll()
@@ -219,11 +232,6 @@ class MangaDetailsPresenter(
         headerItem.apply {
             isTablet = view?.isTablet == true
             isLocked = isLockedFromSearch
-        }
-        if (view?.isTablet == true) {
-            tabletChapterHeaderItem = MangaHeaderItem(mangaId, false).apply {
-                isChapterHeader = true
-            }
         }
     }
 

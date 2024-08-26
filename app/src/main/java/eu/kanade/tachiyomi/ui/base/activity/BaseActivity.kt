@@ -20,6 +20,8 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.getThemeWithExtras
 import eu.kanade.tachiyomi.util.system.setLocaleByAppCompat
 import eu.kanade.tachiyomi.util.system.setThemeByPref
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.SplashState
 import android.R as AR
@@ -31,7 +33,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     val isBindingInitialized get() = this::binding.isInitialized
 
     private var updatedTheme: Resources.Theme? = null
-    internal val splashState: SplashState by injectLazy()
+    internal val splashState: SplashState = Injekt.get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setLocaleByAppCompat()

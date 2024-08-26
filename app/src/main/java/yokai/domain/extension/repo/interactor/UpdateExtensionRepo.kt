@@ -1,12 +1,10 @@
 package yokai.domain.extension.repo.interactor
 
-import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.network.NetworkHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import yokai.domain.extension.repo.ExtensionRepoRepository
-import yokai.domain.extension.repo.exception.FetchExtensionRepoException
 import yokai.domain.extension.repo.model.ExtensionRepo
 import yokai.domain.extension.repo.service.ExtensionRepoService
 
@@ -23,18 +21,7 @@ class UpdateExtensionRepo(
     }
 
     suspend fun await(repo: ExtensionRepo) {
-        val newRepo = try {
-            extensionRepoService.fetchRepoDetails(repo.baseUrl) ?: return
-        } catch (e: Exception) {
-            when (e) {
-                is FetchExtensionRepoException -> {
-                    // TODO: A way to show user that a repo failed to update
-                    Logger.e(e) { "Failed to fetch repo details" }
-                    return
-                }
-                else -> throw e
-            }
-        }
+        val newRepo = extensionRepoService.fetchRepoDetails(repo.baseUrl) ?: return
         if (
             repo.signingKeyFingerprint.startsWith("NOFINGERPRINT") ||
             repo.signingKeyFingerprint == newRepo.signingKeyFingerprint

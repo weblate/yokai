@@ -5,7 +5,6 @@ import eu.kanade.tachiyomi.network.NetworkHelper
 import okhttp3.OkHttpClient
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.extension.repo.ExtensionRepoRepository
-import yokai.domain.extension.repo.exception.FetchExtensionRepoException
 import yokai.domain.extension.repo.exception.SaveExtensionRepoException
 import yokai.domain.extension.repo.model.ExtensionRepo
 import yokai.domain.extension.repo.service.ExtensionRepoService
@@ -28,11 +27,7 @@ class CreateExtensionRepo(
         }
 
         val baseUrl = repoUrl.removeSuffix("/index.min.json")
-        return try {
-            extensionRepoService.fetchRepoDetails(baseUrl)?.let { insert(it) } ?: Result.InvalidUrl
-        } catch (e: FetchExtensionRepoException) {
-            Result.RepoFetchFailed
-        }
+        return extensionRepoService.fetchRepoDetails(baseUrl)?.let { insert(it) } ?: Result.InvalidUrl
     }
 
     private suspend fun insert(repo: ExtensionRepo): Result {
@@ -79,7 +74,6 @@ class CreateExtensionRepo(
         data class DuplicateFingerprint(val oldRepo: ExtensionRepo, val newRepo: ExtensionRepo) : Result
         data object InvalidUrl : Result
         data object RepoAlreadyExists : Result
-        data object RepoFetchFailed : Result
         data object Success : Result
         data object Error : Result
     }

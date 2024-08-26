@@ -9,5 +9,11 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
+## Additions
+- Sync DoH provider list with upstream (added Mullvad, Control D, Njalla, and Shecan)
+
 ## Fixes
-- Fixed NPE crash on tablets
+- Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
+
+## Other
+- Simplify network helper code

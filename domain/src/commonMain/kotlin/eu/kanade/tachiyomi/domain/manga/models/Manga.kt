@@ -5,6 +5,7 @@ import java.util.Locale
 import yokai.domain.manga.models.MangaUpdate
 
 // TODO: Transform into data class
+@Deprecated("Use data class version", ReplaceWith("yokai.domain.manga.models.Manga"))
 interface Manga : SManga {
 
     var id: Long?

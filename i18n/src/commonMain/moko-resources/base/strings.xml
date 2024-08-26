@@ -883,7 +883,6 @@
     <string name="action_add_repo">Add repo</string>
     <string name="invalid_repo_url">Invalid repo url</string>
     <string name="repo_already_exists">Repo already exists!</string>
-    <string name="repo_fetch_failed">Failed to retrieve repo details. Please try again later</string>
     <string name="information_empty_repos">You haven\'t added any repos yet.</string>
     <string name="confirm_delete_repo_title">Delete repo?</string>
     <string name="confirm_delete_repo">Are you sure you wish to delete the repo \"%s\"?</string>

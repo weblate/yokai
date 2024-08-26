@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.DelayedTrackingUpdateJob
+import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.util.system.e
@@ -34,6 +35,10 @@ suspend fun syncChaptersWithTrackServiceTwoWay(
     service: TrackService,
     updateChapter: UpdateChapter = Injekt.get(),
 ) = withIOContext {
+    if (service !is EnhancedTrackService) {
+        return@withIOContext
+    }
+
     val sortedChapters = chapters.sortedBy { it.chapter_number }
     sortedChapters
         .filter { chapter -> chapter.chapter_number <= remoteTrack.last_chapter_read && !chapter.read }

@@ -36,7 +36,6 @@ import eu.kanade.tachiyomi.data.preference.MANGA_HAS_UNREAD
 import eu.kanade.tachiyomi.data.preference.MANGA_NON_COMPLETED
 import eu.kanade.tachiyomi.data.preference.MANGA_NON_READ
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
@@ -322,9 +321,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                         val newTrack = service.refresh(track)
                         db.insertTrack(newTrack).executeAsBlocking()
 
-                        if (service is EnhancedTrackService) {
-                            syncChaptersWithTrackServiceTwoWay(db, getChapter.awaitAll(manga.id!!, false), track, service)
-                        }
+                        syncChaptersWithTrackServiceTwoWay(db, getChapter.awaitAll(manga.id!!, false), track, service)
                     } catch (e: Exception) {
                         Logger.e(e)
                     }

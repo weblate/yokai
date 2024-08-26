@@ -9,6 +9,8 @@ import eu.kanade.tachiyomi.network.AndroidCookieJar
 import eu.kanade.tachiyomi.util.system.WebViewClientCompat
 import eu.kanade.tachiyomi.util.system.isOutdated
 import eu.kanade.tachiyomi.util.system.toast
+import java.io.IOException
+import java.util.concurrent.CountDownLatch
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
@@ -16,8 +18,6 @@ import okhttp3.Request
 import okhttp3.Response
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.IOException
-import java.util.concurrent.*
 
 class CloudflareInterceptor(
     private val context: Context,
@@ -49,7 +49,7 @@ class CloudflareInterceptor(
         // Because OkHttp's enqueue only handles IOExceptions, wrap the exception so that
         // we don't crash the entire app
         catch (e: CloudflareBypassException) {
-            throw IOException(context.getString(MR.strings.failed_to_bypass_cloudflare))
+            throw IOException(context.getString(MR.strings.failed_to_bypass_cloudflare), e)
         } catch (e: Exception) {
             throw IOException(e)
         }

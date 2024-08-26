@@ -24,8 +24,6 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.view.compatToolTipText
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.ui.UiPreferences
 
@@ -33,8 +31,6 @@ class LibraryItem(
     val manga: LibraryManga,
     header: LibraryHeaderItem,
     private val context: Context?,
-    private val uiPreferences: UiPreferences = Injekt.get(),
-    private val preferences: PreferencesHelper = Injekt.get(),
 ) : AbstractSectionableItem<LibraryHolder, LibraryHeaderItem>(header), IFilterable<String> {
 
     var downloadCount = -1
@@ -43,6 +39,9 @@ class LibraryItem(
     var filter = ""
 
     private val sourceManager: SourceManager by injectLazy()
+    private val uiPreferences: UiPreferences by injectLazy()
+    private val preferences: PreferencesHelper by injectLazy()
+
     private val uniformSize: Boolean
         get() = uiPreferences.uniformGrid().get()
 

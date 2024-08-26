@@ -259,29 +259,19 @@ class SettingsAdvancedController : SettingsLegacyController() {
             intListPreference(activity) {
                 key = PreferenceKeys.dohProvider
                 titleRes = MR.strings.doh
-                entriesRes = arrayOf(
-                    MR.strings.disabled,
-                    MR.strings.cloudflare,
-                    MR.strings.google,
-                    MR.strings.ad_guard,
-                    MR.strings.quad9,
-                    MR.strings.aliDNS,
-                    MR.strings.dnsPod,
-                    MR.strings.dns_360,
-                    MR.strings.quad_101,
+                val entryMap = mapOf(
+                    -1 to context.getString(MR.strings.disabled),
+                    PREF_DOH_CLOUDFLARE to "Cloudflare",
+                    PREF_DOH_GOOGLE to "Google",
+                    PREF_DOH_ADGUARD to "AdGuard",
+                    PREF_DOH_QUAD9 to "Quad9",
+                    PREF_DOH_ALIDNS to "AliDNS",
+                    PREF_DOH_DNSPOD to "DNSPod",
+                    PREF_DOH_360 to "360",
+                    PREF_DOH_QUAD101 to "Quad 101",
                 )
-                entryValues = listOf(
-                    -1,
-                    PREF_DOH_CLOUDFLARE,
-                    PREF_DOH_GOOGLE,
-                    PREF_DOH_ADGUARD,
-                    PREF_DOH_QUAD9,
-                    PREF_DOH_ALIDNS,
-                    PREF_DOH_DNSPOD,
-                    PREF_DOH_360,
-                    PREF_DOH_QUAD101,
-                )
-
+                entries = entryMap.values.toList()
+                entryValues = entryMap.keys.toList()
                 defaultValue = -1
                 onChange {
                     activity?.toast(MR.strings.requires_app_restart)

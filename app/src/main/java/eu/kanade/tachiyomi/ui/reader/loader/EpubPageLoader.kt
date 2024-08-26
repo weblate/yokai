@@ -4,7 +4,6 @@ import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.util.storage.EpubFile
 import yokai.core.archive.ArchiveReader
-import java.nio.channels.SeekableByteChannel
 
 /**
  * Loader used to load a chapter from a .epub file.

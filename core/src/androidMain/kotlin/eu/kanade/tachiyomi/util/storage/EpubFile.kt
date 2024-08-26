@@ -1,15 +1,11 @@
 package eu.kanade.tachiyomi.util.storage
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import yokai.core.archive.ArchiveReader
 import java.io.Closeable
 import java.io.File
 import java.io.InputStream
-import java.nio.channels.SeekableByteChannel
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Locale
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import yokai.core.archive.ArchiveReader
 
 /**
  * Wrapper over ZipFile to load files in epub format.

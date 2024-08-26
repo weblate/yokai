@@ -32,10 +32,14 @@ import eu.kanade.tachiyomi.network.PREF_DOH_360
 import eu.kanade.tachiyomi.network.PREF_DOH_ADGUARD
 import eu.kanade.tachiyomi.network.PREF_DOH_ALIDNS
 import eu.kanade.tachiyomi.network.PREF_DOH_CLOUDFLARE
+import eu.kanade.tachiyomi.network.PREF_DOH_CONTROLD
 import eu.kanade.tachiyomi.network.PREF_DOH_DNSPOD
 import eu.kanade.tachiyomi.network.PREF_DOH_GOOGLE
+import eu.kanade.tachiyomi.network.PREF_DOH_MULLVAD
+import eu.kanade.tachiyomi.network.PREF_DOH_NJALLA
 import eu.kanade.tachiyomi.network.PREF_DOH_QUAD101
 import eu.kanade.tachiyomi.network.PREF_DOH_QUAD9
+import eu.kanade.tachiyomi.network.PREF_DOH_SHECAN
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
@@ -269,6 +273,10 @@ class SettingsAdvancedController : SettingsLegacyController() {
                     PREF_DOH_DNSPOD to "DNSPod",
                     PREF_DOH_360 to "360",
                     PREF_DOH_QUAD101 to "Quad 101",
+                    PREF_DOH_MULLVAD to "Mullvad",
+                    PREF_DOH_CONTROLD to "Control D",
+                    PREF_DOH_NJALLA to "Njalla",
+                    PREF_DOH_SHECAN to "Shecan",
                 )
                 entries = entryMap.values.toList()
                 entryValues = entryMap.keys.toList()

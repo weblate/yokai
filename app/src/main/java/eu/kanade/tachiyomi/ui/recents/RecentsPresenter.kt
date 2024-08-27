@@ -17,6 +17,7 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import eu.kanade.tachiyomi.util.chapter.ChapterFilter
 import eu.kanade.tachiyomi.util.chapter.ChapterSort
+import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.toast
@@ -171,6 +172,8 @@ class RecentsPresenter(
         var extraCount = 0
         val cReading: List<MangaChapterHistory> = when (viewType) {
             RecentsViewType.GroupedAll, RecentsViewType.UngroupedAll -> {
+                // FIXME
+                /*
                 getRecents.awaitAll(
                     showRead,
                     true,
@@ -179,6 +182,14 @@ class RecentsPresenter(
                     query,
                     (if (isCustom) ENDLESS_LIMIT else pageOffset).toLong(),
                 )
+                 */
+                db.getAllRecentsTypes(
+                    query,
+                    showRead,
+                    isEndless,
+                    if (isCustom) ENDLESS_LIMIT else pageOffset,
+                    !updatePageCount && !isOnFirstPage,
+                ).executeOnIO()
             }
             RecentsViewType.History -> {
                 val items = if (groupChaptersHistory == GroupType.BySeries) {

@@ -62,7 +62,7 @@ AND (
 ORDER BY max_last_read.history_last_read DESC
 LIMIT :limit OFFSET :offset;
 
-getRecentsAll:  -- AKA insanity
+getRecentsAll:  -- FIXME: This is insanity, require refactoring
 SELECT * FROM (
 SELECT
     mangas.*,

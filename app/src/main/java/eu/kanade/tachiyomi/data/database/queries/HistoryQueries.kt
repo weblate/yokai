@@ -142,4 +142,35 @@ interface HistoryQueries : DbProvider {
                 .build(),
         )
         .prepare()
+
+    /**
+     * Returns history of recent manga containing last read chapter in 25s
+     * @param date recent date range
+     * @offset offset the db by
+     */
+    fun getAllRecentsTypes(
+        search: String = "",
+        includeRead: Boolean,
+        endless: Boolean,
+        offset: Int,
+        isResuming: Boolean,
+    ) = db.get()
+        .listOfObjects(MangaChapterHistory::class.java)
+        .withQuery(
+            RawQuery.builder()
+                .query(
+                    getAllRecentsType(
+                        search.sqLite,
+                        includeRead,
+                        endless,
+                        offset,
+                        isResuming,
+                    ),
+                )
+//                .args(date.time, startDate.time)
+                .observesTables(HistoryTable.TABLE)
+                .build(),
+        )
+        .withGetResolver(MangaChapterHistoryGetResolver.INSTANCE)
+        .prepare()
 }

@@ -67,7 +67,10 @@ SELECT * FROM (
 SELECT
     mangas.*,
     chapters.*,
-    history.*
+    history.history_id AS history_id,
+    history.history_chapter_id AS history_chapter_id,
+    history.history_last_read AS history_last_read,
+    history.history_time_read AS history_time_read
 FROM (
     SELECT mangas.*
     FROM mangas
@@ -166,24 +169,28 @@ UNION --
 SELECT * FROM (
 SELECT
     mangas.*,
-    NULL AS _id,
-    NULL AS manga_id,
-    NULL AS url,
-    NULL AS name,
-    NULL AS read,
-    NULL AS scanlator,
-    NULL AS bookmark,
-    NULL AS date_fetch,
-    NULL AS date_upload,
-    NULL AS last_page_read,
-    NULL AS pages_left,
-    NULL AS chapter_number,
-    NULL AS source_order,
+    chapters.*,
     NULL AS history_id,
     NULL AS history_chapter_id,
     mangas.date_added AS history_last_read,
     NULL AS history_time_read
 FROM mangas
+JOIN (
+    SELECT
+        NULL AS _id,
+        NULL AS manga_id,
+        NULL AS url,
+        NULL AS name,
+        NULL AS read,
+        NULL AS scanlator,
+        NULL AS bookmark,
+        NULL AS date_fetch,
+        NULL AS date_upload,
+        NULL AS last_page_read,
+        NULL AS pages_left,
+        NULL AS chapter_number,
+        NULL AS source_order
+) AS chapters
 WHERE favorite = 1
 AND lower(title) LIKE '%' || :search || '%'
 )

@@ -84,7 +84,7 @@ data class MangaChapterHistory(val manga: Manga, val chapter: Chapter, val histo
                     mangaId = _mangaId!!,
                     url = chapterUrl!!,
                     name = name!!,
-                    scanlator = scanlator!!,
+                    scanlator = scanlator,
                     read = read!!,
                     bookmark = bookmark!!,
                     lastPageRead = lastPageRead!!,
@@ -98,11 +98,12 @@ data class MangaChapterHistory(val manga: Manga, val chapter: Chapter, val histo
             historyId?.let {
                 History.mapper(
                     id = historyId,
-                    chapterId = historyChapterId!!,
+                    chapterId = historyChapterId ?: chapterId ?: 0L,
                     lastRead = historyLastRead,
                     timeRead = historyTimeRead,
                 )
             } ?: History.create().apply {
+                (historyChapterId ?: chapterId)?.let { chapter_id = it }
                 historyLastRead?.let { last_read = it }
                 historyTimeRead?.let { time_read = it }
             },

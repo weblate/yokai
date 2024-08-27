@@ -8,6 +8,7 @@ import uy.kohesive.injekt.api.get
 import yokai.data.category.CategoryRepositoryImpl
 import yokai.data.chapter.ChapterRepositoryImpl
 import yokai.data.extension.repo.ExtensionRepoRepositoryImpl
+import yokai.data.history.HistoryRepositoryImpl
 import yokai.data.library.custom.CustomMangaRepositoryImpl
 import yokai.data.manga.MangaRepositoryImpl
 import yokai.domain.category.CategoryRepository
@@ -17,7 +18,7 @@ import yokai.domain.chapter.interactor.DeleteChapter
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
-import yokai.domain.chapter.interactor.RecentChapter
+import yokai.domain.recents.interactor.GetRecents
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.extension.repo.ExtensionRepoRepository
@@ -27,6 +28,7 @@ import yokai.domain.extension.repo.interactor.GetExtensionRepo
 import yokai.domain.extension.repo.interactor.GetExtensionRepoCount
 import yokai.domain.extension.repo.interactor.ReplaceExtensionRepo
 import yokai.domain.extension.repo.interactor.UpdateExtensionRepo
+import yokai.domain.history.HistoryRepository
 import yokai.domain.library.custom.CustomMangaRepository
 import yokai.domain.library.custom.interactor.CreateCustomManga
 import yokai.domain.library.custom.interactor.DeleteCustomManga
@@ -67,8 +69,11 @@ class DomainModule : InjektModule {
         addFactory { GetAvailableScanlators(get()) }
         addFactory { GetChapter(get()) }
         addFactory { InsertChapter(get()) }
-        addFactory { RecentChapter(get()) }
         addFactory { UpdateChapter(get()) }
+
+        addSingletonFactory<HistoryRepository> { HistoryRepositoryImpl(get()) }
+
+        addFactory { GetRecents(get(), get()) }
 
         addSingletonFactory<CategoryRepository> { CategoryRepositoryImpl(get()) }
         addFactory { GetCategories(get()) }

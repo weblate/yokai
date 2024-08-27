@@ -17,7 +17,6 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import eu.kanade.tachiyomi.util.chapter.ChapterFilter
 import eu.kanade.tachiyomi.util.chapter.ChapterSort
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.toast
@@ -41,9 +40,9 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
-import yokai.domain.chapter.interactor.RecentChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.recents.RecentsPreferences
+import yokai.domain.recents.interactor.GetRecents
 import yokai.domain.ui.UiPreferences
 import yokai.i18n.MR
 
@@ -56,7 +55,7 @@ class RecentsPresenter(
     private val chapterFilter: ChapterFilter = Injekt.get(),
 ) : BaseCoroutinePresenter<RecentsController>(), DownloadQueue.DownloadListener {
     private val getChapter: GetChapter by injectLazy()
-    private val recentChapter: RecentChapter by injectLazy()
+    private val getRecents: GetRecents by injectLazy()
     private val updateChapter: UpdateChapter by injectLazy()
 
     private var recentsJob: Job? = null
@@ -172,26 +171,29 @@ class RecentsPresenter(
         var extraCount = 0
         val cReading: List<MangaChapterHistory> = when (viewType) {
             RecentsViewType.GroupedAll, RecentsViewType.UngroupedAll -> {
-                db.getAllRecentsTypes(
-                    query,
+                getRecents.awaitAll(
                     showRead,
+                    true,
                     isEndless,
-                    if (isCustom) ENDLESS_LIMIT else pageOffset,
                     !updatePageCount && !isOnFirstPage,
-                ).executeOnIO()
+                    query,
+                    (if (isCustom) ENDLESS_LIMIT else pageOffset).toLong(),
+                )
             }
             RecentsViewType.History -> {
                 val items = if (groupChaptersHistory == GroupType.BySeries) {
-                    db.getRecentMangaLimit(
-                        query,
-                        if (isCustom) ENDLESS_LIMIT else pageOffset,
+                    getRecents.awaitBySeries(
+                        true,
                         !updatePageCount && !isOnFirstPage,
+                        query,
+                        (if (isCustom) ENDLESS_LIMIT else pageOffset).toLong(),
                     )
                 } else {
-                    db.getHistoryUngrouped(
-                        query,
-                        if (isCustom) ENDLESS_LIMIT else pageOffset,
+                    getRecents.awaitUngrouped(
+                        true,
                         !updatePageCount && !isOnFirstPage,
+                        query,
+                        (if (isCustom) ENDLESS_LIMIT else pageOffset).toLong(),
                     )
                 }
                 if (groupChaptersHistory.isByTime) {
@@ -203,7 +205,7 @@ class RecentsPresenter(
                     )
                     val dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) % 7 + 1
                     dateFormat.calendar.firstDayOfWeek = dayOfWeek
-                    items.executeOnIO().groupBy {
+                    items.groupBy {
                         val date = it.history.last_read
                         it.manga.id to if (date <= 0L) "-1" else dateFormat.format(Date(date))
                     }
@@ -235,14 +237,14 @@ class RecentsPresenter(
                             }
                         }
                 } else {
-                    items.executeOnIO()
+                    items
                 }
             }
             RecentsViewType.Updates -> {
                 dateFormat.applyPattern("yyyy-MM-dd")
                 dateFormat.calendar.firstDayOfWeek =
                     Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-                recentChapter.await(
+                getRecents.awaitUpdates(
                     true,
                     !updatePageCount && !isOnFirstPage,
                     query,

@@ -32,7 +32,6 @@ LIMIT :limit OFFSET :offset;
 
 getRecentsBySeries:
 SELECT
-    M.url AS mangaUrl,
     M.*,
     C.*,
     H.*
@@ -61,4 +60,132 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 )
 ORDER BY max_last_read.history_last_read DESC
+LIMIT :limit OFFSET :offset;
+
+getRecentsAll:  -- AKA insanity
+SELECT * FROM (
+SELECT
+    M.*,
+    C.*,
+    H.*
+FROM (
+    SELECT mangas.*
+    FROM mangas
+    LEFT JOIN (
+        SELECT manga_id, COUNT(*) AS unread
+        FROM chapters
+        WHERE read = 0
+        GROUP BY manga_id
+    ) AS C
+    ON _id = C.manga_id
+    WHERE (
+        :include_read = 0 OR C.unread > 0
+    )
+    GROUP BY _id
+    ORDER BY title
+) AS M
+JOIN chapters AS C
+ON M._id = C.manga_id
+JOIN history AS H
+ON C._id = H.history_chapter_id
+JOIN (
+    SELECT
+        chapters.manga_id AS manga_id,
+        chapters._id AS history_chapter_id,
+        MAX(history.history_last_read) AS history_last_read
+    FROM chapters JOIN history
+    ON chapters._id = history.history_chapter_id
+    GROUP BY chapters.manga_id
+) AS max_last_read
+ON C.manga_id = max_last_read.manga_id
+AND max_last_read.history_chapter_id = H.history_chapter_id
+AND max_last_read.history_last_read > 0
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE lower(M.title) LIKE '%' || :search || '%'
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+)
+)
+
+UNION  --
+
+SELECT * FROM (
+SELECT
+    M.*,
+    C.*,
+    NULL AS history_id,
+    NULL AS history_chapter_id,
+    C.date_fetch AS history_last_read,
+    NULL AS history_time_read
+FROM (
+    SELECT mangas.*
+    FROM mangas
+    LEFT JOIN (
+        SELECT manga_id, COUNT(*) AS unread
+        FROM chapters
+        WHERE read = 0
+        GROUP BY manga_id
+    ) AS C2
+    ON _id = C2.manga_id
+    WHERE (
+        :include_read = 0 OR C2.unread > 0
+    )
+    GROUP BY _id
+    ORDER BY title
+) AS M
+JOIN chapters AS C
+ON M._id = C.manga_id
+JOIN history AS H
+ON C._id = H.history_chapter_id
+JOIN (
+    SELECT
+        chapters.manga_id,
+        chapters._id AS history_chapter_id,
+        max(chapters.date_upload)
+    FROM chapters JOIN mangas
+    ON mangas._id = chapters.manga_id
+    WHERE chapters.read = 0
+    GROUP BY chapters.manga_id
+) AS newest_chapter
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND ifnull(C.scanlator, 'N/A') = ifnull(S.name, '/<INVALID>/')  -- I assume if it's N/A it shouldn't be filtered
+WHERE M.favorite = 1
+AND newest_chapter.history_chapter_id = H.history_chapter_id
+AND C.date_fetch > M.date_added
+AND lower(M.title) LIKE '%' || :search || '%'
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+)
+)
+
+UNION --
+
+SELECT * FROM (
+SELECT
+    M.*,
+    NULL AS _id,
+    NULL AS manga_id,
+    NULL AS url,
+    NULL AS name,
+    NULL AS read,
+    NULL AS scanlator,
+    NULL AS bookmark,
+    NULL AS date_fetch,
+    NULL AS date_upload,
+    NULL AS last_page_read,
+    NULL AS pages_left,
+    NULL AS chapter_number,
+    NULL AS source_order,
+    NULL AS history_id,
+    NULL AS history_chapter_id,
+    M.date_added AS history_last_read,
+    NULL AS history_time_read
+FROM mangas AS M
+WHERE M.favorite = 1
+AND lower(M.title) LIKE '%' || :search || '%'
+)
+ORDER BY history_last_read DESC
 LIMIT :limit OFFSET :offset;

@@ -39,16 +39,18 @@ interface History : Serializable {
             this.chapter_id = chapter.id!!
         }
 
+        fun create(): History = HistoryImpl()
+
         fun mapper(
             id: Long,
             chapterId: Long,
-            lastRead: Long,
-            timeRead: Long
-        ) = HistoryImpl().apply {
+            lastRead: Long?,
+            timeRead: Long?,
+        ): History = HistoryImpl().apply {
             this.id = id
             this.chapter_id = chapterId
-            this.last_read = lastRead
-            this.time_read = timeRead
+            this.last_read = lastRead ?: 0L
+            this.time_read = timeRead ?: 0L
         }
     }
 }

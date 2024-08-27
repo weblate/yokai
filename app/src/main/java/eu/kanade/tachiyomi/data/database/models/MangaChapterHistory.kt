@@ -55,8 +55,8 @@ data class MangaChapterHistory(val manga: Manga, val chapter: Chapter, val histo
             historyChapterId: Long?,
             historyLastRead: Long?,
             historyTimeRead: Long?,
-        ) = MangaChapterHistory(
-            Manga.mapper(
+        ): MangaChapterHistory {
+            val manga = Manga.mapper(
                 id = mangaId,
                 source = source,
                 url = mangaUrl,
@@ -77,37 +77,43 @@ data class MangaChapterHistory(val manga: Manga, val chapter: Chapter, val histo
                 filteredScanlators = filteredScanlators,
                 updateStrategy = updateStrategy,
                 coverLastModified = coverLastModified,
-            ),
-            chapterId?.let {
-                Chapter.mapper(
-                    id = chapterId,
-                    mangaId = _mangaId!!,
-                    url = chapterUrl!!,
-                    name = name!!,
-                    scanlator = scanlator,
-                    read = read!!,
-                    bookmark = bookmark!!,
-                    lastPageRead = lastPageRead!!,
-                    pagesLeft = pagesLeft!!,
-                    chapterNumber = chapterNumber!!,
-                    sourceOrder = sourceOrder!!,
-                    dateFetch = dateFetch!!,
-                    dateUpload = dateUpload!!,
-                )
-            } ?: Chapter.create(),
-            historyId?.let {
-                History.mapper(
-                    id = historyId,
-                    chapterId = historyChapterId ?: chapterId ?: 0L,
-                    lastRead = historyLastRead,
-                    timeRead = historyTimeRead,
-                )
-            } ?: History.create().apply {
-                (historyChapterId ?: chapterId)?.let { chapter_id = it }
+            )
+
+            val chapter = try {
+                chapterId?.let {
+                    Chapter.mapper(
+                        id = chapterId,
+                        mangaId = _mangaId ?: mangaId,
+                        url = chapterUrl!!,
+                        name = name!!,
+                        scanlator = scanlator,
+                        read = read!!,
+                        bookmark = bookmark!!,
+                        lastPageRead = lastPageRead!!,
+                        pagesLeft = pagesLeft!!,
+                        chapterNumber = chapterNumber!!,
+                        sourceOrder = sourceOrder!!,
+                        dateFetch = dateFetch!!,
+                        dateUpload = dateUpload!!,
+                    )
+                }
+            } catch (_: NullPointerException) { null } ?: Chapter.create()
+
+            val history = try {
+                historyId?.let {
+                    History.mapper(
+                        id = historyId,
+                        chapterId = historyChapterId ?: chapterId ?: 0L,
+                        lastRead = historyLastRead,
+                        timeRead = historyTimeRead,
+                    )
+                }
+            } catch (_: NullPointerException) { null } ?: History.create().apply {
                 historyLastRead?.let { last_read = it }
-                historyTimeRead?.let { time_read = it }
-            },
-        )
+            }
+
+            return MangaChapterHistory(manga, chapter, history)
+        }
     }
 }
 

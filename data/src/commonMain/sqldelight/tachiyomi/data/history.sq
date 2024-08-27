@@ -62,33 +62,33 @@ AND (
 ORDER BY max_last_read.history_last_read DESC
 LIMIT :limit OFFSET :offset;
 
-getRecentsAll:  -- FIXME: This is insanity, require refactoring
-SELECT * FROM (
+getRecentsAll:
+SELECT R.* FROM (
 SELECT
-    mangas.*,
+    M.*,
     chapters.*,
     history.history_id AS history_id,
     history.history_chapter_id AS history_chapter_id,
     history.history_last_read AS history_last_read,
     history.history_time_read AS history_time_read
 FROM (
-    SELECT mangas.*
-    FROM mangas
+    SELECT M2.*
+    FROM mangas AS M2
     LEFT JOIN (
         SELECT manga_id, COUNT(*) AS unread
         FROM chapters
         WHERE read = 0
         GROUP BY manga_id
     ) AS C
-    ON _id = C.manga_id
+    ON M2._id = C.manga_id
     WHERE (
         :include_read = 0 OR C.unread > 0
     )
-    GROUP BY _id
+    GROUP BY M2._id
     ORDER BY title
-) AS mangas
+) AS M
 JOIN chapters
-ON mangas._id = chapters.manga_id
+ON M._id = chapters.manga_id
 JOIN history
 ON chapters._id = history.history_chapter_id
 JOIN (
@@ -110,36 +110,21 @@ WHERE lower(title) LIKE '%' || :search || '%'
 AND (
     :apply_filter = 0 OR S.name IS NULL
 )
-)
+) AS R
 
 UNION  --
 
-SELECT * FROM (
+SELECT R.* FROM (
 SELECT
-    mangas.*,
+    M.*,
     chapters.*,
     NULL AS history_id,
     NULL AS history_chapter_id,
     chapters.date_fetch AS history_last_read,
     NULL AS history_time_read
-FROM (
-    SELECT mangas.*
-    FROM mangas
-    LEFT JOIN (
-        SELECT manga_id, COUNT(*) AS unread
-        FROM chapters
-        WHERE read = 0
-        GROUP BY manga_id
-    ) AS C2
-    ON _id = C2.manga_id
-    WHERE (
-        :include_read = 0 OR C2.unread > 0
-    )
-    GROUP BY _id
-    ORDER BY title
-) AS mangas
+FROM mangas AS M
 JOIN chapters
-ON mangas._id = chapters.manga_id
+ON M._id = chapters.manga_id
 JOIN history
 ON chapters._id = history.history_chapter_id
 JOIN (
@@ -147,8 +132,8 @@ JOIN (
         manga_id,
         chapters._id AS history_chapter_id,
         max(date_upload)
-    FROM chapters JOIN mangas
-    ON _id = manga_id
+    FROM chapters JOIN mangas AS M2
+    ON M2._id = manga_id
     WHERE read = 0
     GROUP BY manga_id
 ) AS newest_chapter
@@ -162,19 +147,19 @@ AND lower(title) LIKE '%' || :search || '%'
 AND (
     :apply_filter = 0 OR S.name IS NULL
 )
-)
+) AS R
 
 UNION --
 
-SELECT * FROM (
+SELECT R.* FROM (
 SELECT
-    mangas.*,
+    M.*,
     chapters.*,
     NULL AS history_id,
     NULL AS history_chapter_id,
-    mangas.date_added AS history_last_read,
+    M.date_added AS history_last_read,
     NULL AS history_time_read
-FROM mangas
+FROM mangas AS M
 JOIN (
     SELECT
         NULL AS _id,
@@ -193,6 +178,6 @@ JOIN (
 ) AS chapters
 WHERE favorite = 1
 AND lower(title) LIKE '%' || :search || '%'
-)
+) AS R
 ORDER BY history_last_read DESC
 LIMIT :limit OFFSET :offset;

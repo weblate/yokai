@@ -64,6 +64,7 @@ android {
 tasks {
     withType<KotlinCompile> {
         compilerOptions.freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes",
             "-Xcontext-receivers",
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",

@@ -916,7 +916,7 @@ class LibraryPresenter(
             } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ categories.getOrDefault(0) }, 0))
             ).toMap()
 
-        val items = libraryManga.mapNotNull {
+        val items = libraryManga.apply { if (!libraryIsGrouped) distinctBy { it.id } }.mapNotNull {
             val headerItem = (
                 if (!libraryIsGrouped) {
                     catItemAll

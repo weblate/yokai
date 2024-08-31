@@ -25,16 +25,16 @@ import androidx.core.graphics.scale
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.R
-import okio.Buffer
-import okio.BufferedSource
-import tachiyomi.decoder.Format
-import tachiyomi.decoder.ImageDecoder
 import java.io.InputStream
-import java.util.*
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import okio.Buffer
+import okio.BufferedSource
+import tachiyomi.decoder.Format
+import tachiyomi.decoder.ImageDecoder
 
 object ImageUtil {
 
@@ -795,6 +795,12 @@ object ImageUtil {
             }
             else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
         }
+
+        if (minOf(width, height) <= 0) {
+            Logger.e { "Unable to extract bitmap size" }
+            return false
+        }
+
         return maxOf(width, height) > GLUtil.maxTextureSize
     }
 }

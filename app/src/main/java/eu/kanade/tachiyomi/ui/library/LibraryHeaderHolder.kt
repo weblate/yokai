@@ -15,12 +15,10 @@ import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import co.touchlab.kermit.Logger
 import com.github.florent37.viewtooltip.ViewTooltip
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -36,6 +34,8 @@ import eu.kanade.tachiyomi.util.view.setText
 import eu.kanade.tachiyomi.util.view.text
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
     BaseFlexibleViewHolder(view, adapter, true) {
@@ -96,11 +96,18 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
                 }
                 when (event?.action) {
                     MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                        itemView.parent.requestDisallowInterceptTouchEvent(false)
+                        try {
+                            itemView.parent.requestDisallowInterceptTouchEvent(false)
+                        } catch (e: NullPointerException) {
+                            Logger.e(e) { "Failed to request disallow intercept touch event" }
+                            return@setOnTouchListener false
+                        }
+
                         if (isCancelling) {
                             isCancelling = false
                             return@setOnTouchListener false
                         }
+
                         val result = gestureDetector.onTouchEvent(event)
                         if (!result) {
                             val anim = binding.categoryHeaderLayout.animate().setDuration(150L)

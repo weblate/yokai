@@ -226,7 +226,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         )
 
         val useCoilPipeline = if (isWebtoon) {
-            !ImageUtil.isMaxTextureSizeExceeded(data)
+            try { !ImageUtil.isMaxTextureSizeExceeded(data) } catch (_: IllegalStateException) { false }
         } else {
             false
         }

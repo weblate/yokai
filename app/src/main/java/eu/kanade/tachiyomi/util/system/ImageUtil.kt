@@ -796,10 +796,7 @@ object ImageUtil {
             else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
         }
 
-        if (minOf(width, height) <= 0) {
-            Logger.e { "Unable to extract bitmap size" }
-            return false
-        }
+        if (minOf(width, height) <= 0) throw IllegalStateException("Invalid bitmap size")
 
         return maxOf(width, height) > GLUtil.maxTextureSize
     }

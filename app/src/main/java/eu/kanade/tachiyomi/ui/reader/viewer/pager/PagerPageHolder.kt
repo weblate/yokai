@@ -600,6 +600,8 @@ class PagerPageHolder(
             scope.launchUI { progressIndicator.completeAndFadeOut() }
             return imageSource
         }
+
+        // Try to split
         if (page.longPage == true && viewer.config.splitPages) {
             val imageBitmap = try {
                 BitmapFactory.decodeStream(imageSource.peek().inputStream())
@@ -608,17 +610,24 @@ class PagerPageHolder(
                 return imageSource
             }
             val isLTR = (viewer !is R2LPagerViewer).xor(viewer.config.invertDoublePages)
-            return ImageUtil.splitBitmap(imageBitmap, (page.firstHalf == false).xor(!isLTR)) {
-                scope.launchUI {
-                    if (it == 100) {
-                        progressIndicator.completeAndFadeOut()
-                    } else {
-                        progressIndicator.setProgress(it)
+            return try {
+                ImageUtil.splitBitmap(imageBitmap, (page.firstHalf == false).xor(!isLTR)) {
+                    scope.launchUI {
+                        if (it == 100) {
+                            progressIndicator.completeAndFadeOut()
+                        } else {
+                            progressIndicator.setProgress(it)
+                        }
                     }
                 }
+            } catch (e: NullPointerException) {
+                Logger.e(e) { "Cannot split page" }
+                imageSource
             }
         }
+
         if (imageSource2 == null) {
+            // Detect if page is wide enough to be split
             if (viewer.config.splitPages && page.longPage == null) {
                 val imageBitmap = try {
                     BitmapFactory.decodeStream(imageSource.peek().inputStream())
@@ -663,7 +672,10 @@ class PagerPageHolder(
             }
             return supportHingeIfThere(imageSource)
         }
+
+        // Too wide to be merged
         if (page.fullPage == true) return supportHingeIfThere(imageSource)
+
         val imageBitmap = try {
             BitmapFactory.decodeStream(imageSource.peek().inputStream())
         } catch (e: Exception) {

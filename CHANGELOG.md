@@ -15,6 +15,8 @@
 ## Fixes
 - Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
 - Fixed "Group by Ungrouped" showing duplicate entries
+- Fixed reader sometimes won't load images
+- Handle some uncaught crashes
 
 ## Other
 - Simplify network helper code

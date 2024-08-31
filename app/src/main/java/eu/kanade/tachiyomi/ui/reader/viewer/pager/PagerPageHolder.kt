@@ -37,6 +37,9 @@ import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.isVisibleOnScreen
 import eu.kanade.tachiyomi.widget.ViewPagerAdapter
+import java.io.InputStream
+import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -47,9 +50,6 @@ import kotlinx.coroutines.withContext
 import okio.Buffer
 import okio.BufferedSource
 import uy.kohesive.injekt.injectLazy
-import java.io.InputStream
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 /**
  * View of the ViewPager that contains a page of a chapter.
@@ -628,8 +628,20 @@ class PagerPageHolder(
                     Logger.e { "Cannot split page ${e.message}" }
                     return imageSource
                 }
-                val height = imageBitmap.height
-                val width = imageBitmap.width
+
+                val height: Int
+                val width: Int
+
+                try {
+                    height = imageBitmap.height
+                    width = imageBitmap.width
+                } catch (e: NullPointerException) {
+                    page.longPage = true
+                    splitDoublePages()
+                    Logger.e(e) { "Unable to retrieve bitmap size" }
+                    return imageSource
+                }
+
                 return if (height < width) {
                     closeSources(imageSource)
                     page.longPage = true

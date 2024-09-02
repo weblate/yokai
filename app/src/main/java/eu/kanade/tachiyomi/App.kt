@@ -44,6 +44,7 @@ import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.network.NetworkHelper
+import eu.kanade.tachiyomi.network.NetworkPreferences
 import eu.kanade.tachiyomi.ui.library.LibraryPresenter
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
@@ -75,6 +76,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
     val preferences: PreferencesHelper by injectLazy()
     val basePreferences: BasePreferences by injectLazy()
+    val networkPreferences: NetworkPreferences by injectLazy()
 
     private val disableIncognitoReceiver = DisableIncognitoReceiver()
 
@@ -253,7 +255,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             crossfade(true)
             allowRgb565(this@App.getSystemService<ActivityManager>()!!.isLowRamDevice)
             allowHardware(true)
-            if (BuildConfig.DEBUG) {
+            if (networkPreferences.verboseLogging().get()) {
                 logger(DebugLogger())
             }
 

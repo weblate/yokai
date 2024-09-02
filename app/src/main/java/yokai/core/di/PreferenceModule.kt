@@ -1,6 +1,7 @@
 package yokai.core.di
 
 import android.app.Application
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.preference.AndroidPreferenceStore
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.security.SecurityPreferences
@@ -39,7 +40,12 @@ class PreferenceModule(val application: Application) : InjektModule {
 
         addSingletonFactory { DownloadPreferences(get()) }
 
-        addSingletonFactory { NetworkPreferences(get()) }
+        addSingletonFactory {
+            NetworkPreferences(
+                get(),
+                BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY,
+            )
+        }
 
         addSingletonFactory { SecurityPreferences(get()) }
 

@@ -4,13 +4,13 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.net.toFile
+import co.touchlab.kermit.Logger
 import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
@@ -35,6 +35,7 @@ import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.domain.manga.models.Manga
+import eu.kanade.tachiyomi.network.NetworkPreferences
 import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
@@ -111,6 +112,8 @@ class MangaDetailsPresenter(
     private val getManga: GetManga by injectLazy()
     private val updateChapter: UpdateChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
+
+    private val networkPreferences: NetworkPreferences by injectLazy()
 
 //    private val currentMangaInternal: MutableStateFlow<Manga?> = MutableStateFlow(null)
 //    val currentManga get() = currentMangaInternal.asStateFlow()
@@ -967,7 +970,7 @@ class MangaDetailsPresenter(
             DiskUtil.scanMedia(preferences.context, file)
             true
         } catch (e: Exception) {
-            if (BuildConfig.DEBUG) e.printStackTrace()
+            if (networkPreferences.verboseLogging().get()) Logger.e(e) { "Unable to save cover" }
             false
         }
     }

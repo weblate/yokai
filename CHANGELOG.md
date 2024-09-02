@@ -11,6 +11,7 @@
 -->
 ## Additions
 - Sync DoH provider list with upstream (added Mullvad, Control D, Njalla, and Shecan)
+- Added option to enable verbose logging
 
 ## Fixes
 - Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)

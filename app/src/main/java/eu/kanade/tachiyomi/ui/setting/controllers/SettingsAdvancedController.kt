@@ -129,6 +129,12 @@ class SettingsAdvancedController : SettingsLegacyController() {
             }
         }
 
+        switchPreference {
+            bindTo(networkPreferences.verboseLogging())
+            titleRes = MR.strings.pref_verbose_logging
+            summaryRes = MR.strings.pref_verbose_logging_summary
+        }
+
         preference {
             key = "debug_info"
             titleRes = MR.strings.pref_debug_info

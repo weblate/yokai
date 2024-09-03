@@ -8,7 +8,7 @@ interface Track : Serializable {
 
     var manga_id: Long
 
-    var sync_id: Int
+    var sync_id: Long
 
     var media_id: Long
 
@@ -18,7 +18,7 @@ interface Track : Serializable {
 
     var last_chapter_read: Float
 
-    var total_chapters: Int
+    var total_chapters: Long
 
     var score: Float
 
@@ -39,7 +39,7 @@ interface Track : Serializable {
     }
 
     companion object {
-        fun create(serviceId: Int): Track = TrackImpl().apply {
+        fun create(serviceId: Long): Track = TrackImpl().apply {
             sync_id = serviceId
         }
     }

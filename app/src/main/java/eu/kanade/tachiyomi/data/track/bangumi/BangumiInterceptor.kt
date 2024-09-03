@@ -1,7 +1,7 @@
 package eu.kanade.tachiyomi.data.track.bangumi
 
 import eu.kanade.tachiyomi.BuildConfig
-import kotlinx.serialization.decodeFromString
+import eu.kanade.tachiyomi.data.track.bangumi.dto.BGMOAuth
 import kotlinx.serialization.json.Json
 import okhttp3.FormBody
 import okhttp3.Interceptor
@@ -15,7 +15,7 @@ class BangumiInterceptor(val bangumi: Bangumi) : Interceptor {
     /**
      * OAuth object used for authenticated requests.
      */
-    private var oauth: OAuth? = bangumi.restoreToken()
+    private var oauth: BGMOAuth? = bangumi.restoreToken()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
@@ -23,9 +23,9 @@ class BangumiInterceptor(val bangumi: Bangumi) : Interceptor {
         val currAuth = oauth ?: throw Exception("Not authenticated with Bangumi")
 
         if (currAuth.isExpired()) {
-            val response = chain.proceed(BangumiApi.refreshTokenRequest(currAuth.refresh_token!!))
+            val response = chain.proceed(BangumiApi.refreshTokenRequest(currAuth.refreshToken!!))
             if (response.isSuccessful) {
-                newAuth(json.decodeFromString<OAuth>(response.body.string()))
+                newAuth(json.decodeFromString<BGMOAuth>(response.body.string()))
             } else {
                 response.close()
             }
@@ -36,12 +36,12 @@ class BangumiInterceptor(val bangumi: Bangumi) : Interceptor {
                 .header("User-Agent", "null2264/yokai/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
                 .url(
                     originalRequest.url.newBuilder()
-                        .addQueryParameter("access_token", currAuth.access_token).build(),
+                        .addQueryParameter("access_token", currAuth.accessToken).build(),
                 )
                 .build()
         } else {
             originalRequest.newBuilder()
-                .post(addToken(currAuth.access_token, originalRequest.body as FormBody))
+                .post(addToken(currAuth.accessToken, originalRequest.body as FormBody))
                 .header("User-Agent", "null2264/yokai/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
                 .build()
         }
@@ -49,17 +49,17 @@ class BangumiInterceptor(val bangumi: Bangumi) : Interceptor {
         return chain.proceed(authRequest)
     }
 
-    fun newAuth(oauth: OAuth?) {
+    fun newAuth(oauth: BGMOAuth?) {
         this.oauth = if (oauth == null) {
             null
         } else {
-            OAuth(
-                oauth.access_token,
-                oauth.token_type,
+            BGMOAuth(
+                oauth.accessToken,
+                oauth.tokenType,
                 System.currentTimeMillis() / 1000,
-                oauth.expires_in,
-                oauth.refresh_token,
-                this.oauth?.user_id,
+                oauth.expiresIn,
+                oauth.refreshToken,
+                this.oauth?.userId,
             )
         }
 

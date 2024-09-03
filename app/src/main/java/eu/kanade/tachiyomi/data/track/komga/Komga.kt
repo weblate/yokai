@@ -9,12 +9,14 @@ import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
 import eu.kanade.tachiyomi.domain.manga.models.Manga
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import okhttp3.Dns
 import okhttp3.OkHttpClient
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
-class Komga(private val context: Context, id: Int) : TrackService(id), EnhancedTrackService {
+class Komga(private val context: Context, id: Long) : TrackService(id), EnhancedTrackService {
 
     companion object {
         const val UNREAD = 1
@@ -63,7 +65,7 @@ class Komga(private val context: Context, id: Int) : TrackService(id), EnhancedT
     override fun readingStatus() = READING
     override fun planningStatus() = UNREAD
 
-    override fun getScoreList(): List<String> = emptyList()
+    override fun getScoreList(): ImmutableList<String> = persistentListOf()
 
     override fun displayScore(track: Track): String = ""
     override suspend fun add(track: Track): Track {

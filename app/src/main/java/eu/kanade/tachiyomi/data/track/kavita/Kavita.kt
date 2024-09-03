@@ -13,12 +13,14 @@ import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.sourcePreferences
+import java.security.MessageDigest
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import uy.kohesive.injekt.injectLazy
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.security.MessageDigest
 
-class Kavita(private val context: Context, id: Int) : TrackService(id), EnhancedTrackService {
+class Kavita(private val context: Context, id: Long) : TrackService(id), EnhancedTrackService {
 
     companion object {
         const val UNREAD = 1
@@ -67,7 +69,7 @@ class Kavita(private val context: Context, id: Int) : TrackService(id), Enhanced
     override fun readingStatus() = READING
     override fun planningStatus() = UNREAD
 
-    override fun getScoreList(): List<String> = emptyList()
+    override fun getScoreList(): ImmutableList<String> = persistentListOf()
 
     override fun displayScore(track: Track): String = ""
 

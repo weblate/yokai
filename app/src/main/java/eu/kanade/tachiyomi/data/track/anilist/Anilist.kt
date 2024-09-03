@@ -6,20 +6,23 @@ import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
+import eu.kanade.tachiyomi.data.track.anilist.dto.ALOAuth
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
 import eu.kanade.tachiyomi.util.system.e
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.injectLazy
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
-class Anilist(private val context: Context, id: Int) : TrackService(id) {
+class Anilist(private val context: Context, id: Long) : TrackService(id) {
 
     companion object {
         const val READING = 1
         const val COMPLETED = 2
-        const val PAUSED = 3
+        const val ON_HOLD = 3
         const val DROPPED = 4
         const val PLAN_TO_READ = 5
         const val REREADING = 6
@@ -62,7 +65,7 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
 
     override fun getLogoColor() = Color.rgb(18, 25, 35)
 
-    override fun getStatusList() = listOf(READING, PLAN_TO_READ, COMPLETED, REREADING, PAUSED, DROPPED)
+    override fun getStatusList() = listOf(READING, PLAN_TO_READ, COMPLETED, REREADING, ON_HOLD, DROPPED)
 
     override fun isCompletedStatus(index: Int) = getStatusList()[index] == COMPLETED
 
@@ -75,7 +78,7 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
             READING -> getString(MR.strings.reading)
             PLAN_TO_READ -> getString(MR.strings.plan_to_read)
             COMPLETED -> getString(MR.strings.completed)
-            PAUSED -> getString(MR.strings.paused)
+            ON_HOLD -> getString(MR.strings.paused)
             DROPPED -> getString(MR.strings.dropped)
             REREADING -> getString(MR.strings.rereading)
             else -> ""
@@ -87,25 +90,25 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
             READING -> getString(MR.strings.reading)
             PLAN_TO_READ -> getString(MR.strings.plan_to_read)
             COMPLETED -> getString(MR.strings.completed)
-            PAUSED -> getString(MR.strings.on_hold)
+            ON_HOLD -> getString(MR.strings.on_hold)
             DROPPED -> getString(MR.strings.dropped)
             REREADING -> getString(MR.strings.rereading)
             else -> ""
         }
     }
 
-    override fun getScoreList(): List<String> {
+    override fun getScoreList(): ImmutableList<String> {
         return when (scorePreference.get()) {
             // 10 point
-            POINT_10 -> IntRange(0, 10).map(Int::toString)
+            POINT_10 -> IntRange(0, 10).map(Int::toString).toImmutableList()
             // 100 point
-            POINT_100 -> IntRange(0, 100).map(Int::toString)
+            POINT_100 -> IntRange(0, 100).map(Int::toString).toImmutableList()
             // 5 stars
-            POINT_5 -> IntRange(0, 5).map { "$it ★" }
+            POINT_5 -> IntRange(0, 5).map { "$it ★" }.toImmutableList()
             // Smiley
-            POINT_3 -> listOf("-", "😦", "😐", "😊")
+            POINT_3 -> listOf("-", "😦", "😐", "😊").toImmutableList()
             // 10 point decimal
-            POINT_10_DECIMAL -> IntRange(0, 100).map { (it / 10f).toString() }
+            POINT_10_DECIMAL -> IntRange(0, 100).map { (it / 10f).toString() }.toImmutableList()
             else -> throw Exception("Unknown score type")
         }
     }
@@ -142,13 +145,15 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
                 0f -> "0 ★"
                 else -> "${((score + 10) / 20).toInt()} ★"
             }
+
             POINT_3 -> when {
                 score == 0f -> "0"
                 score <= 35 -> "😦"
                 score <= 60 -> "😐"
                 else -> "😊"
             }
-            else -> track.toAnilistScore()
+
+            else -> track.toApiScore()
         }
     }
 
@@ -207,7 +212,7 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
             interceptor.setAuth(oauth)
             val (username, scoreType) = api.getCurrentUser()
             scorePreference.set(scoreType)
-            saveCredentials(username.toString(), oauth.access_token)
+            saveCredentials(username.toString(), oauth.accessToken)
             true
         } catch (e: Exception) {
             Logger.e(e)
@@ -233,13 +238,13 @@ class Anilist(private val context: Context, id: Int) : TrackService(id) {
         interceptor.setAuth(null)
     }
 
-    fun saveOAuth(oAuth: OAuth?) {
-        trackPreferences.trackToken(this).set(json.encodeToString(oAuth))
+    fun saveOAuth(alOAuth: ALOAuth?) {
+        trackPreferences.trackToken(this).set(json.encodeToString(alOAuth))
     }
 
-    fun loadOAuth(): OAuth? {
+    fun loadOAuth(): ALOAuth? {
         return try {
-            json.decodeFromString<OAuth>(trackPreferences.trackToken(this).get())
+            json.decodeFromString<ALOAuth>(trackPreferences.trackToken(this).get())
         } catch (e: Exception) {
             Logger.e(e)
             null

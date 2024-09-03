@@ -10,7 +10,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import androidx.annotation.PluralsRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -30,9 +29,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import dev.icerock.moko.resources.PluralsResource
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.databinding.StatsDetailsChartBinding
 import eu.kanade.tachiyomi.databinding.StatsDetailsControllerBinding
@@ -61,14 +57,16 @@ import eu.kanade.tachiyomi.util.view.compatToolTipText
 import eu.kanade.tachiyomi.util.view.doOnApplyWindowInsetsCompat
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.liftAppbarWith
-import eu.kanade.tachiyomi.util.view.setNegativeButton
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
 import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.setTitleText
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import java.util.Calendar
+import java.util.Locale
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.*
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class StatsDetailsController :
@@ -685,7 +683,7 @@ class StatsDetailsController :
             Stats.TRACKER -> {
                 val serviceName: String? = id?.let {
                     val loggedServices = presenter.trackManager.services.filter { it.isLogged }
-                    val service = loggedServices.find { it.id == id.toInt() } ?: return
+                    val service = loggedServices.find { it.id == id } ?: return
                     return@let binding.root.context.getString(service.nameRes())
                 }
                 router.pushController(

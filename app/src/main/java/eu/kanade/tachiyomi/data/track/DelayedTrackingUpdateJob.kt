@@ -13,11 +13,11 @@ import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.system.e
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.util.concurrent.TimeUnit
 
 class DelayedTrackingUpdateJob(context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
@@ -32,7 +32,7 @@ class DelayedTrackingUpdateJob(context: Context, workerParams: WorkerParameters)
                 null
             } else {
                 val mangaId = items[0].toLongOrNull() ?: return@mapNotNull null
-                val trackId = items[1].toIntOrNull() ?: return@mapNotNull null
+                val trackId = items[1].toLongOrNull() ?: return@mapNotNull null
                 val chapterNumber = items[2].toFloatOrNull() ?: return@mapNotNull null
                 mangaId to (trackId to chapterNumber)
             }

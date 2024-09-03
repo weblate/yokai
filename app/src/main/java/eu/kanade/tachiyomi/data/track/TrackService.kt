@@ -9,10 +9,11 @@ import eu.kanade.tachiyomi.data.database.models.isOneShotOrCompleted
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.util.system.executeOnIO
+import kotlinx.collections.immutable.ImmutableList
 import okhttp3.OkHttpClient
 import uy.kohesive.injekt.injectLazy
 
-abstract class TrackService(val id: Int) {
+abstract class TrackService(val id: Long) {
 
     val trackPreferences: TrackPreferences by injectLazy()
     val networkService: NetworkHelper by injectLazy()
@@ -46,7 +47,7 @@ abstract class TrackService(val id: Int) {
 
     abstract fun getGlobalStatus(status: Int): String
 
-    abstract fun getScoreList(): List<String>
+    abstract fun getScoreList(): ImmutableList<String>
 
     open fun indexToScore(index: Int): Float {
         return index.toFloat()
@@ -83,8 +84,8 @@ abstract class TrackService(val id: Int) {
         }
         if (setToComplete &&
             (!mustReadToComplete || track.status == readingStatus()) &&
-            track.total_chapters != 0 &&
-            track.last_chapter_read.toInt() == track.total_chapters
+            track.total_chapters != 0L &&
+            track.last_chapter_read.toLong() == track.total_chapters
         ) {
             track.status = completedStatus()
         }

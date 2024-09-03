@@ -9,10 +9,12 @@ import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
 import eu.kanade.tachiyomi.domain.manga.models.Manga
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
-class Suwayomi(private val context: Context, id: Int) : TrackService(id), EnhancedTrackService {
+class Suwayomi(private val context: Context, id: Long) : TrackService(id), EnhancedTrackService {
     val api by lazy { TachideskApi() }
 
     override fun nameRes() = MR.strings.suwayomi
@@ -55,7 +57,7 @@ class Suwayomi(private val context: Context, id: Int) : TrackService(id), Enhanc
     override fun readingStatus() = READING
     override fun planningStatus() = UNREAD
 
-    override fun getScoreList(): List<String> = emptyList()
+    override fun getScoreList(): ImmutableList<String> = persistentListOf()
 
     override fun displayScore(track: Track): String = ""
 

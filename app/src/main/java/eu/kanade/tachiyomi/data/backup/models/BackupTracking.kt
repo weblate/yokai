@@ -32,7 +32,7 @@ data class BackupTracking(
 
     fun getTrackingImpl(): TrackImpl {
         return TrackImpl().apply {
-            sync_id = this@BackupTracking.syncId
+            sync_id = this@BackupTracking.syncId.toLong()
             media_id = if (this@BackupTracking.mediaIdInt != 0) {
                 this@BackupTracking.mediaIdInt.toLong()
             } else {
@@ -41,7 +41,7 @@ data class BackupTracking(
             library_id = this@BackupTracking.libraryId
             title = this@BackupTracking.title
             last_chapter_read = this@BackupTracking.lastChapterRead
-            total_chapters = this@BackupTracking.totalChapters
+            total_chapters = this@BackupTracking.totalChapters.toLong()
             score = this@BackupTracking.score
             status = this@BackupTracking.status
             started_reading_date = this@BackupTracking.startedReadingDate
@@ -53,13 +53,13 @@ data class BackupTracking(
     companion object {
         fun copyFrom(track: Track): BackupTracking {
             return BackupTracking(
-                syncId = track.sync_id,
+                syncId = track.sync_id.toInt(),
                 mediaId = track.media_id,
                 // forced not null so its compatible with 1.x backup system
                 libraryId = track.library_id!!,
                 title = track.title,
                 lastChapterRead = track.last_chapter_read,
-                totalChapters = track.total_chapters,
+                totalChapters = track.total_chapters.toInt(),
                 score = track.score,
                 status = track.status,
                 startedReadingDate = track.started_reading_date,

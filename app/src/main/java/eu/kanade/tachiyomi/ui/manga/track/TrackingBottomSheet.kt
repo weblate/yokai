@@ -32,9 +32,6 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.listeners.addClickListener
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
@@ -65,7 +62,9 @@ import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.setTitleText
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
 import java.text.DateFormat
-import java.util.*
+import java.util.Calendar
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class TrackingBottomSheet(private val controller: MangaDetailsController) :
@@ -491,9 +490,9 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
         val np = binding.chaptersPicker
         // Set initial value
         np.value = item.track.last_chapter_read.toInt()
-        if (item.track.total_chapters > 0) {
+        if (item.track.total_chapters > 0L) {
             np.wrapSelectorWheel = true
-            np.maxValue = item.track.total_chapters
+            np.maxValue = item.track.total_chapters.toInt()
         } else {
             // Don't allow to go from 0 to 9999
             np.wrapSelectorWheel = false

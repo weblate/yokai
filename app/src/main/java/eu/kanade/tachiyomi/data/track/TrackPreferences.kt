@@ -30,11 +30,11 @@ class TrackPreferences(
     fun autoUpdateTrack() = preferenceStore.getBoolean("pref_auto_update_manga_sync_key", true)
 
     companion object {
-        fun trackUsername(syncId: Int) = Preference.privateKey("pref_mangasync_username_$syncId")
+        fun trackUsername(syncId: Long) = Preference.privateKey("pref_mangasync_username_$syncId")
 
-        private fun trackPassword(syncId: Int) =
+        private fun trackPassword(syncId: Long) =
             Preference.privateKey("pref_mangasync_password_$syncId")
 
-        private fun trackToken(syncId: Int) = Preference.privateKey("track_token_$syncId")
+        private fun trackToken(syncId: Long) = Preference.privateKey("track_token_$syncId")
     }
 }

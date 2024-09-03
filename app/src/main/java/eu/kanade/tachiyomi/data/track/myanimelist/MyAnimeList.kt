@@ -2,22 +2,23 @@ package eu.kanade.tachiyomi.data.track.myanimelist
 
 import android.content.Context
 import android.graphics.Color
-import androidx.annotation.StringRes
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
+import eu.kanade.tachiyomi.data.track.myanimelist.dto.MALOAuth
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
 import eu.kanade.tachiyomi.util.system.e
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
-class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
+class MyAnimeList(private val context: Context, id: Long) : TrackService(id) {
 
     private val json: Json by injectLazy()
     private val interceptor by lazy { MyAnimeListInterceptor(this) }
@@ -65,8 +66,8 @@ class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
     override fun readingStatus() = READING
     override fun planningStatus() = PLAN_TO_READ
 
-    override fun getScoreList(): List<String> {
-        return IntRange(0, 10).map(Int::toString)
+    override fun getScoreList(): ImmutableList<String> {
+        return IntRange(0, 10).map(Int::toString).toImmutableList()
     }
 
     override fun displayScore(track: Track): String {
@@ -129,7 +130,7 @@ class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
             val oauth = api.getAccessToken(authCode)
             interceptor.setAuth(oauth)
             val username = api.getCurrentUser()
-            saveCredentials(username, oauth.access_token)
+            saveCredentials(username, oauth.accessToken)
             true
         } catch (e: Exception) {
             Logger.e(e)
@@ -152,13 +153,13 @@ class MyAnimeList(private val context: Context, id: Int) : TrackService(id) {
         trackPreferences.trackAuthExpired(this).set(true)
     }
 
-    fun saveOAuth(oAuth: OAuth?) {
+    fun saveOAuth(oAuth: MALOAuth?) {
         trackPreferences.trackToken(this).set(json.encodeToString(oAuth))
     }
 
-    fun loadOAuth(): OAuth? {
+    fun loadOAuth(): MALOAuth? {
         return try {
-            json.decodeFromString<OAuth>(trackPreferences.trackToken(this).get())
+            json.decodeFromString<MALOAuth>(trackPreferences.trackToken(this).get())
         } catch (e: Exception) {
             null
         }

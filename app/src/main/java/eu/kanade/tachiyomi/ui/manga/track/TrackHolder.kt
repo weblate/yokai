@@ -9,17 +9,16 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.TrackItemBinding
 import eu.kanade.tachiyomi.ui.base.holder.BaseViewHolder
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.setText
-import uy.kohesive.injekt.injectLazy
 import java.text.DateFormat
+import uy.kohesive.injekt.injectLazy
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class TrackHolder(view: View, adapter: TrackAdapter) : BaseViewHolder(view) {
@@ -64,10 +63,10 @@ class TrackHolder(view: View, adapter: TrackAdapter) : BaseViewHolder(view) {
             binding.trackTitle.text = track.title
             with(binding.trackChapters) {
                 text = when {
-                    track.total_chapters > 0 && track.last_chapter_read.toInt() == track.total_chapters -> context.getString(
+                    track.total_chapters > 0L && track.last_chapter_read.toLong() == track.total_chapters -> context.getString(
                         MR.strings.all_chapters_read,
                     )
-                    track.total_chapters > 0 -> context.getString(
+                    track.total_chapters > 0L -> context.getString(
                         MR.strings.chapter_x_of_y,
                         track.last_chapter_read.toInt(),
                         track.total_chapters,

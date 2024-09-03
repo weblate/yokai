@@ -6,11 +6,11 @@ class TrackSearch : Track {
 
     override var id: Long? = null
 
-    override var manga_id: Long = 0
+    override var manga_id: Long = 0L
 
-    override var sync_id: Int = 0
+    override var sync_id: Long = 0L
 
-    override var media_id: Long = 0
+    override var media_id: Long = 0L
 
     override var library_id: Long? = null
 
@@ -18,7 +18,7 @@ class TrackSearch : Track {
 
     override var last_chapter_read: Float = 0F
 
-    override var total_chapters: Int = 0
+    override var total_chapters: Long = 0L
 
     override var score: Float = 0f
 
@@ -55,13 +55,13 @@ class TrackSearch : Track {
 
     override fun hashCode(): Int {
         var result = manga_id.hashCode()
-        result = 31 * result + sync_id
+        result = 31 * result + sync_id.hashCode()
         result = 31 * result + media_id.hashCode()
         return result
     }
 
     companion object {
-        fun create(serviceId: Int): TrackSearch = TrackSearch().apply {
+        fun create(serviceId: Long): TrackSearch = TrackSearch().apply {
             sync_id = serviceId
         }
     }

@@ -8,14 +8,14 @@ import eu.kanade.tachiyomi.network.POST
 import eu.kanade.tachiyomi.network.awaitSuccess
 import eu.kanade.tachiyomi.network.parseAs
 import eu.kanade.tachiyomi.util.system.withIOContext
+import java.io.IOException
+import java.net.SocketTimeoutException
 import kotlinx.serialization.json.Json
 import okhttp3.Dns
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import uy.kohesive.injekt.injectLazy
-import java.io.IOException
-import java.net.SocketTimeoutException
 
 class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor) {
 
@@ -86,7 +86,7 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
      * Ignores volumes.
      * Volumes consisting of 1 file treated as chapter
      */
-    private fun getTotalChapters(url: String): Int {
+    private fun getTotalChapters(url: String): Long {
         val requestUrl = getApiVolumesUrl(url)
         try {
             val listVolumeDto = with(json) {
@@ -94,13 +94,13 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
                     .execute()
                     .parseAs<List<VolumeDto>>()
             }
-            var volumeNumber = 0
-            var maxChapterNumber = 0
+            var volumeNumber = 0L
+            var maxChapterNumber = 0L
             for (volume in listVolumeDto) {
                 if (volume.chapters.maxOf { it.number!!.toFloat() } == 0f) {
                     volumeNumber++
                 } else if (maxChapterNumber < volume.chapters.maxOf { it.number!!.toFloat() }) {
-                    maxChapterNumber = volume.chapters.maxOf { it.number!!.toFloat().toInt() }
+                    maxChapterNumber = volume.chapters.maxOf { it.number!!.toFloat().toLong() }
                 }
             }
 

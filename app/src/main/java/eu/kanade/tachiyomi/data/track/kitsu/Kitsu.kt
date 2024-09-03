@@ -2,23 +2,24 @@ package eu.kanade.tachiyomi.data.track.kitsu
 
 import android.content.Context
 import android.graphics.Color
-import androidx.annotation.StringRes
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
+import eu.kanade.tachiyomi.data.track.kitsu.dto.KitsuOAuth
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
 import eu.kanade.tachiyomi.util.system.e
+import java.text.DecimalFormat
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.injectLazy
-import java.text.DecimalFormat
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
-class Kitsu(private val context: Context, id: Int) : TrackService(id) {
+class Kitsu(private val context: Context, id: Long) : TrackService(id) {
 
     companion object {
         const val READING = 1
@@ -79,9 +80,9 @@ class Kitsu(private val context: Context, id: Int) : TrackService(id) {
         }
     }
 
-    override fun getScoreList(): List<String> {
+    override fun getScoreList(): ImmutableList<String> {
         val df = DecimalFormat("0.#")
-        return listOf("0") + IntRange(2, 20).map { df.format(it / 2f) }
+        return (listOf("0") + IntRange(2, 20).map { df.format(it / 2f) }).toImmutableList()
     }
 
     override fun indexToScore(index: Int): Float {
@@ -155,13 +156,13 @@ class Kitsu(private val context: Context, id: Int) : TrackService(id) {
         return getPassword()
     }
 
-    fun saveToken(oauth: OAuth?) {
+    fun saveToken(oauth: KitsuOAuth?) {
         trackPreferences.trackToken(this).set(json.encodeToString(oauth))
     }
 
-    fun restoreToken(): OAuth? {
+    fun restoreToken(): KitsuOAuth? {
         return try {
-            json.decodeFromString<OAuth>(trackPreferences.trackToken(this).get())
+            json.decodeFromString<KitsuOAuth>(trackPreferences.trackToken(this).get())
         } catch (e: Exception) {
             null
         }

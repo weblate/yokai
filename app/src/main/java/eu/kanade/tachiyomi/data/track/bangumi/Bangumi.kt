@@ -6,16 +6,19 @@ import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
+import eu.kanade.tachiyomi.data.track.bangumi.dto.BGMOAuth
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
 import eu.kanade.tachiyomi.util.system.e
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.injectLazy
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
-class Bangumi(private val context: Context, id: Int) : TrackService(id) {
+class Bangumi(private val context: Context, id: Long) : TrackService(id) {
 
     override fun nameRes() = MR.strings.bangumi
 
@@ -23,10 +26,10 @@ class Bangumi(private val context: Context, id: Int) : TrackService(id) {
 
     private val interceptor by lazy { BangumiInterceptor(this) }
 
-    private val api by lazy { BangumiApi(client, interceptor) }
+    private val api by lazy { BangumiApi(id, client, interceptor) }
 
-    override fun getScoreList(): List<String> {
-        return IntRange(0, 10).map(Int::toString)
+    override fun getScoreList(): ImmutableList<String> {
+        return IntRange(0, 10).map(Int::toString).toImmutableList()
     }
 
     override fun displayScore(track: Track): String {
@@ -65,8 +68,8 @@ class Bangumi(private val context: Context, id: Int) : TrackService(id) {
     }
 
     override suspend fun refresh(track: Track): Track {
-        val statusTrack = api.statusLibManga(track)
-        track.copyPersonalFrom(statusTrack!!)
+        val statusTrack = api.statusLibManga(track) ?: throw Exception("Could not find manga")
+        track.copyPersonalFrom(statusTrack)
         val remoteTrack = api.findLibManga(track)
         if (remoteTrack != null) {
             track.total_chapters = remoteTrack.total_chapters
@@ -119,7 +122,7 @@ class Bangumi(private val context: Context, id: Int) : TrackService(id) {
         try {
             val oauth = api.accessToken(code)
             interceptor.newAuth(oauth)
-            saveCredentials(oauth.user_id.toString(), oauth.access_token)
+            saveCredentials(oauth.userId.toString(), oauth.accessToken)
             return true
         } catch (e: Exception) {
             Logger.e(e)
@@ -128,13 +131,13 @@ class Bangumi(private val context: Context, id: Int) : TrackService(id) {
         return false
     }
 
-    fun saveToken(oauth: OAuth?) {
+    fun saveToken(oauth: BGMOAuth?) {
         trackPreferences.trackToken(this).set(json.encodeToString(oauth))
     }
 
-    fun restoreToken(): OAuth? {
+    fun restoreToken(): BGMOAuth? {
         return try {
-            json.decodeFromString<OAuth>(trackPreferences.trackToken(this).get())
+            json.decodeFromString<BGMOAuth>(trackPreferences.trackToken(this).get())
         } catch (e: Exception) {
             null
         }

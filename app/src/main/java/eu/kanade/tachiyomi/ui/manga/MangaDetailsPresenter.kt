@@ -1117,7 +1117,7 @@ class MangaDetailsPresenter(
     fun setStatus(item: TrackItem, index: Int) {
         val track = item.track!!
         track.status = item.service.getStatusList()[index]
-        if (item.service.isCompletedStatus(index) && track.total_chapters > 0) {
+        if (item.service.isCompletedStatus(index) && track.total_chapters > 0L) {
             track.last_chapter_read = track.total_chapters.toFloat()
         }
         updateRemote(track, item.service)

@@ -35,7 +35,7 @@ class BackupFileValidator(
 
         val trackers = backup.backupManga
             .flatMap { it.tracking }
-            .map { it.syncId }
+            .map { it.syncId.toLong() }
             .distinct()
         val missingTrackers = trackers
             .mapNotNull { trackManager.getService(it) }

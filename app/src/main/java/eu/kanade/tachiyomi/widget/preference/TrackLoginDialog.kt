@@ -16,12 +16,12 @@ import yokai.util.lang.getString
 class TrackLoginDialog(usernameLabelRes: StringResource? = null, bundle: Bundle? = null) :
     LoginDialogPreference(usernameLabelRes, bundle) {
 
-    private val service = Injekt.get<TrackManager>().getService(args.getInt("key"))!!
+    private val service = Injekt.get<TrackManager>().getService(args.getLong("key"))!!
 
     override var canLogout = true
 
     constructor(service: TrackService, usernameLabelRes: StringResource?) :
-        this(usernameLabelRes, Bundle().apply { putInt("key", service.id) })
+        this(usernameLabelRes, Bundle().apply { putLong("key", service.id) })
 
     override fun setCredentialsOnView(view: View) = with(view) {
         val serviceName = context.getString(service.nameRes())

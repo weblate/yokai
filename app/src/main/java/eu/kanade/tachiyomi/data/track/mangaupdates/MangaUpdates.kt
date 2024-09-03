@@ -2,22 +2,21 @@ package eu.kanade.tachiyomi.data.track.mangaupdates
 
 import android.content.Context
 import android.graphics.Color
-import androidx.annotation.StringRes
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.TrackService
-import eu.kanade.tachiyomi.data.track.mangaupdates.dto.ListItem
-import eu.kanade.tachiyomi.data.track.mangaupdates.dto.Rating
+import eu.kanade.tachiyomi.data.track.mangaupdates.dto.MUListItem
+import eu.kanade.tachiyomi.data.track.mangaupdates.dto.MURating
 import eu.kanade.tachiyomi.data.track.mangaupdates.dto.copyTo
 import eu.kanade.tachiyomi.data.track.mangaupdates.dto.toTrackSearch
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.data.track.updateNewTrackInfo
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
-class MangaUpdates(private val context: Context, id: Int) : TrackService(id) {
+class MangaUpdates(private val context: Context, id: Long) : TrackService(id) {
 
     companion object {
         const val READING_LIST = 0
@@ -86,7 +85,7 @@ class MangaUpdates(private val context: Context, id: Int) : TrackService(id) {
         }
         .toImmutableList()
 
-    override fun getScoreList(): List<String> = _scoreList
+    override fun getScoreList(): ImmutableList<String> = _scoreList
 
     override fun indexToScore(index: Int): Float = if (index == 0) 0f else _scoreList[index].toFloat()
 
@@ -130,7 +129,7 @@ class MangaUpdates(private val context: Context, id: Int) : TrackService(id) {
         return rating?.copyTo(track) ?: track
     }
 
-    private fun Track.copyFrom(item: ListItem, rating: Rating?): Track = apply {
+    private fun Track.copyFrom(item: MUListItem, rating: MURating?): Track = apply {
         item.copyTo(this)
         score = rating?.rating ?: 0f
     }

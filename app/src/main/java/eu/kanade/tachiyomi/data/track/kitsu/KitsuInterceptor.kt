@@ -1,7 +1,7 @@
 package eu.kanade.tachiyomi.data.track.kitsu
 
 import eu.kanade.tachiyomi.BuildConfig
-import kotlinx.serialization.decodeFromString
+import eu.kanade.tachiyomi.data.track.kitsu.dto.KitsuOAuth
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -14,14 +14,14 @@ class KitsuInterceptor(val kitsu: Kitsu) : Interceptor {
     /**
      * OAuth object used for authenticated requests.
      */
-    private var oauth: OAuth? = kitsu.restoreToken()
+    private var oauth: KitsuOAuth? = kitsu.restoreToken()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
         val currAuth = oauth ?: throw Exception("Not authenticated with Kitsu")
 
-        val refreshToken = currAuth.refresh_token!!
+        val refreshToken = currAuth.refreshToken!!
 
         // Refresh access token if expired.
         if (currAuth.isExpired()) {
@@ -35,7 +35,7 @@ class KitsuInterceptor(val kitsu: Kitsu) : Interceptor {
 
         // Add the authorization header to the original request.
         val authRequest = originalRequest.newBuilder()
-            .addHeader("Authorization", "Bearer ${oauth!!.access_token}")
+            .addHeader("Authorization", "Bearer ${oauth!!.accessToken}")
             .header("User-Agent", "null2264/yokai/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
             .header("Accept", "application/vnd.api+json")
             .header("Content-Type", "application/vnd.api+json")
@@ -44,7 +44,7 @@ class KitsuInterceptor(val kitsu: Kitsu) : Interceptor {
         return chain.proceed(authRequest)
     }
 
-    fun newAuth(oauth: OAuth?) {
+    fun newAuth(oauth: KitsuOAuth?) {
         this.oauth = oauth
         kitsu.saveToken(oauth)
     }

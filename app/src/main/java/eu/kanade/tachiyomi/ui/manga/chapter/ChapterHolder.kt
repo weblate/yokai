@@ -84,12 +84,12 @@ class ChapterHolder(
                 if (item.bookmark) R.drawable.ic_bookmark_off_24dp else R.drawable.ic_bookmark_24dp,
             )
         }
-        // this will color the scanlator the same bookmarks
         ChapterUtil.setTextViewForChapter(
             binding.chapterScanlator,
             item,
             showBookmark = false,
             hideStatus = isLocked,
+            isDetails = true,
         )
         binding.chapterScanlator.text = statuses.joinToString(" • ")
 

@@ -16,10 +16,10 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.dpToPxEnd
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
-import yokai.i18n.MR
-import yokai.util.lang.getString
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class ChapterUtil {
     companion object {
@@ -42,9 +42,10 @@ class ChapterUtil {
             chapter: Chapter,
             showBookmark: Boolean = true,
             hideStatus: Boolean = false,
+            isDetails: Boolean = false,
         ) {
             val context = textView.context
-            textView.setTextColor(chapterColor(context, chapter, hideStatus))
+            textView.setTextColor(chapterColor(context, chapter, hideStatus, isDetails))
             if (!hideStatus && showBookmark) {
                 setBookmark(textView, chapter)
             }
@@ -77,11 +78,11 @@ class ChapterUtil {
             }
         }
 
-        fun chapterColor(context: Context, chapter: Chapter, hideStatus: Boolean = false): Int {
+        fun chapterColor(context: Context, chapter: Chapter, hideStatus: Boolean = false, secondary: Boolean = false): Int {
             return when {
-                hideStatus -> unreadColor(context)
+                hideStatus -> unreadColor(context, secondary)
                 chapter.read -> readColor(context)
-                else -> unreadColor(context)
+                else -> unreadColor(context, secondary)
             }
         }
 
@@ -101,7 +102,12 @@ class ChapterUtil {
 
         private fun readColor(context: Context): Int = context.contextCompatColor(R.color.read_chapter)
 
-        private fun unreadColor(context: Context): Int = context.getResourceColor(R.attr.colorOnBackground)
+        private fun unreadColor(context: Context, secondary: Boolean = false): Int =
+            if (!secondary) {
+                context.getResourceColor(R.attr.colorOnBackground)
+            } else {
+                context.getResourceColor(android.R.attr.textColorSecondary)
+            }
 
         private fun bookmarkedColor(context: Context): Int = context.getResourceColor(R.attr.colorSecondary)
 

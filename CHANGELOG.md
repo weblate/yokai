@@ -13,6 +13,9 @@
 - Sync DoH provider list with upstream (added Mullvad, Control D, Njalla, and Shecan)
 - Added option to enable verbose logging
 
+## Changes
+- Enable 'Split Tall Images' by default (@Smol-Ame)
+
 ## Fixes
 - Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
 - Fixed "Group by Ungrouped" showing duplicate entries
@@ -24,3 +27,4 @@
 - Even more SQLDelight migration effort
 - Update dependency com.android.tools:desugar_jdk_libs to v2.1.1
 - Update moko to v0.24.2
+- Refactor trackers to use DTOs (@MajorTanya)

@@ -79,7 +79,7 @@ fun updateTrackChapterMarkedAsRead(
     val newChapterRead = newLastChapter?.chapter_number ?: 0f
 
     // To avoid unnecessary calls if multiple marked as read for same manga
-    if (trackingJobs[mangaId]?.second ?: 0f < newChapterRead) {
+    if ((trackingJobs[mangaId]?.second ?: 0f) < newChapterRead) {
         trackingJobs[mangaId]?.first?.cancel()
 
         // We want these to execute even if the presenter is destroyed

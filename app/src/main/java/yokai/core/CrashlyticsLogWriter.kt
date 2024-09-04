@@ -14,7 +14,7 @@ class CrashlyticsLogWriter : LogWriter() {
     override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
         try {
             Firebase.crashlytics.log(DefaultFormatter.formatMessage(severity, Tag(tag), Message(message)))
-            if (throwable != null && severity >= Severity.Warn) {
+            if (throwable != null && severity >= Severity.Error) {
                 Firebase.crashlytics.recordException(throwable)
             }
         } catch (_: Exception) {

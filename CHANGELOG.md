@@ -10,4 +10,4 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ## Fixes
-- Fixed NPE crash on tablets
+- Fixed more NPE crashes

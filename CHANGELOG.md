@@ -15,12 +15,14 @@
 
 ## Changes
 - Enable 'Split Tall Images' by default (@Smol-Ame)
+- Minor visual adjustments
 
 ## Fixes
 - Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
 - Fixed "Group by Ungrouped" showing duplicate entries
 - Fixed reader sometimes won't load images
 - Handle some uncaught crashes
+- Fixed potential NPE crashes
 
 ## Other
 - Simplify network helper code

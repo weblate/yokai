@@ -32,9 +32,21 @@ This fork was created for personal usage, the name Yōkai is chosen in theme of 
 
 Updates are sporadic, sometime fast, sometime slow.
 
+As of the time of writing, this fork is currently focusing on migrating to a much more modern infrastructure, some features may be added, but most changes are happening behind the scene.
+
 ## Features
 
 <div align="left">
+
+<details open="">
+    <summary><h3>From Yōkai</h3></summary>
+
+* NSFW/SFW library filter (from SY)
+* Fix backup incompatibility with upstream
+* New theme
+* Local Source chapters now reads ComicInfo.xml for chapter title, number, and scanlator
+
+</details>
 
 <details open="">
     <summary><h3>From upstream (Tachiyomi/Mihon)</h3></summary>
@@ -77,14 +89,6 @@ Updates are sporadic, sometime fast, sometime slow.
 * View all chapters right in the reader.
 * A lot more Material Design You additions.
 * Android 12 features such as automatic extension and app updates.
-
-</details>
-
-<details>
-    <summary><h3>From Yōkai</h3></summary>
-    
-* New theme
-* NSFW/SFW filter
 
 </details>
 

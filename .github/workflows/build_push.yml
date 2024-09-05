@@ -48,6 +48,9 @@ jobs:
           java: 17
           distro: adopt
 
+      - name: Setup CHANGELOG parser
+        uses: taiki-e/install-action@parse-changelog
+
       - name: Copy CI gradle.properties
         run: |
           mkdir -p ~/.gradle
@@ -62,10 +65,12 @@ jobs:
         id: changelog
         shell: bash
         run: |
+          # extended SemVer (major.minor.patch.hotfix)
+          VERSION_FORMAT='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))?(-[0-9A-Za-z\.-]+)?(\+[0-9A-Za-z\.-]+)?$|^Unreleased$'
           {
             echo "CHANGELOG<<END_OF_FILE"
-            cat CHANGELOG.md || echo ""
-            echo
+            parse-changelog CHANGELOG.md ${{ github.event.inputs.version == '' && 'Unreleased' || github.event.inputs.version }} --version-format $VERSION_FORMAT || echo ""
+            echo ""
             echo "END_OF_FILE"
           } >> "$GITHUB_OUTPUT" 2> /dev/null
 

@@ -22,7 +22,6 @@
 - Fixed "Group by Ungrouped" showing duplicate entries
 - Fixed reader sometimes won't load images
 - Handle some uncaught crashes
-- Fixed potential NPE crashes
 
 ## Other
 - Simplify network helper code

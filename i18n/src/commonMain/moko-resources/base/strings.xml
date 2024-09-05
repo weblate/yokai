@@ -72,6 +72,7 @@
     <string name="last_read_chapter_">Last read Chapter %1$s</string>
     <string name="chapter_">Chapter %1$s</string>
     <string name="chapter_x_of_y">Chapter %1$d of %2$d</string>
+    <string name="page_x_of_y">Page %1$d of %2$d</string>
     <string name="all_chapters_read">All chapters read</string>
     <string name="bookmarked">Bookmarked</string>
     <string name="not_bookmarked">Not bookmarked</string>

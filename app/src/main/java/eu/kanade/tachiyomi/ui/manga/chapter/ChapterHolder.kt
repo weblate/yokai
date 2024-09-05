@@ -55,19 +55,12 @@ class ChapterHolder(
 
         val showPagesLeft = !chapter.read && chapter.last_page_read > 0 && !isLocked
 
-        if (showPagesLeft && chapter.pages_left > 0) {
+        if (showPagesLeft) {
             statuses.add(
                 itemView.context.getString(
-                    MR.plurals.pages_left,
-                    chapter.pages_left,
-                    chapter.pages_left,
-                ),
-            )
-        } else if (showPagesLeft) {
-            statuses.add(
-                itemView.context.getString(
-                    MR.strings.page_,
+                    MR.strings.page_x_of_y,
                     chapter.last_page_read + 1,
+                    chapter.pages_left + chapter.last_page_read,
                 ),
             )
         }

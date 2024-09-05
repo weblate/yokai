@@ -10,11 +10,6 @@
         <item quantity="other">%1$s chapters</item>
     </plurals>
 
-    <plurals name="pages_left">
-        <item quantity="one">%1$d page left</item>
-        <item quantity="other">%1$d pages left</item>
-    </plurals>
-
     <plurals name="category_plural">
         <item quantity="one">%d category</item>
         <item quantity="other">%d categories</item>

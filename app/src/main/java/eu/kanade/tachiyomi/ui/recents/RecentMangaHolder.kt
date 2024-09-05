@@ -203,11 +203,11 @@ class RecentMangaHolder(
                 }
             }
             item.chapter.id != item.mch.chapter.id -> readLastText(!moreVisible)
-            item.chapter.pages_left > 0 && !item.chapter.read -> context.timeSpanFromNow(MR.strings.read_, item.mch.history.last_read) +
+            item.chapter.last_page_read > 0 && !item.chapter.read -> context.timeSpanFromNow(MR.strings.read_, item.mch.history.last_read) +
                 "\n" + itemView.context.getString(
-                MR.plurals.pages_left,
-                item.chapter.pages_left,
-                item.chapter.pages_left,
+                MR.strings.page_x_of_y,
+                item.chapter.last_page_read + 1,
+                item.chapter.pages_left + item.chapter.last_page_read,
             )
             else -> context.timeSpanFromNow(MR.strings.read_, item.mch.history.last_read)
         }

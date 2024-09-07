@@ -41,10 +41,10 @@ As of the time of writing, this fork is currently focusing on migrating to a muc
 <details open="">
     <summary><h3>From Yōkai</h3></summary>
 
-* NSFW/SFW library filter (from SY)
-* Fix backup incompatibility with upstream
-* New theme
-* Local Source chapters now reads ComicInfo.xml for chapter title, number, and scanlator
+* NSFW/SFW library filter (taken from [TachiyomiSY](https://github.com/jobobby04/TachiyomiSY)).
+* Fix backup incompatibility with upstream.
+* New theme.
+* Local Source chapters now reads ComicInfo.xml for chapter title, number, and scanlator.
 
 </details>
 

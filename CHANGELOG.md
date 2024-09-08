@@ -31,6 +31,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency com.android.tools:desugar_jdk_libs to v2.1.2
 - Update moko to v0.24.2
 - Refactor trackers to use DTOs (@MajorTanya)
+- Replace com.github.inorichi.injekt with com.github.null2264.injekt
 
 ## [v1.8.5.7]
 

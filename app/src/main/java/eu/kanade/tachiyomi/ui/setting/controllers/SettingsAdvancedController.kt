@@ -305,6 +305,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                         context.toast(MR.strings.error_user_agent_string_invalid)
                         return@onChange false
                     }
+                    context.toast(MR.strings.requires_app_restart)
                     true
                 }
             }

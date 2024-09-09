@@ -18,6 +18,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ### Changes
 - Enable 'Split Tall Images' by default (@Smol-Ame)
 - Minor visual adjustments
+- Tell user to restart the app when User-Agent is changed (@NGB-Was-Taken)
 
 ### Fixes
 - Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)

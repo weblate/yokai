@@ -11,30 +11,24 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(kotlinx.serialization.json)
-                api(projects.injektKoin)
-                api(libs.rxjava)
-                api(libs.jsoup)
+                api(project.dependencies.platform(libs.koin.bom))
+                api(libs.koin.core)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation(projects.core)
-                api(androidx.preference)
-
-                // Workaround for https://youtrack.jetbrains.com/issue/KT-57605
-                implementation(kotlinx.coroutines.android)
-                implementation(project.dependencies.platform(kotlinx.coroutines.bom))
             }
         }
     }
 }
+
 android {
-    namespace = "eu.kanade.tachiyomi.source"
+    namespace = "uy.kohesive.injekt"
     defaultConfig {
         consumerProguardFile("consumer-proguard.pro")
     }
 }
+
 tasks {
     withType<KotlinCompile> {
         compilerOptions.freeCompilerArgs.addAll(

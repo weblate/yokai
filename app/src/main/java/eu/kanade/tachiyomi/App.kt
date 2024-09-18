@@ -59,13 +59,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.conscrypt.Conscrypt
+import org.koin.core.context.startKoin
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.core.CrashlyticsLogWriter
-import yokai.core.di.AppModule
-import yokai.core.di.DomainModule
-import yokai.core.di.PreferenceModule
+import yokai.core.di.appModule
+import yokai.core.di.domainModule
+import yokai.core.di.preferenceModule
 import yokai.core.migration.Migrator
 import yokai.core.migration.migrations.migrations
 import yokai.domain.base.BasePreferences
@@ -97,10 +98,8 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             if (packageName != process) WebView.setDataDirectorySuffix(process)
         }
 
-        Injekt.apply {
-            importModule(PreferenceModule(this@App))
-            importModule(AppModule(this@App))
-            importModule(DomainModule())
+        startKoin {
+            modules(preferenceModule(this@App), appModule(this@App), domainModule())
         }
 
         basePreferences.crashReport().changes()

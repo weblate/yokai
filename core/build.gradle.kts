@@ -33,7 +33,7 @@ kotlin {
         androidMain {
             dependencies {
                 // Dependency injection
-                api(libs.injekt.core)
+                api(projects.injektKoin)
 
                 // Network client
                 api(libs.okhttp)

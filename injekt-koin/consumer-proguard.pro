@@ -1,0 +1,1 @@
+-keep,allowoptimization class uy.kohesive.injekt.** { public protected *; }

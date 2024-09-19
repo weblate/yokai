@@ -9,10 +9,7 @@ import eu.kanade.tachiyomi.core.storage.AndroidStorageFolderProvider
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackPreferences
 import eu.kanade.tachiyomi.network.NetworkPreferences
-import uy.kohesive.injekt.api.InjektModule
-import uy.kohesive.injekt.api.InjektRegistrar
-import uy.kohesive.injekt.api.addSingletonFactory
-import uy.kohesive.injekt.api.get
+import org.koin.dsl.module
 import yokai.domain.backup.BackupPreferences
 import yokai.domain.base.BasePreferences
 import yokai.domain.download.DownloadPreferences
@@ -22,47 +19,45 @@ import yokai.domain.storage.StoragePreferences
 import yokai.domain.ui.UiPreferences
 import yokai.domain.ui.settings.ReaderPreferences
 
-class PreferenceModule(val application: Application) : InjektModule {
-    override fun InjektRegistrar.registerInjectables() {
-        addSingletonFactory<PreferenceStore> { AndroidPreferenceStore(application) }
+fun preferenceModule(application: Application) = module {
+    single<PreferenceStore> { AndroidPreferenceStore(application) }
 
-        addSingletonFactory { BasePreferences(get()) }
+    single { BasePreferences(get()) }
 
-        addSingletonFactory { SourcePreferences(get()) }
+    single { SourcePreferences(get()) }
 
-        addSingletonFactory { TrackPreferences(get()) }
+    single { TrackPreferences(get()) }
 
-        addSingletonFactory { UiPreferences(get()) }
+    single { UiPreferences(get()) }
 
-        addSingletonFactory { ReaderPreferences(get()) }
+    single { ReaderPreferences(get()) }
 
-        addSingletonFactory { RecentsPreferences(get()) }
+    single { RecentsPreferences(get()) }
 
-        addSingletonFactory { DownloadPreferences(get()) }
+    single { DownloadPreferences(get()) }
 
-        addSingletonFactory {
-            NetworkPreferences(
-                get(),
-                BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY,
-            )
-        }
+    single {
+        NetworkPreferences(
+            get(),
+            BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY,
+        )
+    }
 
-        addSingletonFactory { SecurityPreferences(get()) }
+    single { SecurityPreferences(get()) }
 
-        addSingletonFactory { BackupPreferences(get()) }
+    single { BackupPreferences(get()) }
 
-        addSingletonFactory {
-            PreferencesHelper(
-                context = application,
-                preferenceStore = get(),
-            )
-        }
+    single {
+        PreferencesHelper(
+            context = application,
+            preferenceStore = get(),
+        )
+    }
 
-        addSingletonFactory {
-            StoragePreferences(
-                folderProvider = get<AndroidStorageFolderProvider>(),
-                preferenceStore = get(),
-            )
-        }
+    single {
+        StoragePreferences(
+            folderProvider = get<AndroidStorageFolderProvider>(),
+            preferenceStore = get(),
+        )
     }
 }

@@ -12,6 +12,7 @@ sqlite = "2.4.0"
 sqldelight = "2.0.2"
 junit = "5.8.2"
 kermit = "2.0.4"
+koin = "4.0.0"
 voyager = "1.1.0-beta02"
 
 [libraries]
@@ -41,9 +42,12 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 flexible-adapter-ui = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter-ui", version.ref = "flexible-adapter" }
 flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter", version.ref = "flexible-adapter" }
 image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "41c059e540" }
-injekt-core = { module = "com.github.null2264.injekt:injekt-core", version = "4135455a2a" }
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-injekt = { module = "com.github.null2264:injekt-koin", version = "7f944dd775" }
 
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version = "5.9.1" }
 

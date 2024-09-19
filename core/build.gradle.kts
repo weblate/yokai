@@ -33,7 +33,9 @@ kotlin {
         androidMain {
             dependencies {
                 // Dependency injection
-                api(projects.injektKoin)
+                api(project.dependencies.platform(libs.koin.bom))
+                api(libs.koin.core)
+                api(libs.koin.injekt)
 
                 // Network client
                 api(libs.okhttp)

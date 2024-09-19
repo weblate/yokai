@@ -12,7 +12,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(kotlinx.serialization.json)
-                api(projects.injektKoin)
+                api(project.dependencies.platform(libs.koin.bom))
+                api(libs.koin.core)
+                api(libs.koin.injekt)
                 api(libs.rxjava)
                 api(libs.jsoup)
             }

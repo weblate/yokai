@@ -37,7 +37,6 @@ class BackupCreator(
     val parser = ProtoBuf
     private val db: DatabaseHelper = Injekt.get()
     private val backupPreferences: BackupPreferences = Injekt.get()
-    private val storageManager: StorageManager by injectLazy()
 
     @Suppress("RedundantSuspendModifier")
     private suspend fun getDatabaseManga(includeReadManga: Boolean) = db.inTransactionReturn {
@@ -60,7 +59,7 @@ class BackupCreator(
         try {
             file = if (isAutoBackup) {
                 // Get dir of file and create
-                val dir = storageManager.getAutomaticBackupsDirectory()
+                val dir = UniFile.fromUri(context, uri)
 
                 // Delete older backups
                 val numberOfBackups = backupPreferences.numberOfBackups().get()

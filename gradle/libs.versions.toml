@@ -47,7 +47,7 @@ kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core" }
-koin-injekt = { module = "com.github.null2264:injekt-koin", version = "7f944dd775" }
+koin-injekt = { module = "com.github.null2264:injekt-koin", version = "aad18b6148" }
 
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version = "5.9.1" }
 

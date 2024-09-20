@@ -15,13 +15,14 @@ import androidx.work.workDataOf
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
+import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.localeContext
+import eu.kanade.tachiyomi.util.system.tryToSetForeground
 import eu.kanade.tachiyomi.util.system.notificationManager
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import uy.kohesive.injekt.injectLazy
 import yokai.domain.backup.BackupPreferences
 import yokai.domain.storage.StorageManager
 import java.util.concurrent.*
@@ -29,17 +30,25 @@ import java.util.concurrent.*
 class BackupCreatorJob(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
+    val notifier = BackupNotifier(context.localeContext)
+
     override suspend fun doWork(): Result {
-        val storageManager: StorageManager by injectLazy()
-        val notifier = BackupNotifier(context.localeContext)
-        val uri = inputData.getString(LOCATION_URI_KEY)?.toUri() ?: storageManager.getAutomaticBackupsDirectory()?.uri
+        val isAutoBackup = inputData.getBoolean(IS_AUTO_BACKUP_KEY, true)
+
+        if (isAutoBackup && BackupRestoreJob.isRunning(context)) return Result.retry()
+
+        val uri = inputData.getString(LOCATION_URI_KEY)?.toUri()
+            ?: getAutomaticBackupLocation()
+            ?: return Result.failure()
+
+        tryToSetForeground()
+
         val options = inputData.getBooleanArray(BACKUP_FLAGS_KEY)?.let { BackupOptions.fromBooleanArray(it) }
             ?: BackupOptions()
-        val isAutoBackup = inputData.getBoolean(IS_AUTO_BACKUP_KEY, true)
 
         notifier.showBackupProgress()
         return try {
-            val location = BackupCreator(context).createBackup(uri!!, options, isAutoBackup)
+            val location = BackupCreator(context).createBackup(uri, options, isAutoBackup)
             if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri())!!)
             Result.success()
         } catch (e: Exception) {
@@ -49,6 +58,11 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
         } finally {
             context.notificationManager.cancel(Notifications.ID_BACKUP_PROGRESS)
         }
+    }
+
+    private fun getAutomaticBackupLocation(): Uri? {
+        val storageManager = Injekt.get<StorageManager>()
+        return storageManager.getAutomaticBackupsDirectory()?.uri
     }
 
     companion object {

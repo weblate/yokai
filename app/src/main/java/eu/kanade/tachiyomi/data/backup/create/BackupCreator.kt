@@ -76,7 +76,7 @@ class BackupCreator(
             }
 
             if (file == null || !file.isFile) {
-                throw IllegalStateException("Failed to get handle on file")
+                throw IllegalStateException("Unable to create backup file")
             }
 
             val backupManga = mangaBackupCreator(getDatabaseManga(options.readManga), options)

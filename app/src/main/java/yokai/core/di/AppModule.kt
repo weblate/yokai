@@ -1,6 +1,7 @@
 package yokai.core.di
 
 import android.app.Application
+import android.content.Context
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
@@ -36,7 +37,8 @@ import yokai.domain.SplashState
 import yokai.domain.storage.StorageManager
 
 fun appModule(app: Application) = module {
-    single { app }
+    single<Application> { app }
+    single<Context> { app }
 
     single<SupportSQLiteOpenHelper> {
         val configuration = SupportSQLiteOpenHelper.Configuration.builder(app)

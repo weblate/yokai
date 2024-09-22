@@ -1,8 +1,8 @@
 [versions]
-compose-bom = "2024.08.00-alpha02"
+compose = "2024.09.02"
 
 [libraries]
-bom = { module = "dev.chrisbanes.compose:compose-bom", version.ref = "compose-bom" }
+bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 animation = { module = "androidx.compose.animation:animation" }
 foundation = { module = "androidx.compose.foundation:foundation" }
 material3 = { module = "androidx.compose.material3:material3" }

@@ -36,6 +36,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Replace Injekt with Koin
 - Remove unnecessary permission added by Firebase
 - Remove unnecessary features added by Firebase
+- Replace BOM dev.chrisbanes.compose:compose-bom with JetPack's BOM
+- Update compose BOM to 2024.09.02
 
 ## [v1.8.5.7]
 

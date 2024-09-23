@@ -34,7 +34,7 @@ import yokai.domain.storage.StorageManager
 class BackupCreatorJob(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
-    val notifier = BackupNotifier(context.localeContext)
+    private val notifier = BackupNotifier(context.localeContext)
 
     override suspend fun doWork(): Result {
         val isAutoBackup = inputData.getBoolean(IS_AUTO_BACKUP_KEY, true)
@@ -82,8 +82,9 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
 
     companion object {
         fun isManualJobRunning(context: Context): Boolean {
-            val list = context.workManager.getWorkInfosByTag(TAG_MANUAL).get()
-            return list.find { it.state == WorkInfo.State.RUNNING } != null
+            return context.workManager
+                .getWorkInfosByTag(TAG_MANUAL).get()
+                .find { it.state == WorkInfo.State.RUNNING } != null
         }
 
         fun setupTask(context: Context, prefInterval: Int? = null) {

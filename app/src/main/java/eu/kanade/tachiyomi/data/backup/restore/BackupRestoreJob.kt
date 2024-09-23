@@ -30,13 +30,15 @@ class BackupRestoreJob(val context: Context, workerParams: WorkerParameters) : C
     private val restorer = BackupRestorer(context, notifier)
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        val notification = notifier.showRestoreProgress(progress = -1).build()
-        val id = Notifications.ID_RESTORE_PROGRESS
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(id, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
-        } else {
-            ForegroundInfo(id, notification)
-        }
+        return ForegroundInfo(
+            Notifications.ID_RESTORE_PROGRESS,
+            notifier.showRestoreProgress(progress = -1).build(),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            } else {
+                0
+            }
+        )
     }
 
     override suspend fun doWork(): Result {

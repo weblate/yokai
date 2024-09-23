@@ -10,7 +10,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -19,6 +18,7 @@ import eu.kanade.tachiyomi.extension.ExtensionUpdateJob
 import eu.kanade.tachiyomi.util.system.isConnectedToWifi
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.tryToSetForeground
+import eu.kanade.tachiyomi.util.system.workManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
@@ -111,12 +111,11 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
                     }
                 }
                 .build()
-            WorkManager.getInstance(context)
-                .enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, request)
+            context.workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, request)
         }
 
         fun stop(context: Context) {
-            WorkManager.getInstance(context).cancelUniqueWork(TAG)
+            context.workManager.cancelUniqueWork(TAG)
         }
 
         fun callListeners(downloading: Boolean? = null, downloadManager: DownloadManager? = null) {
@@ -125,7 +124,7 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
         }
 
         fun isRunning(context: Context): Boolean {
-            return WorkManager.getInstance(context)
+            return context.workManager
                 .getWorkInfosForUniqueWork(TAG)
                 .get()
                 .let { list -> list.count { it.state == WorkInfo.State.RUNNING } == 1 }

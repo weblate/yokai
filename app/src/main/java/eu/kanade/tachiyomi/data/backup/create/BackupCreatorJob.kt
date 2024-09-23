@@ -5,6 +5,7 @@ import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
 import androidx.core.net.toUri
+import androidx.work.BackoffPolicy
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
@@ -96,6 +97,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
                     10,
                     TimeUnit.MINUTES,
                 )
+                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.MINUTES)
                     .addTag(TAG_AUTO)
                     .setInputData(workDataOf(IS_AUTO_BACKUP_KEY to true))
                     .build()

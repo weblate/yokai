@@ -1,11 +1,14 @@
 package eu.kanade.tachiyomi.data.backup.create
 
 import android.content.Context
+import android.content.pm.ServiceInfo
 import android.net.Uri
+import android.os.Build
 import androidx.core.net.toUri
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
+import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -46,7 +49,6 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
         val options = inputData.getBooleanArray(BACKUP_FLAGS_KEY)?.let { BackupOptions.fromBooleanArray(it) }
             ?: BackupOptions()
 
-        notifier.showBackupProgress()
         return try {
             val location = BackupCreator(context).createBackup(uri, options, isAutoBackup)
             if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri())!!)
@@ -63,6 +65,18 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
     private fun getAutomaticBackupLocation(): Uri? {
         val storageManager = Injekt.get<StorageManager>()
         return storageManager.getAutomaticBackupsDirectory()?.uri
+    }
+
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+        return ForegroundInfo(
+            Notifications.ID_BACKUP_PROGRESS,
+            notifier.showBackupProgress().build(),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            } else {
+                0
+            },
+        )
     }
 
     companion object {

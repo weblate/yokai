@@ -47,6 +47,8 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
     private val refreshDrawable = itemView.context.contextCompatDrawable(R.drawable.ic_refresh_24dp)
     var locked = false
     private val headerGestureDetector = LibraryHeaderGestureDetector(this, binding)
+    val category: Category?
+        get() = (adapter.getItem(flexibleAdapterPosition) as? LibraryHeaderItem)?.category
 
     init {
         binding.categoryHeaderLayout.setOnClickListener {
@@ -56,8 +58,6 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
         binding.updateButton.setOnClickListener { addCategoryToUpdate() }
         binding.categoryTitle.setOnLongClickListener { manageCategory() }
         binding.categoryTitle.setOnClickListener {
-            val category =
-                (adapter.getItem(flexibleAdapterPosition) as? LibraryHeaderItem)?.category
             if (category?.isHidden == false && adapter.mode == SelectableAdapter.Mode.MULTI) {
                 selectAll()
             } else {
@@ -209,32 +209,7 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
                 R.drawable.ic_expand_less_24dp
             },
         )
-        when {
-            adapter.mode == SelectableAdapter.Mode.MULTI -> {
-                binding.checkbox.isVisible = !category.isHidden
-                binding.collapseArrow.isVisible = category.isHidden && !adapter.isSingleCategory
-                binding.updateButton.isVisible = false
-                setSelection()
-            }
-            (category.id ?: -1) < 0 || adapter.libraryListener is FilteredLibraryController -> {
-                binding.collapseArrow.isVisible = false
-                binding.checkbox.isVisible = false
-                setRefreshing(false)
-                binding.updateButton.isVisible = false
-            }
-            LibraryUpdateJob.categoryInQueue(category.id) -> {
-                binding.collapseArrow.isVisible = !adapter.isSingleCategory
-                binding.checkbox.isVisible = false
-                binding.updateButton.isVisible = true
-                setRefreshing(true)
-            }
-            else -> {
-                binding.collapseArrow.isVisible = !adapter.isSingleCategory
-                binding.checkbox.isVisible = false
-                setRefreshing(false)
-                binding.updateButton.isVisible = !adapter.isSingleCategory
-            }
-        }
+        notifyStatus(LibraryUpdateJob.categoryInQueue(category.id), category)
     }
 
     @SuppressLint("DiscouragedApi")
@@ -280,31 +255,29 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
     }
 
     fun manageCategory(): Boolean {
-        val category = (adapter.getItem(flexibleAdapterPosition) as? LibraryHeaderItem)?.category
         adapter.libraryListener?.manageCategory(flexibleAdapterPosition)
         return category?.isDynamic == false
     }
 
     private fun showCatSortOptions() {
-        val category =
-            (adapter.getItem(flexibleAdapterPosition) as? LibraryHeaderItem)?.category ?: return
+        if (category == null) return
         adapter.controller?.activity?.let { activity ->
-            val items = LibrarySort.entries.map { it.menuSheetItem(category.isDynamic) }
-            val sortingMode = category.sortingMode(true)
+            val items = LibrarySort.entries.map { it.menuSheetItem(category!!.isDynamic) }
+            val sortingMode = category!!.sortingMode(true)
             val sheet = MaterialMenuSheet(
                 activity,
                 items,
                 activity.getString(MR.strings.sort_by),
                 sortingMode?.mainValue,
             ) { sheet, item ->
-                onCatSortClicked(category, item)
+                onCatSortClicked(category!!, item)
                 val nCategory = (adapter.getItem(flexibleAdapterPosition) as? LibraryHeaderItem)?.category
                 val isAscending = nCategory?.isAscending() ?: false
                 val drawableRes = getSortRes(item, isAscending)
                 sheet.setDrawable(item, drawableRes)
                 false
             }
-            val isAscending = category.isAscending()
+            val isAscending = category!!.isAscending()
             val drawableRes = getSortRes(sortingMode, isAscending)
             sheet.setDrawable(sortingMode?.mainValue ?: -1, drawableRes)
             sheet.show()
@@ -390,5 +363,34 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
     override fun onLongClick(view: View?): Boolean {
         super.onLongClick(view)
         return false
+    }
+
+    fun notifyStatus(isReloading: Boolean, category: Category) {
+        when {
+            adapter.mode == SelectableAdapter.Mode.MULTI -> {
+                binding.checkbox.isVisible = !category.isHidden
+                binding.collapseArrow.isVisible = category.isHidden && !adapter.isSingleCategory
+                binding.updateButton.isVisible = false
+                setSelection()
+            }
+            (category.id ?: -1) < 0 || adapter.libraryListener is FilteredLibraryController -> {
+                binding.collapseArrow.isVisible = false
+                binding.checkbox.isVisible = false
+                setRefreshing(false)
+                binding.updateButton.isVisible = false
+            }
+            isReloading -> {
+                binding.collapseArrow.isVisible = !adapter.isSingleCategory
+                binding.checkbox.isVisible = false
+                binding.updateButton.isVisible = true
+                setRefreshing(true)
+            }
+            else -> {
+                binding.collapseArrow.isVisible = !adapter.isSingleCategory
+                binding.checkbox.isVisible = false
+                setRefreshing(false)
+                binding.updateButton.isVisible = !adapter.isSingleCategory
+            }
+        }
     }
 }

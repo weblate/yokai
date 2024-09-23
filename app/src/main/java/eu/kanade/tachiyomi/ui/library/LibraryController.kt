@@ -128,7 +128,14 @@ import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.text
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.EmptyView
+import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.roundToInt
+import kotlin.random.Random
+import kotlin.random.nextInt
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -138,12 +145,6 @@ import uy.kohesive.injekt.api.get
 import yokai.domain.ui.UiPreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.roundToInt
-import kotlin.random.Random
-import kotlin.random.nextInt
 import android.R as AR
 
 open class LibraryController(
@@ -610,6 +611,13 @@ open class LibraryController(
         setUpHopper()
         setPreferenceFlows()
         LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(viewScope)
+        viewScope.launchUI {
+            LibraryUpdateJob.isRunningFlow(view.context).collectLatest {
+                val holder = if (mAdapter != null) visibleHeaderHolder() else null
+                val category = holder?.category ?: return@collectLatest
+                holder.notifyStatus(LibraryUpdateJob.categoryInQueue(category.id), category)
+            }
+        }
 
         elevateAppBar =
             scrollViewWith(

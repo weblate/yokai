@@ -66,6 +66,7 @@ import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.setDefaultSettings
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.workManager
 import eu.kanade.tachiyomi.util.view.openInBrowser
 import eu.kanade.tachiyomi.util.view.setMessage
 import eu.kanade.tachiyomi.util.view.setPositiveButton
@@ -415,6 +416,20 @@ class SettingsAdvancedController : SettingsLegacyController() {
                     .setMessage("I told you this would crash the app, why would you want that?")
                     .setPositiveButton("Crash it anyway") { _, _ -> throw RuntimeException("Fell into the void") }
                     .setNegativeButton("Nevermind", null)
+                    .show()
+            }
+        }
+
+        preference {
+            title = "Prune finished workers"
+            summary = "In case worker stuck in FAILED state and you're too impatient to wait"
+            onClick {
+                activity!!.materialAlertDialog()
+                    .setTitle("Are you sure?")
+                    .setMessage("Failed workers should clear out by itself eventually, " +
+                        "this option should only be used if you're being impatient and you know what you're doing.")
+                    .setPositiveButton("Prune") { _, _ -> context.workManager.pruneWork() }
+                    .setNegativeButton("Cancel", null)
                     .show()
             }
         }

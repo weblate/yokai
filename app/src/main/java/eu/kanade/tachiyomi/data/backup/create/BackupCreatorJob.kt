@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.net.toUri
 import androidx.work.BackoffPolicy
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
@@ -55,7 +56,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
             if (!isAutoBackup) notifier.showBackupComplete(UniFile.fromUri(context, location.toUri())!!)
             Result.success()
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to create backup" }
             if (!isAutoBackup) notifier.showBackupError(e.message)
             Result.failure()
         } finally {
@@ -91,6 +92,10 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
             val preferences = Injekt.get<BackupPreferences>()
             val interval = prefInterval ?: preferences.backupInterval().get()
             if (interval > 0) {
+                val constraints = Constraints(
+                    requiresBatteryNotLow = true,
+                )
+
                 val request = PeriodicWorkRequestBuilder<BackupCreatorJob>(
                     interval.toLong(),
                     TimeUnit.HOURS,
@@ -99,6 +104,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
                 )
                     .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.MINUTES)
                     .addTag(TAG_AUTO)
+                    .setConstraints(constraints)
                     .setInputData(workDataOf(IS_AUTO_BACKUP_KEY to true))
                     .build()
 

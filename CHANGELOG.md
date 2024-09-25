@@ -38,6 +38,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Remove unnecessary features added by Firebase
 - Replace BOM dev.chrisbanes.compose:compose-bom with JetPack's BOM
 - Update compose BOM to 2024.09.02
+- Update dependency com.google.firebase:firebase-bom to v33.3.0
+- Update dependency com.squareup.okio:okio to v3.9.1
+- Update activity to v1.9.2
+- Update lifecycle to v2.8.6
+- Update dependency me.zhanghai.android.libarchive:library to v1.1.2
 
 ## [v1.8.5.7]
 

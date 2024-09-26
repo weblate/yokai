@@ -44,6 +44,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update activity to v1.9.2
 - Update lifecycle to v2.8.6
 - Update dependency me.zhanghai.android.libarchive:library to v1.1.2
+- Update agp to v8.6.1
 
 ## [v1.8.5.7]
 

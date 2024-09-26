@@ -26,6 +26,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fixed "Group by Ungrouped" showing duplicate entries
 - Fixed reader sometimes won't load images
 - Handle some uncaught crashes
+- Fixed crashes due to GestureDetector's firstEvent is sometimes null on some devices
 
 ### Other
 - Simplify network helper code

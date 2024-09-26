@@ -44,13 +44,14 @@ class LibraryCategoryGestureDetector(private val controller: LibraryController?)
         distanceX: Float,
         distanceY: Float,
     ): Boolean {
+        val firstEvent = e1 ?: return false
         val controller = controller ?: return false
         val distance = startingX - e2.x
         val totalDistanceY = startingY - e2.y
         controller.binding.libraryGridRecycler.recycler.translationX =
             if (!cancelled) abs(distance / 50).pow(poa) * -sign(distance / 50) else 0f
         if (!locked && abs(distance) > 50 && !cancelled) {
-            val ev2 = MotionEvent.obtain(e1)
+            val ev2 = MotionEvent.obtain(firstEvent)
             ev2.action = MotionEvent.ACTION_CANCEL
             controller.binding.swipeRefresh.dispatchTouchEvent(ev2)
             ev2.recycle()
@@ -59,7 +60,7 @@ class LibraryCategoryGestureDetector(private val controller: LibraryController?)
             cancelled = true
             return false
         }
-        return super.onScroll(e1, e2, distanceX, distanceY)
+        return super.onScroll(firstEvent, e2, distanceX, distanceY)
     }
 
     override fun onFling(

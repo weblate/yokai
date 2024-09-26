@@ -45,6 +45,12 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update lifecycle to v2.8.6
 - Update dependency me.zhanghai.android.libarchive:library to v1.1.2
 - Update agp to v8.6.1
+- Update junit5 monorepo to v5.11.1
+- Update dependency androidx.test.ext:junit to v1.2.1
+- Update dependency org.jetbrains.kotlinx:kotlinx-collections-immutable to v0.3.8
+- Update dependency org.jsoup:jsoup to v1.18.1
+- Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-bom to v1.9.0
+- Update serialization to v1.7.3
 
 ## [v1.8.5.7]
 

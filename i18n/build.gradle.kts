@@ -37,7 +37,7 @@ android {
     sourceSets {
         val main by getting
         main.res.srcDirs(
-            "src/commonMain/moko-resources",
+            "src/commonMain/resources",
             generatedAndroidResourceDir,
         )
     }

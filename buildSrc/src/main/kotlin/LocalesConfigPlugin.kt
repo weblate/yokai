@@ -1,38 +1,37 @@
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.TaskContainerScope
+import java.io.File
 
 private val emptyResourcesElement = "<resources>\\s*</resources>|<resources/>".toRegex()
 
-fun TaskContainerScope.registerLocalesConfigTask(project: Project): TaskProvider<Task> {
-    return with(project) {
-        register("generateLocalesConfig") {
-            val languages = fileTree("$projectDir/src/commonMain/moko-resources/")
-                .matching { include("**/strings.xml") }
-                .filterNot { it.readText().contains(emptyResourcesElement) }
-                .map {
-                    it.parentFile.name
-                        .replace("base", "en")
-                        .replace("-r", "-")
-                        .replace("+", "-")
-                        .takeIf(String::isNotBlank) ?: "en"
-                }
-                .sorted()
-                .joinToString(separator = "\n") {
-                    "   <locale android:name=\"$it\"/>"
-                }
+fun Project.registerLocalesConfigTask(outputResourceDir: File): TaskProvider<Task> {
+    return tasks.register("generateLocalesConfig") {
+        val languages = fileTree("$projectDir/src/commonMain/moko-resources/")
+            .matching { include("**/strings.xml") }
+            .filterNot { it.readText().contains(emptyResourcesElement) }
+            .map {
+                it.parentFile.name
+                    .replace("base", "en")
+                    .replace("-r", "-")
+                    .replace("+", "-")
+                    .takeIf(String::isNotBlank) ?: "en"
+            }
+            .sorted()
+            .joinToString(separator = "\n") {
+                "   <locale android:name=\"$it\"/>"
+            }
 
-            val content = """
+        val content = """
 <?xml version="1.0" encoding="utf-8"?>
 <locale-config xmlns:android="http://schemas.android.com/apk/res/android">
 $languages
 </locale-config>
-    """.trimIndent()
+""".trimIndent()
 
-            val localeFile = file("$projectDir/src/androidMain/res/xml/locales_config.xml")
-            localeFile.parentFile.mkdirs()
-            localeFile.writeText(content)
+        outputResourceDir.resolve("xml/locales_config.xml").apply {
+            parentFile.mkdirs()
+            writeText(content)
         }
     }
 }

@@ -1,3 +1,4 @@
+import yokai.build.generatedBuildDir
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -28,8 +29,18 @@ kotlin {
     }
 }
 
+val generatedAndroidResourceDir = generatedBuildDir.resolve("android/res")
+
 android {
     namespace = "yokai.i18n"
+
+    sourceSets {
+        val main by getting
+        main.res.srcDirs(
+            "src/commonMain/moko-resources",
+            generatedAndroidResourceDir,
+        )
+    }
 }
 
 multiplatformResources {
@@ -37,7 +48,7 @@ multiplatformResources {
 }
 
 tasks {
-   val localesConfigTask = registerLocalesConfigTask(project)
+   val localesConfigTask = project.registerLocalesConfigTask(generatedAndroidResourceDir)
    preBuild {
        dependsOn(localesConfigTask)
    }

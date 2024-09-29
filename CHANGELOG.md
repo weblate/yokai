@@ -52,6 +52,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-bom to v1.9.0
 - Update serialization to v1.7.3
 - Update dependency gradle to v8.10.2
+- Update dependency androidx.webkit:webkit to v1.12.0
+- Update dependency io.mockk:mockk to v1.13.12
 
 ## [v1.8.5.7]
 

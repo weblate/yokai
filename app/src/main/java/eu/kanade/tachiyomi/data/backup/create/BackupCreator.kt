@@ -18,9 +18,7 @@ import okio.gzip
 import okio.sink
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import uy.kohesive.injekt.injectLazy
 import yokai.domain.backup.BackupPreferences
-import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.io.FileOutputStream
@@ -73,10 +71,10 @@ class BackupCreator(
                 dir?.createFile(Backup.getBackupFilename())
             } else {
                 UniFile.fromUri(context, uri)
-            }
+            } ?: throw IllegalStateException("Unable to retrieve backup destination")
 
-            if (file == null || !file.isFile) {
-                throw IllegalStateException("Unable to create backup file")
+            if (!file.isFile) {
+                throw IllegalStateException("Invalid backup destination")
             }
 
             val backupManga = mangaBackupCreator(getDatabaseManga(options.readManga), options)

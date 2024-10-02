@@ -18,9 +18,7 @@ import okio.gzip
 import okio.sink
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import uy.kohesive.injekt.injectLazy
 import yokai.domain.backup.BackupPreferences
-import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.io.FileOutputStream
@@ -37,7 +35,6 @@ class BackupCreator(
     val parser = ProtoBuf
     private val db: DatabaseHelper = Injekt.get()
     private val backupPreferences: BackupPreferences = Injekt.get()
-    private val storageManager: StorageManager by injectLazy()
 
     @Suppress("RedundantSuspendModifier")
     private suspend fun getDatabaseManga(includeReadManga: Boolean) = db.inTransactionReturn {
@@ -60,7 +57,7 @@ class BackupCreator(
         try {
             file = if (isAutoBackup) {
                 // Get dir of file and create
-                val dir = storageManager.getAutomaticBackupsDirectory()
+                val dir = UniFile.fromUri(context, uri)
 
                 // Delete older backups
                 val numberOfBackups = backupPreferences.numberOfBackups().get()
@@ -74,10 +71,10 @@ class BackupCreator(
                 dir?.createFile(Backup.getBackupFilename())
             } else {
                 UniFile.fromUri(context, uri)
-            }
+            } ?: throw IllegalStateException("Unable to retrieve backup destination")
 
-            if (file == null || !file.isFile) {
-                throw IllegalStateException("Failed to get handle on file")
+            if (!file.isFile) {
+                throw IllegalStateException("Invalid backup destination")
             }
 
             val backupManga = mangaBackupCreator(getDatabaseManga(options.readManga), options)

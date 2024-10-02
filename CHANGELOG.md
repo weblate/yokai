@@ -9,5 +9,5 @@
 
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
-## Fixes
-- Fixed more NPE crashes
+## Other
+- Separate backup error log when destination is null or not a file

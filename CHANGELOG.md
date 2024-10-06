@@ -55,6 +55,17 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency androidx.webkit:webkit to v1.12.0
 - Update dependency io.mockk:mockk to v1.13.12
 
+## [v1.8.5.9]
+
+### Changes
+- Revert create backup to use file picker
+
+## [v1.8.5.8]
+
+### Other
+- Separate backup error log when destination is null or not a file
+- Replace com.github.inorichi.injekt with com.github.null2264.injekt
+
 ## [v1.8.5.7]
 
 ### Fixes

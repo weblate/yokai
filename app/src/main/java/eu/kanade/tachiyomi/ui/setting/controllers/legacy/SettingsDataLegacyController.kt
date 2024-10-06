@@ -329,7 +329,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                 for (i in 1 until listView.count) {  // skip 0, since 0 is always enabled
                     booleanArrayList.add(listView.isItemChecked(i))
                 }
-                createBackup(BackupOptions.fromBooleanArray(booleanArrayList.toBooleanArray()))
+                createBackup(BackupOptions.fromBooleanArray(booleanArrayList.toBooleanArray()), picker = true)
             }
             .setNegativeButton(AR.string.cancel, null)
             .show().apply {

@@ -251,6 +251,10 @@ class SettingsDataLegacyController : SettingsLegacyController() {
                     storagePreferences.baseStorageDirectory().set(file.uri.toString())
                 }
 
+                CODE_BACKUP_CREATE -> {
+                    doBackup(backupFlags, uri, true)
+                }
+
                 CODE_BACKUP_RESTORE -> {
                     (activity as? MainActivity)?.showNotificationPermissionPrompt(true)
                     showBackupRestoreDialog(uri)
@@ -259,28 +263,48 @@ class SettingsDataLegacyController : SettingsLegacyController() {
         }
     }
 
-    private fun createBackup(options: BackupOptions) {
+    private fun doBackup(options: BackupOptions, uri: Uri, requirePersist: Boolean = false) {
         val activity = activity ?: return
 
+        val actualUri =
+            if (requirePersist) {
+                val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                activity.tryTakePersistableUriPermission(uri, intentFlags)
+                uri
+            } else {
+                UniFile.fromUri(activity, uri)?.createFile(Backup.getBackupFilename())?.uri
+            } ?: return
+        activity.toast(MR.strings.creating_backup)
+        BackupCreatorJob.startNow(activity, actualUri, options)
+    }
+
+    private fun createBackup(options: BackupOptions, picker: Boolean = false) {
         backupFlags = options
 
-        val uri = storageManager.getBackupsDirectory()?.createFile(Backup.getBackupFilename())?.uri
-        if (uri == null) {
+        val dir = storageManager.getBackupsDirectory()
+        if (dir == null) {
             activity?.toast(MR.strings.invalid_location_generic)
             return
         }
 
-        /* Might not need it
-        if (requirePersist) {
-            val intentFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-
-            activity.tryTakePersistableUriPermission(uri, intentFlags)
+        if (!picker) {
+            doBackup(backupFlags, dir.uri)
+            return
         }
-        */
 
-        activity.toast(MR.strings.creating_backup)
-        BackupCreatorJob.startNow(activity, uri, options)
+        try {
+            // Use Android's built-in file creator
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .setType("application/*")
+                .putExtra(Intent.EXTRA_TITLE, Backup.getBackupFilename())
+
+            startActivityForResult(intent, CODE_BACKUP_CREATE)
+        } catch (e: ActivityNotFoundException) {
+            activity?.toast(MR.strings.file_picker_error)
+        }
     }
 
     private fun showBackupCreateDialog() {
@@ -382,6 +406,7 @@ class SettingsDataLegacyController : SettingsLegacyController() {
 private const val CLEAR_CACHE_KEY = "pref_clear_cache_key"
 
 private const val CODE_DATA_DIR = 104
+private const val CODE_BACKUP_CREATE = 504
 private const val CODE_BACKUP_RESTORE = 505
 
 private const val HELP_URL = "https://tachiyomi.org/docs/guides/backups"

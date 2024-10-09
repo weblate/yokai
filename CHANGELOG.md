@@ -38,14 +38,14 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Remove unnecessary permission added by Firebase
 - Remove unnecessary features added by Firebase
 - Replace BOM dev.chrisbanes.compose:compose-bom with JetPack's BOM
-- Update compose BOM to 2024.09.02
-- Update dependency com.google.firebase:firebase-bom to v33.3.0
+- Update dependency androidx.compose:compose-bom to v2024.09.03
+- Update dependency com.google.firebase:firebase-bom to v33.4.0
 - Update dependency com.squareup.okio:okio to v3.9.1
 - Update activity to v1.9.2
 - Update lifecycle to v2.8.6
 - Update dependency me.zhanghai.android.libarchive:library to v1.1.2
 - Update agp to v8.6.1
-- Update junit5 monorepo to v5.11.1
+- Update junit5 monorepo to v5.11.2
 - Update dependency androidx.test.ext:junit to v1.2.1
 - Update dependency org.jetbrains.kotlinx:kotlinx-collections-immutable to v0.3.8
 - Update dependency org.jsoup:jsoup to v1.18.1
@@ -54,6 +54,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency gradle to v8.10.2
 - Update dependency androidx.webkit:webkit to v1.12.0
 - Update dependency io.mockk:mockk to v1.13.12
+- Update shizuku to v12.2.0
 
 ## [v1.8.5.9]
 

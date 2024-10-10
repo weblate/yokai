@@ -64,9 +64,7 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
             Result.success()
         } catch (e: Exception) {
             Logger.e(e) { "Unable to create backup" }
-            // FIXME: Disable it for auto backup once we're done
-            //if (!isAutoBackup)
-                notifier.showBackupError(e.message)
+            if (!isAutoBackup) notifier.showBackupError(e.message)
             Result.failure()
         } finally {
             context.notificationManager.cancel(Notifications.ID_BACKUP_PROGRESS)

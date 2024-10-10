@@ -157,7 +157,7 @@ internal class ExtensionInstaller(private val context: Context) {
                 }
                 .flowOn(Dispatchers.IO)
                 .catch { e ->
-                    Logger.e(e)
+                    Logger.e(e) { "Extension installation failed" }
                     emit(InstallStep.Error to null)
                 }
                 .onCompletion {

@@ -17,7 +17,7 @@ object WebViewUtil {
             // is not installed
             CookieManager.getInstance()
         } catch (e: Throwable) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to manage cookie for WebView" }
             return false
         }
 

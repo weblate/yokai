@@ -233,7 +233,7 @@ class MigrationListController(bundle: Bundle? = null) :
                                         val chapters: List<SChapter> = try {
                                             source.getChapterList(localManga)
                                         } catch (e: java.lang.Exception) {
-                                            Logger.e(e)
+                                            Logger.e(e) { "Something went wrong while trying to retrieve chapter list" }
                                             emptyList()
                                         }
                                         withContext(Dispatchers.IO) {

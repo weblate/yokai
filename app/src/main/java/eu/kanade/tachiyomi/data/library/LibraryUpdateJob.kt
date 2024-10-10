@@ -190,7 +190,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     finishUpdates(true)
                     Result.success()
                 } else {
-                    Logger.e(e)
+                    Logger.e(e) { "Failed to update library" }
                     Result.failure()
                 }
             } finally {
@@ -231,7 +231,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                     try {
                         requestSemaphore.withPermit { updateMangaInSource(source) }
                     } catch (e: Exception) {
-                        Logger.e(e)
+                        Logger.e(e) { "Unable to update manga" }
                         false
                     }
                 }

@@ -24,7 +24,7 @@ class AppUpdateJob(private val context: Context, workerParams: WorkerParameters)
             AppUpdateChecker().checkForUpdate(context)
             Result.success()
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to check for update" }
             Result.failure()
         }
     }

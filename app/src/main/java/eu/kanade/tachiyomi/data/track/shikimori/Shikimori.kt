@@ -125,7 +125,7 @@ class Shikimori(private val context: Context, id: Long) : TrackService(id) {
             saveCredentials(user.toString(), oauth.accessToken)
             true
         } catch (e: java.lang.Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to login" }
             logout()
             false
         }

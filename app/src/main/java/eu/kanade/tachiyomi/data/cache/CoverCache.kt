@@ -145,7 +145,7 @@ class CoverCache(val context: Context) {
                         }
                     }
                 } catch (e: Exception) {
-                    Logger.e(e)
+                    Logger.e(e) { "Unable to delete unused cover cache" }
                 }
                 lastClean = System.currentTimeMillis()
             }

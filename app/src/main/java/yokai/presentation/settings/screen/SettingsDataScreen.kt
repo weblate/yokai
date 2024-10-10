@@ -279,7 +279,7 @@ object SettingsDataScreen : ComposableSettings {
                                     cacheReadableSizeSema++
                                 }
                             } catch (e: Throwable) {
-                                Logger.e(e)
+                                Logger.e(e) { "Unable to clear cache" }
                                 withUIContext { context.toast(MR.strings.cache_delete_error) }
                             }
                         }

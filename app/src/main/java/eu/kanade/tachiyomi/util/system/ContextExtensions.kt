@@ -445,6 +445,6 @@ suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T)
 fun Context.tryTakePersistableUriPermission(uri: Uri, flags: Int) = try {
     contentResolver.takePersistableUriPermission(uri, flags)
 } catch (e: SecurityException) {
-    Logger.e(e)
+    Logger.e(e) { "Persists URI permission is not supported in this device" }
     toast(MR.strings.file_picker_uri_permission_unsupported)
 }

@@ -583,7 +583,7 @@ object ImageUtil {
             splitDataList
                 .map { splitImageName(fileName, it.index) }
                 .forEach { tmpDir.findFile(it)?.delete() }
-            Logger.e(e)
+            Logger.e(e) { "Unable to save split image" }
             false
         } finally {
             bitmapRegionDecoder.recycle()

@@ -188,7 +188,7 @@ open class BrowseSourcePresenter(
                     this@BrowseSourcePresenter.items.addAll(items)
                     withUIContext { view?.onAddPage(page, items) }
                 } catch (error: Exception) {
-                    Logger.e(error)
+                    Logger.e(error) { "Unable to prepare a page" }
                 }
             }.collect()
         }
@@ -259,7 +259,7 @@ open class BrowseSourcePresenter(
                 .onEach {
                     withUIContext { view?.onMangaInitialized(it) }
                 }
-                .catch { e -> Logger.e(e) }
+                .catch { e -> Logger.e(e) { "Unable to initialize manga" } }
                 .collect()
         }
     }
@@ -277,7 +277,7 @@ open class BrowseSourcePresenter(
             manga.initialized = true
             db.insertManga(manga).executeAsBlocking()
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Something went wrong while trying to initialize manga" }
         }
         return manga
     }

@@ -227,7 +227,7 @@ class Anilist(private val context: Context, id: Long) : TrackService(id) {
             scorePreference.set(scoreType)
             true to null
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Failed to update scoring" }
             false to e
         }
     }
@@ -246,7 +246,7 @@ class Anilist(private val context: Context, id: Long) : TrackService(id) {
         return try {
             json.decodeFromString<ALOAuth>(trackPreferences.trackToken(this).get())
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to load token" }
             null
         }
     }

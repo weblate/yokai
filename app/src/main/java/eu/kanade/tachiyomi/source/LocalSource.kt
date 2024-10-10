@@ -221,7 +221,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 return@withIOContext rt
             }
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Something went wrong while trying to load manga details" }
         }
 
         return@withIOContext manga
@@ -315,7 +315,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 try {
                     updateCover(chapter, manga)
                 } catch (e: Exception) {
-                    Logger.e(e)
+                    Logger.e(e) { "Unable to update cover" }
                 }
             }
         }

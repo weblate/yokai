@@ -494,7 +494,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
             activity?.applicationInfo?.dataDir?.let { File("$it/app_webview/").deleteRecursively() }
             activity?.toast(MR.strings.webview_data_deleted)
         } catch (e: Throwable) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to delete WebView data" }
             activity?.toast(MR.strings.cache_delete_error)
         }
     }

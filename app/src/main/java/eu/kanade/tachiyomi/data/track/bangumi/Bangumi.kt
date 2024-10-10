@@ -125,7 +125,7 @@ class Bangumi(private val context: Context, id: Long) : TrackService(id) {
             saveCredentials(oauth.userId.toString(), oauth.accessToken)
             return true
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to login" }
             logout()
         }
         return false

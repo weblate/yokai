@@ -203,7 +203,7 @@ class WebtoonPageHolder(
                 removeErrorLayout()
             }
         } catch (e: Exception) {
-            Logger.e(e)
+            Logger.e(e) { "Unable to load page" }
             withUIContext {
                 setError()
             }

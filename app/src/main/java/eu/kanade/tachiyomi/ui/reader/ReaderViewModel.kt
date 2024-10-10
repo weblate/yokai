@@ -388,7 +388,7 @@ class ReaderViewModel(
                 if (e is CancellationException) {
                     throw e
                 }
-                Logger.e(e)
+                Logger.e(e) { "Unable to load new chapter" }
             }
         }
     }
@@ -440,7 +440,7 @@ class ReaderViewModel(
             if (e is CancellationException) {
                 throw e
             }
-            Logger.e(e)
+            Logger.e(e) { "Unable to load adjacent chapter" }
             lastPage = null
         } finally {
             mutableState.update { it.copy(isLoadingAdjacentChapter = false) }

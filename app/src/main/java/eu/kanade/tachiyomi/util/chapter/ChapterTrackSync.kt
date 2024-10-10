@@ -113,7 +113,7 @@ suspend fun updateTrackChapterRead(
                     service.update(track, true)
                     db.insertTrack(track).executeAsBlocking()
                 } catch (e: Exception) {
-                    Logger.e(e)
+                    Logger.e(e) { "Unable to update tracker [tracker id ${track.sync_id}]" }
                     failures.add(service to e.localizedMessage)
                     if (retryWhenOnline) {
                         delayTrackingUpdate(preferences, mangaId, newChapterRead, track)

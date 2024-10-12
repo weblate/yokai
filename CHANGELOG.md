@@ -56,28 +56,28 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency io.mockk:mockk to v1.13.12
 - Update shizuku to v12.2.0
 
-## [v1.8.5.9]
+## [1.8.5.9]
 
 ### Changes
 - Revert create backup to use file picker
 
-## [v1.8.5.8]
+## [1.8.5.8]
 
 ### Other
 - Separate backup error log when destination is null or not a file
 - Replace com.github.inorichi.injekt with com.github.null2264.injekt
 
-## [v1.8.5.7]
+## [1.8.5.7]
 
 ### Fixes
 - Fixed more NPE crashes
 
-## [v1.8.5.6]
+## [1.8.5.6]
 
 ### Fixes
 - Fixed NPE crash on tablets
 
-## [v1.8.5.5]
+## [1.8.5.5]
 
 ### Fixes
 - Fixed crashes caused by certain extension implementation
@@ -92,12 +92,12 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update aboutlibraries to v11.2.3
 - Remove dependency com.github.leandroBorgesFerreira:LoadingButtonAndroid
 
-## [v1.8.5.4]
+## [1.8.5.4]
 
 ### Fixes
 - Fixed custom cover set from reader didn't show up on manga details
 
-## [v1.8.5.3]
+## [1.8.5.3]
 
 ### Additions
 - Add toggle to enable/disable chapter swipe action(s)
@@ -119,7 +119,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Adjust manga cover cache key
 - Refactor manga cover fetcher (@ivaniskandar, @AntsyLich, @null2264)
 
-## [v1.8.5.2]
+## [1.8.5.2]
 
 ### Fixes
 - Fixed some preference not being saved properly
@@ -128,12 +128,12 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency co.touchlab:kermit to v2.0.4
 - Update lifecycle to v2.8.4
 
-## [v1.8.5.1]
+## [1.8.5.1]
 
 ### Fixes
 - Fixed library showing duplicate entry when using dynamic category
 
-## [v1.8.5]
+## [1.8.5]
 
 ### Additions
 - Add missing "Max automatic backups" option on experimental Data and Storage setting menu

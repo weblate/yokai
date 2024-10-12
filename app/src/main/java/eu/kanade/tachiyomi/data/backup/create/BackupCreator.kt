@@ -107,7 +107,7 @@ class BackupCreator(
 
             return fileUri.toString()
         } catch (e: Exception) {
-            Logger.e(e) { if (file == null) "Unable to retrieve backup destination" else "Invalid backup destination" }
+            Logger.e(e) { "Backup failed: ${e.message}" }
             file?.delete()
             throw e
         }

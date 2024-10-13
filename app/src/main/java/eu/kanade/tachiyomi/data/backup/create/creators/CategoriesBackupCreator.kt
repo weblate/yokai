@@ -2,23 +2,22 @@ package eu.kanade.tachiyomi.data.backup.create.creators
 
 import eu.kanade.tachiyomi.data.backup.create.BackupOptions
 import eu.kanade.tachiyomi.data.backup.models.BackupCategory
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.category.interactor.GetCategories
 
 class CategoriesBackupCreator(
-    private val db: DatabaseHelper = Injekt.get(),
+    private val getCategories: GetCategories = Injekt.get(),
 ) {
     /**
      * Backup the categories of library
      *
      * @return list of [BackupCategory] to be backed up
      */
-    operator fun invoke(options: BackupOptions): List<BackupCategory> {
+    suspend operator fun invoke(options: BackupOptions): List<BackupCategory> {
         if (!options.categories) return emptyList()
 
-        return db.getCategories()
-            .executeAsBlocking()
+        return getCategories.await()
             .map { BackupCategory.copyFrom(it) }
     }
 }

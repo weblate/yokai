@@ -10,8 +10,8 @@ import eu.kanade.tachiyomi.data.backup.create.creators.MangaBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.PreferenceBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.SourcesBackupCreator
 import eu.kanade.tachiyomi.data.backup.models.Backup
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
-import eu.kanade.tachiyomi.util.system.e
+import java.io.FileOutputStream
+import java.time.Instant
 import kotlinx.serialization.protobuf.ProtoBuf
 import okio.buffer
 import okio.gzip
@@ -19,10 +19,9 @@ import okio.sink
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.backup.BackupPreferences
+import yokai.domain.manga.interactor.GetManga
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.FileOutputStream
-import java.time.Instant
 
 class BackupCreator(
     val context: Context,
@@ -30,21 +29,19 @@ class BackupCreator(
     private val mangaBackupCreator: MangaBackupCreator = MangaBackupCreator(),
     private val preferenceBackupCreator: PreferenceBackupCreator = PreferenceBackupCreator(),
     private val sourcesBackupCreator: SourcesBackupCreator = SourcesBackupCreator(),
+    private val getManga: GetManga = Injekt.get(),
 ) {
 
     val parser = ProtoBuf
-    private val db: DatabaseHelper = Injekt.get()
     private val backupPreferences: BackupPreferences = Injekt.get()
 
-    @Suppress("RedundantSuspendModifier")
-    private suspend fun getDatabaseManga(includeReadManga: Boolean) = db.inTransactionReturn {
-        db.getFavoriteMangas().executeAsBlocking() +
+    private suspend fun getDatabaseManga(includeReadManga: Boolean) =
+        getManga.awaitFavorites() +
             if (includeReadManga) {
-                db.getReadNotInLibraryMangas().executeAsBlocking()
+                getManga.awaitReadNotFavorites()
             } else {
                 emptyList()
             }
-    }
 
     /**
      * Create backup Json file from database

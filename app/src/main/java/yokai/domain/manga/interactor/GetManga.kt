@@ -11,4 +11,5 @@ class GetManga (
     suspend fun awaitByUrlAndSource(url: String, source: Long) = mangaRepository.getMangaByUrlAndSource(url, source)
     suspend fun awaitById(id: Long) = mangaRepository.getMangaById(id)
     suspend fun awaitFavorites() = mangaRepository.getFavorites()
+    suspend fun awaitReadNotFavorites() = mangaRepository.getReadNotFavorites()
 }

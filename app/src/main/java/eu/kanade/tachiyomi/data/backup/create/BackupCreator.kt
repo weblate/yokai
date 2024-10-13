@@ -78,7 +78,6 @@ class BackupCreator(
             val backup = Backup(
                 backupManga = backupManga,
                 backupCategories = categoriesBackupCreator(options),
-                backupBrokenSources = emptyList(),
                 backupSources = sourcesBackupCreator(backupManga),
                 backupPreferences = preferenceBackupCreator.backupAppPreferences(options),
                 backupSourcePreferences = preferenceBackupCreator.backupSourcePreferences(options),

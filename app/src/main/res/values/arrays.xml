@@ -16,6 +16,7 @@
         <item>@string/display_options</item>
         <item>@string/group_library_by</item>
         <item>@string/open_random_series</item>
+        <item>@string/open_random_series_global</item>
     </string-array>
 
     <string-array name="hide_hopper">

@@ -153,6 +153,7 @@
     <string name="category_hopper_long_press">Category hopper long-press action</string>
     <string name="expand_collapse_all_categories">Expand/collapse all categories</string>
     <string name="open_random_series">Open a random series</string>
+    <string name="open_random_series_global">Open a random series (Global)</string>
     <string name="expand_all_categories">Expand all categories</string>
     <string name="collapse_all_categories">Collapse all categories</string>
     <string name="reorder_filters">Reorder filters</string>

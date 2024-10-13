@@ -54,9 +54,7 @@ class BackupRestorer(
 
         restoreAmount = backup.backupManga.size + 3 // +3 for categories, app prefs, source prefs
 
-        // Store source mapping for error messages
-        val backupMaps = backup.backupBrokenSources.map { BackupSource(it.name, it.sourceId) } + backup.backupSources
-        sourceMapping = backupMaps.associate { it.sourceId to it.name }
+        sourceMapping = backup.backupSources.associate { it.sourceId to it.name }
 
         coroutineScope {
             // Restore categories

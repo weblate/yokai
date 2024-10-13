@@ -10,11 +10,13 @@ import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.data.DatabaseHandler
 import yokai.domain.chapter.interactor.GetChapter
 
 class MangaBackupCreator(
     private val db: DatabaseHelper = Injekt.get(),
     private val customMangaManager: CustomMangaManager = Injekt.get(),
+    private val handler: DatabaseHandler = Injekt.get(),
     private val getChapter: GetChapter = Injekt.get(),
 ) {
     suspend operator fun invoke(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
@@ -39,9 +41,16 @@ class MangaBackupCreator(
         // Check if user wants chapter information in backup
         if (options.chapters) {
             // Backup all the chapters
-            val chapters = manga.id?.let { getChapter.awaitAll(it, false) }.orEmpty()
+            val chapters = manga.id?.let {
+                handler.awaitList {
+                    chaptersQueries.getChaptersByMangaId(
+                        it,
+                        0,  // We want all chapters, so ignore scanlator filter
+                        BackupChapter::mapper)
+                }
+            }.orEmpty()
             if (chapters.isNotEmpty()) {
-                mangaObject.chapters = chapters.map { BackupChapter.copyFrom(it) }
+                mangaObject.chapters = chapters
             }
         }
 

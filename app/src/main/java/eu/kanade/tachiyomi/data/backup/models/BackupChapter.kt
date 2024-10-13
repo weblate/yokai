@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.data.backup.models
 
-import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterImpl
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
@@ -42,20 +41,32 @@ data class BackupChapter(
     }
 
     companion object {
-        fun copyFrom(chapter: Chapter): BackupChapter {
-            return BackupChapter(
-                url = chapter.url,
-                name = chapter.name,
-                chapterNumber = chapter.chapter_number,
-                scanlator = chapter.scanlator,
-                read = chapter.read,
-                bookmark = chapter.bookmark,
-                lastPageRead = chapter.last_page_read,
-                dateFetch = chapter.date_fetch,
-                dateUpload = chapter.date_upload,
-                sourceOrder = chapter.source_order,
-                pagesLeft = chapter.pages_left,
-            )
-        }
+        fun mapper(
+            id: Long,
+            mangaId: Long,
+            url: String,
+            name: String,
+            scanlator: String?,
+            read: Boolean,
+            bookmark: Boolean,
+            lastPageRead: Long,
+            pagesLeft: Long,
+            chapterNumber: Double,
+            sourceOrder: Long,
+            dateFetch: Long,
+            dateUpload: Long,
+        ) = BackupChapter(
+            url = url,
+            name = name,
+            scanlator = scanlator,
+            read = read,
+            bookmark = bookmark,
+            lastPageRead = lastPageRead.toInt(),
+            pagesLeft = pagesLeft.toInt(),
+            chapterNumber = chapterNumber.toFloat(),
+            sourceOrder = sourceOrder.toInt(),
+            dateFetch = dateFetch,
+            dateUpload = dateUpload,
+        )
     }
 }

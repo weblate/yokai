@@ -21,6 +21,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Minor visual adjustments
 - Tell user to restart the app when User-Agent is changed (@NGB-Was-Taken)
 - Re-enable fetching licensed manga (@Animeboynz)
+- Bangumi search now shows the score and summary of a search result (@MajorTanya)
 
 ### Fixes
 - Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)

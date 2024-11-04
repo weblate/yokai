@@ -35,14 +35,6 @@ class BackupCreator(
     val parser = ProtoBuf
     private val backupPreferences: BackupPreferences = Injekt.get()
 
-    private suspend fun getDatabaseManga(includeReadManga: Boolean) =
-        getManga.awaitFavorites() +
-            if (includeReadManga) {
-                getManga.awaitReadNotFavorites()
-            } else {
-                emptyList()
-            }
-
     /**
      * Create backup Json file from database
      *
@@ -74,7 +66,8 @@ class BackupCreator(
                 throw IllegalStateException("Invalid backup destination")
             }
 
-            val backupManga = mangaBackupCreator(getDatabaseManga(options.readManga), options)
+            val readNotFavorites = if (options.readManga) getManga.awaitReadNotFavorites() else emptyList()
+            val backupManga = mangaBackupCreator(getManga.awaitFavorites() + readNotFavorites, options)
             val backup = Backup(
                 backupManga = backupManga,
                 backupCategories = categoriesBackupCreator(options),

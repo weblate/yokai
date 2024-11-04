@@ -5,11 +5,17 @@ import android.net.Uri
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.backup.BackupFileValidator
+import eu.kanade.tachiyomi.data.backup.models.BackupCategory
+import eu.kanade.tachiyomi.data.backup.models.BackupManga
+import eu.kanade.tachiyomi.data.backup.models.BackupPreference
+import eu.kanade.tachiyomi.data.backup.models.BackupSource
+import eu.kanade.tachiyomi.data.backup.models.BackupSourcePreferences
 import eu.kanade.tachiyomi.data.backup.create.creators.CategoriesBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.MangaBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.PreferenceBackupCreator
 import eu.kanade.tachiyomi.data.backup.create.creators.SourcesBackupCreator
 import eu.kanade.tachiyomi.data.backup.models.Backup
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import java.io.FileOutputStream
 import java.time.Instant
 import kotlinx.serialization.protobuf.ProtoBuf
@@ -67,13 +73,13 @@ class BackupCreator(
             }
 
             val readNotFavorites = if (options.readManga) getManga.awaitReadNotFavorites() else emptyList()
-            val backupManga = mangaBackupCreator(getManga.awaitFavorites() + readNotFavorites, options)
+            val backupManga = backupMangas(getManga.awaitFavorites() + readNotFavorites, options)
             val backup = Backup(
                 backupManga = backupManga,
-                backupCategories = categoriesBackupCreator(options),
-                backupSources = sourcesBackupCreator(backupManga),
-                backupPreferences = preferenceBackupCreator.backupAppPreferences(options),
-                backupSourcePreferences = preferenceBackupCreator.backupSourcePreferences(options),
+                backupCategories = backupCategories(options),
+                backupSources = backupSources(backupManga),
+                backupPreferences = backupAppPreferences(options),
+                backupSourcePreferences = backupSourcePreferences(options),
             )
 
             val byteArray = parser.encodeToByteArray(Backup.serializer(), backup)
@@ -100,5 +106,33 @@ class BackupCreator(
             file?.delete()
             throw e
         }
+    }
+
+    private suspend fun backupCategories(options: BackupOptions): List<BackupCategory> {
+        if (!options.categories) return emptyList()
+
+        return categoriesBackupCreator()
+    }
+
+    private suspend fun backupMangas(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
+        if (!options.libraryEntries) return emptyList()
+
+        return mangaBackupCreator(mangas, options)
+    }
+
+    private fun backupSources(mangas: List<BackupManga>): List<BackupSource> {
+        return sourcesBackupCreator(mangas)
+    }
+
+    private fun backupAppPreferences(options: BackupOptions): List<BackupPreference> {
+        if (!options.appPrefs) return emptyList()
+
+        return preferenceBackupCreator.createApp(includePrivatePreferences = options.includePrivate)
+    }
+
+    private fun backupSourcePreferences(options: BackupOptions): List<BackupSourcePreferences> {
+        if (!options.sourcePrefs) return emptyList()
+
+        return preferenceBackupCreator.createSource(includePrivatePreferences = options.includePrivate)
     }
 }

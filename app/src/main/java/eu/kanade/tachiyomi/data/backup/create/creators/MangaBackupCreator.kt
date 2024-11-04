@@ -20,8 +20,6 @@ class MangaBackupCreator(
     private val getChapter: GetChapter = Injekt.get(),
 ) {
     suspend operator fun invoke(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
-        if (!options.libraryEntries) return emptyList()
-
         return mangas.map {
             backupManga(it, options)
         }

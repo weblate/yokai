@@ -23,21 +23,19 @@ class PreferenceBackupCreator(
     private val sourceManager: SourceManager = Injekt.get(),
     private val preferenceStore: PreferenceStore = Injekt.get(),
 ) {
-    fun backupAppPreferences(options: BackupOptions): List<BackupPreference> {
-        if (!options.appPrefs) return emptyList()
+    fun createApp(includePrivatePreferences: Boolean): List<BackupPreference> {
         return preferenceStore.getAll().toBackupPreferences()
-            .withPrivatePreferences(options.includePrivate)
+            .withPrivatePreferences(includePrivatePreferences)
     }
 
-    fun backupSourcePreferences(options: BackupOptions): List<BackupSourcePreferences> {
-        if (!options.sourcePrefs) return emptyList()
+    fun createSource(includePrivatePreferences: Boolean): List<BackupSourcePreferences> {
         return sourceManager.getOnlineSources()
             .filterIsInstance<ConfigurableSource>()
             .map {
                 BackupSourcePreferences(
                     it.preferenceKey(),
                     it.sourcePreferences().all.toBackupPreferences()
-                        .withPrivatePreferences(options.includePrivate),
+                        .withPrivatePreferences(includePrivatePreferences),
                 )
             }
     }

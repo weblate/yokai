@@ -14,9 +14,7 @@ class CategoriesBackupCreator(
      *
      * @return list of [BackupCategory] to be backed up
      */
-    suspend operator fun invoke(options: BackupOptions): List<BackupCategory> {
-        if (!options.categories) return emptyList()
-
+    suspend operator fun invoke(): List<BackupCategory> {
         return getCategories.await()
             .map { BackupCategory.copyFrom(it) }
     }

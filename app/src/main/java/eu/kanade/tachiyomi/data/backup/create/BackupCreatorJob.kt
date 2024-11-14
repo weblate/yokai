@@ -48,12 +48,15 @@ class BackupCreatorJob(private val context: Context, workerParams: WorkerParamet
             ?: getAutomaticBackupLocation()
             ?: return Result.failure()
 
+        tryToSetForeground()
+        /*
         if (isAutoBackup) {
             notifier.showBackupProgress()  // Remove when tryToSetForeground is "fixed"
         } else {
             // FIXME: tryToSetForeground keep causing auto backup to fail
             tryToSetForeground()
         }
+        */
 
         val options = inputData.getBooleanArray(BACKUP_FLAGS_KEY)?.let { BackupOptions.fromBooleanArray(it) }
             ?: BackupOptions()

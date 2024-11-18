@@ -18,8 +18,8 @@ fun getComicInfo(
     sourceName: String,
     lang: String?,
 ) = ComicInfo(
-    title = ComicInfo.Title(chapter.name),
-    series = ComicInfo.Series(manga.title),
+    title = ComicInfo.Title(chapter.name.stripNonValidXML1_0Characters()),
+    series = ComicInfo.Series(manga.title.stripNonValidXML1_0Characters()),
     number = chapter.chapter_number.takeIf { it >= 0 }?.let {
         if (it.rem(1) == 0.0f) {
             ComicInfo.Number(it.toInt().toString())
@@ -27,15 +27,15 @@ fun getComicInfo(
             ComicInfo.Number(it.toString())
         }
     },
-    summary = manga.description?.let { ComicInfo.Summary(it) },
-    writer = manga.author?.let { ComicInfo.Writer(it) },
-    penciller = manga.artist?.let { ComicInfo.Penciller(it) },
+    summary = manga.description?.let { ComicInfo.Summary(it.stripNonValidXML1_0Characters()) },
+    writer = manga.author?.let { ComicInfo.Writer(it.stripNonValidXML1_0Characters()) },
+    penciller = manga.artist?.let { ComicInfo.Penciller(it.stripNonValidXML1_0Characters()) },
     inker = null,
     colorist = null,
     letterer = null,
     coverArtist = null,
-    translator = chapter.scanlator?.let { ComicInfo.Translator(it) },
-    genre = manga.genre?.let { ComicInfo.Genre(it) },
+    translator = chapter.scanlator?.let { ComicInfo.Translator(it.stripNonValidXML1_0Characters()) },
+    genre = manga.genre?.let { ComicInfo.Genre(it.stripNonValidXML1_0Characters()) },
     tags = null,
     web = ComicInfo.Web(urls.joinToString(" ")),
     publishingStatus = ComicInfo.PublishingStatusTachiyomi(
@@ -48,17 +48,17 @@ fun getComicInfo(
 
 fun SManga.toComicInfo(lang: String? = null) = ComicInfo(
     title = null,
-    series = ComicInfo.Series(title),
+    series = ComicInfo.Series(title.stripNonValidXML1_0Characters()),
     number = null,
-    summary = description?.let { ComicInfo.Summary(it) },
-    writer = author?.let { ComicInfo.Writer(it) },
-    penciller = artist?.let { ComicInfo.Penciller(it) },
+    summary = description?.let { ComicInfo.Summary(it.stripNonValidXML1_0Characters()) },
+    writer = author?.let { ComicInfo.Writer(it.stripNonValidXML1_0Characters()) },
+    penciller = artist?.let { ComicInfo.Penciller(it.stripNonValidXML1_0Characters()) },
     inker = null,
     colorist = null,
     letterer = null,
     coverArtist = null,
     translator = null,
-    genre = genre?.let { ComicInfo.Genre(it) },
+    genre = genre?.let { ComicInfo.Genre(it.stripNonValidXML1_0Characters()) },
     tags = null,
     web = null,
     publishingStatus = ComicInfo.PublishingStatusTachiyomi(
@@ -230,5 +230,16 @@ enum class ComicInfoPublishingStatus(
             return entries.firstOrNull { it.comicInfoValue == value }?.sMangaModelValue
                 ?: UNKNOWN.sMangaModelValue
         }
+    }
+}
+
+// REF: https://www.w3.org/TR/xml/#charsets
+fun String.stripNonValidXML1_0Characters(): String {
+    return this.filter {
+        val c = it.code
+        c == 0x9 || c == 0xA || c == 0xD ||
+        ((c >= 0x20) && (c <= 0xD7FF)) ||
+        ((c >= 0xE000) && (c <= 0xFFFD)) ||
+        ((c >= 0x10000) && (c <= 0x10FFFF))
     }
 }

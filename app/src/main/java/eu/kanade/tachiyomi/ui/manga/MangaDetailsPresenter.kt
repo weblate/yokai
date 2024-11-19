@@ -758,7 +758,7 @@ class MangaDetailsPresenter(
                 manga,
                 if (filteredScanlators.size == allChapterScanlators.size) emptySet() else filteredScanlators
             )
-            asyncUpdateMangaAndChapters()
+            asyncUpdateMangaAndChapters(true)
         }
     }
 

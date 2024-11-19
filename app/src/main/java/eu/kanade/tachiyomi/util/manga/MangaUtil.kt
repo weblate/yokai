@@ -9,8 +9,7 @@ object MangaUtil {
     suspend fun setScanlatorFilter(updateManga: UpdateManga, manga: Manga, filteredScanlators: Set<String>) {
         if (manga.id == null) return
 
-        manga.filtered_scanlators =
-            if (filteredScanlators.isEmpty()) null else ChapterUtil.getScanlatorString(filteredScanlators)
+        manga.filtered_scanlators = ChapterUtil.getScanlatorString(filteredScanlators)
 
         updateManga.await(MangaUpdate(manga.id!!, filteredScanlators = manga.filtered_scanlators))
     }

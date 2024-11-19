@@ -72,7 +72,8 @@ open class MangaImpl : Manga {
 
     override var update_strategy: UpdateStrategy = UpdateStrategy.ALWAYS_UPDATE
 
-    override var filtered_scanlators: String? = null
+    // TODO: It's probably fine to set this to non-null string in the future
+    override var filtered_scanlators: String? = ""
 
     override lateinit var ogTitle: String
     override var ogAuthor: String? = null

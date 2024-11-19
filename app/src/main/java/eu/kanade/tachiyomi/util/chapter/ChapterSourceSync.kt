@@ -205,7 +205,7 @@ suspend fun syncChaptersWithSource(
 }
 
 private fun List<Chapter>.filterChaptersByScanlators(manga: Manga): List<Chapter> {
-    if (manga.filtered_scanlators == null) return this
+    if (manga.filtered_scanlators.isNullOrBlank()) return this
 
     return this.filter { chapter ->
         !ChapterUtil.getScanlators(manga.filtered_scanlators).contains(chapter.scanlator)

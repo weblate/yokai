@@ -58,6 +58,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency io.mockk:mockk to v1.13.12
 - Update shizuku to v12.2.0
 
+## [1.8.5.10]
+
+### Fixes
+- Fixed scanlator filter not working properly
+
 ## [1.8.5.9]
 
 ### Changes

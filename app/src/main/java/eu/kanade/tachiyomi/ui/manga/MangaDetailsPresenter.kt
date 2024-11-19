@@ -563,7 +563,7 @@ class MangaDetailsPresenter(
      * @param selectedChapters the list of chapters to bookmark.
      */
     fun bookmarkChapters(selectedChapters: List<ChapterItem>, bookmarked: Boolean) {
-        presenterScope.launch(Dispatchers.IO) {
+        presenterScope.launchNonCancellableIO {
             val updates = selectedChapters.map {
                 it.bookmark = bookmarked
                 it.toProgressUpdate()
@@ -586,7 +586,7 @@ class MangaDetailsPresenter(
         lastRead: Int? = null,
         pagesLeft: Int? = null,
     ) {
-        presenterScope.launchIO {
+        presenterScope.launchNonCancellableIO {
             val updates = selectedChapters.map {
                 it.read = read
                 if (!read) {
@@ -618,14 +618,14 @@ class MangaDetailsPresenter(
         if (mangaSortMatchesDefault()) {
             manga.setSortToGlobal()
         }
-        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
+        presenterScope.launchNonCancellableIO { asyncUpdateMangaAndChapters() }
     }
 
     fun setGlobalChapterSort(sort: Int, descend: Boolean) {
         preferences.sortChapterOrder().set(sort)
         preferences.chaptersDescAsDefault().set(descend)
         manga.setSortToGlobal()
-        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
+        presenterScope.launchNonCancellableIO { asyncUpdateMangaAndChapters() }
     }
 
     fun mangaSortMatchesDefault(): Boolean {
@@ -646,7 +646,7 @@ class MangaDetailsPresenter(
 
     fun resetSortingToDefault() {
         manga.setSortToGlobal()
-        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
+        presenterScope.launchNonCancellableIO { asyncUpdateMangaAndChapters() }
     }
 
     /**
@@ -676,7 +676,7 @@ class MangaDetailsPresenter(
         if (mangaFilterMatchesDefault()) {
             manga.setFilterToGlobal()
         }
-        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
+        presenterScope.launchNonCancellableIO { asyncUpdateMangaAndChapters() }
     }
 
     /**
@@ -686,7 +686,7 @@ class MangaDetailsPresenter(
     fun hideTitle(hide: Boolean) {
         manga.displayMode = if (hide) Manga.CHAPTER_DISPLAY_NUMBER else Manga.CHAPTER_DISPLAY_NAME
         manga.setFilterToLocal()
-        presenterScope.launchIO { updateManga.await(MangaUpdate(manga.id!!, chapterFlags = manga.chapter_flags)) }
+        presenterScope.launchNonCancellableIO { updateManga.await(MangaUpdate(manga.id!!, chapterFlags = manga.chapter_flags)) }
         if (mangaFilterMatchesDefault()) {
             manga.setFilterToGlobal()
         }
@@ -695,7 +695,7 @@ class MangaDetailsPresenter(
 
     fun resetFilterToDefault() {
         manga.setFilterToGlobal()
-        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
+        presenterScope.launchNonCancellableIO { asyncUpdateMangaAndChapters() }
     }
 
     fun setGlobalChapterFilters(
@@ -726,7 +726,7 @@ class MangaDetailsPresenter(
         )
         preferences.hideChapterTitlesByDefault().set(manga.hideChapterTitles)
         manga.setFilterToGlobal()
-        presenterScope.launchIO { asyncUpdateMangaAndChapters() }
+        presenterScope.launchNonCancellableIO { asyncUpdateMangaAndChapters() }
     }
 
     private suspend fun asyncUpdateMangaAndChapters(justChapters: Boolean = false) {
@@ -751,7 +751,7 @@ class MangaDetailsPresenter(
     }
 
     fun setScanlatorFilter(filteredScanlators: Set<String>) {
-        presenterScope.launchIO {
+        presenterScope.launchNonCancellableIO {
             val manga = manga
             MangaUtil.setScanlatorFilter(
                 updateManga,
@@ -787,7 +787,7 @@ class MangaDetailsPresenter(
     }
 
     fun confirmDeletion() {
-        presenterScope.launchIO {
+        presenterScope.launchNonCancellableIO {
             manga.removeCover(coverCache)
             customMangaManager.saveMangaInfo(CustomMangaInfo(
                 mangaId = manga.id!!,

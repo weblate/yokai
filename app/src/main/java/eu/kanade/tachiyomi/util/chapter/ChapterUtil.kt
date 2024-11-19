@@ -164,6 +164,7 @@ class ChapterUtil {
         }
 
         fun getScanlatorString(scanlators: Set<String>): String {
+            if (scanlators.isEmpty()) return ""
             return scanlators.toList().sorted().joinToString(scanlatorSeparator)
         }
 

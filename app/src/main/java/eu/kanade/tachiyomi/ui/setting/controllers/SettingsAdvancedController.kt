@@ -395,7 +395,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
         preferenceCategory {
             titleRes = MR.strings.reader
 
-            listPreference(activity) {
+            intListPreference(activity) {
                 bindTo(basePreferences.hardwareBitmapThreshold())
                 titleRes = MR.strings.pref_hardware_bitmap_threshold
 
@@ -403,7 +403,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                     .associateWith { it.toString() }
                     .toImmutableMap()
                 entries = entryMap.values.toList()
-                entryValues = entryMap.keys.map { it.toString() }.toList()
+                entryValues = entryMap.keys.toList()
 
                 isVisible = GLUtil.DEVICE_TEXTURE_LIMIT > GLUtil.SAFE_TEXTURE_LIMIT
 

@@ -22,10 +22,12 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuRemoteProcess
 import rikka.sui.Sui
 import uy.kohesive.injekt.injectLazy
 import java.io.BufferedReader
 import java.io.InputStream
+import java.lang.reflect.Method
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
@@ -69,6 +71,8 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
 
     var ready = false
 
+    private val newProcess: Method
+
     init {
         Shizuku.addBinderDeadListener(shizukuDeadListener)
         require(Shizuku.pingBinder() && (context.isPackageInstalled(shizukuPkgName) || Sui.isSui())) {
@@ -82,6 +86,9 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
             Shizuku.requestPermission(SHIZUKU_PERMISSION_REQUEST_CODE)
             false
         }
+        newProcess = Shizuku::class.java
+            .getDeclaredMethod("newProcess", Array<out String>::class.java, Array<out String>::class.java, String::class.java)
+        newProcess.isAccessible = true
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -206,8 +213,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
     }
 
     private fun exec(command: String, stdin: InputStream? = null): ShellResult {
-        @Suppress("DEPRECATION")
-        val process = Shizuku.newProcess(arrayOf("sh", "-c", command), null, null)
+        val process = newProcess.invoke(null, arrayOf("sh", "-c", command), null, null) as ShizukuRemoteProcess
         if (stdin != null) {
             process.outputStream.use { stdin.copyTo(it) }
         }

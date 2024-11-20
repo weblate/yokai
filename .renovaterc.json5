@@ -31,5 +31,4 @@
   dependencyDashboardApproval: true,
   semanticCommits: 'enabled',
   commitMessageLowerCase: 'never',
-  forkProcessing: 'enabled',
 }

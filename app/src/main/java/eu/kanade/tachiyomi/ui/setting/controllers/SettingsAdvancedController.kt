@@ -57,6 +57,7 @@ import eu.kanade.tachiyomi.ui.setting.preference
 import eu.kanade.tachiyomi.ui.setting.preferenceCategory
 import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.util.CrashLogUtil
+import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.isPackageInstalled
@@ -73,6 +74,7 @@ import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import java.io.File
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -393,8 +395,25 @@ class SettingsAdvancedController : SettingsLegacyController() {
         preferenceCategory {
             titleRes = MR.strings.reader
 
+            listPreference(activity) {
+                bindTo(basePreferences.hardwareBitmapThreshold())
+                titleRes = MR.strings.pref_hardware_bitmap_threshold
+
+                val entryMap = GLUtil.CUSTOM_TEXTURE_LIMIT_OPTIONS
+                    .associateWith { it.toString() }
+                    .toImmutableMap()
+                entries = entryMap.values.toList()
+                entryValues = entryMap.keys.map { it.toString() }.toList()
+
+                isVisible = GLUtil.DEVICE_TEXTURE_LIMIT > GLUtil.SAFE_TEXTURE_LIMIT
+
+                basePreferences.hardwareBitmapThreshold().changesIn(viewScope) { threshold ->
+                    summary = context.getString(MR.strings.pref_hardware_bitmap_threshold_summary, threshold)
+                }
+            }
+
             preference {
-                key = "pref_display_profile"
+                bindTo(basePreferences.displayProfile())
                 titleRes = MR.strings.pref_display_profile
                 onClick {
                     (activity as? MainActivity)?.showColourProfilePicker()

@@ -785,9 +785,11 @@ object ImageUtil {
     fun isMaxTextureSizeExceeded(bitmap: Bitmap): Boolean =
         isMaxTextureSizeExceeded(bitmap.width, bitmap.height)
 
+    var hardwareBitmapThreshold: Int = GLUtil.SAFE_TEXTURE_LIMIT
+
     private fun isMaxTextureSizeExceeded(width: Int, height: Int): Boolean {
         if (minOf(width, height) <= 0) return false
 
-        return maxOf(width, height) > GLUtil.maxTextureSize
+        return maxOf(width, height) > hardwareBitmapThreshold
     }
 }

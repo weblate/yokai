@@ -36,7 +36,6 @@ import eu.kanade.tachiyomi.data.coil.customDecoder
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
 import eu.kanade.tachiyomi.util.system.DeviceUtil
-import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
 import okio.BufferedSource
@@ -127,7 +126,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         } else {
             SubsamplingScaleImageView(context)
         }.apply {
-            setMaxTileSize(GLUtil.maxTextureSize)
+            setMaxTileSize(ImageUtil.hardwareBitmapThreshold)
             setDoubleTapZoomStyle(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER)
             setPanLimit(SubsamplingScaleImageView.PAN_LIMIT_INSIDE)
             setMinimumTileDpi(180)
@@ -232,8 +231,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 isVisible = true
             }
             is BufferedSource -> {
-                // FIXME: Remove `ImageUtil.isMaxTextureSizeExceeded` after porting https://github.com/mihonapp/mihon/commit/dcddac5daaff3ec89c8507c35dc13d345ffdb6d7#diff-cbb19957efc1d319c0cdc62d5cf4b32bad5b51da21d3c67c3d4256200eb9c5d1
-                if (!isWebtoon || ImageUtil.isMaxTextureSizeExceeded(data)) {
+                if (!isWebtoon) {
                     setHardwareConfig(!ImageUtil.isMaxTextureSizeExceeded(data))
                     setImage(ImageSource.inputStream(data.inputStream()))
                     isVisible = true

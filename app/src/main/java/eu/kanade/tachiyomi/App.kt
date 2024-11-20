@@ -51,6 +51,8 @@ import eu.kanade.tachiyomi.ui.security.SecureActivityDelegate
 import eu.kanade.tachiyomi.ui.source.SourcePresenter
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
+import eu.kanade.tachiyomi.util.system.GLUtil
+import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notification
@@ -102,6 +104,10 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             modules(preferenceModule(this@App), appModule(this@App), domainModule())
         }
 
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+
+        val scope = ProcessLifecycleOwner.get().lifecycleScope
+
         basePreferences.crashReport().changes()
             .onEach {
                 try {
@@ -110,18 +116,23 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
                     // Probably already enabled/disabled
                 }
             }
-            .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
+            .launchIn(scope)
 
         setupNotificationChannels()
-
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         MangaCoverMetadata.load()
         preferences.nightMode().changes()
             .onEach { AppCompatDelegate.setDefaultNightMode(it) }
-            .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
+            .launchIn(scope)
 
-        ProcessLifecycleOwner.get().lifecycleScope.launchIO {
+        basePreferences.hardwareBitmapThreshold().let { preference ->
+            if (!preference.isSet()) preference.set(GLUtil.DEVICE_TEXTURE_LIMIT)
+        }
+        basePreferences.hardwareBitmapThreshold().changes()
+            .onEach { ImageUtil.hardwareBitmapThreshold = it }
+            .launchIn(scope)
+
+        scope.launchIO {
             with(TachiyomiWidgetManager()) { this@App.init() }
         }
 
@@ -160,7 +171,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
                     notificationManager.cancel(Notifications.ID_INCOGNITO_MODE)
                 }
             }
-            .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
+            .launchIn(scope)
 
         initializeMigrator()
     }

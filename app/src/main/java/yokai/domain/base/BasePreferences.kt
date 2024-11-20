@@ -5,6 +5,7 @@ import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.preference.getEnum
 import eu.kanade.tachiyomi.extension.util.ExtensionInstaller
+import eu.kanade.tachiyomi.util.system.GLUtil
 import yokai.i18n.MR
 
 class BasePreferences(private val preferenceStore: PreferenceStore) {
@@ -46,4 +47,6 @@ class BasePreferences(private val preferenceStore: PreferenceStore) {
         DEFAULT(MR.strings.recents_long_tap_default),
         LAST_READ(MR.strings.recents_long_tap_last_read)
     }
+
+    fun hardwareBitmapThreshold() = preferenceStore.getInt("pref_hardware_bitmap_threshold", GLUtil.SAFE_TEXTURE_LIMIT)
 }

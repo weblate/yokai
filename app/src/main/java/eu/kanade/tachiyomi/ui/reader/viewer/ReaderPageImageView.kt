@@ -232,7 +232,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 isVisible = true
             }
             is BufferedSource -> {
-                if (!isWebtoon || !ImageUtil.isMaxTextureSizeExceeded(data)) {
+                if (!isWebtoon || ImageUtil.isMaxTextureSizeExceeded(data)) {
                     setHardwareConfig(!ImageUtil.isMaxTextureSizeExceeded(data))
                     setImage(ImageSource.inputStream(data.inputStream()))
                     isVisible = true

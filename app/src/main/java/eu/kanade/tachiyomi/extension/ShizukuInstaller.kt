@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Process
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
@@ -92,7 +93,8 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
                 val size = context.getUriSize(entry.uri) ?: throw IllegalStateException()
                 context.contentResolver.openInputStream(entry.uri)!!.use {
                     val createCommand = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        "pm install-create --user current -r -i ${context.packageName} -S $size"
+                        val userId = Process.myUserHandle().hashCode()
+                        "pm install-create --user $userId current -r -i ${context.packageName} -S $size"
                     } else {
                         "pm install-create -r -i ${context.packageName} -S $size"
                     }

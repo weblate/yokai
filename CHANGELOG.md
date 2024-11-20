@@ -29,7 +29,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fixed reader sometimes won't load images
 - Handle some uncaught crashes
 - Fixed crashes due to GestureDetector's firstEvent is sometimes null on some devices
-- Fixed download failed caused by invalid XML 1.0 character
+- Fixed download failed due to invalid XML 1.0 character
 - Fixed issues with shizuku in a multi user setup (@Redjard)
 
 ### Other

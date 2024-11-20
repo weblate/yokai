@@ -234,12 +234,13 @@ enum class ComicInfoPublishingStatus(
 }
 
 // REF: https://www.w3.org/TR/xml/#charsets
-fun String.stripNonValidXML1_0Characters(): String {
-    return this.filter {
-        val c = it.code
-        c == 0x9 || c == 0xA || c == 0xD ||
-        ((c >= 0x20) && (c <= 0xD7FF)) ||
-        ((c >= 0xE000) && (c <= 0xFFFD)) ||
-        ((c >= 0x10000) && (c <= 0x10FFFF))
-    }
+fun String.stripNonValidXML1_0Characters() = filter { it.isValidXML1_0() }
+
+fun Char.isValidXML1_0() = code.let { c ->
+    c == 0x9 ||
+    c == 0xA ||
+    c == 0xD ||
+    c in 0x20..0xD7FF ||
+    c in 0xE000..0xFFFD ||
+    c in 0x10000..0x10FFFF
 }

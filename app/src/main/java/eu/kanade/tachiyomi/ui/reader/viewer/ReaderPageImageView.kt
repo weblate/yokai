@@ -232,6 +232,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 isVisible = true
             }
             is BufferedSource -> {
+                // FIXME: Remove `ImageUtil.isMaxTextureSizeExceeded` after porting https://github.com/mihonapp/mihon/commit/dcddac5daaff3ec89c8507c35dc13d345ffdb6d7#diff-cbb19957efc1d319c0cdc62d5cf4b32bad5b51da21d3c67c3d4256200eb9c5d1
                 if (!isWebtoon || ImageUtil.isMaxTextureSizeExceeded(data)) {
                     setHardwareConfig(!ImageUtil.isMaxTextureSizeExceeded(data))
                     setImage(ImageSource.inputStream(data.inputStream()))

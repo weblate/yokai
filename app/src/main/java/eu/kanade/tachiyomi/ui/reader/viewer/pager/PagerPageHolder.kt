@@ -40,6 +40,7 @@ import eu.kanade.tachiyomi.widget.ViewPagerAdapter
 import java.io.InputStream
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -502,8 +503,15 @@ class PagerPageHolder(
                     }
                 }
             }
-        } catch (e: Exception) {
-            Logger.e(e) { "Failed to set reader page image" }
+        } catch (e: Throwable) {
+            val logMsg = "Failed to set reader page image"
+            if (e is CancellationException)
+                Logger.w(e) { logMsg }  // probably user exiting the reader page before the image loads
+            else
+                Logger.e(e) { logMsg }
+            withUIContext {
+                setError()
+            }
         }
     }
 

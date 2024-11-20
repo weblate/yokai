@@ -147,7 +147,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
         }
         val nextEntry = queue.first()
         if (waitingInstall.compareAndSet(null, nextEntry)) {
-            queue.removeFirst()
+            queue.removeAt(0)
             processEntry(nextEntry)
         }
     }

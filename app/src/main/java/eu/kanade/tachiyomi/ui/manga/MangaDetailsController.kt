@@ -586,7 +586,7 @@ class MangaDetailsController :
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                                 it.bitmap.copy(Bitmap.Config.HARDWARE, false)
                             else
-                                it.bitmap.copy(it.bitmap.config, false),
+                                it.bitmap.copy(it.bitmap.config!!, false),
                         )
                     } ?: drawable
 

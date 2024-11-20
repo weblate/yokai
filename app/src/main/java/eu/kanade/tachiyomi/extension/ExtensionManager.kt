@@ -82,7 +82,7 @@ class ExtensionManager(
         return if (pkgName != null) {
             try {
                 return iconMap.getOrPut(pkgName) {
-                    ExtensionLoader.getExtensionPackageInfoFromPkgName(context, pkgName)!!.applicationInfo
+                    ExtensionLoader.getExtensionPackageInfoFromPkgName(context, pkgName)!!.applicationInfo!!
                         .loadIcon(context.packageManager)
                 }
             } catch (e: Exception) {

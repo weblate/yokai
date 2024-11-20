@@ -93,7 +93,7 @@ class DebugController : SettingsLegacyController() {
         val activity = activity ?: return "Unknown"
         val webView =
             WebViewCompat.getCurrentWebViewPackage(activity) ?: return "how did you get here?"
-        val label = webView.applicationInfo.loadLabel(activity.packageManager)
+        val label = webView.applicationInfo!!.loadLabel(activity.packageManager)
         val version = webView.versionName
         return "$label $version"
     }

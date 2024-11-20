@@ -783,7 +783,7 @@ object ImageUtil {
         isMaxTextureSizeExceeded(drawable.bitmap)
 
     fun isMaxTextureSizeExceeded(bitmap: Bitmap): Boolean =
-        isMaxTextureSizeExceeded(data.width, data.height)
+        isMaxTextureSizeExceeded(bitmap.width, bitmap.height)
 
     private fun isMaxTextureSizeExceeded(width: Int, height: Int): Boolean {
         if (minOf(width, height) <= 0) return false

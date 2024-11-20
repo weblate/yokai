@@ -26,5 +26,6 @@
   ],
   "dependencyDashboardApproval": true,
   "semanticCommits": true,
-  "commitMessageLowerCase": "never"
+  "commitMessageLowerCase": "never",
+  "forkProcessing": "enabled"
 }

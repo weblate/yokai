@@ -61,7 +61,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update shizuku to v13.1.5
   - Use reflection to fix shizuku breaking changes (@Jobobby04)
 - Bump comple sdk to 35
-  - Handle Android SDK 35 API collision
+  - Handle Android SDK 35 API collision (@AntsyLich)
 - Update kotlin monorepo to v2.0.21
 - Update dependency androidx.work:work-runtime-ktx to v2.10.0
 - Update dependency androidx.core:core-ktx to v1.15.0

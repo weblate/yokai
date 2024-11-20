@@ -89,7 +89,7 @@ sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", ver
 sqldelight-android-paging = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
 sqldelight-dialects-sql = { module = "app.cash.sqldelight:sqlite-3-38-dialect", version.ref = "sqldelight" }
 
-subsamplingscaleimageview = { module = "com.github.null2264:subsampling-scale-image-view", version = "338caedb5f" }
+subsamplingscaleimageview = { module = "com.github.null2264:subsampling-scale-image-view", version = "f7b674ebdd" }
 shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
 shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
 taptargetview = { module = "com.getkeepsafe.taptargetview:taptargetview", version = "1.13.3" }

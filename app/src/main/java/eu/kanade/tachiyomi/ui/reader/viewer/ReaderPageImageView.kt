@@ -18,6 +18,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.StyleRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
+import coil3.BitmapImage
 import coil3.asDrawable
 import coil3.dispose
 import coil3.imageLoader
@@ -225,41 +226,44 @@ open class ReaderPageImageView @JvmOverloads constructor(
             },
         )
 
-        val useCoilPipeline = if (isWebtoon) {
-            try { !ImageUtil.isMaxTextureSizeExceeded(data) } catch (_: IllegalStateException) { false }
-        } else {
-            false
-        }
-
-        if (useCoilPipeline) {
-            val request = ImageRequest.Builder(context)
-                .data(data)
-                .memoryCachePolicy(CachePolicy.DISABLED)
-                .diskCachePolicy(CachePolicy.DISABLED)
-                .target(
-                    onSuccess = { result ->
-                        val image = result.asDrawable(context.resources) as BitmapDrawable
-                        setImage(ImageSource.bitmap(image.bitmap))
-                        isVisible = true
-                    },
-                    onError = {
-                        this@ReaderPageImageView.onImageLoadError()
-                    },
-                )
-                .size(ViewSizeResolver(this@ReaderPageImageView))
-                .precision(Precision.INEXACT)
-                .cropBorders(config.cropBorders)
-                .customDecoder(true)
-                .crossfade(false)
-                .build()
-            context.imageLoader.enqueue(request)
-        } else {
-            when (data) {
-                is BitmapDrawable -> setImage(ImageSource.bitmap(data.bitmap))
-                is BufferedSource -> setImage(ImageSource.inputStream(data.inputStream()))
-                else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
+        when (data) {
+            is BitmapDrawable -> {
+                setImage(ImageSource.bitmap(data.bitmap))
+                isVisible = true
             }
-            isVisible = true
+            is BufferedSource -> {
+                if (!isWebtoon || !ImageUtil.isMaxTextureSizeExceeded(data)) {
+                    setHardwareConfig(!ImageUtil.isMaxTextureSizeExceeded(data))
+                    setImage(ImageSource.inputStream(data.inputStream()))
+                    isVisible = true
+                    return@apply
+                }
+
+                ImageRequest.Builder(context)
+                    .data(data)
+                    .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.DISABLED)
+                    .target(
+                        onSuccess = { result ->
+                            val image = result as BitmapImage
+                            setImage(ImageSource.bitmap(image.bitmap))
+                            isVisible = true
+                        },
+                        onError = {
+                            this@ReaderPageImageView.onImageLoadError()
+                        },
+                    )
+                    .size(ViewSizeResolver(this@ReaderPageImageView))
+                    .precision(Precision.INEXACT)
+                    .cropBorders(config.cropBorders)
+                    .customDecoder(true)
+                    .crossfade(false)
+                    .build()
+                    .let(context.imageLoader::enqueue)
+            }
+            else -> {
+                throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
+            }
         }
     }
 

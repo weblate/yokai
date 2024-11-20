@@ -776,27 +776,17 @@ object ImageUtil {
         return options
     }
 
-    fun isMaxTextureSizeExceeded(data: Any): Boolean {
-        val width: Int
-        val height: Int
-        when (data) {
-            is BufferedSource -> {
-                val opts = extractImageOptions(data)
-                width = opts.outWidth
-                height = opts.outHeight
-            }
-            is BitmapDrawable -> {
-                width = data.bitmap.width
-                height = data.bitmap.height
-            }
-            is Bitmap -> {
-                width = data.width
-                height = data.height
-            }
-            else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
-        }
+    fun isMaxTextureSizeExceeded(source: BufferedSource): Boolean =
+        extractImageOptions(source).let { opts -> isMaxTextureSizeExceeded(opts.outWidth, opts.outHeight) }
 
-        if (minOf(width, height) <= 0) throw IllegalStateException("Invalid bitmap size")
+    fun isMaxTextureSizeExceeded(drawable: BitmapDrawable): Boolean =
+        isMaxTextureSizeExceeded(drawable.bitmap)
+
+    fun isMaxTextureSizeExceeded(bitmap: Bitmap): Boolean =
+        isMaxTextureSizeExceeded(data.width, data.height)
+
+    private fun isMaxTextureSizeExceeded(width: Int, height: Int): Boolean {
+        if (minOf(width, height) <= 0) return false
 
         return maxOf(width, height) > GLUtil.maxTextureSize
     }

@@ -232,6 +232,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 isVisible = true
             }
             is BufferedSource -> {
+                // SSIV doesn't tile bitmaps, so if the image exceeded max texture size it won't load regardless.
                 if (!isWebtoon || ImageUtil.isMaxTextureSizeExceeded(data)) {
                     setHardwareConfig(!ImageUtil.isMaxTextureSizeExceeded(data))
                     setImage(ImageSource.inputStream(data.inputStream()))

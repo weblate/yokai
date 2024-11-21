@@ -4,11 +4,18 @@ import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.changesIn
 import kotlinx.coroutines.CoroutineScope
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
+import yokai.domain.ui.settings.ReaderPreferences
 
 /**
  * Common configuration for all viewers.
  */
-abstract class ViewerConfig(preferences: PreferencesHelper, protected val scope: CoroutineScope) {
+abstract class ViewerConfig(
+    preferences: PreferencesHelper,
+    protected val scope: CoroutineScope,
+    readerPreferences: ReaderPreferences = Injekt.get(),
+) {
 
     var imagePropertyChangedListener: (() -> Unit)? = null
     var reloadChapterListener: ((Boolean) -> Unit)? = null
@@ -26,6 +33,8 @@ abstract class ViewerConfig(preferences: PreferencesHelper, protected val scope:
     var navigationOverlayForNewUser = false
     var navigationMode = 0
         protected set
+
+    var debugMode = false
 
     abstract var navigator: ViewerNavigation
         protected set
@@ -45,6 +54,9 @@ abstract class ViewerConfig(preferences: PreferencesHelper, protected val scope:
 
         preferences.alwaysShowChapterTransition()
             .register({ alwaysShowChapterTransition = it })
+
+        readerPreferences.debugMode()
+            .register({ debugMode = it })
     }
 
     fun <T> Preference<T>.register(

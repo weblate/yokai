@@ -59,7 +59,6 @@ import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.disableItems
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.isPackageInstalled
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
@@ -89,6 +88,7 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences.ExtensionInstaller
 import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.manga.interactor.GetManga
+import yokai.domain.ui.settings.ReaderPreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import android.R as AR
@@ -99,6 +99,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
     private val network: NetworkHelper by injectLazy()
     private val networkPreferences: NetworkPreferences by injectLazy()
+    private val readerPreferences: ReaderPreferences by injectLazy()
 
     private val db: DatabaseHelper by injectLazy()
 
@@ -423,6 +424,11 @@ class SettingsAdvancedController : SettingsLegacyController() {
                     val actualPath = UniFile.fromUri(context, path.toUri())?.filePath ?: path
                     if (actualPath.isNotEmpty()) summary = actualPath
                 }
+            }
+
+            switchPreference {
+                bindTo(readerPreferences.debugMode())
+                titleRes = MR.strings.pref_reader_debug_mode
             }
         }
 

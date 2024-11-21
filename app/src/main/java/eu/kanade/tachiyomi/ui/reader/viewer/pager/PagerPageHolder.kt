@@ -534,6 +534,7 @@ class PagerPageHolder(
                 insets = viewer.activity.window.decorView.rootWindowInsets,
             ),
             hingeGapSize = viewer.config.hingeGapSize,
+            debugMode = viewer.config.debugMode,
         )
 
     private suspend fun setBG(stream: InputStream): Drawable {

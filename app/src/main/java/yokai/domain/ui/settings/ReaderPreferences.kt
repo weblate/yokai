@@ -1,6 +1,7 @@
 package yokai.domain.ui.settings
 
 import dev.icerock.moko.resources.StringResource
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.preference.getEnum
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
@@ -45,4 +46,6 @@ class ReaderPreferences(private val preferenceStore: PreferenceStore) {
     }
 
     fun webtoonDoubleTapZoomEnabled() = preferenceStore.getBoolean("pref_enable_double_tap_zoom_webtoon", true)
+
+    fun debugMode() = preferenceStore.getBoolean("pref_enable_reader_debug_mode", BuildConfig.DEBUG)
 }

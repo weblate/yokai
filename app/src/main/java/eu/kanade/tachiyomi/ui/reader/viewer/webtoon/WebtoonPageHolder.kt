@@ -20,7 +20,6 @@ import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.dpToPx
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
@@ -198,6 +197,7 @@ class WebtoonPageHolder(
                         cropBorders = viewer.config.run {
                             if (viewer.hasMargins) { verticalCropBorders } else { webtoonCropBorders }
                         },
+                        debugMode = viewer.config.debugMode,
                     ),
                 )
                 removeErrorLayout()

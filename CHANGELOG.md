@@ -15,6 +15,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Sync DoH provider list with upstream (added Mullvad, Control D, Njalla, and Shecan)
 - Added option to enable verbose logging
 - Added category hopper long-press action to open random series from **any** category
+- Added option to enable reader debug mode
+- Added option to adjust reader's hardware bitmap threshold (@AntsyLich)
 
 ### Changes
 - Enable 'Split Tall Images' by default (@Smol-Ame)

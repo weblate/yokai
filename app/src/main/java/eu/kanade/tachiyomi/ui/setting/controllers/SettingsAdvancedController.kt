@@ -401,7 +401,15 @@ class SettingsAdvancedController : SettingsLegacyController() {
                 titleRes = MR.strings.pref_hardware_bitmap_threshold
 
                 val entryMap = GLUtil.CUSTOM_TEXTURE_LIMIT_OPTIONS
-                    .associateWith { it.toString() }
+                    .mapIndexed { index, option ->
+                        val display = if (index == 0) {
+                            context.getString(MR.strings.pref_hardware_bitmap_threshold_default, option)
+                        } else {
+                            option.toString()
+                        }
+                        option to display
+                    }
+                    .toMap()
                     .toImmutableMap()
                 entries = entryMap.values.toList()
                 entryValues = entryMap.keys.toList()
@@ -409,7 +417,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                 isVisible = GLUtil.DEVICE_TEXTURE_LIMIT > GLUtil.SAFE_TEXTURE_LIMIT
 
                 basePreferences.hardwareBitmapThreshold().changesIn(viewScope) { threshold ->
-                    summary = context.getString(MR.strings.pref_hardware_bitmap_threshold_summary, threshold)
+                    summary = context.getString(MR.strings.pref_hardware_bitmap_threshold_summary, entryMap[threshold].orEmpty())
                 }
             }
 

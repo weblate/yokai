@@ -23,6 +23,7 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
@@ -202,8 +203,12 @@ class WebtoonPageHolder(
                 )
                 removeErrorLayout()
             }
-        } catch (e: Exception) {
-            Logger.e(e) { "Unable to load page" }
+        } catch (e: Throwable) {
+            val logMsg = "Failed to set reader page image"
+            if (e is CancellationException)
+                Logger.w(e) { logMsg }  // probably user exiting the reader page before the image loads
+            else
+                Logger.e(e) { logMsg }
             withUIContext {
                 setError()
             }

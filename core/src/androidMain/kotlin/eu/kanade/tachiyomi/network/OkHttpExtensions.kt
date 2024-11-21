@@ -1,5 +1,8 @@
 package eu.kanade.tachiyomi.network
 
+import java.io.IOException
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.DeserializationStrategy
@@ -15,9 +18,6 @@ import okhttp3.Response
 import rx.Observable
 import rx.Producer
 import rx.Subscription
-import java.io.IOException
-import java.util.concurrent.atomic.*
-import kotlin.coroutines.resumeWithException
 
 val jsonMime = "application/json; charset=utf-8".toMediaType()
 
@@ -74,7 +74,7 @@ private suspend fun Call.await(callStack: Array<StackTraceElement>): Response {
         val callback =
             object : Callback {
                 override fun onResponse(call: Call, response: Response) {
-                    continuation.resume(response) {
+                    continuation.resume(response) { _, _, _ ->
                         response.body.close()
                     }
                 }

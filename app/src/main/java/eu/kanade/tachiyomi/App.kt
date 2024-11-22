@@ -295,7 +295,7 @@ fun buildLogWritersToAdd(
 ) = buildList {
     if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
 
-    if (logPath != null) add(Logger.setupFileLog(logPath, BuildConfig.BUILD_TYPE))
+    // if (logPath != null) add(Logger.setupFileLog(logPath, BuildConfig.BUILD_TYPE))
 }
 
 private const val ACTION_DISABLE_INCOGNITO_MODE = "tachi.action.DISABLE_INCOGNITO_MODE"

@@ -24,7 +24,7 @@ fun Logger.setupFileLog(logPath: Path, buildType: String? = null): LogWriter {
     val date = Clock.System.todayIn(TimeZone.currentSystemDefault())
     return RollingFileLogWriter(
         config = RollingFileLogWriterConfig(
-            logFileName = date.toString() + if (buildType != null) "-$buildType-" else "" + ".log",
+            logFileName = date.toString() + if (buildType != null) "-$buildType" else "" + ".log",
             logFilePath = logPath,
         )
     )

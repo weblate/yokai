@@ -42,6 +42,7 @@ class StorageManager(
                     }
                     parent.createDirectory(COVERS_PATH)
                     parent.createDirectory(PAGES_PATH)
+                    parent.createDirectory(LOGS_PATH)
                 }
                 _changes.send(Unit)
             }
@@ -76,6 +77,10 @@ class StorageManager(
     fun getPagesDirectory(): UniFile? {
         return baseDir?.createDirectory(PAGES_PATH)
     }
+
+    fun getLogsDirectory(): UniFile? {
+        return baseDir?.createDirectory(LOGS_PATH)
+    }
 }
 
 private const val BACKUPS_PATH = "backup"
@@ -84,3 +89,4 @@ private const val DOWNLOADS_PATH = "downloads"
 private const val LOCAL_SOURCE_PATH = "local"
 private const val COVERS_PATH = "covers"
 private const val PAGES_PATH = "pages"
+private const val LOGS_PATH = "logs"

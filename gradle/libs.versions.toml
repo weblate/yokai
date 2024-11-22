@@ -44,6 +44,7 @@ flexible-adapter = { module = "com.github.arkon.FlexibleAdapter:flexible-adapter
 image-decoder = { module = "com.github.tachiyomiorg:image-decoder", version = "41c059e540" }
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit-io = { module = "co.touchlab:kermit-io", version.ref = "kermit" }
 
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core" }
@@ -113,7 +114,7 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 db = [ "sqldelight-coroutines" ]
 db-android = [ "sqldelight-android-driver", "sqldelight-android-paging" ]
 coil = [ "coil3", "coil3-svg", "coil3-gif", "coil3-okhttp" ]
-logging = [ "kermit" ]
+logging = [ "kermit", "kermit-io" ]
 # FIXME: Uncomment once SQLDelight support KMP AndroidX SQLiteDriver
 #sqlite = [ "sqlite", "sqlite-ktx" ]
 sqlite = [ "sqlite-ktx" ]

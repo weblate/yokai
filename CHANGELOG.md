@@ -24,6 +24,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Tell user to restart the app when User-Agent is changed (@NGB-Was-Taken)
 - Re-enable fetching licensed manga (@Animeboynz)
 - Bangumi search now shows the score and summary of a search result (@MajorTanya)
+- Logs are now written to a file for easier debugging
 
 ### Fixes
 - Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
@@ -32,7 +33,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Handle some uncaught crashes
 - Fixed crashes due to GestureDetector's firstEvent is sometimes null on some devices
 - Fixed download failed due to invalid XML 1.0 character
-- Fixed issues with shizuku in a multi user setup (@Redjard)
+- Fixed issues with shizuku in a multi-user setup (@Redjard)
 
 ### Other
 - Simplify network helper code

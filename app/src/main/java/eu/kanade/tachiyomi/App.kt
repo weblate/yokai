@@ -23,6 +23,8 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.multidex.MultiDex
 import co.touchlab.kermit.Logger
+import co.touchlab.kermit.io.RollingFileLogWriter
+import co.touchlab.kermit.io.RollingFileLogWriterConfig
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -56,10 +58,17 @@ import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notification
+import eu.kanade.tachiyomi.util.system.setToDefault
 import java.security.Security
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.io.files.Path
 import org.conscrypt.Conscrypt
 import org.koin.core.context.startKoin
 import uy.kohesive.injekt.Injekt
@@ -72,6 +81,7 @@ import yokai.core.di.preferenceModule
 import yokai.core.migration.Migrator
 import yokai.core.migration.migrations.migrations
 import yokai.domain.base.BasePreferences
+import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -80,14 +90,29 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     val preferences: PreferencesHelper by injectLazy()
     val basePreferences: BasePreferences by injectLazy()
     val networkPreferences: NetworkPreferences by injectLazy()
+    private val storageManager: StorageManager by injectLazy()
 
     private val disableIncognitoReceiver = DisableIncognitoReceiver()
+
+    private fun buildWritersToAdd(
+        logPath: Path?,
+        logFileName: String?,
+    ) = buildList {
+        if (!BuildConfig.DEBUG) Logger.addLogWriter(CrashlyticsLogWriter())
+
+        if (logPath != null && logFileName != null) add(
+            RollingFileLogWriter(
+                config = RollingFileLogWriterConfig(
+                    logFileName,
+                    logFilePath = logPath,
+                )
+            )
+        )
+    }
 
     @SuppressLint("LaunchActivityFromNotification")
     override fun onCreate() {
         super<Application>.onCreate()
-
-        if (!BuildConfig.DEBUG) Logger.addLogWriter(CrashlyticsLogWriter())
 
         // TLS 1.3 support for Android 10 and below
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -107,6 +132,25 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         val scope = ProcessLifecycleOwner.get().lifecycleScope
+
+        combine(
+            storageManager.changes,
+            // Just in case we have more things to add in the future...
+        ) { _ ->
+            listOf(storageManager.getLogsDirectory())
+        }
+            .distinctUntilChanged()
+            .onEach {
+                val logPath = it[0]?.filePath?.let { path -> Path(path) }
+                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                Logger.setToDefault(
+                    buildWritersToAdd(
+                        logPath = logPath,
+                        logFileName = "$date-${BuildConfig.BUILD_TYPE}.log"
+                    )
+                )
+            }
+            .launchIn(scope)
 
         basePreferences.crashReport().changes()
             .onEach {

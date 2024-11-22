@@ -56,21 +56,19 @@ import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
-import eu.kanade.tachiyomi.util.system.nameWithoutExtension
 import eu.kanade.tachiyomi.util.system.notification
 import eu.kanade.tachiyomi.util.system.setToDefault
-import eu.kanade.tachiyomi.util.system.setupFileLog
 import java.security.Security
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.io.files.Path
 import org.conscrypt.Conscrypt
 import org.koin.core.context.startKoin
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.core.CrashlyticsLogWriter
+import yokai.core.RollingUniFileLogWriter
 import yokai.core.di.appModule
 import yokai.core.di.domainModule
 import yokai.core.di.preferenceModule
@@ -113,7 +111,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
         val scope = ProcessLifecycleOwner.get().lifecycleScope
 
-        Logger.setToDefault(buildLogWritersToAdd(storageManager.getLogsFile()))
+        Logger.setToDefault(buildLogWritersToAdd(storageManager.getLogsDirectory()))
 
         basePreferences.crashReport().changes()
             .onEach {
@@ -284,18 +282,11 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 }
 
 fun buildLogWritersToAdd(
-    logFile: UniFile?,
+    logPath: UniFile?,
 ) = buildList {
     if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
 
-    //val fileName = logFile?.nameWithoutExtension
-    //val filePath = logFile?.parentFile?.filePath?.let { path -> Path(path) }
-    //if (filePath != null && fileName != null) add(
-    //    Logger.setupFileLog(
-    //        logFileName = fileName,
-    //        logPath = filePath,
-    //    )
-    //)
+    if (logPath != null) add(RollingUniFileLogWriter(logPath))
 }
 
 private const val ACTION_DISABLE_INCOGNITO_MODE = "tachi.action.DISABLE_INCOGNITO_MODE"

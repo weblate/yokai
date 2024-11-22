@@ -4,13 +4,9 @@ import android.content.Context
 import androidx.core.net.toUri
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.buildLogWritersToAdd
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.setToDefault
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -21,7 +17,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.io.files.Path
 
 class StorageManager(
     private val context: Context,
@@ -50,15 +45,15 @@ class StorageManager(
                     }
                     parent.createDirectory(COVERS_PATH)
                     parent.createDirectory(PAGES_PATH)
-                    parent.createDirectory(LOGS_PATH)
-                }
-
-                try {
-                    Logger.setToDefault(buildLogWritersToAdd(getLogsFile()))
-                } catch (e: Exception) {
-                    // Just in case something went horribly wrong
-                    Logger.setToDefault(buildLogWritersToAdd(null))
-                    Logger.e(e) { "Something went wrong while trying to setup log file" }
+                    parent.createDirectory(LOGS_PATH)?.also {
+                        try {
+                            Logger.setToDefault(buildLogWritersToAdd(it))
+                        } catch (e: Exception) {
+                            // Just in case something went horribly wrong
+                            Logger.setToDefault(buildLogWritersToAdd(null))
+                            Logger.e(e) { "Something went wrong while trying to setup log file" }
+                        }
+                    }
                 }
 
                 _changes.send(Unit)
@@ -97,11 +92,6 @@ class StorageManager(
 
     fun getLogsDirectory(): UniFile? {
         return baseDir?.createDirectory(LOGS_PATH)
-    }
-
-    fun getLogsFile(): UniFile? {
-        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        return getLogsDirectory()?.createFile("${date}-${BuildConfig.BUILD_TYPE}.log")
     }
 }
 

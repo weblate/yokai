@@ -5,9 +5,6 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.io.RollingFileLogWriter
 import co.touchlab.kermit.io.RollingFileLogWriterConfig
 import co.touchlab.kermit.platformLogWriter
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 import kotlinx.io.files.Path
 
 fun Logger.w(e: Throwable) = w(e) { "Something is not right..." }
@@ -20,12 +17,12 @@ fun Logger.setToDefault(
     Logger.setTag("Yokai")
 }
 
-fun Logger.setupFileLog(logPath: Path, buildType: String? = null): LogWriter {
-    val date = Clock.System.todayIn(TimeZone.currentSystemDefault())
+fun Logger.setupFileLog(logFileName: String, logPath: Path): LogWriter {
     return RollingFileLogWriter(
         config = RollingFileLogWriterConfig(
-            logFileName = date.toString() + if (buildType != null) "-$buildType" else "" + ".log",
+            logFileName = logFileName,
             logFilePath = logPath,
+            maxLogFiles = 1,
         )
     )
 }

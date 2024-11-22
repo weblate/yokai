@@ -33,6 +33,7 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
@@ -55,6 +56,7 @@ import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
+import eu.kanade.tachiyomi.util.system.nameWithoutExtension
 import eu.kanade.tachiyomi.util.system.notification
 import eu.kanade.tachiyomi.util.system.setToDefault
 import eu.kanade.tachiyomi.util.system.setupFileLog
@@ -88,14 +90,6 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
     private val disableIncognitoReceiver = DisableIncognitoReceiver()
 
-    private fun buildWritersToAdd(
-        logPath: Path?,
-    ) = buildList {
-        if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
-
-        if (logPath != null) add(Logger.setupFileLog(logPath, BuildConfig.BUILD_TYPE))
-    }
-
     @SuppressLint("LaunchActivityFromNotification")
     override fun onCreate() {
         super<Application>.onCreate()
@@ -119,8 +113,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
         val scope = ProcessLifecycleOwner.get().lifecycleScope
 
-        val logPath = storageManager.getLogsDirectory()?.filePath?.let { path -> Path(path) }
-        Logger.setToDefault(buildLogWritersToAdd(logPath))
+        Logger.setToDefault(buildLogWritersToAdd(storageManager.getLogsFile()))
 
         basePreferences.crashReport().changes()
             .onEach {
@@ -291,11 +284,18 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 }
 
 fun buildLogWritersToAdd(
-    logPath: Path?,
+    logFile: UniFile?,
 ) = buildList {
     if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
 
-    // if (logPath != null) add(Logger.setupFileLog(logPath, BuildConfig.BUILD_TYPE))
+    //val fileName = logFile?.nameWithoutExtension
+    //val filePath = logFile?.parentFile?.filePath?.let { path -> Path(path) }
+    //if (filePath != null && fileName != null) add(
+    //    Logger.setupFileLog(
+    //        logFileName = fileName,
+    //        logPath = filePath,
+    //    )
+    //)
 }
 
 private const val ACTION_DISABLE_INCOGNITO_MODE = "tachi.action.DISABLE_INCOGNITO_MODE"

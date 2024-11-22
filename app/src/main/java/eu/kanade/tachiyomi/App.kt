@@ -23,8 +23,6 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.multidex.MultiDex
 import co.touchlab.kermit.Logger
-import co.touchlab.kermit.io.RollingFileLogWriter
-import co.touchlab.kermit.io.RollingFileLogWriterConfig
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -59,13 +57,9 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.notification
 import eu.kanade.tachiyomi.util.system.setToDefault
+import eu.kanade.tachiyomi.util.system.setupFileLog
 import java.security.Security
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.io.files.Path
@@ -96,18 +90,10 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
     private fun buildWritersToAdd(
         logPath: Path?,
-        logFileName: String?,
     ) = buildList {
-        if (!BuildConfig.DEBUG) Logger.addLogWriter(CrashlyticsLogWriter())
+        if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
 
-        if (logPath != null && logFileName != null) add(
-            RollingFileLogWriter(
-                config = RollingFileLogWriterConfig(
-                    logFileName,
-                    logFilePath = logPath,
-                )
-            )
-        )
+        if (logPath != null) add(Logger.setupFileLog(logPath, BuildConfig.BUILD_TYPE))
     }
 
     @SuppressLint("LaunchActivityFromNotification")
@@ -133,24 +119,8 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
         val scope = ProcessLifecycleOwner.get().lifecycleScope
 
-        combine(
-            storageManager.changes,
-            // Just in case we have more things to add in the future...
-        ) { _ ->
-            listOf(storageManager.getLogsDirectory())
-        }
-            .distinctUntilChanged()
-            .onEach {
-                val logPath = it[0]?.filePath?.let { path -> Path(path) }
-                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-                Logger.setToDefault(
-                    buildWritersToAdd(
-                        logPath = logPath,
-                        logFileName = "$date-${BuildConfig.BUILD_TYPE}.log"
-                    )
-                )
-            }
-            .launchIn(scope)
+        val logPath = storageManager.getLogsDirectory()?.filePath?.let { path -> Path(path) }
+        Logger.setToDefault(buildLogWritersToAdd(logPath))
 
         basePreferences.crashReport().changes()
             .onEach {
@@ -318,6 +288,14 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         }
             .build()
     }
+}
+
+fun buildLogWritersToAdd(
+    logPath: Path?,
+) = buildList {
+    if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
+
+    if (logPath != null) add(Logger.setupFileLog(logPath, BuildConfig.BUILD_TYPE))
 }
 
 private const val ACTION_DISABLE_INCOGNITO_MODE = "tachi.action.DISABLE_INCOGNITO_MODE"

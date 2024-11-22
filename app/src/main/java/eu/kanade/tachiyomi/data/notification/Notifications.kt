@@ -28,6 +28,7 @@ object Notifications {
     const val CHANNEL_INSTALLING = "installing_channel"
     const val CHANNEL_UPDATED = "updated_channel"
     const val ID_INSTALLED = -6
+    const val ID_UPDATER_FAILED = -7
     const val GROUP_APP_UPDATES = "eu.kanade.tachiyomi.APP_UPDATES"
 
     /**

@@ -457,6 +457,7 @@ class ReaderViewModel(
             updateChapter.await(
                 ChapterUpdate(
                     id = chapter.id!!,
+                    read = chapter.read,
                     bookmark = chapter.bookmark,
                     lastPageRead = chapter.last_page_read.toLong(),
                     pagesLeft = chapter.pages_left.toLong(),
@@ -644,6 +645,7 @@ class ReaderViewModel(
             updateChapter.await(
                 ChapterUpdate(
                     id = readerChapter.chapter.id!!,
+                    read = readerChapter.chapter.read,
                     bookmark = readerChapter.chapter.bookmark,
                     lastPageRead = readerChapter.chapter.last_page_read.toLong(),
                     pagesLeft = readerChapter.chapter.pages_left.toLong(),

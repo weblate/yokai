@@ -146,7 +146,7 @@ class BangumiApi(private val client: OkHttpClient, interceptor: BangumiIntercept
                 null
             } else {
                 json.decodeFromString<Collection>(responseBody).let {
-                    track.status = it.status?.id!!
+                    track.status = it.status?.id ?: Bangumi.DEFAULT_STATUS
                     track.last_chapter_read = it.ep_status!!.toFloat()
                     track.score = it.rating!!
                     track

@@ -10,4 +10,4 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ### Fixed
-- Fixed scanlator filter not working properly
+- Fixed crashes caused by Bangumi invalid status

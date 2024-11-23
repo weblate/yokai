@@ -48,7 +48,6 @@ import eu.kanade.tachiyomi.util.chapter.updateTrackChapterRead
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.localeContext
@@ -82,6 +81,8 @@ import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
 import yokai.domain.download.DownloadPreferences
+import yokai.domain.history.interactor.GetHistory
+import yokai.domain.history.interactor.UpsertHistory
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
@@ -110,6 +111,8 @@ class ReaderViewModel(
     private val getManga: GetManga by injectLazy()
     private val insertManga: InsertManga by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
+    private val getHistory: GetHistory by injectLazy()
+    private val upsertHistory: UpsertHistory by injectLazy()
 
     private val mutableState = MutableStateFlow(State())
     val state = mutableState.asStateFlow()
@@ -241,7 +244,7 @@ class ReaderViewModel(
         if (!needsInit()) return Result.success(true)
         return withIOContext {
             try {
-                val manga = db.getManga(mangaId).executeAsBlocking()
+                val manga = getManga.awaitById(mangaId)
                 if (manga != null) {
                     mutableState.update { it.copy(manga = manga) }
                     if (chapterId == -1L) {
@@ -621,10 +624,8 @@ class ReaderViewModel(
      */
     private fun saveReadingProgress(readerChapter: ReaderChapter) {
         viewModelScope.launchNonCancellableIO {
-            db.inTransaction {
-                saveChapterProgress(readerChapter)
-                saveChapterHistory(readerChapter)
-            }
+            saveChapterProgress(readerChapter)
+            saveChapterHistory(readerChapter)
         }
     }
 
@@ -634,31 +635,36 @@ class ReaderViewModel(
      * Saves this [readerChapter]'s progress (last read page and whether it's read).
      * If incognito mode isn't on or has at least 1 tracker
      */
-    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     private suspend fun saveChapterProgress(readerChapter: ReaderChapter) {
         readerChapter.requestedPage = readerChapter.chapter.last_page_read
-        db.getChapter(readerChapter.chapter.id!!).executeAsBlocking()?.let { dbChapter ->
+        getChapter.awaitById(readerChapter.chapter.id!!)?.let { dbChapter ->
             readerChapter.chapter.bookmark = dbChapter.bookmark
         }
         if (!preferences.incognitoMode().get() || hasTrackers) {
-            db.updateChapterProgress(readerChapter.chapter).executeAsBlocking()
+            updateChapter.await(
+                ChapterUpdate(
+                    id = readerChapter.chapter.id!!,
+                    bookmark = readerChapter.chapter.bookmark,
+                    lastPageRead = readerChapter.chapter.last_page_read.toLong(),
+                    pagesLeft = readerChapter.chapter.pages_left.toLong(),
+                )
+            )
         }
     }
 
     /**
      * Saves this [readerChapter] last read history.
      */
-    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     private suspend fun saveChapterHistory(readerChapter: ReaderChapter) {
         if (!preferences.incognitoMode().get()) {
             val readAt = Date().time
             val sessionReadDuration = chapterReadStartTime?.let { readAt - it } ?: 0
-            val oldTimeRead = db.getHistoryByChapterUrl(readerChapter.chapter.url).executeAsBlocking()?.time_read ?: 0
+            val oldTimeRead = getHistory.awaitByChapterUrl(readerChapter.chapter.url)?.time_read ?: 0
             val history = History.create(readerChapter.chapter).apply {
                 last_read = readAt
                 time_read = sessionReadDuration + oldTimeRead
             }
-            db.upsertHistoryLastRead(history).executeAsBlocking()
+            upsertHistory.await(history)
             chapterReadStartTime = null
         }
     }
@@ -731,7 +737,7 @@ class ReaderViewModel(
 
                 mutableState.update {
                     it.copy(
-                        manga = db.getManga(manga.id!!).executeAsBlocking(),
+                        manga = getManga.awaitById(manga.id!!),
                         viewerChapters = currChapters,
                     )
                 }
@@ -766,7 +772,7 @@ class ReaderViewModel(
             if (currChapters != null) {
                 mutableState.update {
                     it.copy(
-                        manga = db.getManga(manga.id!!).executeAsBlocking(),
+                        manga = getManga.awaitById(manga.id!!),
                         viewerChapters = currChapters,
                     )
                 }

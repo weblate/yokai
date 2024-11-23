@@ -1,11 +1,21 @@
 package yokai.data.history
 
+import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.MangaChapterHistory
 import eu.kanade.tachiyomi.util.system.toInt
 import yokai.data.DatabaseHandler
 import yokai.domain.history.HistoryRepository
 
 class HistoryRepositoryImpl(private val handler: DatabaseHandler) : HistoryRepository {
+    override suspend fun upsert(chapterId: Long, lastRead: Long, timeRead: Long) =
+        handler.awaitOneOrNullExecutable(true) {
+            historyQueries.upsert(chapterId, lastRead, timeRead)
+            historyQueries.selectLastInsertedRowId()
+        }
+
+    override suspend fun getByChapterUrl(chapterUrl: String): History? =
+        handler.awaitOneOrNull { historyQueries.getByChapterUrl(chapterUrl, History::mapper) }
+
     override suspend fun getRecentsUngrouped(
         filterScanlators: Boolean,
         search: String,

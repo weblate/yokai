@@ -24,6 +24,8 @@ import yokai.domain.extension.repo.interactor.GetExtensionRepoCount
 import yokai.domain.extension.repo.interactor.ReplaceExtensionRepo
 import yokai.domain.extension.repo.interactor.UpdateExtensionRepo
 import yokai.domain.history.HistoryRepository
+import yokai.domain.history.interactor.GetHistory
+import yokai.domain.history.interactor.UpsertHistory
 import yokai.domain.library.custom.CustomMangaRepository
 import yokai.domain.library.custom.interactor.CreateCustomManga
 import yokai.domain.library.custom.interactor.DeleteCustomManga
@@ -67,6 +69,8 @@ fun domainModule() = module {
     factory { UpdateChapter(get()) }
 
     single<HistoryRepository> { HistoryRepositoryImpl(get()) }
+    factory { GetHistory(get()) }
+    factory { UpsertHistory(get()) }
 
     factory { GetRecents(get(), get()) }
 

@@ -72,6 +72,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update xml.serialization to v0.90.3
 - Update dependency co.touchlab:kermit to v2.0.5
 
+## [1.8.5.12]
+
+### Fixed
+- Fixed scanlator data sometimes disappear
+
 ## [1.8.5.11]
 
 ### Fixed

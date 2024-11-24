@@ -13,8 +13,25 @@ class HistoryRepositoryImpl(private val handler: DatabaseHandler) : HistoryRepos
             historyQueries.selectLastInsertedRowId()
         }
 
+    override suspend fun bulkUpsert(histories: List<History>) =
+        handler.await(true) {
+            histories.forEach { history ->
+                historyQueries.upsert(
+                    history.chapter_id,
+                    history.last_read,
+                    history.time_read,
+                )
+            }
+        }
+
     override suspend fun getByChapterUrl(chapterUrl: String): History? =
         handler.awaitOneOrNull { historyQueries.getByChapterUrl(chapterUrl, History::mapper) }
+
+    override suspend fun getByMangaId(mangaId: Long): History? =
+        handler.awaitOneOrNull { historyQueries.getByMangaId(mangaId, History::mapper) }
+
+    override suspend fun getAllByMangaId(mangaId: Long): List<History> =
+        handler.awaitList { historyQueries.getByMangaId(mangaId, History::mapper) }
 
     override suspend fun getRecentsUngrouped(
         filterScanlators: Boolean,

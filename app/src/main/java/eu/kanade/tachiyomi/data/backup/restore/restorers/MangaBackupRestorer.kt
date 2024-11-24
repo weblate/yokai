@@ -22,6 +22,8 @@ import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.chapter.interactor.UpdateChapter
+import yokai.domain.history.interactor.GetHistory
+import yokai.domain.history.interactor.UpsertHistory
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
@@ -37,6 +39,8 @@ class MangaBackupRestorer(
     private val getManga: GetManga = Injekt.get(),
     private val insertManga: InsertManga = Injekt.get(),
     private val updateManga: UpdateManga = Injekt.get(),
+    private val getHistory: GetHistory = Injekt.get(),
+    private val upsertHistory: UpsertHistory = Injekt.get(),
 ) {
     suspend fun restoreManga(
         backupManga: BackupManga,
@@ -202,7 +206,7 @@ class MangaBackupRestorer(
         // List containing history to be updated
         val historyToBeUpdated = ArrayList<History>(history.size)
         for ((url, lastRead, readDuration) in history) {
-            val dbHistory = db.getHistoryByChapterUrl(url).executeAsBlocking()
+            val dbHistory = getHistory.awaitByChapterUrl(url)
             // Check if history already in database and update
             if (dbHistory != null) {
                 dbHistory.apply {
@@ -221,7 +225,7 @@ class MangaBackupRestorer(
                 }
             }
         }
-        db.upsertHistoryLastRead(historyToBeUpdated).executeAsBlocking()
+        upsertHistory.awaitBulk(historyToBeUpdated)
     }
 
     /**

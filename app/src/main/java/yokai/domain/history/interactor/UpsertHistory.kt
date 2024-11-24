@@ -11,4 +11,7 @@ class UpsertHistory(
 
     suspend fun await(history: History) =
         historyRepository.upsert(history.chapter_id, history.last_read, history.time_read)
+
+    suspend fun awaitBulk(histories: List<History>) =
+        historyRepository.bulkUpsert(histories)
 }

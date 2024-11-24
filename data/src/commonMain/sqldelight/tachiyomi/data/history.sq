@@ -22,6 +22,16 @@ WHERE history_chapter_id = history_chapter_id;
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
 
+deleteAll:
+DELETE FROM history;
+
+getByMangaId:
+SELECT history.*
+FROM history
+JOIN chapters
+ON history.history_chapter_id = chapters._id
+WHERE chapters.manga_id = :mangaId AND history.history_chapter_id = chapters._id;
+
 getByChapterUrl:
 SELECT history.*
 FROM history

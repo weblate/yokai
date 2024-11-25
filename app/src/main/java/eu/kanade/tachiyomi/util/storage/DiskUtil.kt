@@ -58,17 +58,21 @@ object DiskUtil {
         }
     }
 
+    fun File.isMounted(): Boolean {
+        val state = EnvironmentCompat.getStorageState(this)
+        return state == Environment.MEDIA_MOUNTED || state == Environment.MEDIA_MOUNTED_READ_ONLY
+    }
+
     /**
-     * Returns the root folders of all the available external storages.
+     * Returns the folders of all the available external storages.
      */
-    fun getExternalStorages(context: Context): List<File> {
+    fun getExternalStorages(context: Context, root: Boolean = true): List<File> {
         return context.getExternalFilesDirs(null)
             .filterNotNull()
             .mapNotNull {
                 val file = File(it.absolutePath.substringBefore("/Android/"))
-                val state = EnvironmentCompat.getStorageState(file)
-                if (state == Environment.MEDIA_MOUNTED || state == Environment.MEDIA_MOUNTED_READ_ONLY) {
-                    file
+                if (file.isMounted()) {
+                    if (root) file else it
                 } else {
                     null
                 }

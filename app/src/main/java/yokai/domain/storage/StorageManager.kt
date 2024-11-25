@@ -93,12 +93,14 @@ class StorageManager(
     fun getLogsDirectory(): UniFile? {
         return baseDir?.createDirectory(LOGS_PATH)
     }
-}
 
-private const val BACKUPS_PATH = "backup"
-private const val AUTOMATIC_BACKUPS_PATH = "autobackup"
-private const val DOWNLOADS_PATH = "downloads"
-private const val LOCAL_SOURCE_PATH = "local"
-private const val COVERS_PATH = "covers"
-private const val PAGES_PATH = "pages"
-private const val LOGS_PATH = "logs"
+    companion object {
+        private const val BACKUPS_PATH = "backup"
+        private const val AUTOMATIC_BACKUPS_PATH = "autobackup"
+        private const val DOWNLOADS_PATH = "downloads"
+        const val LOCAL_SOURCE_PATH = "local"
+        private const val COVERS_PATH = "covers"
+        private const val PAGES_PATH = "pages"
+        private const val LOGS_PATH = "logs"
+    }
+}

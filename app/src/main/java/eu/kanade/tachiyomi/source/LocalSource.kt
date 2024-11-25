@@ -65,7 +65,6 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                 val dir = getBaseDirectories(context).asSequence()
                     .mapNotNull { it?.findFile(manga.url)?.listFiles() }
                     .firstOrNull()
-                    .orEmpty()
 
                 val localDetails = dir.orEmpty()
                     .filter { !it.isDirectory }

@@ -19,7 +19,6 @@ import eu.kanade.tachiyomi.util.system.extension
 import eu.kanade.tachiyomi.util.system.nameWithoutExtension
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.writeText
-import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -138,7 +137,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             if (!sourcePreferences.externalLocalSource().get()) return base
 
             return base + DiskUtil.getExternalStorages(context, false).map {
-                UniFile.fromFile(File(it, StorageManager.LOCAL_SOURCE_PATH))
+                UniFile.fromFile(it)?.createDirectory(StorageManager.LOCAL_SOURCE_PATH)
             }
         }
     }

@@ -168,7 +168,7 @@ dependencies {
     implementation(compose.bundles.compose)
     debugImplementation(compose.ui.tooling)
     implementation(libs.compose.theme.adapter3)
-    implementation(libs.accompanist.webview)
+    implementation(compose.webview)
 
     implementation(libs.flexbox)
 

@@ -197,7 +197,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
             }
         }
 
-        val mangas = mangaDirs.toList().map { mangaDir ->
+        val mangas = mangaDirs.map { mangaDir ->
             async {
                 SManga.create().apply {
                     title = mangaDir.name.orEmpty()
@@ -210,7 +210,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     }
                 }
             }
-        }.awaitAll()
+        }.toList().awaitAll()
 
         MangasPage(mangas, false)
     }

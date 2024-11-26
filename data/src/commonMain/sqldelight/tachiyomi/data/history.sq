@@ -25,6 +25,9 @@ SELECT last_insert_rowid();
 deleteAll:
 DELETE FROM history;
 
+deleteAllUnread:
+DELETE FROM history WHERE history_last_read = 0;
+
 getByMangaId:
 SELECT history.*
 FROM history

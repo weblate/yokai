@@ -26,7 +26,6 @@ open class BaseWebViewActivity : BaseActivity<ViewBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         delegate.localNightMode = preferences.nightMode().get()
-        setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = ColorUtils.setAlphaComponent(
             getResourceColor(R.attr.colorSurface),

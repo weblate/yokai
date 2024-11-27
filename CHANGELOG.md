@@ -17,6 +17,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Added category hopper long-press action to open random series from **any** category
 - Added option to enable reader debug mode
 - Added option to adjust reader's hardware bitmap threshold (@AntsyLich)
+- Added option to scan local entries from `/storage/(sdcard|emulated/0)/Android/data/<yokai>/files/local`
 
 ### Changes
 - Enable 'Split Tall Images' by default (@Smol-Ame)
@@ -34,6 +35,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fixed crashes due to GestureDetector's firstEvent is sometimes null on some devices
 - Fixed download failed due to invalid XML 1.0 character
 - Fixed issues with shizuku in a multi-user setup (@Redjard)
+- Fixed some regional/variant languages is not listed in app language option
 
 ### Other
 - Simplify network helper code
@@ -71,6 +73,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency io.coil-kt.coil3:coil-bom to v3.0.3
 - Update xml.serialization to v0.90.3
 - Update dependency co.touchlab:kermit to v2.0.5
+- Replace WebView to use Compose (@arkon)
+  - Fixed Keyboard is covering web page inputs
+- Increased `tryToSetForeground` delay to fix potential crashes
 
 ## [1.8.5.12]
 

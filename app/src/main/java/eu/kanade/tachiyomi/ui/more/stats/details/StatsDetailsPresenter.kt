@@ -493,7 +493,7 @@ class StatsDetailsPresenter(
         } else {
             sourceManager.get(source)?.lang
         } ?: return context.getString(MR.strings.unknown)
-        return LocaleHelper.getDisplayName(code)
+        return LocaleHelper.getLocalizedDisplayName(code)
     }
 
     /**

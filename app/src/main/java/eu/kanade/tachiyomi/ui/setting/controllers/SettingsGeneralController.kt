@@ -188,7 +188,7 @@ class SettingsGeneralController : SettingsLegacyController() {
                         eventType = parser.next()
                     }
 
-                    langs.sortBy { it.displayName }
+                    langs.sortBy { it.localizedDisplayName }
                     langs.add(0, Language("", context.systemLangContext.getString(MR.strings.system_default), null))
 
                     entries = langs.map { it.localizedDisplayName }

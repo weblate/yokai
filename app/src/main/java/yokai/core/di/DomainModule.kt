@@ -7,6 +7,7 @@ import yokai.data.extension.repo.ExtensionRepoRepositoryImpl
 import yokai.data.history.HistoryRepositoryImpl
 import yokai.data.library.custom.CustomMangaRepositoryImpl
 import yokai.data.manga.MangaRepositoryImpl
+import yokai.data.track.TrackRepositoryImpl
 import yokai.domain.category.CategoryRepository
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.ChapterRepository
@@ -37,9 +38,14 @@ import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.recents.interactor.GetRecents
+import yokai.domain.track.TrackRepository
+import yokai.domain.track.interactor.GetTrack
 
 fun domainModule() = module {
     factory { TrustExtension(get(), get()) }
+
+    single<CategoryRepository> { CategoryRepositoryImpl(get()) }
+    factory { GetCategories(get()) }
 
     single<ExtensionRepoRepository> { ExtensionRepoRepositoryImpl(get()) }
     factory { CreateExtensionRepo(get()) }
@@ -74,6 +80,6 @@ fun domainModule() = module {
 
     factory { GetRecents(get(), get()) }
 
-    single<CategoryRepository> { CategoryRepositoryImpl(get()) }
-    factory { GetCategories(get()) }
+    single<TrackRepository> { TrackRepositoryImpl(get()) }
+    factory { GetTrack(get()) }
 }

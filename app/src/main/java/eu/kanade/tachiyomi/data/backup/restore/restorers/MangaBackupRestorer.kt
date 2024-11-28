@@ -28,6 +28,7 @@ import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.track.interactor.GetTrack
 
 class MangaBackupRestorer(
     private val db: DatabaseHelper = Injekt.get(),
@@ -41,6 +42,7 @@ class MangaBackupRestorer(
     private val updateManga: UpdateManga = Injekt.get(),
     private val getHistory: GetHistory = Injekt.get(),
     private val upsertHistory: UpsertHistory = Injekt.get(),
+    private val getTrack: GetTrack = Injekt.get(),
 ) {
     suspend fun restoreManga(
         backupManga: BackupManga,
@@ -239,7 +241,7 @@ class MangaBackupRestorer(
         tracks.map { it.manga_id = manga.id!! }
 
         // Get tracks from database
-        val dbTracks = db.getTracks(manga).executeAsBlocking()
+        val dbTracks = getTrack.awaitAllByMangaId(manga.id!!)
         val trackToUpdate = mutableListOf<Track>()
 
         tracks.forEach { track ->

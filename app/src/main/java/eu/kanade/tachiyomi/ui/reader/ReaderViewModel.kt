@@ -88,6 +88,7 @@ import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.storage.StorageManager
+import yokai.domain.track.interactor.GetTrack
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -113,6 +114,7 @@ class ReaderViewModel(
     private val updateManga: UpdateManga by injectLazy()
     private val getHistory: GetHistory by injectLazy()
     private val upsertHistory: UpsertHistory by injectLazy()
+    private val getTrack: GetTrack by injectLazy()
 
     private val mutableState = MutableStateFlow(State())
     val state = mutableState.asStateFlow()
@@ -178,11 +180,7 @@ class ReaderViewModel(
     private var scope = CoroutineScope(Job() + Dispatchers.Default)
 
     private var hasTrackers: Boolean = false
-    private val checkTrackers: (Manga) -> Unit = { manga ->
-        val tracks = db.getTracks(manga).executeAsBlocking()
-
-        hasTrackers = tracks.size > 0
-    }
+    private suspend fun checkTrackers(manga: Manga) = getTrack.awaitAllByMangaId(manga.id).isNotEmpty()
 
     init {
         var secondRun = false
@@ -251,7 +249,7 @@ class ReaderViewModel(
                         chapterId = initialChapterId
                     }
 
-                    checkTrackers(manga)
+                    hasTrackers = checkTrackers(manga)
 
                     NotificationReceiver.dismissNotification(
                         preferences.context,

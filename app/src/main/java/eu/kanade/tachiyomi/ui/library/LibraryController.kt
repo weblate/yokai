@@ -521,9 +521,9 @@ open class LibraryController(
 
     private fun openRandomManga(global: Boolean) {
         val items = if (global) {
-            adapter.currentItems
-        } else {
             presenter.allLibraryItems
+        } else {
+            adapter.currentItems
         }.filter { (it is LibraryItem && !it.manga.isBlank() && !it.manga.isHidden() && (!it.manga.initialized || it.manga.unread > 0)) }
         if (items.isNotEmpty()) {
             val item = items.random() as LibraryItem

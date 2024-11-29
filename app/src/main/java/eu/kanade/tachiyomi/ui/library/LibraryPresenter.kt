@@ -44,7 +44,6 @@ import eu.kanade.tachiyomi.util.lang.chopByWords
 import eu.kanade.tachiyomi.util.lang.removeArticles
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.mapStatus
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchUI
@@ -66,6 +65,8 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.UpdateCategories
+import yokai.domain.category.models.CategoryUpdate
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
@@ -91,6 +92,7 @@ class LibraryPresenter(
     private val trackManager: TrackManager = Injekt.get(),
 ) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
     private val getCategories: GetCategories by injectLazy()
+    private val updateCategories: UpdateCategories by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getChapter: GetChapter by injectLazy()
     private val updateChapter: UpdateChapter by injectLazy()
@@ -640,6 +642,10 @@ class LibraryPresenter(
         }
     }
 
+    private fun onCategoryUpdate(update: CategoryUpdate) {
+        presenterScope.launchNonCancellableIO { updateCategories.awaitOne(update) }
+    }
+
     /**
      * Applies library sorting to the given list of manga.
      *
@@ -654,7 +660,14 @@ class LibraryPresenter(
                     if (category.id == 0) {
                         preferences.defaultMangaOrder()
                             .set(category.mangaSort.toString())
-                    } else if (!category.isDynamic) db.insertCategory(category).executeAsBlocking()
+                    } else if (!category.isDynamic) {
+                        onCategoryUpdate(
+                            CategoryUpdate(
+                                id = category.id!!.toLong(),
+                                mangaOrder = category.mangaOrderToString(),
+                            )
+                        )
+                    }
                 }
                 val compare = when {
                     category.mangaSort != null -> {
@@ -1320,7 +1333,12 @@ class LibraryPresenter(
             if (category.id == 0) {
                 preferences.defaultMangaOrder().set(category.mangaSort.toString())
             } else {
-                Injekt.get<DatabaseHelper>().insertCategory(category).executeAsBlocking()
+                onCategoryUpdate(
+                    CategoryUpdate(
+                        id = catId.toLong(),
+                        mangaOrder = category.mangaOrderToString(),
+                    ),
+                )
             }
         }
         requestSortUpdate()
@@ -1336,7 +1354,12 @@ class LibraryPresenter(
             if (category.id == 0) {
                 preferences.defaultMangaOrder().set(mangaIds.joinToString("/"))
             } else {
-                db.insertCategory(category).executeOnIO()
+                updateCategories.awaitOne(
+                    CategoryUpdate(
+                        id = category.id!!.toLong(),
+                        mangaOrder = category.mangaOrderToString(),
+                    ),
+                )
             }
             requestSortUpdate()
         }
@@ -1380,7 +1403,12 @@ class LibraryPresenter(
                     preferences.defaultMangaOrder()
                         .set(mangaIds.joinToString("/"))
                 } else {
-                    db.insertCategory(category).executeAsBlocking()
+                    updateCategories.awaitOne(
+                        CategoryUpdate(
+                            id = category.id!!.toLong(),
+                            mangaOrder = category.mangaOrderToString(),
+                        ),
+                    )
                 }
             }
             getLibrary()

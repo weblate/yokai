@@ -7,12 +7,7 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.core.preference.Preference
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -27,6 +22,9 @@ import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.InsertCategories
+import yokai.i18n.MR
+import yokai.util.lang.getString
 import android.R as AR
 
 class ManageCategoryDialog(bundle: Bundle? = null) :
@@ -41,8 +39,8 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
     private var category: Category? = null
 
     private val preferences by injectLazy<PreferencesHelper>()
-    private val db by injectLazy<DatabaseHelper>()
     private val getCategories by injectLazy<GetCategories>()
+    private val insertCategories by injectLazy<InsertCategories>()
 
     lateinit var binding: MangaCategoryDialogBinding
 
@@ -96,11 +94,10 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
                     val categories = runBlocking { getCategories.await() }
                     category.order = (categories.maxOfOrNull { it.order } ?: 0) + 1
                     category.mangaSort = LibrarySort.Title.categoryValue
-                    val dbCategory = db.insertCategory(category).executeAsBlocking()
-                    category.id = dbCategory.insertedId()?.toInt()
+                    category.id = runBlocking { insertCategories.awaitOne(category) }?.toInt()
                     this.category = category
                 } else {
-                    db.insertCategory(category).executeAsBlocking()
+                    runBlocking { insertCategories.awaitOne(category) }
                 }
             } else if (categoryExists) {
                 binding.categoryTextLayout.error =

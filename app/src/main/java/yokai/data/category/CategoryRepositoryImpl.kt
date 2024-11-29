@@ -2,10 +2,8 @@ package yokai.data.category
 
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.Category
-import eu.kanade.tachiyomi.data.database.tables.CategoryTable.COL_MANGA_ORDER
 import kotlinx.coroutines.flow.Flow
 import yokai.data.DatabaseHandler
-import yokai.data.updateStrategyAdapter
 import yokai.domain.category.CategoryRepository
 import yokai.domain.category.models.CategoryUpdate
 

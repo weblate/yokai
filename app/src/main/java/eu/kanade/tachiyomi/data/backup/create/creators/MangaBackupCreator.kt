@@ -59,7 +59,9 @@ class MangaBackupCreator(
         // Check if user wants category information in backup
         if (options.categories) {
             // Backup categories for this manga
-            val categoriesForManga = getCategories.awaitByMangaId(manga.id!!)
+            val categoriesForManga = manga.id?.let {
+                getCategories.awaitByMangaId(it)
+            }.orEmpty()
             if (categoriesForManga.isNotEmpty()) {
                 mangaObject.categories = categoriesForManga.mapNotNull { it.order }
             }
@@ -67,7 +69,9 @@ class MangaBackupCreator(
 
         // Check if user wants track information in backup
         if (options.tracking) {
-            val tracks = getTrack.awaitAllByMangaId(manga.id!!)
+            val tracks = manga.id?.let {
+                getTrack.awaitAllByMangaId(it)
+            }.orEmpty()
             if (tracks.isNotEmpty()) {
                 mangaObject.tracking = tracks.map { BackupTracking.copyFrom(it) }
             }
@@ -75,7 +79,9 @@ class MangaBackupCreator(
 
         // Check if user wants history information in backup
         if (options.history) {
-            val historyForManga = getHistory.awaitAllByMangaId(manga.id!!)
+            val historyForManga = manga.id?.let {
+                getHistory.awaitAllByMangaId(it)
+            }.orEmpty()
             if (historyForManga.isNotEmpty()) {
                 val history = historyForManga.mapNotNull { history ->
                     val url = getChapter.awaitById(history.chapter_id)?.url

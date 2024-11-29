@@ -20,6 +20,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.data.DatabaseHandler
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.SetMangaCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.chapter.interactor.UpdateChapter
@@ -36,6 +37,7 @@ class MangaBackupRestorer(
     private val customMangaManager: CustomMangaManager = Injekt.get(),
     private val handler: DatabaseHandler = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
+    private val setMangaCategories: SetMangaCategories = Injekt.get(),
     private val getChapter: GetChapter = Injekt.get(),
     private val insertChapter: InsertChapter = Injekt.get(),
     private val updateChapter: UpdateChapter = Injekt.get(),
@@ -196,8 +198,7 @@ class MangaBackupRestorer(
 
         // Update database
         if (mangaCategoriesToUpdate.isNotEmpty()) {
-            db.deleteOldMangasCategories(listOf(manga)).executeAsBlocking()
-            db.insertMangasCategories(mangaCategoriesToUpdate).executeAsBlocking()
+            setMangaCategories.awaitAll(listOf(manga.id!!), mangaCategoriesToUpdate)
         }
     }
 

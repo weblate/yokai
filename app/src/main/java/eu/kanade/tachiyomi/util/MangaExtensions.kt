@@ -12,7 +12,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
-import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
@@ -47,6 +46,7 @@ import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.SetMangaCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
@@ -158,6 +158,7 @@ fun Manga.addOrRemoveToFavorites(
     onMangaMoved: () -> Unit,
     onMangaDeleted: () -> Unit,
     getCategories: GetCategories = Injekt.get(),
+    setMangaCategories: SetMangaCategories = Injekt.get(),
     getManga: GetManga = Injekt.get(),
     updateManga: UpdateManga = Injekt.get(),
 ): Snackbar? {
@@ -220,9 +221,8 @@ fun Manga.addOrRemoveToFavorites(
                             dateAdded = this@addOrRemoveToFavorites.date_added,
                         )
                     )
+                    setMangaCategories.await(this@addOrRemoveToFavorites.id!!, listOf(defaultCategory.id!!.toLong()))
                 }
-                val mc = MangaCategory.create(this, defaultCategory)
-                db.setMangaCategories(listOf(mc), listOf(this))
                 (activity as? MainActivity)?.showNotificationPermissionPrompt()
                 onMangaMoved()
                 return view.snack(activity.getString(MR.strings.added_to_, defaultCategory.name)) {
@@ -247,11 +247,8 @@ fun Manga.addOrRemoveToFavorites(
                             dateAdded = this@addOrRemoveToFavorites.date_added,
                         )
                     )
+                    setMangaCategories.await(this@addOrRemoveToFavorites.id!!, lastUsedCategories.map { it.id!!.toLong() })
                 }
-                db.setMangaCategories(
-                    lastUsedCategories.map { MangaCategory.create(this, it) },
-                    listOf(this),
-                )
                 (activity as? MainActivity)?.showNotificationPermissionPrompt()
                 onMangaMoved()
                 return view.snack(
@@ -286,8 +283,8 @@ fun Manga.addOrRemoveToFavorites(
                             dateAdded = this@addOrRemoveToFavorites.date_added,
                         )
                     )
+                    setMangaCategories.await(this@addOrRemoveToFavorites.id!!, emptyList())
                 }
-                db.setMangaCategories(emptyList(), listOf(this))
                 onMangaMoved()
                 (activity as? MainActivity)?.showNotificationPermissionPrompt()
                 return if (categories.isNotEmpty()) {

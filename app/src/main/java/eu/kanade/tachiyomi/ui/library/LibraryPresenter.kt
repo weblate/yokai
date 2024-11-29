@@ -8,7 +8,6 @@ import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Chapter.Companion.copy
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
-import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.database.models.seriesType
@@ -65,6 +64,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.SetMangaCategories
 import yokai.domain.category.interactor.UpdateCategories
 import yokai.domain.category.models.CategoryUpdate
 import yokai.domain.chapter.interactor.GetChapter
@@ -93,6 +93,7 @@ class LibraryPresenter(
     private val trackManager: TrackManager = Injekt.get(),
 ) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
     private val getCategories: GetCategories by injectLazy()
+    private val setMangaCategories: SetMangaCategories by injectLazy()
     private val updateCategories: UpdateCategories by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getChapter: GetChapter by injectLazy()
@@ -1384,7 +1385,7 @@ class LibraryPresenter(
             val oldCatId = manga.category
             manga.category = categoryId
 
-            val mc = ArrayList<MangaCategory>()
+            val mc = ArrayList<Long>()
             val categories =
                 if (catId == 0) {
                     emptyList()
@@ -1394,10 +1395,10 @@ class LibraryPresenter(
                 }
 
             for (cat in categories) {
-                mc.add(MangaCategory.create(manga, cat))
+                mc.add(cat.id!!.toLong())
             }
 
-            db.setMangaCategories(mc, listOf(manga))
+            setMangaCategories.await(manga.id!!, mc)
 
             if (category.mangaSort == null) {
                 val ids = mangaIds.toMutableList()

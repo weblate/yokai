@@ -12,6 +12,7 @@ import yokai.domain.category.CategoryRepository
 import yokai.domain.category.interactor.DeleteCategories
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.category.interactor.InsertCategories
+import yokai.domain.category.interactor.SetMangaCategories
 import yokai.domain.category.interactor.UpdateCategories
 import yokai.domain.chapter.ChapterRepository
 import yokai.domain.chapter.interactor.DeleteChapter
@@ -74,6 +75,8 @@ fun domainModule() = module {
     factory { GetLibraryManga(get()) }
     factory { InsertManga(get()) }
     factory { UpdateManga(get()) }
+
+    factory { SetMangaCategories(get()) }
 
     single<ChapterRepository> { ChapterRepositoryImpl(get()) }
     factory { DeleteChapter(get()) }

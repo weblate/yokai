@@ -10,11 +10,9 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface MangaCategoryQueries : DbProvider {
 
-    fun insertMangaCategory(mangaCategory: MangaCategory) = db.put().`object`(mangaCategory).prepare()
+    private fun insertMangasCategories(mangasCategories: List<MangaCategory>) = db.put().objects(mangasCategories).prepare()
 
-    fun insertMangasCategories(mangasCategories: List<MangaCategory>) = db.put().objects(mangasCategories).prepare()
-
-    fun deleteOldMangasCategories(mangas: List<Manga>) = db.delete()
+    private fun deleteOldMangasCategories(mangas: List<Manga>) = db.delete()
         .byQuery(
             DeleteQuery.builder()
                 .table(MangaCategoryTable.TABLE)
@@ -24,6 +22,7 @@ interface MangaCategoryQueries : DbProvider {
         )
         .prepare()
 
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     fun setMangaCategories(mangasCategories: List<MangaCategory>, mangas: List<Manga>) {
         db.inTransaction {
             deleteOldMangasCategories(mangas).executeAsBlocking()

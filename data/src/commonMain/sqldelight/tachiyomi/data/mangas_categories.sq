@@ -7,3 +7,15 @@ CREATE TABLE mangas_categories(
     FOREIGN KEY(manga_id) REFERENCES mangas (_id)
     ON DELETE CASCADE
 );
+
+delete:
+DELETE FROM mangas_categories
+WHERE manga_id = :mangaId;
+
+deleteBulk:
+DELETE FROM mangas_categories
+WHERE manga_id IN :mangaIds;
+
+insert:
+INSERT INTO mangas_categories(manga_id, category_id)
+VALUES (:mangaId, :categoryId);

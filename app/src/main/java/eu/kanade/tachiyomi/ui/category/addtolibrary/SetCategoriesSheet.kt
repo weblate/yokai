@@ -28,16 +28,17 @@ import eu.kanade.tachiyomi.util.view.checkHeightThen
 import eu.kanade.tachiyomi.util.view.expand
 import eu.kanade.tachiyomi.widget.E2EBottomSheetDialog
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
-import uy.kohesive.injekt.injectLazy
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import kotlin.math.max
 import kotlinx.coroutines.runBlocking
+import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
-import yokai.domain.manga.interactor.InsertManga
+import yokai.domain.category.interactor.SetMangaCategories
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class SetCategoriesSheet(
     private val activity: Activity,
@@ -75,6 +76,7 @@ class SetCategoriesSheet(
 
     private val db: DatabaseHelper by injectLazy()
     private val getCategories: GetCategories by injectLazy()
+    private val setMangaCategories: SetMangaCategories by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
     private val preferences: PreferencesHelper by injectLazy()
@@ -300,7 +302,7 @@ class SetCategoriesSheet(
             Category.lastCategoriesAddedTo =
                 addCategories.mapNotNull { it.id }.toSet().ifEmpty { setOf(0) }
         }
-        db.setMangaCategories(mangaCategories, listManga)
+        runBlocking { setMangaCategories.awaitAll(listManga.mapNotNull { it.id }, mangaCategories) }
         onMangaAdded()
     }
 }

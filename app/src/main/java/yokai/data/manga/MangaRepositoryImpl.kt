@@ -2,6 +2,7 @@ package yokai.data.manga
 
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
+import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.models.mapper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import kotlinx.coroutines.flow.Flow
@@ -111,5 +112,21 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
                 coverLastModified = manga.cover_last_modified,
             )
             mangasQueries.selectLastInsertedRowId()
+        }
+
+    override suspend fun setCategories(mangaId: Long, categoryIds: List<Long>) =
+        handler.await(inTransaction = true) {
+            mangas_categoriesQueries.delete(mangaId)
+            categoryIds.forEach { id ->
+                mangas_categoriesQueries.insert(mangaId, id)
+            }
+        }
+
+    override suspend fun setMultipleMangaCategories(mangaIds: List<Long>, mangaCategories: List<MangaCategory>) =
+        handler.await(inTransaction = true) {
+            mangas_categoriesQueries.deleteBulk(mangaIds)
+            mangaCategories.forEach {
+                mangas_categoriesQueries.insert(it.manga_id, it.category_id.toLong())
+            }
         }
 }

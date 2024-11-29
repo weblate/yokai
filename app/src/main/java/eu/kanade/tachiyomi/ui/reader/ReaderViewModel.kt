@@ -659,10 +659,9 @@ class ReaderViewModel(
         if (!preferences.incognitoMode().get()) {
             val readAt = Date().time
             val sessionReadDuration = chapterReadStartTime?.let { readAt - it } ?: 0
-            val oldTimeRead = getHistory.awaitByChapterUrl(readerChapter.chapter.url)?.time_read ?: 0
             val history = History.create(readerChapter.chapter).apply {
                 last_read = readAt
-                time_read = sessionReadDuration + oldTimeRead
+                time_read = sessionReadDuration
             }
             upsertHistory.await(history)
             chapterReadStartTime = null

@@ -18,6 +18,7 @@ import eu.kanade.tachiyomi.util.system.launchNow
 import kotlin.math.max
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.data.DatabaseHandler
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
@@ -33,6 +34,7 @@ import yokai.domain.track.interactor.GetTrack
 class MangaBackupRestorer(
     private val db: DatabaseHelper = Injekt.get(),
     private val customMangaManager: CustomMangaManager = Injekt.get(),
+    private val handler: DatabaseHandler = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
     private val getChapter: GetChapter = Injekt.get(),
     private val insertChapter: InsertChapter = Injekt.get(),
@@ -208,7 +210,7 @@ class MangaBackupRestorer(
         // List containing history to be updated
         val historyToBeUpdated = ArrayList<History>(history.size)
         for ((url, lastRead, readDuration) in history) {
-            val dbHistory = getHistory.awaitByChapterUrl(url)
+            val dbHistory = handler.awaitOneOrNull { historyQueries.getByChapterUrl(url, History::mapper) }
             // Check if history already in database and update
             if (dbHistory != null) {
                 dbHistory.apply {

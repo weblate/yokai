@@ -24,9 +24,6 @@ class HistoryRepositoryImpl(private val handler: DatabaseHandler) : HistoryRepos
             }
         }
 
-    override suspend fun getByChapterUrl(chapterUrl: String): History? =
-        handler.awaitOneOrNull { historyQueries.getByChapterUrl(chapterUrl, History::mapper) }
-
     override suspend fun getByMangaId(mangaId: Long): History? =
         handler.awaitOneOrNull { historyQueries.getByMangaId(mangaId, History::mapper) }
 

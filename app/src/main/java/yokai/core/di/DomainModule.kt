@@ -42,6 +42,7 @@ import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.recents.interactor.GetRecents
 import yokai.domain.track.TrackRepository
+import yokai.domain.track.interactor.DeleteTrack
 import yokai.domain.track.interactor.GetTrack
 
 fun domainModule() = module {
@@ -87,5 +88,6 @@ fun domainModule() = module {
     factory { GetRecents(get(), get()) }
 
     single<TrackRepository> { TrackRepositoryImpl(get()) }
+    factory { DeleteTrack(get()) }
     factory { GetTrack(get()) }
 }

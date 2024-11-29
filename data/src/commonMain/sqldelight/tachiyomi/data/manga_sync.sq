@@ -23,3 +23,7 @@ getAllByMangaId:
 SELECT *
 FROM manga_sync
 WHERE manga_id = :mangaId;
+
+deleteForManga:
+DELETE FROM manga_sync
+WHERE manga_id = :mangaId AND sync_id = :syncId;

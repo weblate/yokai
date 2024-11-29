@@ -7,4 +7,7 @@ import yokai.domain.track.TrackRepository
 class TrackRepositoryImpl(private val handler: DatabaseHandler) : TrackRepository {
     override suspend fun getAllByMangaId(mangaId: Long): List<Track> =
         handler.awaitList { manga_syncQueries.getAllByMangaId(mangaId, Track::mapper) }
+
+    override suspend fun deleteForManga(mangaId: Long, syncId: Long) =
+        handler.await { manga_syncQueries.deleteForManga(mangaId, syncId) }
 }

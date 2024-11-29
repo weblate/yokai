@@ -1,20 +1,20 @@
 package eu.kanade.tachiyomi.data.backup.restore.restorers
 
 import eu.kanade.tachiyomi.data.backup.models.BackupCategory
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.data.DatabaseHandler
 import yokai.domain.category.interactor.GetCategories
 
 class CategoriesBackupRestorer(
-    private val db: DatabaseHelper = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
+    private val handler: DatabaseHandler = Injekt.get(),
 ) {
     suspend fun restoreCategories(backupCategories: List<BackupCategory>, onComplete: () -> Unit) {
         // Get categories from file and from db
         // Do it outside of transaction because StorIO might hang because we're using SQLDelight
         val dbCategories = getCategories.await()
-        db.inTransaction {
+        handler.await(true) {
             // Iterate over them
             backupCategories.map { it.getCategoryImpl() }.forEach { category ->
                 // Used to know if the category is already in the db
@@ -33,8 +33,13 @@ class CategoriesBackupRestorer(
                 if (!found) {
                     // Let the db assign the id
                     category.id = null
-                    val result = db.insertCategory(category).executeAsBlocking()
-                    category.id = result.insertedId()?.toInt()
+                    categoriesQueries.insert(
+                        name = category.name,
+                        mangaOrder = category.mangaOrderToString(),
+                        sort = category.order.toLong(),
+                        flags = category.flags.toLong(),
+                    )
+                    category.id = categoriesQueries.selectLastInsertedRowId().executeAsOneOrNull()?.toInt()
                 }
             }
         }

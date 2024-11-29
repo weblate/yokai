@@ -1,19 +1,19 @@
 package eu.kanade.tachiyomi.ui.category
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.ui.library.LibrarySort
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.DeleteCategories
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.InsertCategories
+import yokai.domain.category.interactor.UpdateCategories
+import yokai.domain.category.models.CategoryUpdate
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -22,9 +22,11 @@ import yokai.util.lang.getString
  */
 class CategoryPresenter(
     private val controller: CategoryController,
-    private val db: DatabaseHelper = Injekt.get(),
 ) {
+    private val deleteCategories: DeleteCategories by injectLazy()
     private val getCategories: GetCategories by injectLazy()
+    private val insertCategories: InsertCategories by injectLazy()
+    private val updateCategories: UpdateCategories by injectLazy()
 
     private var scope = CoroutineScope(Job() + Dispatchers.Default)
 
@@ -79,8 +81,8 @@ class CategoryPresenter(
 
         // Insert into database.
         cat.mangaSort = LibrarySort.Title.categoryValue
-        db.insertCategory(cat).executeAsBlocking()
         // FIXME: Don't do blocking
+        runBlocking { insertCategories.awaitOne(cat) }
         val cats = runBlocking { getCategories.await() }
         val newCat = cats.find { it.name == name } ?: return false
         categories.add(1, newCat)
@@ -94,10 +96,12 @@ class CategoryPresenter(
      * @param category The category to delete.
      */
     fun deleteCategory(category: Category?) {
-        val safeCategory = category ?: return
-        db.deleteCategory(safeCategory).executeAsBlocking()
-        categories.remove(safeCategory)
-        controller.setCategories(categories.map(::CategoryItem))
+        val safeCategory = category?.id ?: return
+        scope.launch {
+            deleteCategories.awaitOne(safeCategory.toLong())
+            categories.remove(category)
+            controller.setCategories(categories.map(::CategoryItem))
+        }
     }
 
     /**
@@ -107,10 +111,19 @@ class CategoryPresenter(
      */
     fun reorderCategories(categories: List<Category>) {
         scope.launch {
-            categories.forEachIndexed { i, category ->
-                if (category.order != CREATE_CATEGORY_ORDER) category.order = i - 1
-            }
-            db.insertCategories(categories.filter { it.order != CREATE_CATEGORY_ORDER }).executeOnIO()
+            val updates: MutableList<CategoryUpdate> = mutableListOf()
+            categories
+                .filter { it.order != CREATE_CATEGORY_ORDER }
+                .forEachIndexed { i, category ->
+                    category.order = i - 1
+                    updates.add(
+                        CategoryUpdate(
+                            id = category.id!!.toLong(),
+                            order = category.order.toLong(),
+                        )
+                    )
+                }
+            updateCategories.await(updates)
             this@CategoryPresenter.categories = categories.sortedBy { it.order }.toMutableList()
             withContext(Dispatchers.Main) {
                 controller.setCategories(this@CategoryPresenter.categories.map(::CategoryItem))
@@ -135,7 +148,14 @@ class CategoryPresenter(
         }
 
         category.name = name
-        db.insertCategory(category).executeAsBlocking()
+        runBlocking {
+            updateCategories.awaitOne(
+                CategoryUpdate(
+                    id = category.id!!.toLong(),
+                    name = category.name,
+                )
+            )
+        }
         categories.find { it.id == category.id }?.name = name
         controller.setCategories(categories.map(::CategoryItem))
         return true

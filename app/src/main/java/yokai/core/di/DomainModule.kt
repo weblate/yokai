@@ -9,7 +9,10 @@ import yokai.data.library.custom.CustomMangaRepositoryImpl
 import yokai.data.manga.MangaRepositoryImpl
 import yokai.data.track.TrackRepositoryImpl
 import yokai.domain.category.CategoryRepository
+import yokai.domain.category.interactor.DeleteCategories
 import yokai.domain.category.interactor.GetCategories
+import yokai.domain.category.interactor.InsertCategories
+import yokai.domain.category.interactor.UpdateCategories
 import yokai.domain.chapter.ChapterRepository
 import yokai.domain.chapter.interactor.DeleteChapter
 import yokai.domain.chapter.interactor.GetAvailableScanlators
@@ -45,7 +48,10 @@ fun domainModule() = module {
     factory { TrustExtension(get(), get()) }
 
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
+    factory { DeleteCategories(get()) }
     factory { GetCategories(get()) }
+    factory { InsertCategories(get()) }
+    factory { UpdateCategories(get()) }
 
     single<ExtensionRepoRepository> { ExtensionRepoRepositoryImpl(get()) }
     factory { CreateExtensionRepo(get()) }

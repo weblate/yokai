@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.data.backup.restore
 import android.content.Context
 import android.net.Uri
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
-import eu.kanade.tachiyomi.data.backup.models.BackupSource
 import eu.kanade.tachiyomi.data.backup.restore.restorers.CategoriesBackupRestorer
 import eu.kanade.tachiyomi.data.backup.restore.restorers.MangaBackupRestorer
 import eu.kanade.tachiyomi.data.backup.restore.restorers.PreferenceBackupRestorer

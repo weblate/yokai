@@ -53,6 +53,9 @@ interface Category : Serializable {
         mangaSort = (LibrarySort.valueOf(sort) ?: LibrarySort.Title).categoryValue
     }
 
+    fun mangaOrderToString(): String =
+        if (mangaSort != null) mangaSort.toString() else mangaOrder.joinToString("/")
+
     companion object {
         var lastCategoriesAddedTo = emptySet<Int>()
 

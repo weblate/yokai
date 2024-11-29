@@ -12,7 +12,6 @@ import androidx.work.WorkerParameters
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.util.system.e
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,12 +20,14 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.InsertTrack
 
 class DelayedTrackingUpdateJob(context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
     private val getManga: GetManga by injectLazy()
     private val getTrack: GetTrack by injectLazy()
+    private val insertTrack: InsertTrack by injectLazy()
 
     override suspend fun doWork(): Result {
         val preferences = Injekt.get<PreferencesHelper>()
@@ -56,7 +57,7 @@ class DelayedTrackingUpdateJob(context: Context, workerParams: WorkerParameters)
                         try {
                             track.last_chapter_read = trackChapter.second
                             service.update(track, true)
-                            db.insertTrack(track).executeAsBlocking()
+                            insertTrack.await(track)
                         } catch (e: Exception) {
                             Logger.e(e) { "Unable to update tracker [tracker id ${track.sync_id}]" }
                         }

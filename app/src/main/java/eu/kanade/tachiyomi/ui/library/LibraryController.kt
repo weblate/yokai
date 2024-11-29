@@ -2191,7 +2191,7 @@ open class LibraryController(
      */
     private fun showChangeMangaCategoriesSheet() {
         val activity = activity ?: return
-        selectedMangas.toList().moveCategories(presenter.db, activity) {
+        selectedMangas.toList().moveCategories(activity) {
             presenter.getLibrary()
             destroyActionModeIfNeeded()
         }

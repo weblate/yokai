@@ -97,6 +97,7 @@ import yokai.domain.manga.models.cover
 import yokai.domain.storage.StorageManager
 import yokai.domain.track.interactor.DeleteTrack
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.InsertTrack
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -118,6 +119,7 @@ class MangaDetailsPresenter(
     private val updateManga: UpdateManga by injectLazy()
     private val deleteTrack: DeleteTrack by injectLazy()
     private val getTrack: GetTrack by injectLazy()
+    private val insertTrack: InsertTrack by injectLazy()
     private val getHistory: GetHistory by injectLazy()
 
     private val networkPreferences: NetworkPreferences by injectLazy()
@@ -1020,8 +1022,8 @@ class MangaDetailsPresenter(
                                 null
                             }
                             if (trackItem != null) {
-                                db.insertTrack(trackItem).executeAsBlocking()
-                                syncChaptersWithTrackServiceTwoWay(db, chapters, trackItem, item.service)
+                                insertTrack.await(trackItem)
+                                syncChaptersWithTrackServiceTwoWay(chapters, trackItem, item.service)
                                 trackItem
                             } else {
                                 item.track
@@ -1061,10 +1063,10 @@ class MangaDetailsPresenter(
                 }
                 withContext(Dispatchers.IO) {
                     if (binding != null) {
-                        db.insertTrack(binding).executeAsBlocking()
+                        insertTrack.await(binding)
                     }
 
-                    syncChaptersWithTrackServiceTwoWay(db, chapters, item, service)
+                    syncChaptersWithTrackServiceTwoWay(chapters, item, service)
                 }
                 fetchTracks()
             }
@@ -1092,7 +1094,7 @@ class MangaDetailsPresenter(
                 null
             }
             if (binding != null) {
-                withContext(Dispatchers.IO) { db.insertTrack(binding).executeAsBlocking() }
+                withContext(Dispatchers.IO) { insertTrack.await(binding) }
                 fetchTracks()
             } else {
                 trackRefreshDone()

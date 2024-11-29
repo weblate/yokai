@@ -81,12 +81,14 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.cover
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.InsertTrack
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -107,6 +109,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private val getLibraryManga: GetLibraryManga = Injekt.get()
     private val updateManga: UpdateManga = Injekt.get()
     private val getTrack: GetTrack = Injekt.get()
+    private val insertTrack: InsertTrack by injectLazy()
 
     private var extraDeferredJobs = mutableListOf<Deferred<Any>>()
 
@@ -322,9 +325,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 if (service != null && service in loggedServices) {
                     try {
                         val newTrack = service.refresh(track)
-                        db.insertTrack(newTrack).executeAsBlocking()
+                        insertTrack.await(newTrack)
 
-                        syncChaptersWithTrackServiceTwoWay(db, getChapter.awaitAll(manga.id!!, false), track, service)
+                        syncChaptersWithTrackServiceTwoWay(getChapter.awaitAll(manga.id!!, false), track, service)
                     } catch (e: Exception) {
                         Logger.e(e)
                     }

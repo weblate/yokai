@@ -9,7 +9,6 @@ import eu.kanade.tachiyomi.data.track.DelayedTrackingUpdateJob
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.data.track.TrackService
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.w
@@ -20,6 +19,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.InsertTrack
 
 /**
  * Helper method for syncing a remote track with the local chapters, and back
@@ -30,11 +30,11 @@ import yokai.domain.track.interactor.GetTrack
  * @param service the tracker service.
  */
 suspend fun syncChaptersWithTrackServiceTwoWay(
-    db: DatabaseHelper,
     chapters: List<Chapter>,
     remoteTrack: Track,
     service: TrackService,
     updateChapter: UpdateChapter = Injekt.get(),
+    insertTrack: InsertTrack = Injekt.get()
 ) = withIOContext {
     if (service !is EnhancedTrackService) {
         return@withIOContext
@@ -54,7 +54,7 @@ suspend fun syncChaptersWithTrackServiceTwoWay(
 
     try {
         service.update(remoteTrack)
-        db.insertTrack(remoteTrack).executeAsBlocking()
+        insertTrack.await(remoteTrack)
     } catch (e: Throwable) {
         Logger.w(e)
     }
@@ -86,7 +86,7 @@ fun updateTrackChapterMarkedAsRead(
         // We want these to execute even if the presenter is destroyed
         trackingJobs[mangaId] = launchIO {
             delay(delay)
-            updateTrackChapterRead(db, preferences, mangaId, newChapterRead)
+            updateTrackChapterRead(preferences, mangaId, newChapterRead)
             fetchTracks?.invoke()
             trackingJobs.remove(mangaId)
         } to newChapterRead
@@ -94,12 +94,12 @@ fun updateTrackChapterMarkedAsRead(
 }
 
 suspend fun updateTrackChapterRead(
-    db: DatabaseHelper,
     preferences: PreferencesHelper,
     mangaId: Long?,
     newChapterRead: Float,
     retryWhenOnline: Boolean = false,
-    getTrack: GetTrack = Injekt.get()
+    getTrack: GetTrack = Injekt.get(),
+    insertTrack: InsertTrack = Injekt.get(),
 ): List<Pair<TrackService, String?>> {
     val trackManager = Injekt.get<TrackManager>()
     val trackList = getTrack.awaitAllByMangaId(mangaId)
@@ -113,7 +113,7 @@ suspend fun updateTrackChapterRead(
                 try {
                     track.last_chapter_read = newChapterRead
                     service.update(track, true)
-                    db.insertTrack(track).executeAsBlocking()
+                    insertTrack.await(track)
                 } catch (e: Exception) {
                     Logger.e(e) { "Unable to update tracker [tracker id ${track.sync_id}]" }
                     failures.add(service to e.localizedMessage)

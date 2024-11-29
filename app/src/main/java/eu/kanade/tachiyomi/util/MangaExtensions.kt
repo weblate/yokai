@@ -51,6 +51,7 @@ import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
+import yokai.domain.track.interactor.InsertTrack
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import android.R as AR
@@ -83,12 +84,11 @@ suspend fun Manga.shouldDownloadNewChapters(prefs: PreferencesHelper, getCategor
     return categoriesForManga.any { it in includedCategories }
 }
 
-fun Manga.moveCategories(db: DatabaseHelper, activity: Activity, onMangaMoved: () -> Unit) {
-    moveCategories(db, activity, false, onMangaMoved)
+fun Manga.moveCategories(activity: Activity, onMangaMoved: () -> Unit) {
+    moveCategories(activity, false, onMangaMoved)
 }
 
 fun Manga.moveCategories(
-    db: DatabaseHelper,
     activity: Activity,
     addingToLibrary: Boolean,
     onMangaMoved: () -> Unit,
@@ -110,13 +110,12 @@ fun Manga.moveCategories(
     ) {
         onMangaMoved()
         if (addingToLibrary) {
-            autoAddTrack(db, onMangaMoved)
+            autoAddTrack(onMangaMoved)
         }
     }.show()
 }
 
 fun List<Manga>.moveCategories(
-    db: DatabaseHelper,
     activity: Activity,
     onMangaMoved: () -> Unit,
 ) {
@@ -211,7 +210,7 @@ fun Manga.addOrRemoveToFavorites(
             defaultCategory != null -> {
                 favorite = true
                 date_added = Date().time
-                autoAddTrack(db, onMangaMoved)
+                autoAddTrack(onMangaMoved)
                 // FIXME: Don't do blocking
                 runBlocking {
                     updateManga.await(
@@ -228,7 +227,7 @@ fun Manga.addOrRemoveToFavorites(
                 onMangaMoved()
                 return view.snack(activity.getString(MR.strings.added_to_, defaultCategory.name)) {
                     setAction(MR.strings.change) {
-                        moveCategories(db, activity, onMangaMoved)
+                        moveCategories(activity, onMangaMoved)
                     }
                 }
             }
@@ -238,7 +237,7 @@ fun Manga.addOrRemoveToFavorites(
                 ) -> { // last used category(s)
                 favorite = true
                 date_added = Date().time
-                autoAddTrack(db, onMangaMoved)
+                autoAddTrack(onMangaMoved)
                 // FIXME: Don't do blocking
                 runBlocking {
                     updateManga.await(
@@ -270,14 +269,14 @@ fun Manga.addOrRemoveToFavorites(
                     ),
                 ) {
                     setAction(MR.strings.change) {
-                        moveCategories(db, activity, onMangaMoved)
+                        moveCategories(activity, onMangaMoved)
                     }
                 }
             }
             defaultCategoryId == 0 || categories.isEmpty() -> { // 'Default' or no category
                 favorite = true
                 date_added = Date().time
-                autoAddTrack(db, onMangaMoved)
+                autoAddTrack(onMangaMoved)
                 // FIXME: Don't do blocking
                 runBlocking {
                     updateManga.await(
@@ -294,7 +293,7 @@ fun Manga.addOrRemoveToFavorites(
                 return if (categories.isNotEmpty()) {
                     view.snack(activity.getString(MR.strings.added_to_, activity.getString(MR.strings.default_value))) {
                         setAction(MR.strings.change) {
-                            moveCategories(db, activity, onMangaMoved)
+                            moveCategories(activity, onMangaMoved)
                         }
                     }
                 } else {
@@ -302,7 +301,7 @@ fun Manga.addOrRemoveToFavorites(
                 }
             }
             else -> { // Always ask
-                showSetCategoriesSheet(db, activity, categories, onMangaAdded, onMangaMoved)
+                showSetCategoriesSheet(activity, categories, onMangaAdded, onMangaMoved)
             }
         }
     } else {
@@ -352,7 +351,6 @@ fun Manga.addOrRemoveToFavorites(
 }
 
 private fun Manga.showSetCategoriesSheet(
-    db: DatabaseHelper,
     activity: Activity,
     categories: List<Category>,
     onMangaAdded: (Pair<Long, Boolean>?) -> Unit,
@@ -372,7 +370,7 @@ private fun Manga.showSetCategoriesSheet(
     ) {
         (activity as? MainActivity)?.showNotificationPermissionPrompt()
         onMangaAdded(null)
-        autoAddTrack(db, onMangaMoved)
+        autoAddTrack(onMangaMoved)
     }.show()
 }
 
@@ -470,10 +468,11 @@ private fun showAddDuplicateDialog(
     }.show()
 }
 
-fun Manga.autoAddTrack(db: DatabaseHelper, onMangaMoved: () -> Unit) {
+fun Manga.autoAddTrack(onMangaMoved: () -> Unit) {
     val loggedServices = Injekt.get<TrackManager>().services.filter { it.isLogged }
     val source = Injekt.get<SourceManager>().getOrStub(this.source)
     val getChapter = Injekt.get<GetChapter>()
+    val insertTrack = Injekt.get<InsertTrack>()
     loggedServices
         .filterIsInstance<EnhancedTrackService>()
         .filter { it.accept(source) }
@@ -484,9 +483,13 @@ fun Manga.autoAddTrack(db: DatabaseHelper, onMangaMoved: () -> Unit) {
                         val mangaId = this@autoAddTrack.id!!
                         track.manga_id = mangaId
                         (service as TrackService).bind(track)
-                        db.insertTrack(track).executeAsBlocking()
+                        insertTrack.await(track)
 
-                        syncChaptersWithTrackServiceTwoWay(db, getChapter.awaitAll(mangaId, false), track, service as TrackService)
+                        syncChaptersWithTrackServiceTwoWay(
+                            getChapter.awaitAll(mangaId, false),
+                            track,
+                            service as TrackService
+                        )
                         withUIContext {
                             onMangaMoved()
                         }

@@ -44,6 +44,7 @@ import yokai.domain.recents.interactor.GetRecents
 import yokai.domain.track.TrackRepository
 import yokai.domain.track.interactor.DeleteTrack
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.InsertTrack
 
 fun domainModule() = module {
     factory { TrustExtension(get(), get()) }
@@ -90,4 +91,5 @@ fun domainModule() = module {
     single<TrackRepository> { TrackRepositoryImpl(get()) }
     factory { DeleteTrack(get()) }
     factory { GetTrack(get()) }
+    factory { InsertTrack(get()) }
 }

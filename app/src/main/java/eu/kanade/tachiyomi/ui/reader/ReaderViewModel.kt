@@ -998,7 +998,7 @@ class ReaderViewModel(
 
         launchIO {
             val newChapterRead = readerChapter.chapter.chapter_number
-            val errors = updateTrackChapterRead(db, preferences, manga?.id, newChapterRead, true)
+            val errors = updateTrackChapterRead(preferences, manga?.id, newChapterRead, true)
             if (errors.isNotEmpty()) {
                 eventChannel.send(Event.ShareTrackingError(errors))
             }

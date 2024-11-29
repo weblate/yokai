@@ -20,8 +20,7 @@ interface TrackQueries : DbProvider {
         )
         .prepare()
 
-    fun insertTrack(track: Track) = db.put().`object`(track).prepare()
-
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     fun insertTracks(tracks: List<Track>) = db.put().objects(tracks).prepare()
 
 }

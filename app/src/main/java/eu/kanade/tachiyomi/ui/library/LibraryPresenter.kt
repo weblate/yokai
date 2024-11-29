@@ -285,10 +285,12 @@ class LibraryPresenter(
         }
     }
 
-    private fun reorderCategories(categories: List<Category>) {
+    private suspend fun reorderCategories(categories: List<Category>) {
         val sortedCategories = categories.sortedBy { it.order }
         sortedCategories.forEachIndexed { i, category -> category.order = i }
-        db.insertCategories(sortedCategories).executeAsBlocking()
+        updateCategories.await(
+            sortedCategories.map { CategoryUpdate(id = it.id!!.toLong(), order = it.order.toLong()) }
+        )
     }
 
     fun switchSection(order: Int) {

@@ -56,7 +56,7 @@ data class BackupTracking(
                 syncId = track.sync_id.toInt(),
                 mediaId = track.media_id,
                 // forced not null so its compatible with 1.x backup system
-                libraryId = track.library_id!!,
+                libraryId = track.library_id ?: 0L,
                 title = track.title,
                 lastChapterRead = track.last_chapter_read,
                 totalChapters = track.total_chapters.toInt(),

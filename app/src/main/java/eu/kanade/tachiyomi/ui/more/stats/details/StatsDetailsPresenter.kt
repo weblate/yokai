@@ -33,6 +33,7 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -59,7 +60,7 @@ class StatsDetailsPresenter(
 
     private val context
         get() = view?.view?.context ?: prefs.context
-    var libraryMangas = getLibrary()
+    var libraryMangas = runBlocking { getLibrary() }
         set(value) {
             field = value
             mangasDistinct = field.distinct()
@@ -150,7 +151,7 @@ class StatsDetailsPresenter(
         }
     }
 
-    private fun setupSeriesType() {
+    private suspend fun setupSeriesType() {
         currentStats = ArrayList()
         val libraryFormat = mangasDistinct.filterByChip().groupBy { it.seriesType() }
 
@@ -170,7 +171,7 @@ class StatsDetailsPresenter(
         sortCurrentStats()
     }
 
-    private fun setupStatus() {
+    private suspend fun setupStatus() {
         currentStats = ArrayList()
         val libraryFormat = mangasDistinct.filterByChip().groupBy { it.status }
 
@@ -190,7 +191,7 @@ class StatsDetailsPresenter(
         sortCurrentStats()
     }
 
-    private fun setupScores() {
+    private suspend fun setupScores() {
         currentStats = ArrayList()
         val libraryFormat = mangasDistinct.filterByChip().groupBy { it.getMeanScoreToInt() }
         val scoreMap = StatsHelper.SCORE_COLOR_MAP.plus(null to pieColorList[1])
@@ -212,7 +213,7 @@ class StatsDetailsPresenter(
         }
     }
 
-    private fun setupLanguages() {
+    private suspend fun setupLanguages() {
         currentStats = ArrayList()
         val libraryFormat = mangasDistinct.filterByChip().groupBy { it.getLanguage() }
 
@@ -232,7 +233,7 @@ class StatsDetailsPresenter(
         sortCurrentStats()
     }
 
-    private fun setupLength() {
+    private suspend fun setupLength() {
         currentStats = ArrayList()
         var mangaFiltered = mangasDistinct.filterByChip()
         StatsHelper.STATS_LENGTH.forEach { range ->
@@ -259,7 +260,7 @@ class StatsDetailsPresenter(
         }
     }
 
-    private fun setupTrackers() {
+    private suspend fun setupTrackers() {
         currentStats = ArrayList()
         val libraryFormat = mangasDistinct.filterByChip()
             .map { it to getTracks(it).ifEmpty { listOf(null) } }
@@ -289,7 +290,7 @@ class StatsDetailsPresenter(
         sortCurrentStats()
     }
 
-    private fun setupSources() {
+    private suspend fun setupSources() {
         currentStats = ArrayList()
         val libraryFormat = mangasDistinct.filterByChip().groupBy { it.source }
 
@@ -312,7 +313,7 @@ class StatsDetailsPresenter(
         sortCurrentStats()
     }
 
-    private fun setupCategories() {
+    private suspend fun setupCategories() {
         currentStats = ArrayList()
         val libraryFormat = libraryMangas.filterByChip().groupBy { it.category }
         val categories = getCategories()
@@ -335,7 +336,7 @@ class StatsDetailsPresenter(
         sortCurrentStats()
     }
 
-    private fun setupTags() {
+    private suspend fun setupTags() {
         currentStats = ArrayList()
         val mangaFiltered = mangasDistinct.filterByChip()
         val tags = mangaFiltered.flatMap { it.getTags() }.distinctBy { it.uppercase() }
@@ -382,7 +383,7 @@ class StatsDetailsPresenter(
         }
     }
 
-    fun setupReadDuration(day: Calendar? = null) {
+    private suspend fun setupReadDuration(day: Calendar? = null) {
         currentStats = ArrayList()
 
         historyByDayAndManga = history.mapValues { h ->
@@ -408,6 +409,12 @@ class StatsDetailsPresenter(
             )
         }
         currentStats?.sortByDescending { it.readDuration }
+    }
+
+    fun doSetupReadDuration(day: Calendar? = null) {
+        presenterScope.launchIO {
+            setupReadDuration(day)
+        }
     }
 
     /**
@@ -508,7 +515,7 @@ class StatsDetailsPresenter(
     /**
      * Get mean score rounded to two decimal of a list of manga
      */
-    private fun List<LibraryManga>.getMeanScoreRounded(): Double? {
+    private suspend fun List<LibraryManga>.getMeanScoreRounded(): Double? {
         val mangaTracks = this.map { it to getTracks(it) }
         val scoresList = mangaTracks.filter { it.second.isNotEmpty() }
             .mapNotNull { it.second.getMeanScoreByTracker() }
@@ -518,7 +525,7 @@ class StatsDetailsPresenter(
     /**
      * Get mean score rounded to int of a single manga
      */
-    private fun LibraryManga.getMeanScoreToInt(): Int? {
+    private suspend fun LibraryManga.getMeanScoreToInt(): Int? {
         val mangaTracks = getTracks(this)
         val scoresList = mangaTracks.filter { it.score > 0 }
             .mapNotNull { it.get10PointScore() }
@@ -565,12 +572,16 @@ class StatsDetailsPresenter(
         return StatsSort.entries.sorted().map { context.getString(it.resourceId) }.toTypedArray()
     }
 
-    fun getTracks(manga: Manga): MutableList<Track> {
-        return runBlocking { getTrack.awaitAllByMangaId(manga.id) }.toMutableList()
+    suspend fun getTracks(manga: Manga): MutableList<Track> {
+        return getTrack.awaitAllByMangaId(manga.id).toMutableList()
     }
 
-    fun getLibrary(): MutableList<LibraryManga> {
-        return runBlocking { getLibraryManga.await() }.toMutableList()
+    fun updateLibrary() {
+        presenterScope.launch { libraryMangas = getLibrary() }
+    }
+
+    private suspend fun getLibrary(): MutableList<LibraryManga> {
+        return getLibraryManga.await().toMutableList()
     }
 
     private fun getCategories(): MutableList<Category> {

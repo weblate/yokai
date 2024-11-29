@@ -238,9 +238,7 @@ class StatsDetailsController :
         }
     }
 
-    fun updateLibrary() {
-        presenter.libraryMangas = presenter.getLibrary()
-    }
+    fun updateLibrary() = presenter.updateLibrary()
 
     /** Set the toolbar to fully transparent or colored and translucent */
     private fun colorToolbar(isColor: Boolean) {
@@ -757,7 +755,7 @@ class StatsDetailsController :
     override fun onBarValueChanged(highlight: Highlight?, e: Entry?) {
         highlightedBar = highlight?.let { Triple(it.x, it.y, it.dataSetIndex) }
         highlightedDay = e?.let { presenter.historyByDayAndManga.keys.toTypedArray()[e.x.toInt()] }
-        presenter.setupReadDuration(highlightedDay)
+        presenter.doSetupReadDuration(highlightedDay)
         updateStatsAdapter(true)
     }
 

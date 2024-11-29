@@ -38,6 +38,7 @@ import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.data.DatabaseHandler
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.history.interactor.GetHistory
@@ -52,6 +53,7 @@ class StatsDetailsPresenter(
     val trackManager: TrackManager = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
 ) : BaseCoroutinePresenter<StatsDetailsController>() {
+    private val handler: DatabaseHandler by injectLazy()
     private val getCategories: GetCategories by injectLazy()
     private val getChapter: GetChapter by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
@@ -588,15 +590,19 @@ class StatsDetailsPresenter(
         return runBlocking { getCategories.await() }.toMutableList()
     }
 
-    private fun List<LibraryManga>.getReadDuration(): Long {
-        return sumOf { manga -> db.getHistoryByMangaId(manga.id!!).executeAsBlocking().sumOf { it.time_read } }
+    private suspend fun List<LibraryManga>.getReadDuration(): Long {
+        return sumOf { manga -> getHistory.awaitAllByMangaId(manga.id!!).sumOf { it.time_read } }
     }
 
     /**
      * Get the manga and history grouped by day during the selected period
      */
     fun getMangaHistoryGroupedByDay(): Map<Calendar, List<MangaChapterHistory>> {
-        val history = db.getHistoryPerPeriod(startDate.timeInMillis, endDate.timeInMillis).executeAsBlocking()
+        val history = runBlocking {
+            handler.awaitList {
+                historyQueries.getPerPeriod(startDate.timeInMillis, endDate.timeInMillis, MangaChapterHistory::mapper)
+            }
+        }
         val calendar = Calendar.getInstance().apply {
             timeInMillis = startDate.timeInMillis
         }

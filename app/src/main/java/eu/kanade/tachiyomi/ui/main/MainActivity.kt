@@ -106,7 +106,6 @@ import eu.kanade.tachiyomi.util.showNotificationPermissionPrompt
 import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.e
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.hasSideNavBar
 import eu.kanade.tachiyomi.util.system.ignoredSystemInsets
@@ -134,6 +133,10 @@ import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.withFadeInTransaction
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import kotlin.collections.set
+import kotlin.math.abs
+import kotlin.math.min
+import kotlin.math.roundToLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -142,15 +145,12 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import yokai.core.migration.Migrator
 import yokai.domain.base.BasePreferences
+import yokai.domain.recents.interactor.GetRecents
 import yokai.i18n.MR
 import yokai.presentation.core.Constants
 import yokai.presentation.extension.repo.ExtensionRepoController
 import yokai.presentation.onboarding.OnboardingController
 import yokai.util.lang.getString
-import kotlin.collections.set
-import kotlin.math.abs
-import kotlin.math.min
-import kotlin.math.roundToLong
 import android.R as AR
 
 @SuppressLint("ResourceType")
@@ -170,7 +170,10 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     private val downloadManager: DownloadManager by injectLazy()
     private val mangaShortcutManager: MangaShortcutManager by injectLazy()
     private val extensionManager: ExtensionManager by injectLazy()
+
     private val db: DatabaseHelper by injectLazy()
+    private val getRecents: GetRecents by injectLazy()
+
     private val hideBottomNav
         get() = router.backstackSize > 1 && router.backstack[1].controller !is DialogController
     private val hideAppBar
@@ -408,8 +411,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                 }
                 BasePreferences.LongTapRecents.LAST_READ -> {
                     lifecycleScope.launchUI {
-                        val lastReadChapter =
-                            db.getHistoryUngrouped("", 0, true).executeOnIO().maxByOrNull { it.history.last_read }
+                        val lastReadChapter = getRecents.awaitUngrouped(true, true, "", 0).maxByOrNull { it.history.last_read }
                         lastReadChapter ?: return@launchUI
 
                         val manga = lastReadChapter.manga
@@ -1031,6 +1033,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         requestColourProfile.launch(arrayOf("*/*"))
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onNewIntent(intent: Intent) {
         if (!handleIntentAction(intent)) {
             super.onNewIntent(intent)

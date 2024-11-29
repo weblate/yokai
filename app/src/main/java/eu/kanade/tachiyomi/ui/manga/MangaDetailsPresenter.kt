@@ -88,6 +88,7 @@ import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
+import yokai.domain.history.interactor.GetHistory
 import yokai.domain.library.custom.model.CustomMangaInfo
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
@@ -117,6 +118,7 @@ class MangaDetailsPresenter(
     private val updateManga: UpdateManga by injectLazy()
     private val deleteTrack: DeleteTrack by injectLazy()
     private val getTrack: GetTrack by injectLazy()
+    private val getHistory: GetHistory by injectLazy()
 
     private val networkPreferences: NetworkPreferences by injectLazy()
 
@@ -263,7 +265,7 @@ class MangaDetailsPresenter(
 
     private fun getHistory() {
         presenterScope.launchIO {
-            allHistory = db.getHistoryByMangaId(mangaId).executeAsBlocking()
+            allHistory = getHistory.awaitAllByMangaId(mangaId)
         }
     }
 
@@ -1139,8 +1141,8 @@ class MangaDetailsPresenter(
         updateRemote(track, item.service)
     }
 
-    fun getSuggestedDate(readingDate: TrackingBottomSheet.ReadingDate): Long? {
-        val chapters = db.getHistoryByMangaId(manga.id ?: 0L).executeAsBlocking()
+    suspend fun getSuggestedDate(readingDate: TrackingBottomSheet.ReadingDate): Long? {
+        val chapters = getHistory.awaitAllByMangaId(manga.id ?: 0L)
         val date = when (readingDate) {
             TrackingBottomSheet.ReadingDate.Start -> chapters.minOfOrNull { it.last_read }
             TrackingBottomSheet.ReadingDate.Finish -> chapters.maxOfOrNull { it.last_read }

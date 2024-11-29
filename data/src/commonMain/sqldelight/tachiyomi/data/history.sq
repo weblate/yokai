@@ -45,6 +45,17 @@ WHERE chapters.url = :chapterUrl AND history.history_chapter_id = chapters._id;
 getTotalReadDuration:
 SELECT sum(history_time_read) FROM history;
 
+getPerPeriod:
+SELECT mangas.*, chapters.*, history.*
+FROM mangas
+JOIN chapters
+ON mangas._id = chapters.manga_id
+JOIN history
+ON chapters._id = history.history_chapter_id
+AND history.history_last_read >= :startDate
+AND history.history_last_read <= :endDate
+ORDER BY history.history_last_read DESC;
+
 getRecentsUngrouped:
 SELECT
     M.*,

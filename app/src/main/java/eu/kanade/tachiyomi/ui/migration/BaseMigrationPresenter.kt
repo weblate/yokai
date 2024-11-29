@@ -9,7 +9,6 @@ import eu.kanade.tachiyomi.source.LocalSource
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +16,7 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.ui.UiPreferences
 
 abstract class BaseMigrationPresenter<T : BaseMigrationInterface>(
@@ -25,6 +25,8 @@ abstract class BaseMigrationPresenter<T : BaseMigrationInterface>(
     val uiPreferences: UiPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
 ) : BaseCoroutinePresenter<T>() {
+    private val getManga: GetManga by injectLazy()
+
     private var selectedSource: Pair<String, Long>? = null
     var sourceItems = emptyList<SourceItem>()
         protected set
@@ -35,7 +37,7 @@ abstract class BaseMigrationPresenter<T : BaseMigrationInterface>(
 
     fun refreshMigrations() {
         presenterScope.launch {
-            val favs = db.getFavoriteMangas().executeOnIO()
+            val favs = getManga.awaitFavorites()
             sourceItems = findSourcesWithManga(favs)
             mangaItems = HashMap(
                 sourceItems.associate {
@@ -92,7 +94,7 @@ abstract class BaseMigrationPresenter<T : BaseMigrationInterface>(
     }
 
     protected suspend fun firstTimeMigration() {
-        val favs = db.getFavoriteMangas().executeOnIO()
+        val favs = getManga.awaitFavorites()
         sourceItems = findSourcesWithManga(favs)
         mangaItems = HashMap(
             sourceItems.associate {

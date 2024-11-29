@@ -53,7 +53,7 @@ class MangaPlus : DelegatedHttpSource() {
             val trimmedTitle = title.substring(0, title.length - 1)
             val mangaUrl = "#/titles/$titleId"
             val deferredManga = async {
-                db.getManga(mangaUrl, delegate?.id!!).executeAsBlocking() ?: getMangaInfo(mangaUrl)
+                getManga.awaitByUrlAndSource(mangaUrl, delegate?.id!!) ?: getMangaInfo(mangaUrl)
             }
             val deferredChapters = async { getChapters(mangaUrl) }
             val manga = deferredManga.await()

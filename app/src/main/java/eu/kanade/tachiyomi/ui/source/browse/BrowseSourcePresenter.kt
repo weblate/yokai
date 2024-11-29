@@ -39,6 +39,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.InsertManga
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.ui.UiPreferences
 
 /**
@@ -54,6 +59,9 @@ open class BrowseSourcePresenter(
     val preferences: PreferencesHelper = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),
 ) : BaseCoroutinePresenter<BrowseSourceController>() {
+    private val getManga: GetManga by injectLazy()
+    private val insertManga: InsertManga by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
 
     /**
      * Selected source.
@@ -225,17 +233,21 @@ open class BrowseSourcePresenter(
      * @param sManga the manga from the source.
      * @return a manga from the database.
      */
-    private fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga {
-        var localManga = db.getManga(sManga.url, sourceId).executeAsBlocking()
+    private suspend fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga {
+        var localManga = getManga.awaitByUrlAndSource(sManga.url, sourceId)
         if (localManga == null) {
             val newManga = Manga.create(sManga.url, sManga.title, sourceId)
             newManga.copyFrom(sManga)
-            val result = db.insertManga(newManga).executeAsBlocking()
-            newManga.id = result.insertedId()
+            newManga.id = insertManga.await(newManga)
             localManga = newManga
         } else if (localManga.title.isBlank()) {
             localManga.title = sManga.title
-            db.insertManga(localManga).executeAsBlocking()
+            updateManga.await(
+                MangaUpdate(
+                    id = localManga.id!!,
+                    title = sManga.title,
+                )
+            )
         } else if (!localManga.favorite) {
             // if the manga isn't a favorite, set its display title from source
             // if it later becomes a favorite, updated title will go to db
@@ -273,7 +285,7 @@ open class BrowseSourcePresenter(
             val networkManga = source.getMangaDetails(manga.copy())
             manga.copyFrom(networkManga)
             manga.initialized = true
-            db.insertManga(manga).executeAsBlocking()
+            updateManga.await(manga.toMangaUpdate())
         } catch (e: Exception) {
             Logger.e(e) { "Something went wrong while trying to initialize manga" }
         }

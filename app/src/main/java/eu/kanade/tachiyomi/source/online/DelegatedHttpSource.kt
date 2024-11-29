@@ -9,6 +9,8 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.model.SChapter
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.manga.interactor.GetManga
 
 abstract class DelegatedHttpSource {
 
@@ -16,6 +18,8 @@ abstract class DelegatedHttpSource {
     abstract val domainName: String
 
     protected val db: DatabaseHelper by injectLazy()
+    protected val getChapter: GetChapter by injectLazy()
+    protected val getManga: GetManga by injectLazy()
 
     protected val network: NetworkHelper by injectLazy()
 

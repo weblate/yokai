@@ -10,6 +10,7 @@ import eu.kanade.tachiyomi.network.await
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.DelegatedHttpSource
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -21,7 +22,6 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
 
 class MangaDex : DelegatedHttpSource() {
 
@@ -64,7 +64,7 @@ class MangaDex : DelegatedHttpSource() {
         val mangaUrl = "/manga/$mangaId/"
         return withContext(Dispatchers.IO) {
             val deferredManga = async {
-                db.getManga(mangaUrl, delegate?.id!!).executeAsBlocking() ?: getMangaInfo(mangaUrl)
+                getManga.awaitByUrlAndSource(mangaUrl, delegate?.id!!) ?: getMangaInfo(mangaUrl)
             }
             val deferredChapters = async { getChapters(mangaUrl) }
             val manga = deferredManga.await()

@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.Source
@@ -118,6 +117,7 @@ class DownloadProvider(private val context: Context) {
      * @param manga the manga of the chapter.
      * @param source the source of the chapter.
      */
+    /*
     fun renameChapters() {
         val db by injectLazy<DatabaseHelper>()
         val sourceManager by injectLazy<SourceManager>()
@@ -136,6 +136,7 @@ class DownloadProvider(private val context: Context) {
             }
         }
     }
+    */
 
     fun renameMangaFolder(from: String, to: String, sourceId: Long) {
         val sourceManager by injectLazy<SourceManager>()

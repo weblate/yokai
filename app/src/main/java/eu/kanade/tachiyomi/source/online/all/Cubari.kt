@@ -7,7 +7,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.DelegatedHttpSource
-import eu.kanade.tachiyomi.util.system.executeOnIO
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -15,7 +15,6 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
 
 class Cubari : DelegatedHttpSource() {
     override val domainName: String = "cubari"
@@ -32,11 +31,11 @@ class Cubari : DelegatedHttpSource() {
         val mangaUrl = "/read/$cubariType/$cubariPath"
         return withContext(Dispatchers.IO) {
             val deferredManga = async {
-                db.getManga(mangaUrl, delegate?.id!!).executeAsBlocking() ?: getMangaInfo(mangaUrl)
+                getManga.awaitByUrlAndSource(mangaUrl, delegate?.id!!) ?: getMangaInfo(mangaUrl)
             }
             val deferredChapters = async {
-                db.getManga(mangaUrl, delegate?.id!!).executeAsBlocking()?.let { manga ->
-                    val chapters = db.getChapters(manga).executeOnIO()
+                getManga.awaitByUrlAndSource(mangaUrl, delegate?.id!!)?.let { manga ->
+                    val chapters = getChapter.awaitAll(manga, false)
                     val chapter = findChapter(chapters, cubariType, chapterNumber)
                     if (chapter != null) {
                         return@async chapters

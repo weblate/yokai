@@ -10,29 +10,6 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface MangaQueries : DbProvider {
 
-    fun getFavoriteMangas() = db.get()
-        .listOfObjects(Manga::class.java)
-        .withQuery(
-            Query.builder()
-                .table(MangaTable.TABLE)
-                .where("${MangaTable.COL_FAVORITE} = ?")
-                .whereArgs(1)
-                .orderBy(MangaTable.COL_TITLE)
-                .build(),
-        )
-        .prepare()
-
-    fun getManga(url: String, sourceId: Long) = db.get()
-        .`object`(Manga::class.java)
-        .withQuery(
-            Query.builder()
-                .table(MangaTable.TABLE)
-                .where("${MangaTable.COL_URL} = ? AND ${MangaTable.COL_SOURCE} = ?")
-                .whereArgs(url, sourceId)
-                .build(),
-        )
-        .prepare()
-
     fun getManga(id: Long) = db.get()
         .`object`(Manga::class.java)
         .withQuery(

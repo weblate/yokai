@@ -1,18 +1,19 @@
 package eu.kanade.tachiyomi.smartsearch
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.create
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.CatalogueSource
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.util.lang.toNormalized
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.supervisorScope
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.InsertManga
 import yokai.util.normalizedLevenshteinSimilarity
-import kotlin.coroutines.CoroutineContext
 
 class SmartSearchEngine(
     parentContext: CoroutineContext,
@@ -20,7 +21,8 @@ class SmartSearchEngine(
 ) : CoroutineScope {
     override val coroutineContext: CoroutineContext = parentContext + Job() + Dispatchers.Default
 
-    private val db: DatabaseHelper by injectLazy()
+    private val getManga: GetManga by injectLazy()
+    private val insertManga: InsertManga by injectLazy()
 
     /*suspend fun smartSearch(source: CatalogueSource, title: String): SManga? {
         val cleanedTitle = cleanSmartSearchTitle(title)
@@ -129,12 +131,11 @@ class SmartSearchEngine(
      * @return a manga from the database.
      */
     suspend fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga {
-        var localManga = db.getManga(sManga.url, sourceId).executeAsBlocking()
+        var localManga = getManga.awaitByUrlAndSource(sManga.url, sourceId)
         if (localManga == null) {
             val newManga = Manga.create(sManga.url, sManga.title, sourceId)
             newManga.copyFrom(sManga)
-            val result = db.insertManga(newManga).executeAsBlocking()
-            newManga.id = result.insertedId()
+            newManga.id = insertManga.await(newManga)
             localManga = newManga
         }
         return localManga

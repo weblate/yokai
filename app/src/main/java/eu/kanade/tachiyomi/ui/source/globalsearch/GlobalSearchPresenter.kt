@@ -29,6 +29,9 @@ import kotlinx.coroutines.sync.withPermit
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.InsertManga
+import yokai.domain.manga.interactor.UpdateManga
 
 /**
  * Presenter of [GlobalSearchController]
@@ -47,6 +50,9 @@ open class GlobalSearchPresenter(
     private val preferences: PreferencesHelper = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),
 ) : BaseCoroutinePresenter<GlobalSearchController>() {
+    private val getManga: GetManga by injectLazy()
+    private val insertManga: InsertManga by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
 
     /**
      * Enabled sources.
@@ -256,7 +262,7 @@ open class GlobalSearchPresenter(
         val networkManga = source.getMangaDetails(manga.copy())
         manga.copyFrom(networkManga)
         manga.initialized = true
-        db.insertManga(manga).executeAsBlocking()
+        updateManga.await(manga.toMangaUpdate())
         return manga
     }
 
@@ -267,13 +273,12 @@ open class GlobalSearchPresenter(
      * @param sManga the manga from the source.
      * @return a manga from the database.
      */
-    protected open fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga {
-        var localManga = db.getManga(sManga.url, sourceId).executeAsBlocking()
+    protected open suspend fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga {
+        var localManga = getManga.awaitByUrlAndSource(sManga.url, sourceId)
         if (localManga == null) {
             val newManga = Manga.create(sManga.url, sManga.title, sourceId)
             newManga.copyFrom(sManga)
-            val result = db.insertManga(newManga).executeAsBlocking()
-            newManga.id = result.insertedId()
+            newManga.id = insertManga.await(newManga)
             localManga = newManga
         } else if (!localManga.favorite) {
             // if the manga isn't a favorite, set its display title from source

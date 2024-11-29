@@ -4,12 +4,9 @@ import android.content.Context
 import android.text.format.Formatter
 import co.touchlab.kermit.Logger
 import coil3.imageLoader
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.storage.DiskUtil
-import eu.kanade.tachiyomi.util.system.e
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
@@ -19,8 +16,8 @@ import java.io.InputStream
 import java.util.concurrent.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -39,6 +36,8 @@ class CoverCache(val context: Context) {
         private const val CUSTOM_COVERS_DIR = "covers/custom"
         private const val ONLINE_COVERS_DIR = "online_covers"
     }
+
+    private val getManga: GetManga by injectLazy()
 
     /** Cache directory used for cache management.*/
     private val cacheDir = getCacheDir(COVERS_DIR)
@@ -68,9 +67,8 @@ class CoverCache(val context: Context) {
     }
 
     suspend fun deleteOldCovers() {
-        val db = Injekt.get<DatabaseHelper>()
         var deletedSize = 0L
-        val urls = db.getFavoriteMangas().executeOnIO().mapNotNull {
+        val urls = getManga.awaitFavorites().mapNotNull {
             it.thumbnail_url?.let { url ->
                 it.updateCoverLastModified()
                 return@mapNotNull DiskUtil.hashKeyForDisk(url)

@@ -63,9 +63,8 @@ open class FoolSlide(override val domainName: String, private val urlModifier: S
         return withContext(Dispatchers.IO) {
             val mangaUrl = "$urlModifier/series/$mangaName/"
             val sourceId = delegate?.id ?: return@withContext null
-            val dbManga = db.getManga(mangaUrl, sourceId).executeAsBlocking()
             val deferredManga = async {
-                dbManga ?: getManga(mangaUrl)
+                getManga.awaitByUrlAndSource(mangaUrl, sourceId) ?: getManga(mangaUrl)
             }
             val chapterUrl = chapterUrl(uri)
             val deferredChapters = async { getChapters(mangaUrl) }

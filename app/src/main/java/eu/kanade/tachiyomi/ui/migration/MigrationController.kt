@@ -9,10 +9,6 @@ import androidx.core.view.doOnNextLayout
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.MigrationControllerBinding
@@ -28,6 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.manga.interactor.GetManga
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class MigrationController :
     BaseCoroutineController<MigrationControllerBinding, MigrationPresenter>(),
@@ -95,7 +94,7 @@ class MigrationController :
         val item = adapter?.getItem(position) as? SourceItem ?: return
 
         launchUI {
-            val manga = Injekt.get<DatabaseHelper>().getFavoriteMangas().executeAsBlocking()
+            val manga = Injekt.get<GetManga>().awaitFavorites()
             val sourceMangas =
                 manga.asSequence().filter { it.source == item.source.id }.map { it.id!! }.toList()
             withContext(Dispatchers.Main) {

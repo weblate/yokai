@@ -46,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetManga
 import yokai.i18n.MR
@@ -54,7 +55,7 @@ import android.R as AR
 
 fun Manga.isLocal() = source == LocalSource.ID
 
-fun Manga.shouldDownloadNewChapters(db: DatabaseHelper, prefs: PreferencesHelper): Boolean {
+suspend fun Manga.shouldDownloadNewChapters(prefs: PreferencesHelper, getCategories: GetCategories = Injekt.get()): Boolean {
     if (!favorite) return false
 
     // Boolean to determine if user wants to automatically download new chapters.
@@ -66,10 +67,11 @@ fun Manga.shouldDownloadNewChapters(db: DatabaseHelper, prefs: PreferencesHelper
     if (includedCategories.isEmpty() && excludedCategories.isEmpty()) return true
 
     // Get all categories, else default category (0)
-    val categoriesForManga =
-        db.getCategoriesForManga(this).executeAsBlocking()
+    val categoriesForManga = this.id?.let { mangaId ->
+        getCategories.awaitByMangaId(mangaId)
             .mapNotNull { it.id }
-            .takeUnless { it.isEmpty() } ?: listOf(0)
+            .takeUnless { it.isEmpty() }
+    } ?: listOf(0)
 
     if (categoriesForManga.any { it in excludedCategories }) return false
 
@@ -88,9 +90,14 @@ fun Manga.moveCategories(
     activity: Activity,
     addingToLibrary: Boolean,
     onMangaMoved: () -> Unit,
+    getCategories: GetCategories = Injekt.get(),
 ) {
-    val categories = db.getCategories().executeAsBlocking()
-    val categoriesForManga = db.getCategoriesForManga(this).executeAsBlocking()
+    // FIXME: Don't do blocking
+    val categories = runBlocking { getCategories.await() }
+    val categoriesForManga = runBlocking {
+        this@moveCategories.id?.let { mangaId -> getCategories.awaitByMangaId(mangaId) }
+            .orEmpty()
+    }
     val ids = categoriesForManga.mapNotNull { it.id }.toTypedArray()
     SetCategoriesSheet(
         activity,
@@ -110,15 +117,16 @@ fun List<Manga>.moveCategories(
     db: DatabaseHelper,
     activity: Activity,
     onMangaMoved: () -> Unit,
+    getCategories: GetCategories = Injekt.get(),
 ) {
     if (this.isEmpty()) return
-    val categories = db.getCategories().executeAsBlocking()
-    val commonCategories = map { db.getCategoriesForManga(it).executeAsBlocking() }
-        .reduce { set1: Iterable<Category>, set2 -> set1.intersect(set2).toMutableList() }
-        .toTypedArray()
-    val mangaCategories = map { db.getCategoriesForManga(it).executeAsBlocking() }
-    val common = mangaCategories.reduce { set1, set2 -> set1.intersect(set2).toMutableList() }
-    val mixedCategories = mangaCategories.flatten().distinct().subtract(common).toMutableList()
+    // FIXME: Don't do blocking
+    val categories = runBlocking { getCategories.await() }
+    val mangaCategories = map { manga ->
+        manga.id?.let { mangaId -> runBlocking { getCategories.awaitByMangaId(mangaId) } }.orEmpty()
+    }
+    val commonCategories = mangaCategories.reduce { set1, set2 -> set1.intersect(set2.toSet()).toMutableList() }.toSet()
+    val mixedCategories = mangaCategories.flatten().distinct().subtract(commonCategories).toMutableList()
     SetCategoriesSheet(
         activity,
         this,
@@ -147,7 +155,8 @@ fun Manga.addOrRemoveToFavorites(
     onMangaAdded: (Pair<Long, Boolean>?) -> Unit,
     onMangaMoved: () -> Unit,
     onMangaDeleted: () -> Unit,
-    getManga: GetManga = Injekt.get()
+    getManga: GetManga = Injekt.get(),
+    getCategories: GetCategories = Injekt.get(),
 ): Snackbar? {
     if (!favorite) {
         if (checkForDupes) {
@@ -187,7 +196,8 @@ fun Manga.addOrRemoveToFavorites(
             }
         }
 
-        val categories = db.getCategories().executeAsBlocking()
+        // FIXME: Don't do blocking
+        val categories = runBlocking { getCategories.await() }
         val defaultCategoryId = preferences.defaultCategory().get()
         val defaultCategory = categories.find { it.id == defaultCategoryId }
         val lastUsedCategories = Category.lastCategoriesAddedTo.mapNotNull { catId ->

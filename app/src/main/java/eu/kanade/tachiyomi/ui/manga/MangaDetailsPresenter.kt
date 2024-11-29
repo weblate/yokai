@@ -71,7 +71,6 @@ import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -85,6 +84,7 @@ import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetAvailableScanlators
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
@@ -109,6 +109,7 @@ class MangaDetailsPresenter(
     private val storageManager: StorageManager = Injekt.get(),
 ) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
+    private val getCategories: GetCategories by injectLazy()
     private val getChapter: GetChapter by injectLazy()
     private val getManga: GetManga by injectLazy()
     private val updateChapter: UpdateChapter by injectLazy()
@@ -471,7 +472,7 @@ class MangaDetailsPresenter(
             if (finChapters.isNotEmpty()) {
                 val newChapters = withIOContext { syncChaptersWithSource(finChapters, manga, source) }
                 if (newChapters.first.isNotEmpty()) {
-                    if (manga.shouldDownloadNewChapters(db, preferences)) {
+                    if (manga.shouldDownloadNewChapters(preferences)) {
                         downloadChapters(
                             newChapters.first.sortedBy { it.chapter_number }
                                 .map { it.toModel() },
@@ -766,28 +767,13 @@ class MangaDetailsPresenter(
         }
     }
 
-    fun toggleFavorite(): Boolean {
-        manga.favorite = !manga.favorite
-
-        when (manga.favorite) {
-            true -> {
-                manga.date_added = Date().time
-            }
-            false -> manga.date_added = 0
-        }
-
-        db.insertManga(manga).executeAsBlocking()
-        view?.updateHeader()
-        return manga.favorite
-    }
-
     /**
      * Get user categories.
      *
      * @return List of categories, not including the default category
      */
     fun getCategories(): List<Category> {
-        return db.getCategories().executeAsBlocking()
+        return runBlocking { getCategories.await() }
     }
 
     fun confirmDeletion() {

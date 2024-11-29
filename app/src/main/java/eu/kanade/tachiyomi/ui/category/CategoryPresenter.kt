@@ -8,9 +8,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -21,6 +24,7 @@ class CategoryPresenter(
     private val controller: CategoryController,
     private val db: DatabaseHelper = Injekt.get(),
 ) {
+    private val getCategories: GetCategories by injectLazy()
 
     private var scope = CoroutineScope(Job() + Dispatchers.Default)
 
@@ -39,7 +43,7 @@ class CategoryPresenter(
         scope.launch(Dispatchers.IO) {
             categories.clear()
             categories.add(newCategory())
-            categories.addAll(db.getCategories().executeAsBlocking())
+            categories.addAll(getCategories.await())
             val catItems = categories.map(::CategoryItem)
             withContext(Dispatchers.Main) {
                 controller.setCategories(catItems)
@@ -76,7 +80,8 @@ class CategoryPresenter(
         // Insert into database.
         cat.mangaSort = LibrarySort.Title.categoryValue
         db.insertCategory(cat).executeAsBlocking()
-        val cats = db.getCategories().executeAsBlocking()
+        // FIXME: Don't do blocking
+        val cats = runBlocking { getCategories.await() }
         val newCat = cats.find { it.name == name } ?: return false
         categories.add(1, newCat)
         reorderCategories(categories)

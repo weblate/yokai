@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.ui.setting.controllers
 
 import androidx.preference.PreferenceScreen
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.DEVICE_BATTERY_NOT_LOW
@@ -30,9 +29,11 @@ import eu.kanade.tachiyomi.ui.setting.triStateListPreference
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.ui.UiPreferences
 import yokai.i18n.MR
@@ -43,8 +44,9 @@ import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 
 class SettingsLibraryController : SettingsLegacyController() {
 
-    private val db: DatabaseHelper by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
+    private val getCategories: GetCategories by injectLazy()
+
     private val uiPreferences: UiPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
@@ -89,14 +91,15 @@ class SettingsLibraryController : SettingsLegacyController() {
             }
         }
 
-        val dbCategories = db.getCategories().executeAsBlocking()
+        // FIXME: Don't do blocking
+        val dbCategories = runBlocking { getCategories.await() }
 
         preferenceCategory {
             titleRes = MR.strings.categories
             preference {
                 key = "edit_categories"
                 isPersistent = false
-                val catCount = db.getCategories().executeAsBlocking().size
+                val catCount = dbCategories.size
                 titleRes = if (catCount > 0) MR.strings.edit_categories else MR.strings.add_categories
                 if (catCount > 0) summary = context.getString(MR.plurals.category_plural, catCount, catCount)
                 onClick { router.pushController(CategoryController().withFadeTransaction()) }

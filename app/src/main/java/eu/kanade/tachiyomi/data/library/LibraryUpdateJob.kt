@@ -81,6 +81,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.UpdateManga
@@ -94,6 +95,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
     private val db: DatabaseHelper = Injekt.get()
 
+    private val getCategories: GetCategories = Injekt.get()
     private val getChapter: GetChapter = Injekt.get()
 
     private val coverCache: CoverCache = Injekt.get()
@@ -389,7 +391,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         val httpSource = sourceManager.get(source) as? HttpSource ?: return false
         while (count < mangaToUpdateMap[source]!!.size) {
             val manga = mangaToUpdateMap[source]!![count]
-            val shouldDownload = manga.shouldDownloadNewChapters(db, preferences)
+            val shouldDownload = manga.shouldDownloadNewChapters(preferences)
             if (updateMangaChapters(manga, this.count.andIncrement, httpSource, shouldDownload)) {
                 hasDownloads = true
             }
@@ -503,7 +505,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 categoryIds.addAll(categoriesToUpdate)
                 libraryManga.filter { it.category in categoriesToUpdate }.distinctBy { it.id }
             } else {
-                categoryIds.addAll(db.getCategories().executeAsBlocking().mapNotNull { it.id } + 0)
+                categoryIds.addAll(getCategories.await().mapNotNull { it.id } + 0)
                 libraryManga.distinctBy { it.id }
             }
         }

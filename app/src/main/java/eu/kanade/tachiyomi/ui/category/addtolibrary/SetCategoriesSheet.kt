@@ -33,6 +33,11 @@ import yokai.i18n.MR
 import yokai.util.lang.getString
 import java.util.*
 import kotlin.math.max
+import kotlinx.coroutines.runBlocking
+import yokai.domain.category.interactor.GetCategories
+import yokai.domain.manga.interactor.InsertManga
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaUpdate
 
 class SetCategoriesSheet(
     private val activity: Activity,
@@ -69,6 +74,9 @@ class SetCategoriesSheet(
     private val itemAdapter = ItemAdapter<AddCategoryItem>()
 
     private val db: DatabaseHelper by injectLazy()
+    private val getCategories: GetCategories by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
+
     private val preferences: PreferencesHelper by injectLazy()
     override var recyclerView: RecyclerView? = binding.categoryRecyclerView
 
@@ -238,7 +246,8 @@ class SetCategoriesSheet(
         binding.cancelButton.setOnClickListener { dismiss() }
         binding.newCategoryButton.setOnClickListener {
             ManageCategoryDialog(null) {
-                categories = db.getCategories().executeAsBlocking()
+                // FIXME: Don't do blocking
+                categories = runBlocking { getCategories.await() }.toMutableList()
                 val map = itemAdapter.adapterItems.associate { it.category.id to it.state }
                 itemAdapter.set(
                     categories.mapIndexed { index, category ->
@@ -263,18 +272,29 @@ class SetCategoriesSheet(
         if (listManga.size == 1 && !listManga.first().favorite) {
             val manga = listManga.first()
             manga.favorite = !manga.favorite
-
             manga.date_added = Date().time
 
-            db.insertManga(manga).executeAsBlocking()
+            // FIXME: Don't do blocking
+            runBlocking {
+                updateManga.await(
+                    MangaUpdate(
+                        id = manga.id!!,
+                        favorite = manga.favorite,
+                        dateAdded = manga.date_added,
+                    )
+                )
+            }
         }
 
         val addCategories = checkedItems.map(AddCategoryItem::category)
         val removeCategories = uncheckedItems.map(AddCategoryItem::category)
         val mangaCategories = listManga.map { manga ->
-            val categories = db.getCategoriesForManga(manga).executeAsBlocking()
-                .subtract(removeCategories.toSet()).plus(addCategories).distinct()
-            categories.map { MangaCategory.create(manga, it) }
+            // FIXME: Don't do blocking
+            runBlocking { getCategories.awaitByMangaId(manga.id!!) }
+                .subtract(removeCategories.toSet())
+                .plus(addCategories)
+                .distinct()
+                .map { MangaCategory.create(manga, it) }
         }.flatten()
         if (addCategories.isNotEmpty() || listManga.size == 1) {
             Category.lastCategoriesAddedTo =

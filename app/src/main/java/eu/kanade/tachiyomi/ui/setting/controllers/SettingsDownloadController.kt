@@ -3,11 +3,8 @@ package eu.kanade.tachiyomi.ui.setting.controllers
 import android.content.Intent
 import androidx.preference.PreferenceScreen
 import com.bluelinelabs.conductor.Controller
-import eu.kanade.tachiyomi.R
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.preference.changesIn
 import eu.kanade.tachiyomi.ui.setting.SettingsLegacyController
@@ -23,13 +20,16 @@ import eu.kanade.tachiyomi.ui.setting.titleMRes as titleRes
 import eu.kanade.tachiyomi.ui.setting.triStateListPreference
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.download.DownloadPreferences
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
 class SettingsDownloadController : SettingsLegacyController() {
 
-    private val db: DatabaseHelper by injectLazy()
+    private val getCategories: GetCategories by injectLazy()
+
     private val downloadPreferences: DownloadPreferences by injectLazy()
 
     override fun setupPreferenceScreen(screen: PreferenceScreen) = screen.apply {
@@ -55,7 +55,8 @@ class SettingsDownloadController : SettingsLegacyController() {
             summaryRes = MR.strings.download_with_id_details
         }
 
-        val dbCategories = db.getCategories().executeAsBlocking()
+        // FIXME: Don't do blocking
+        val dbCategories = runBlocking { getCategories.await() }
         val categories = listOf(Category.createDefault(context)) + dbCategories
 
         preferenceCategory {

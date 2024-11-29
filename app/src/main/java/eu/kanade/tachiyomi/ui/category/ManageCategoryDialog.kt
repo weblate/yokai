@@ -24,7 +24,9 @@ import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
 import android.R as AR
 
 class ManageCategoryDialog(bundle: Bundle? = null) :
@@ -40,6 +42,8 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
 
     private val preferences by injectLazy<PreferencesHelper>()
     private val db by injectLazy<DatabaseHelper>()
+    private val getCategories by injectLazy<GetCategories>()
+
     lateinit var binding: MangaCategoryDialogBinding
 
     override fun onCreateDialog(savedViewState: Bundle?): Dialog {
@@ -88,7 +92,8 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
             ) {
                 category.name = text
                 if (this.category == null) {
-                    val categories = db.getCategories().executeAsBlocking()
+                    // FIXME: Don't do blocking
+                    val categories = runBlocking { getCategories.await() }
                     category.order = (categories.maxOfOrNull { it.order } ?: 0) + 1
                     category.mangaSort = LibrarySort.Title.categoryValue
                     val dbCategory = db.insertCategory(category).executeAsBlocking()
@@ -136,13 +141,14 @@ class ManageCategoryDialog(bundle: Bundle? = null) :
      * Returns true if a category with the given name already exists.
      */
     private fun categoryExists(name: String): Boolean {
-        return db.getCategories().executeAsBlocking().any {
+        // FIXME: Don't do blocking
+        return runBlocking { getCategories.await() }.any {
             it.name.equals(name, true) && category?.id != it.id
         }
     }
 
     fun onViewCreated() {
-        if (category?.id ?: 0 <= 0 && category != null) {
+        if ((category?.id ?: 0) <= 0 && category != null) {
             binding.categoryTextLayout.isVisible = false
         }
         binding.editCategories.isVisible = category != null

@@ -39,6 +39,7 @@ import yokai.util.lang.getString
 import java.util.*
 import java.util.concurrent.*
 import kotlin.math.roundToInt
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.track.interactor.GetTrack
 
 class StatsDetailsPresenter(
@@ -47,6 +48,7 @@ class StatsDetailsPresenter(
     val trackManager: TrackManager = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
 ) : BaseCoroutinePresenter<StatsDetailsController>() {
+    private val getCategories: GetCategories by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getTrack: GetTrack by injectLazy()
 
@@ -275,7 +277,7 @@ class StatsDetailsPresenter(
                     iconRes = service?.getLogo(),
                     iconBGColor = service?.getLogoColor(),
                     readDuration = mangaAndTrack.map { it.first }.getReadDuration(),
-                    id = service?.id?.toLong(),
+                    id = service?.id,
                 ),
             )
         }
@@ -567,7 +569,7 @@ class StatsDetailsPresenter(
     }
 
     private fun getCategories(): MutableList<Category> {
-        return db.getCategories().executeAsBlocking()
+        return runBlocking { getCategories.await() }.toMutableList()
     }
 
     private fun List<LibraryManga>.getReadDuration(): Long {

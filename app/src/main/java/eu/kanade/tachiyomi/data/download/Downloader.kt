@@ -57,6 +57,7 @@ import yokai.util.lang.getString
 import java.io.File
 import java.util.*
 import java.util.zip.*
+import yokai.domain.category.interactor.GetCategories
 
 /**
  * This class is the one in charge of downloading chapters.
@@ -83,6 +84,7 @@ class Downloader(
     private val chapterCache: ChapterCache by injectLazy()
     private val xml: XML by injectLazy()
     private val db: DatabaseHelper by injectLazy()
+    private val getCategories: GetCategories by injectLazy()
 
     /**
      * Store for persisting downloads across restarts.
@@ -644,8 +646,15 @@ class Downloader(
         chapter: Chapter,
         source: HttpSource,
     ) {
-        val categories =
-            db.getCategoriesForManga(manga).executeAsBlocking().map { it.name.trim() }.takeUnless { it.isEmpty() }
+        val categories = manga.id?.let { mangaId ->
+            // FIXME: Don't do blocking
+            runBlocking {
+                getCategories.awaitByMangaId(mangaId)
+            }
+        }
+            .orEmpty()
+            .map { it.name.trim() }
+            .takeUnless { it.isEmpty() }
         val url = try { source.getChapterUrl(chapter) } catch (_: Exception) { null }
             ?: source.getChapterUrl(manga, chapter).takeIf { !it.isNullOrBlank() }  // FIXME: Not sure if this is necessary
 

@@ -7,6 +7,7 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface CategoryQueries : DbProvider {
 
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     fun getCategoriesForManga(manga: Manga) = db.get()
         .listOfObjects(Category::class.java)
         .withQuery(

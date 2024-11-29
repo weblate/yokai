@@ -76,6 +76,7 @@ import rx.schedulers.Schedulers
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.InsertChapter
 import yokai.domain.chapter.interactor.UpdateChapter
@@ -106,6 +107,7 @@ class ReaderViewModel(
     private val storageManager: StorageManager = Injekt.get(),
     private val downloadPreferences: DownloadPreferences = Injekt.get(),
 ) : ViewModel() {
+    private val getCategories: GetCategories by injectLazy()
     private val getChapter: GetChapter by injectLazy()
     private val insertChapter: InsertChapter by injectLazy()
     private val updateChapter: UpdateChapter by injectLazy()
@@ -593,28 +595,30 @@ class ReaderViewModel(
      * @param currentChapter current chapter, which is going to be marked as read.
      */
     private fun deleteChapterIfNeeded(currentChapter: ReaderChapter) {
-        // Determine which chapter should be deleted and enqueue
-        val currentChapterPosition = chapterList.indexOf(currentChapter)
-        val removeAfterReadSlots = preferences.removeAfterReadSlots().get()
-        val chapterToDelete = chapterList.getOrNull(currentChapterPosition - removeAfterReadSlots)
+        viewModelScope.launchNonCancellableIO {
+            // Determine which chapter should be deleted and enqueue
+            val currentChapterPosition = chapterList.indexOf(currentChapter)
+            val removeAfterReadSlots = preferences.removeAfterReadSlots().get()
+            val chapterToDelete = chapterList.getOrNull(currentChapterPosition - removeAfterReadSlots)
 
-        if (removeAfterReadSlots != 0 && chapterToDownload != null) {
-            downloadManager.addDownloadsToStartOfQueue(listOf(chapterToDownload!!))
-        } else {
-            chapterToDownload = null
-        }
-        // Check if deleting option is enabled and chapter exists
-        if (removeAfterReadSlots != -1 && chapterToDelete != null) {
-            val excludedCategories = preferences.removeExcludeCategories().get().map(String::toInt)
-            if (excludedCategories.any()) {
-                val categories = db.getCategoriesForManga(manga!!).executeAsBlocking()
-                    .mapNotNull { it.id }
-                    .ifEmpty { listOf(0) }
-
-                if (categories.any { it in excludedCategories }) return
+            if (removeAfterReadSlots != 0 && chapterToDownload != null) {
+                downloadManager.addDownloadsToStartOfQueue(listOf(chapterToDownload!!))
+            } else {
+                chapterToDownload = null
             }
+            // Check if deleting option is enabled and chapter exists
+            if (removeAfterReadSlots != -1 && chapterToDelete != null) {
+                val excludedCategories = preferences.removeExcludeCategories().get().map(String::toInt)
+                if (excludedCategories.any()) {
+                    val categories = getCategories.awaitByMangaId(manga!!.id!!)
+                        .mapNotNull { it.id }
+                        .ifEmpty { listOf(0) }
 
-            enqueueDeleteReadChapters(chapterToDelete)
+                    if (categories.any { it in excludedCategories }) return@launchNonCancellableIO
+                }
+
+                enqueueDeleteReadChapters(chapterToDelete)
+            }
         }
     }
 

@@ -308,8 +308,10 @@ private fun Manga.showSetCategoriesSheet(
     categories: List<Category>,
     onMangaAdded: (Pair<Long, Boolean>?) -> Unit,
     onMangaMoved: () -> Unit,
+    getCategories: GetCategories = Injekt.get(),
 ) {
-    val categoriesForManga = db.getCategoriesForManga(this).executeAsBlocking()
+    // FIXME: Don't do blocking
+    val categoriesForManga = runBlocking { getCategories.awaitByMangaId(this@showSetCategoriesSheet.id!!) }
     val ids = categoriesForManga.mapNotNull { it.id }.toTypedArray()
 
     SetCategoriesSheet(

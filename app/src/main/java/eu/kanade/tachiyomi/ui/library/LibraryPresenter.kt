@@ -1362,7 +1362,7 @@ class LibraryPresenter(
                 if (catId == 0) {
                     emptyList()
                 } else {
-                    db.getCategoriesForManga(manga).executeOnIO()
+                    getCategories.awaitByMangaId(manga.id!!)
                         .filter { it.id != oldCatId } + listOf(category)
                 }
 
@@ -1389,7 +1389,8 @@ class LibraryPresenter(
 
     /** Returns if manga is in a category by id */
     fun mangaIsInCategory(manga: LibraryManga, catId: Int?): Boolean {
-        val categories = db.getCategoriesForManga(manga).executeAsBlocking().map { it.id }
+        // FIXME: Don't do blocking
+        val categories = runBlocking { getCategories.awaitByMangaId(manga.id!!) }.map { it.id }
         return catId in categories
     }
 

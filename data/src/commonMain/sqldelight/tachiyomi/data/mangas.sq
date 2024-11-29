@@ -87,8 +87,17 @@ WHERE _id = :mangaId;
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
 
+deleteNotInLibraryBySourceIds:
+DELETE FROM mangas
+WHERE favorite = 0 AND source IN :sourceIds;
+
 deleteNotInLibraryAndNotReadBySourceIds:
 DELETE FROM mangas
-WHERE favorite = :favorite AND source IN :sourceIds AND _id NOT IN (
+WHERE favorite = 0 AND source IN :sourceIds AND _id NOT IN (
     SELECT chapters.manga_id FROM chapters WHERE read = 1 OR last_page_read != 0
 );
+
+getSourceIdsOfNotInLibrary:
+SELECT source, count(*) AS count
+FROM mangas WHERE favorite = 0
+GROUP BY source;

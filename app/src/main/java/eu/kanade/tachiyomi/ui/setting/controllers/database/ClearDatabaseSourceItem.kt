@@ -15,7 +15,7 @@ import eu.kanade.tachiyomi.source.icon
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
-data class ClearDatabaseSourceItem(val source: Source, val mangaCount: Int) : AbstractFlexibleItem<ClearDatabaseSourceItem.Holder>() {
+data class ClearDatabaseSourceItem(val source: Source, val mangaCount: Long) : AbstractFlexibleItem<ClearDatabaseSourceItem.Holder>() {
 
     val isStub: Boolean = source is SourceManager.StubSource
 
@@ -35,7 +35,7 @@ data class ClearDatabaseSourceItem(val source: Source, val mangaCount: Int) : Ab
 
         private val binding = ClearDatabaseSourceItemBinding.bind(view)
 
-        fun bind(source: Source, count: Int) {
+        fun bind(source: Source, count: Long) {
             binding.title.text = source.toString()
             binding.description.text = itemView.context.getString(MR.strings.clear_database_source_item_count, count)
 

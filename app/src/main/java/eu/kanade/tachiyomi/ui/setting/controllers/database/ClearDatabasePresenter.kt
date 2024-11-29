@@ -1,6 +1,6 @@
 package eu.kanade.tachiyomi.ui.setting.controllers.database
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
+import eu.kanade.tachiyomi.data.database.models.SourceIdMangaCount
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import eu.kanade.tachiyomi.util.system.launchIO
@@ -11,8 +11,6 @@ import uy.kohesive.injekt.api.get
 import yokai.data.DatabaseHandler
 
 class ClearDatabasePresenter : BaseCoroutinePresenter<ClearDatabaseController>() {
-
-    private val db = Injekt.get<DatabaseHelper>()
 
     private val handler = Injekt.get<DatabaseHandler>()
 
@@ -37,12 +35,14 @@ class ClearDatabasePresenter : BaseCoroutinePresenter<ClearDatabaseController>()
 
     fun clearDatabaseForSourceIds(sources: List<Long>, keepReadManga: Boolean) {
         presenterScope.launchIO {
-            if (keepReadManga) {
-                db.deleteMangasNotInLibraryAndNotReadBySourceIds(sources).executeAsBlocking()
-            } else {
-                db.deleteMangasNotInLibraryBySourceIds(sources).executeAsBlocking()
+            handler.await(true) {
+                if (keepReadManga) {
+                    mangasQueries.deleteNotInLibraryAndNotReadBySourceIds(sources)
+                } else {
+                    mangasQueries.deleteNotInLibraryBySourceIds(sources)
+                }
+                historyQueries.deleteAllUnread()
             }
-            handler.await { historyQueries.deleteAllUnread() }
             getDatabaseSources()
         }
     }
@@ -56,7 +56,9 @@ class ClearDatabasePresenter : BaseCoroutinePresenter<ClearDatabaseController>()
 
     private suspend fun getDatabaseSources() = withUIContext {
         hasStubSources = false
-        val sources = db.getSourceIdsWithNonLibraryManga().executeAsBlocking()
+        val sources = handler.awaitList {
+            mangasQueries.getSourceIdsOfNotInLibrary { source, count -> SourceIdMangaCount(source, count) }
+        }
             .map {
                 val sourceObj = sourceManager.getOrStub(it.source)
                 hasStubSources = sourceObj is SourceManager.StubSource || hasStubSources

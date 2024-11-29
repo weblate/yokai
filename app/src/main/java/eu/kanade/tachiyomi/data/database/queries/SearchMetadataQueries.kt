@@ -1,3 +1,6 @@
+/* Unused, seems to be a relic of the past?
+FIXME: Delete `search_metadata` from sqldelight migration
+
 package eu.kanade.tachiyomi.data.database.queries
 
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
@@ -50,3 +53,4 @@ interface SearchMetadataQueries : DbProvider {
     )
         .prepare()
 }
+ */

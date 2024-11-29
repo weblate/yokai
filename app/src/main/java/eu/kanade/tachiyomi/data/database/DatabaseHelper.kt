@@ -21,7 +21,6 @@ import eu.kanade.tachiyomi.data.database.queries.ChapterQueries
 import eu.kanade.tachiyomi.data.database.queries.HistoryQueries
 import eu.kanade.tachiyomi.data.database.queries.MangaCategoryQueries
 import eu.kanade.tachiyomi.data.database.queries.MangaQueries
-import eu.kanade.tachiyomi.data.database.queries.SearchMetadataQueries
 import eu.kanade.tachiyomi.data.database.queries.TrackQueries
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 
@@ -37,8 +36,7 @@ open class DatabaseHelper(
     TrackQueries,
     CategoryQueries,
     MangaCategoryQueries,
-    HistoryQueries,
-    SearchMetadataQueries {
+    HistoryQueries {
 
     override val db = DefaultStorIOSQLite.builder()
         .sqliteOpenHelper(openHelper)

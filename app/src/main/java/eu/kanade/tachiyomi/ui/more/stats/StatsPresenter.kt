@@ -20,6 +20,7 @@ import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.data.DatabaseHandler
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.track.interactor.GetTrack
 import yokai.i18n.MR
@@ -35,6 +36,7 @@ class StatsPresenter(
     private val downloadManager: DownloadManager = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
 ): BaseCoroutinePresenter<StatsController>() {
+    private val handler: DatabaseHandler by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getTrack: GetTrack by injectLazy()
 
@@ -86,7 +88,9 @@ class StatsPresenter(
     }
 
     fun getReadDuration(): String {
-        val chaptersTime = db.getTotalReadDuration()
+        val chaptersTime = runBlocking {
+            handler.awaitOneOrNull { historyQueries.getTotalReadDuration() }?.sum?.toLong()
+        }
         return chaptersTime.getReadDuration(prefs.context.getString(MR.strings.none))
     }
 }

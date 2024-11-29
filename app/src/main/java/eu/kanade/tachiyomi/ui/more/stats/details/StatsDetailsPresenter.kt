@@ -29,18 +29,21 @@ import eu.kanade.tachiyomi.util.system.LocaleHelper
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.roundToTwoDecimal
 import eu.kanade.tachiyomi.util.system.withUIContext
+import java.util.Calendar
+import java.util.Locale
+import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.category.interactor.GetCategories
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.history.interactor.GetHistory
 import yokai.domain.manga.interactor.GetLibraryManga
+import yokai.domain.track.interactor.GetTrack
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
-import java.util.concurrent.*
-import kotlin.math.roundToInt
-import yokai.domain.category.interactor.GetCategories
-import yokai.domain.track.interactor.GetTrack
 
 class StatsDetailsPresenter(
     private val db: DatabaseHelper = Injekt.get(),
@@ -49,8 +52,10 @@ class StatsDetailsPresenter(
     private val sourceManager: SourceManager = Injekt.get(),
 ) : BaseCoroutinePresenter<StatsDetailsController>() {
     private val getCategories: GetCategories by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
     private val getLibraryManga: GetLibraryManga by injectLazy()
     private val getTrack: GetTrack by injectLazy()
+    private val getHistory: GetHistory by injectLazy()
 
     private val context
         get() = view?.view?.context ?: prefs.context
@@ -357,7 +362,7 @@ class StatsDetailsPresenter(
         currentStats = currentStats?.take(100)?.let { ArrayList(it) }
     }
 
-    private fun setupStartYear() {
+    private suspend fun setupStartYear() {
         currentStats = ArrayList()
         val libraryFormat = mangasDistinct.filterByChip().groupBy { it.getStartYear() }
 
@@ -537,9 +542,9 @@ class StatsDetailsPresenter(
         return service?.get10PointScore(this.score)
     }
 
-    private fun LibraryManga.getStartYear(): Int? {
-        if (db.getChapters(id).executeAsBlocking().any { it.read }) {
-            val chapters = db.getHistoryByMangaId(id!!).executeAsBlocking().filter { it.last_read > 0 }
+    private suspend fun LibraryManga.getStartYear(): Int? {
+        if (getChapter.awaitAll(id!!, false).any { it.read }) {
+            val chapters = getHistory.awaitAllByMangaId(id!!).filter { it.last_read > 0 }
             val date = chapters.minOfOrNull { it.last_read } ?: return null
             val cal = Calendar.getInstance().apply { timeInMillis = date }
             return if (date <= 0L) null else cal.get(Calendar.YEAR)

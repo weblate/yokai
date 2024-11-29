@@ -42,6 +42,9 @@ JOIN chapters
 ON history.history_chapter_id = chapters._id
 WHERE chapters.url = :chapterUrl AND history.history_chapter_id = chapters._id;
 
+getTotalReadDuration:
+SELECT sum(history_time_read) FROM history;
+
 getRecentsUngrouped:
 SELECT
     M.*,

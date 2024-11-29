@@ -24,6 +24,7 @@ import java.text.DecimalFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.presentation.core.util.coil.loadManga
@@ -35,6 +36,8 @@ class MigrationProcessHolder(
 ) : BaseFlexibleViewHolder(view, adapter) {
 
     private val db: DatabaseHelper by injectLazy()
+    private val getChapter: GetChapter by injectLazy()
+
     private val sourceManager: SourceManager by injectLazy()
     private var item: MigrationProcessItem? = null
     private val binding = MigrationProcessItemBinding.bind(view)
@@ -142,7 +145,7 @@ class MigrationProcessHolder(
         root.setOnClickListener(null)
     }
 
-    private fun MangaGridItemBinding.attachManga(manga: Manga, source: Source) {
+    private suspend fun MangaGridItemBinding.attachManga(manga: Manga, source: Source) {
         (root.layoutParams as ConstraintLayout.LayoutParams).verticalBias = 1f
         progress.isVisible = false
 
@@ -159,7 +162,7 @@ class MigrationProcessHolder(
         gradient.isVisible = true
         title.text = source.toString()
 
-        val mangaChapters = db.getChapters(manga).executeAsBlocking()
+        val mangaChapters = getChapter.awaitAll(manga, false)
         unreadDownloadBadge.badgeView.setChapters(mangaChapters.size)
         val latestChapter = mangaChapters.maxOfOrNull { it.chapter_number } ?: -1f
 

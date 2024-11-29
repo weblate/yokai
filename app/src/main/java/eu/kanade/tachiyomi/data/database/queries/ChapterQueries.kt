@@ -8,15 +8,14 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface ChapterQueries : DbProvider {
 
-    fun getChapters(manga: Manga) = getChapters(manga.id)
-
-    fun getChapters(mangaId: Long?) = db.get()
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
+    fun getChapters(manga: Manga) = db.get()
         .listOfObjects(Chapter::class.java)
         .withQuery(
             Query.builder()
                 .table(ChapterTable.TABLE)
                 .where("${ChapterTable.COL_MANGA_ID} = ?")
-                .whereArgs(mangaId)
+                .whereArgs(manga.id)
                 .build(),
         )
         .prepare()

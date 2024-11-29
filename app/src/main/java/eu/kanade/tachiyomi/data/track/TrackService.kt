@@ -8,16 +8,22 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.isOneShotOrCompleted
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.network.NetworkHelper
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import kotlinx.collections.immutable.ImmutableList
 import okhttp3.OkHttpClient
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.history.interactor.GetHistory
+import yokai.domain.manga.interactor.GetManga
 
 abstract class TrackService(val id: Long) {
 
     val trackPreferences: TrackPreferences by injectLazy()
     val networkService: NetworkHelper by injectLazy()
     val db: DatabaseHelper by injectLazy()
+    val getChapter: GetChapter by injectLazy()
+    val getManga: GetManga by injectLazy()
+    val getHistory: GetHistory by injectLazy()
+
     open fun canRemoveFromService() = false
     open val client: OkHttpClient
         get() = networkService.client
@@ -110,9 +116,9 @@ abstract class TrackService(val id: Long) {
 }
 
 suspend fun TrackService.updateNewTrackInfo(track: Track) {
-    val manga = db.getManga(track.manga_id).executeOnIO()
+    val manga = getManga.awaitById(track.manga_id)
     val allRead = manga?.isOneShotOrCompleted() == true &&
-        db.getChapters(track.manga_id).executeOnIO().all { it.read }
+        getChapter.awaitAll(track.manga_id, false).all { it.read }
     if (supportsReadingDates) {
         track.started_reading_date = getStartDate(track)
         track.finished_reading_date = getCompletedDate(track, allRead)
@@ -129,8 +135,8 @@ suspend fun TrackService.updateNewTrackInfo(track: Track) {
 }
 
 suspend fun TrackService.getStartDate(track: Track): Long {
-    if (db.getChapters(track.manga_id).executeOnIO().any { it.read }) {
-        val chapters = db.getHistoryByMangaId(track.manga_id).executeOnIO().filter { it.last_read > 0 }
+    if (getChapter.awaitAll(track.manga_id, false).any { it.read }) {
+        val chapters = getHistory.awaitAllByMangaId(track.manga_id).filter { it.last_read > 0 }
         val date = chapters.minOfOrNull { it.last_read } ?: return 0L
         return if (date <= 0L) 0L else date
     }
@@ -139,7 +145,7 @@ suspend fun TrackService.getStartDate(track: Track): Long {
 
 suspend fun TrackService.getCompletedDate(track: Track, allRead: Boolean): Long {
     if (allRead) {
-        val chapters = db.getHistoryByMangaId(track.manga_id).executeOnIO()
+        val chapters = getHistory.awaitAllByMangaId(track.manga_id)
         val date = chapters.maxOfOrNull { it.last_read } ?: return 0L
         return if (date <= 0L) 0L else date
     }
@@ -147,7 +153,7 @@ suspend fun TrackService.getCompletedDate(track: Track, allRead: Boolean): Long 
 }
 
 suspend fun TrackService.getLastChapterRead(track: Track): Float {
-    val chapters = db.getChapters(track.manga_id).executeOnIO()
+    val chapters = getChapter.awaitAll(track.manga_id, false)
     val lastChapterRead = chapters.filter { it.read }.minByOrNull { it.source_order }
     return lastChapterRead?.takeIf { it.isRecognizedNumber }?.chapter_number ?: 0f
 }

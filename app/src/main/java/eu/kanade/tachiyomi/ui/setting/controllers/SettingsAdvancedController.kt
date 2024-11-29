@@ -18,7 +18,6 @@ import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -87,6 +86,7 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences.ExtensionInstaller
+import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.extension.interactor.TrustExtension
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.source.SourcePreferences
@@ -104,8 +104,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
     private val readerPreferences: ReaderPreferences by injectLazy()
     private val sourcePreferences: SourcePreferences by injectLazy()
 
-    private val db: DatabaseHelper by injectLazy()
-
+    private val getChapter: GetChapter by injectLazy()
     private val getManga: GetManga by injectLazy()
 
     private val downloadManager: DownloadManager by injectLazy()
@@ -511,7 +510,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
                         }
                         continue
                     }
-                    val chapterList = db.getChapters(manga).executeAsBlocking()
+                    val chapterList = getChapter.awaitAll(manga, false)
                     foldersCleared += downloadManager.cleanupChapters(chapterList, manga, source, removeRead, removeNonFavorite)
                 }
             }

@@ -79,18 +79,6 @@ interface HistoryQueries : DbProvider {
         )
         .prepare()
 
-    fun getTotalReadDuration(): Long {
-        val cursor = db.lowLevel()
-            .rawQuery(
-                RawQuery.builder()
-                    .query("SELECT SUM(${HistoryTable.COL_TIME_READ}) FROM ${HistoryTable.TABLE}")
-                    .observesTables(HistoryTable.TABLE)
-                    .build(),
-            )
-        cursor.moveToFirst()
-        return cursor.getLong(0)
-    }
-
     /**
      * Updates the history last read.
      * Inserts history object if not yet in database

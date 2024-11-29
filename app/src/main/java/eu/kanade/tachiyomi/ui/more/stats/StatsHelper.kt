@@ -80,7 +80,9 @@ object StatsHelper {
         201..Int.MAX_VALUE,
     )
 
-    fun Long.getReadDuration(blankValue: String = "0"): String {
+    fun Long?.getReadDuration(blankValue: String = "0"): String {
+        if (this == null) return blankValue
+
         val days = TimeUnit.MILLISECONDS.toDays(this)
         val hours = TimeUnit.MILLISECONDS.toHours(this) % 24
         val minutes = TimeUnit.MILLISECONDS.toMinutes(this) % 60

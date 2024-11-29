@@ -70,6 +70,7 @@ import yokai.domain.category.models.CategoryUpdate
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
+import yokai.domain.history.interactor.GetHistory
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
@@ -98,6 +99,7 @@ class LibraryPresenter(
     private val updateChapter: UpdateChapter by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
     private val getTrack: GetTrack by injectLazy()
+    private val getHistory: GetHistory by injectLazy()
 
     private val context = preferences.context
     private val viewContext
@@ -544,9 +546,9 @@ class LibraryPresenter(
         return if (scoresList.isEmpty()) -1 else scoresList.average().roundToInt().coerceIn(1..10)
     }
 
-    private fun LibraryManga.getStartYear(): Int {
-        if (db.getChapters(id).executeAsBlocking().any { it.read }) {
-            val chapters = db.getHistoryByMangaId(id!!).executeAsBlocking().filter { it.last_read > 0 }
+    private suspend fun LibraryManga.getStartYear(): Int {
+        if (getChapter.awaitAll(id!!, false).any { it.read }) {
+            val chapters = getHistory.awaitAllByMangaId(id!!).filter { it.last_read > 0 }
             val date = chapters.minOfOrNull { it.last_read } ?: return -1
             val cal = Calendar.getInstance().apply { timeInMillis = date }
             return if (date <= 0L) -1 else cal.get(Calendar.YEAR)

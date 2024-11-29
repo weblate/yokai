@@ -101,7 +101,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
                 context.contentResolver.openInputStream(entry.uri)!!.use {
                     val createCommand = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         val userId = Process.myUserHandle().hashCode()
-                        "pm install-create --user $userId current -r -i ${context.packageName} -S $size"
+                        "pm install-create --user $userId -r -i ${context.packageName} -S $size"
                     } else {
                         "pm install-create -r -i ${context.packageName} -S $size"
                     }

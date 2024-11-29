@@ -9,7 +9,6 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.ui.base.SmallToolbarInterface
 import eu.kanade.tachiyomi.ui.base.controller.BaseLegacyController
@@ -26,15 +25,15 @@ import eu.kanade.tachiyomi.util.chapter.ChapterSort
 import eu.kanade.tachiyomi.util.system.extensionIntentForText
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import kotlinx.coroutines.runBlocking
-import uy.kohesive.injekt.Injekt
-import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.manga.interactor.GetManga
 import yokai.presentation.core.Constants
 import yokai.presentation.core.util.IntentCommon
 
 class SearchActivity : MainActivity() {
     private val getChapter: GetChapter by injectLazy()
+    private val getManga: GetManga by injectLazy()
 
     private var backToMain = false
 
@@ -151,13 +150,12 @@ class SearchActivity : MainActivity() {
                     router.replaceTopController(GlobalSearchController(query, filter).withFadeTransaction())
                 }
             }
-            SHORTCUT_MANGA, SHORTCUT_MANGA_BACK -> {
+            Constants.SHORTCUT_MANGA, Constants.SHORTCUT_MANGA_BACK -> {
                 val extras = intent.extras ?: return false
-                if (intent.action == SHORTCUT_MANGA_BACK && preferences.openChapterInShortcuts().get()) {
+                if (intent.action == Constants.SHORTCUT_MANGA_BACK && preferences.openChapterInShortcuts().get()) {
                     val mangaId = extras.getLong(Constants.MANGA_EXTRA)
                     if (mangaId != 0L) {
-                        val db = Injekt.get<DatabaseHelper>()
-                        db.getManga(mangaId).executeAsBlocking()?.let { manga ->
+                        runBlocking { getManga.awaitById(mangaId) }?.let { manga ->
                             val chapters = runBlocking { getChapter.awaitAll(manga) }
                             val nextUnreadChapter = ChapterSort(manga).getNextUnreadChapter(chapters, false)
                             if (nextUnreadChapter != null) {
@@ -170,7 +168,7 @@ class SearchActivity : MainActivity() {
                         }
                     }
                 }
-                if (intent.action == SHORTCUT_MANGA_BACK) {
+                if (intent.action == Constants.SHORTCUT_MANGA_BACK) {
                     SecureActivityDelegate.promptLockIfNeeded(this, true)
                 }
                 router.replaceTopController(

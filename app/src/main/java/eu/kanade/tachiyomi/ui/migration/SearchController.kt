@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import androidx.core.os.bundleOf
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.CatalogueSource
 import eu.kanade.tachiyomi.source.SourceManager
@@ -15,9 +14,11 @@ import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchCardAdapter
 import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.setOnQueryTextChangeListener
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 
 class SearchController(
     private var manga: Manga? = null,
@@ -40,7 +41,7 @@ class SearchController(
 
     constructor(mangaId: Long, sources: LongArray) :
         this(
-            Injekt.get<DatabaseHelper>().getManga(mangaId).executeAsBlocking(),
+            runBlocking { Injekt.get<GetManga>().awaitById(mangaId) },
             sources.map { Injekt.get<SourceManager>().getOrStub(it) }.filterIsInstance<CatalogueSource>(),
         )
 

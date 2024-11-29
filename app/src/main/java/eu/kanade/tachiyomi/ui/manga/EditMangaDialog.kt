@@ -18,7 +18,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.coil.useCustomCover
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.databinding.EditMangaDialogBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -37,9 +36,11 @@ import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.widget.TachiyomiTextInputEditText
+import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.presentation.core.util.coil.asTarget
@@ -73,8 +74,7 @@ class EditMangaDialog : DialogController {
 
     @Suppress("unused")
     constructor(bundle: Bundle) : super(bundle) {
-        manga = Injekt.get<DatabaseHelper>().getManga(bundle.getLong(KEY_MANGA))
-            .executeAsBlocking()!!
+        manga = runBlocking { Injekt.get<GetManga>().awaitById(bundle.getLong(KEY_MANGA))!! }
     }
 
     override fun onCreateDialog(savedViewState: Bundle?): Dialog {

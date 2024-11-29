@@ -37,7 +37,6 @@ import eu.kanade.tachiyomi.ui.migration.SearchController
 import eu.kanade.tachiyomi.ui.migration.manga.design.PreMigrationController
 import eu.kanade.tachiyomi.util.chapter.syncChaptersWithSource
 import eu.kanade.tachiyomi.util.lang.toNormalized
-import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.getParcelableCompat
 import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.launchUI
@@ -65,6 +64,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -88,6 +88,7 @@ class MigrationListController(bundle: Bundle? = null) :
     val config = args.getParcelableCompat(CONFIG_EXTRA, MigrationProcedureConfig::class.java)
 
     private val db: DatabaseHelper by injectLazy()
+    private val getManga: GetManga by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
     private val preferences: PreferencesHelper by injectLazy()
@@ -424,9 +425,7 @@ class MigrationListController(bundle: Bundle? = null) :
             launchUI {
                 val hasDetails = router.backstack.any { it.controller is MangaDetailsController }
                 if (hasDetails) {
-                    val manga = migratingManga?.firstOrNull()?.searchResult?.get()?.let {
-                        db.getManga(it).executeOnIO()
-                    }
+                    val manga = migratingManga?.firstOrNull()?.searchResult?.get()?.let { getManga.awaitById(it) }
                     if (manga != null) {
                         val newStack = router.backstack.filter {
                             it.controller !is MangaDetailsController &&

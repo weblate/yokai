@@ -5,10 +5,12 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.util.view.DeferredField
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.coroutines.CoroutineContext
+import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 
 class MigratingManga(
     private val db: DatabaseHelper,
@@ -16,6 +18,7 @@ class MigratingManga(
     val mangaId: Long,
     parentContext: CoroutineContext,
 ) {
+    private val getManga: GetManga by injectLazy()
     val searchResult = DeferredField<Long?>()
 
     // <MAX, PROGRESS>
@@ -28,7 +31,7 @@ class MigratingManga(
     @Volatile
     private var manga: Manga? = null
     suspend fun manga(): Manga? {
-        if (manga == null) manga = db.getManga(mangaId).executeAsBlocking()
+        if (manga == null) manga = getManga.awaitById(mangaId)
         return manga
     }
 

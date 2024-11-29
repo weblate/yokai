@@ -10,6 +10,7 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 
 interface MangaQueries : DbProvider {
 
+    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     fun getManga(id: Long) = db.get()
         .`object`(Manga::class.java)
         .withQuery(

@@ -49,6 +49,8 @@ import uy.kohesive.injekt.api.get
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetManga
+import yokai.domain.manga.interactor.UpdateManga
+import yokai.domain.manga.models.MangaUpdate
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import android.R as AR
@@ -156,8 +158,9 @@ fun Manga.addOrRemoveToFavorites(
     onMangaAdded: (Pair<Long, Boolean>?) -> Unit,
     onMangaMoved: () -> Unit,
     onMangaDeleted: () -> Unit,
-    getManga: GetManga = Injekt.get(),
     getCategories: GetCategories = Injekt.get(),
+    getManga: GetManga = Injekt.get(),
+    updateManga: UpdateManga = Injekt.get(),
 ): Snackbar? {
     if (!favorite) {
         if (checkForDupes) {
@@ -209,7 +212,16 @@ fun Manga.addOrRemoveToFavorites(
                 favorite = true
                 date_added = Date().time
                 autoAddTrack(db, onMangaMoved)
-                db.insertManga(this).executeAsBlocking()
+                // FIXME: Don't do blocking
+                runBlocking {
+                    updateManga.await(
+                        MangaUpdate(
+                            id = this@addOrRemoveToFavorites.id!!,
+                            favorite = true,
+                            dateAdded = this@addOrRemoveToFavorites.date_added,
+                        )
+                    )
+                }
                 val mc = MangaCategory.create(this, defaultCategory)
                 db.setMangaCategories(listOf(mc), listOf(this))
                 (activity as? MainActivity)?.showNotificationPermissionPrompt()
@@ -227,7 +239,16 @@ fun Manga.addOrRemoveToFavorites(
                 favorite = true
                 date_added = Date().time
                 autoAddTrack(db, onMangaMoved)
-                db.insertManga(this).executeAsBlocking()
+                // FIXME: Don't do blocking
+                runBlocking {
+                    updateManga.await(
+                        MangaUpdate(
+                            id = this@addOrRemoveToFavorites.id!!,
+                            favorite = true,
+                            dateAdded = this@addOrRemoveToFavorites.date_added,
+                        )
+                    )
+                }
                 db.setMangaCategories(
                     lastUsedCategories.map { MangaCategory.create(this, it) },
                     listOf(this),
@@ -257,7 +278,16 @@ fun Manga.addOrRemoveToFavorites(
                 favorite = true
                 date_added = Date().time
                 autoAddTrack(db, onMangaMoved)
-                db.insertManga(this).executeAsBlocking()
+                // FIXME: Don't do blocking
+                runBlocking {
+                    updateManga.await(
+                        MangaUpdate(
+                            id = this@addOrRemoveToFavorites.id!!,
+                            favorite = true,
+                            dateAdded = this@addOrRemoveToFavorites.date_added,
+                        )
+                    )
+                }
                 db.setMangaCategories(emptyList(), listOf(this))
                 onMangaMoved()
                 (activity as? MainActivity)?.showNotificationPermissionPrompt()
@@ -279,13 +309,31 @@ fun Manga.addOrRemoveToFavorites(
         val lastAddedDate = date_added
         favorite = false
         date_added = 0
-        db.insertManga(this).executeAsBlocking()
+        // FIXME: Don't do blocking
+        runBlocking {
+            updateManga.await(
+                MangaUpdate(
+                    id = this@addOrRemoveToFavorites.id!!,
+                    favorite = false,
+                    dateAdded = 0,
+                )
+            )
+        }
         onMangaMoved()
         return view.snack(view.context.getString(MR.strings.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
             setAction(MR.strings.undo) {
                 favorite = true
                 date_added = lastAddedDate
-                db.insertManga(this@addOrRemoveToFavorites).executeAsBlocking()
+                // FIXME: Don't do blocking
+                runBlocking {
+                    updateManga.await(
+                        MangaUpdate(
+                            id = this@addOrRemoveToFavorites.id!!,
+                            favorite = true,
+                            dateAdded = lastAddedDate,
+                        )
+                    )
+                }
                 onMangaMoved()
             }
             addCallback(

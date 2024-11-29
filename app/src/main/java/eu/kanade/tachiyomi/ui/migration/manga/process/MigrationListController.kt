@@ -37,7 +37,6 @@ import eu.kanade.tachiyomi.ui.migration.SearchController
 import eu.kanade.tachiyomi.ui.migration.manga.design.PreMigrationController
 import eu.kanade.tachiyomi.util.chapter.syncChaptersWithSource
 import eu.kanade.tachiyomi.util.lang.toNormalized
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.executeOnIO
 import eu.kanade.tachiyomi.util.system.getParcelableCompat
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -53,6 +52,8 @@ import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTextColorAlpha
 import eu.kanade.tachiyomi.util.view.setTitle
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,10 +65,9 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.UpdateManga
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.concurrent.atomic.*
-import kotlin.coroutines.CoroutineContext
 import android.R as AR
 
 class MigrationListController(bundle: Bundle? = null) :
@@ -88,6 +88,8 @@ class MigrationListController(bundle: Bundle? = null) :
     val config = args.getParcelableCompat(CONFIG_EXTRA, MigrationProcedureConfig::class.java)
 
     private val db: DatabaseHelper by injectLazy()
+    private val updateManga: UpdateManga by injectLazy()
+
     private val preferences: PreferencesHelper by injectLazy()
     private val sourceManager: SourceManager by injectLazy()
 
@@ -269,7 +271,7 @@ class MigrationListController(bundle: Bundle? = null) :
                             sourceManager.getOrStub(result.source).getMangaDetails(result)
                         result.copyFrom(newManga)
 
-                        db.insertManga(result).executeAsBlocking()
+                        updateManga.await(result.toMangaUpdate())
                     } catch (e: CancellationException) {
                         // Ignore cancellations
                         throw e
@@ -385,7 +387,7 @@ class MigrationListController(bundle: Bundle? = null) :
                         sourceManager.getOrStub(result.source).getMangaDetails(result)
                     result.copyFrom(newManga)
 
-                    db.insertManga(result).executeAsBlocking()
+                    updateManga.await(result.toMangaUpdate())
                 } catch (e: CancellationException) {
                     // Ignore cancellations
                     throw e

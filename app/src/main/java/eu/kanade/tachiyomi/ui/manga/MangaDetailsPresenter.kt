@@ -452,7 +452,7 @@ class MangaDetailsPresenter(
                 manga.copyFrom(networkManga)
                 manga.initialized = true
 
-                db.insertManga(manga).executeAsBlocking()
+                updateManga.await(manga.toMangaUpdate())
 
                 launchIO {
                     val request =

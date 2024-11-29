@@ -21,8 +21,6 @@ interface MangaQueries : DbProvider {
         )
         .prepare()
 
-    fun insertManga(manga: Manga) = db.put().`object`(manga).prepare()
-
     // FIXME: Migrate to SQLDelight, on halt: used by StorIO's inTransaction
     fun updateMangaFavorite(manga: Manga) = db.put()
         .`object`(manga)

@@ -90,8 +90,8 @@ fun Manga.moveCategories(
     activity: Activity,
     addingToLibrary: Boolean,
     onMangaMoved: () -> Unit,
-    getCategories: GetCategories = Injekt.get(),
 ) {
+    val getCategories: GetCategories = Injekt.get()
     // FIXME: Don't do blocking
     val categories = runBlocking { getCategories.await() }
     val categoriesForManga = runBlocking {
@@ -117,9 +117,10 @@ fun List<Manga>.moveCategories(
     db: DatabaseHelper,
     activity: Activity,
     onMangaMoved: () -> Unit,
-    getCategories: GetCategories = Injekt.get(),
 ) {
     if (this.isEmpty()) return
+
+    val getCategories: GetCategories = Injekt.get()
     // FIXME: Don't do blocking
     val categories = runBlocking { getCategories.await() }
     val mangaCategories = map { manga ->

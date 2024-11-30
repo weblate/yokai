@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.ui.source.globalsearch
 
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.create
 import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.download.DownloadManager
@@ -38,7 +37,6 @@ import yokai.domain.manga.interactor.UpdateManga
  * Function calls should be done from here. UI calls should be done from the controller.
  *
  * @param sourceManager manages the different sources.
- * @param db manages the database calls.
  * @param preferences manages the preference calls.
  */
 open class GlobalSearchPresenter(
@@ -46,7 +44,6 @@ open class GlobalSearchPresenter(
     private val initialExtensionFilter: String? = null,
     private val sourcesToUse: List<CatalogueSource>? = null,
     val sourceManager: SourceManager = Injekt.get(),
-    val db: DatabaseHelper = Injekt.get(),
     private val preferences: PreferencesHelper = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),
 ) : BaseCoroutinePresenter<GlobalSearchController>() {

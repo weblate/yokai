@@ -7,7 +7,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.coil.useCustomCover
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.databinding.MangaGridItemBinding
 import eu.kanade.tachiyomi.databinding.MigrationProcessItemBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -25,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.chapter.interactor.GetChapter
+import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.models.cover
 import yokai.i18n.MR
 import yokai.presentation.core.util.coil.loadManga
@@ -35,8 +35,8 @@ class MigrationProcessHolder(
     private val adapter: MigrationProcessAdapter,
 ) : BaseFlexibleViewHolder(view, adapter) {
 
-    private val db: DatabaseHelper by injectLazy()
     private val getChapter: GetChapter by injectLazy()
+    private val getManga: GetManga by injectLazy()
 
     private val sourceManager: SourceManager by injectLazy()
     private var item: MigrationProcessItem? = null
@@ -99,12 +99,8 @@ class MigrationProcessHolder(
                     }
                 }*/
 
-                val searchResult = item.manga.searchResult.get()?.let {
-                    db.getManga(it).executeAsBlocking()
-                }
-                val resultSource = searchResult?.source?.let {
-                    sourceManager.get(it)
-                }
+                val searchResult = item.manga.searchResult.get()?.let { getManga.awaitById(it) }
+                val resultSource = searchResult?.source?.let { sourceManager.get(it) }
                 withContext(Dispatchers.Main) {
                     if (item.manga.mangaId != this@MigrationProcessHolder.item?.manga?.mangaId || item.manga.migrationStatus == MigrationStatus.RUNNUNG) {
                         return@withContext

@@ -15,7 +15,6 @@ import coil3.size.SizeResolver
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.Source
@@ -35,7 +34,6 @@ import kotlin.math.min
 
 class MangaShortcutManager(
     val preferences: PreferencesHelper = Injekt.get(),
-    val db: DatabaseHelper = Injekt.get(),
     val coverCache: CoverCache = Injekt.get(),
     val sourceManager: SourceManager = Injekt.get(),
 ) {

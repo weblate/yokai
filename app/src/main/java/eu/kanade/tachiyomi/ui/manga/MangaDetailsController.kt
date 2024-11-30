@@ -1002,7 +1002,6 @@ class MangaDetailsController :
 
     fun toggleReadChapter(position: Int) {
         val preferences = presenter.preferences
-        val db = presenter.db
         val item = adapter?.getItem(position) as? ChapterItem ?: return
         val chapter = item.chapter
         val lastRead = chapter.last_page_read
@@ -1031,7 +1030,7 @@ class MangaDetailsController :
                             if (preferences.removeAfterMarkedAsRead().get()) {
                                 presenter.deleteChapters(listOf(item))
                             }
-                            updateTrackChapterMarkedAsRead(db, preferences, chapter, manga?.id) {
+                            updateTrackChapterMarkedAsRead(preferences, chapter, manga?.id) {
                                 presenter.fetchTracks()
                             }
                         }
@@ -1647,7 +1646,6 @@ class MangaDetailsController :
         val activity = activity ?: return
         snack?.dismiss()
         snack = presenter.manga.addOrRemoveToFavorites(
-            presenter.db,
             presenter.preferences,
             view,
             activity,

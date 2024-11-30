@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.util.chapter
 
 import co.touchlab.kermit.Logger
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -67,7 +66,6 @@ private var trackingJobs = HashMap<Long, Pair<Job?, Float?>>()
  * will run in a background thread and errors are ignored.
  */
 fun updateTrackChapterMarkedAsRead(
-    db: DatabaseHelper,
     preferences: PreferencesHelper,
     newLastChapter: Chapter?,
     mangaId: Long?,

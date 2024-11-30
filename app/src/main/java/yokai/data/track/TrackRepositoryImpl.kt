@@ -28,4 +28,24 @@ class TrackRepositoryImpl(private val handler: DatabaseHandler) : TrackRepositor
                 finishDate = track.finished_reading_date,
             )
         }
+
+    override suspend fun insertBulk(tracks: List<Track>) =
+        handler.await(inTransaction = true) {
+            tracks.forEach { track ->
+                manga_syncQueries.insert(
+                    mangaId = track.manga_id,
+                    syncId = track.sync_id,
+                    remoteId = track.media_id,
+                    libraryId = track.library_id,
+                    title = track.title,
+                    lastChapterRead = track.last_chapter_read.toDouble(),
+                    totalChapters = track.total_chapters,
+                    status = track.status.toLong(),
+                    score = track.score.toDouble(),
+                    remoteUrl = track.tracking_url,
+                    startDate = track.started_reading_date,
+                    finishDate = track.finished_reading_date,
+                )
+            }
+        }
 }

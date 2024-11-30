@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.ui.source.browse
 import co.touchlab.kermit.Logger
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.create
 import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.download.DownloadManager
@@ -54,7 +53,6 @@ open class BrowseSourcePresenter(
     searchQuery: String? = null,
     var useLatest: Boolean = false,
     val sourceManager: SourceManager = Injekt.get(),
-    val db: DatabaseHelper = Injekt.get(),
     val uiPreferences: UiPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),

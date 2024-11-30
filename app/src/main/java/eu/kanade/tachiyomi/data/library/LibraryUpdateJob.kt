@@ -21,7 +21,6 @@ import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
@@ -94,8 +93,6 @@ import yokai.util.lang.getString
 
 class LibraryUpdateJob(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
-
-    private val db: DatabaseHelper = Injekt.get()
 
     private val getCategories: GetCategories = Injekt.get()
     private val getChapter: GetChapter = Injekt.get()

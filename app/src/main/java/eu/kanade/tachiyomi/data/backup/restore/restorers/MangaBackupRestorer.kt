@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.data.backup.restore.restorers
 import eu.kanade.tachiyomi.data.backup.models.BackupCategory
 import eu.kanade.tachiyomi.data.backup.models.BackupHistory
 import eu.kanade.tachiyomi.data.backup.models.BackupManga
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.MangaCategory
@@ -31,9 +30,9 @@ import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.track.interactor.GetTrack
+import yokai.domain.track.interactor.InsertTrack
 
 class MangaBackupRestorer(
-    private val db: DatabaseHelper = Injekt.get(),
     private val customMangaManager: CustomMangaManager = Injekt.get(),
     private val handler: DatabaseHandler = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
@@ -47,6 +46,7 @@ class MangaBackupRestorer(
     private val getHistory: GetHistory = Injekt.get(),
     private val upsertHistory: UpsertHistory = Injekt.get(),
     private val getTrack: GetTrack = Injekt.get(),
+    private val insertTrack: InsertTrack = Injekt.get(),
 ) {
     suspend fun restoreManga(
         backupManga: BackupManga,
@@ -272,7 +272,7 @@ class MangaBackupRestorer(
         }
         // Update database
         if (trackToUpdate.isNotEmpty()) {
-            db.insertTracks(trackToUpdate).executeAsBlocking()
+            insertTrack.awaitBulk(trackToUpdate)
         }
     }
 

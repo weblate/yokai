@@ -90,12 +90,12 @@ import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.updateGradiantBGRadius
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
+import java.util.Locale
+import kotlin.math.max
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.util.*
-import kotlin.math.max
 import android.R as AR
 
 /**
@@ -839,7 +839,6 @@ class RecentsController(bundle: Bundle? = null) :
 
     override fun markAsRead(position: Int) {
         val preferences = presenter.preferences
-        val db = presenter.db
         val item = adapter.getItem(position) as? RecentMangaItem ?: return
         val holder = binding.recycler.findViewHolderForAdapterPosition(position)
         val holderId = (holder as? RecentMangaHolder)?.chapterId
@@ -880,7 +879,7 @@ class RecentsController(bundle: Bundle? = null) :
                                 lastChapterId = chapter.id
                                 presenter.deleteChapter(chapter, manga)
                             }
-                            updateTrackChapterMarkedAsRead(db, preferences, chapter, manga.id) {
+                            updateTrackChapterMarkedAsRead(preferences, chapter, manga.id) {
                                 (router.backstack.lastOrNull()?.controller as? MangaDetailsController)?.presenter?.fetchTracks()
                             }
                         }

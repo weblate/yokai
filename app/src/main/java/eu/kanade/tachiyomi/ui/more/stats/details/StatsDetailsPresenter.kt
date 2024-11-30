@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
@@ -48,7 +47,6 @@ import yokai.i18n.MR
 import yokai.util.lang.getString
 
 class StatsDetailsPresenter(
-    private val db: DatabaseHelper = Injekt.get(),
     private val prefs: PreferencesHelper = Injekt.get(),
     val trackManager: TrackManager = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.MangaCategory
 import eu.kanade.tachiyomi.data.database.models.seriesType
@@ -74,7 +73,6 @@ class SetCategoriesSheet(
     private val fastAdapter: FastAdapter<AddCategoryItem>
     private val itemAdapter = ItemAdapter<AddCategoryItem>()
 
-    private val db: DatabaseHelper by injectLazy()
     private val getCategories: GetCategories by injectLazy()
     private val setMangaCategories: SetMangaCategories by injectLazy()
     private val updateManga: UpdateManga by injectLazy()

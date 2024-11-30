@@ -67,7 +67,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -171,7 +170,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     private val mangaShortcutManager: MangaShortcutManager by injectLazy()
     private val extensionManager: ExtensionManager by injectLazy()
 
-    private val db: DatabaseHelper by injectLazy()
     private val getRecents: GetRecents by injectLazy()
 
     private val hideBottomNav

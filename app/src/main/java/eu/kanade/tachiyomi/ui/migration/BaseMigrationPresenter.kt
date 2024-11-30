@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.migration
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferenceValues
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -21,7 +20,6 @@ import yokai.domain.ui.UiPreferences
 
 abstract class BaseMigrationPresenter<T : BaseMigrationInterface>(
     protected val sourceManager: SourceManager = Injekt.get(),
-    protected val db: DatabaseHelper = Injekt.get(),
     val uiPreferences: UiPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
 ) : BaseCoroutinePresenter<T>() {

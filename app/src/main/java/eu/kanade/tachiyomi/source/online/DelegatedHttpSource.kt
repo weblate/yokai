@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.source.online
 
 import android.net.Uri
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.MangaImpl
 import eu.kanade.tachiyomi.data.database.models.create
@@ -17,7 +16,6 @@ abstract class DelegatedHttpSource {
     var delegate: HttpSource? = null
     abstract val domainName: String
 
-    protected val db: DatabaseHelper by injectLazy()
     protected val getChapter: GetChapter by injectLazy()
     protected val getManga: GetManga by injectLazy()
 

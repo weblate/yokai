@@ -12,7 +12,6 @@ import coil3.request.SuccessResult
 import com.hippo.unifile.UniFile
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.History
@@ -106,7 +105,6 @@ class MangaDetailsPresenter(
     val sourceManager: SourceManager = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
     val coverCache: CoverCache = Injekt.get(),
-    val db: DatabaseHelper = Injekt.get(),
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val storageManager: StorageManager = Injekt.get(),
@@ -614,7 +612,7 @@ class MangaDetailsPresenter(
             withContext(Dispatchers.Main) { view?.updateChapters(chapters) }
             if (read && deleteNow) {
                 val latestReadChapter = selectedChapters.maxByOrNull { it.chapter_number.toInt() }?.chapter
-                updateTrackChapterMarkedAsRead(db, preferences, latestReadChapter, manga.id) {
+                updateTrackChapterMarkedAsRead(preferences, latestReadChapter, manga.id) {
                     fetchTracks()
                 }
             }

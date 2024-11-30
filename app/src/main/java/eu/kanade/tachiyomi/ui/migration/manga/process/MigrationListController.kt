@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.MigrationListControllerBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -87,7 +86,6 @@ class MigrationListController(bundle: Bundle? = null) :
 
     val config = args.getParcelableCompat(CONFIG_EXTRA, MigrationProcedureConfig::class.java)
 
-    private val db: DatabaseHelper by injectLazy()
     private val getManga: GetManga by injectLazy()
     private val updateManga: UpdateManga by injectLazy()
 
@@ -117,7 +115,7 @@ class MigrationListController(bundle: Bundle? = null) :
 
         val newMigratingManga = migratingManga ?: run {
             val new = config.mangaIds.map {
-                MigratingManga(db, sourceManager, it, coroutineContext)
+                MigratingManga(sourceManager, it, coroutineContext)
             }
             migratingManga = new.toMutableList()
             new

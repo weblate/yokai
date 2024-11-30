@@ -7,7 +7,6 @@ import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import com.jakewharton.rxrelay.PublishRelay
 import eu.kanade.tachiyomi.data.cache.ChapterCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.download.model.Download
 import eu.kanade.tachiyomi.data.download.model.DownloadQueue
@@ -83,7 +82,6 @@ class Downloader(
     private val downloadPreferences: DownloadPreferences by injectLazy()
     private val chapterCache: ChapterCache by injectLazy()
     private val xml: XML by injectLazy()
-    private val db: DatabaseHelper by injectLazy()
     private val getCategories: GetCategories by injectLazy()
 
     /**

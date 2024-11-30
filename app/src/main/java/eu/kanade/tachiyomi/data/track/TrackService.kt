@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.data.track
 import androidx.annotation.CallSuper
 import androidx.annotation.DrawableRes
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.isOneShotOrCompleted
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
@@ -19,7 +18,6 @@ abstract class TrackService(val id: Long) {
 
     val trackPreferences: TrackPreferences by injectLazy()
     val networkService: NetworkHelper by injectLazy()
-    val db: DatabaseHelper by injectLazy()
     val getChapter: GetChapter by injectLazy()
     val getManga: GetManga by injectLazy()
     val getHistory: GetHistory by injectLazy()

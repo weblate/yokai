@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.ui.library
 import eu.kanade.tachiyomi.core.preference.minusAssign
 import eu.kanade.tachiyomi.core.preference.plusAssign
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.Chapter.Companion.copy
@@ -84,7 +83,6 @@ import yokai.util.lang.getString
  * Presenter of [LibraryController].
  */
 class LibraryPresenter(
-    val db: DatabaseHelper = Injekt.get(),
     private val preferences: PreferencesHelper = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),
     val sourceManager: SourceManager = Injekt.get(),

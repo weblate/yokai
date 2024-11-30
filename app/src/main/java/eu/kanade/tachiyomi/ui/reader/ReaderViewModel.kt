@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.defaultReaderType
@@ -98,7 +97,6 @@ import yokai.util.lang.getString
  */
 class ReaderViewModel(
     private val savedState: SavedStateHandle = SavedStateHandle(),
-    private val db: DatabaseHelper = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
     private val downloadManager: DownloadManager = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),

@@ -119,7 +119,6 @@ class DownloadProvider(private val context: Context) {
      */
     /*
     fun renameChapters() {
-        val db by injectLazy<DatabaseHelper>()
         val sourceManager by injectLazy<SourceManager>()
         val mangas = db.getFavoriteMangas().executeAsBlocking()
         mangas.forEach sfor@{ manga ->

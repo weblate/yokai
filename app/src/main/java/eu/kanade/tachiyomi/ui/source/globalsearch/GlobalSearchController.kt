@@ -116,7 +116,6 @@ open class GlobalSearchController(
         val activity = activity ?: return
         snack?.dismiss()
         snack = manga.addOrRemoveToFavorites(
-            presenter.db,
             preferences,
             view,
             activity,

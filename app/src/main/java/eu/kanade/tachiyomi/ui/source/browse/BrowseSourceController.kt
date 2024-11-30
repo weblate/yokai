@@ -58,10 +58,10 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
 import eu.kanade.tachiyomi.widget.EmptyView
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
+import kotlin.math.roundToInt
 import uy.kohesive.injekt.injectLazy
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import kotlin.math.roundToInt
 
 /**
  * Controller to manage the catalogues available in the app.
@@ -769,7 +769,6 @@ open class BrowseSourceController(bundle: Bundle) :
         val activity = activity ?: return
         snack?.dismiss()
         snack = manga.addOrRemoveToFavorites(
-            presenter.db,
             preferences,
             view,
             activity,

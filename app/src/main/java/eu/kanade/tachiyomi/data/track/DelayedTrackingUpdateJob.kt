@@ -10,7 +10,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import co.touchlab.kermit.Logger
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,6 @@ class DelayedTrackingUpdateJob(context: Context, workerParams: WorkerParameters)
 
     override suspend fun doWork(): Result {
         val preferences = Injekt.get<PreferencesHelper>()
-        val db = Injekt.get<DatabaseHelper>()
         val trackManager = Injekt.get<TrackManager>()
         val trackings = preferences.trackingsToAddOnline().get().toMutableSet().mapNotNull {
             val items = it.split(":")

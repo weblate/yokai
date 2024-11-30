@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.more.stats
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.download.DownloadManager
@@ -30,7 +29,6 @@ import yokai.util.lang.getString
  * Presenter of [StatsController].
  */
 class StatsPresenter(
-    private val db: DatabaseHelper = Injekt.get(),
     private val prefs: PreferencesHelper = Injekt.get(),
     private val trackManager: TrackManager = Injekt.get(),
     private val downloadManager: DownloadManager = Injekt.get(),

@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.recents
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.ChapterHistory
 import eu.kanade.tachiyomi.data.database.models.History
@@ -55,7 +54,6 @@ class RecentsPresenter(
     val recentsPreferences: RecentsPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
     val downloadManager: DownloadManager = Injekt.get(),
-    val db: DatabaseHelper = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
 ) : BaseCoroutinePresenter<RecentsController>(), DownloadQueue.DownloadListener {
     private val handler: DatabaseHandler by injectLazy()

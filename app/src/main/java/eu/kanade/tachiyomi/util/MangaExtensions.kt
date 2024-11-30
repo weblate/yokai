@@ -10,7 +10,6 @@ import co.touchlab.kermit.Logger
 import com.bluelinelabs.conductor.Controller
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -29,6 +28,7 @@ import eu.kanade.tachiyomi.ui.migration.manga.process.MigrationProcessAdapter
 import eu.kanade.tachiyomi.util.chapter.syncChaptersWithTrackServiceTwoWay
 import eu.kanade.tachiyomi.util.lang.asButton
 import eu.kanade.tachiyomi.util.system.launchIO
+import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.setCustomTitleAndMessage
 import eu.kanade.tachiyomi.util.system.toast
@@ -147,7 +147,6 @@ fun List<Manga>.moveCategories(
 }
 
 fun Manga.addOrRemoveToFavorites(
-    db: DatabaseHelper,
     preferences: PreferencesHelper,
     view: View,
     activity: Activity,
@@ -175,12 +174,10 @@ fun Manga.addOrRemoveToFavorites(
                     this,
                     duplicateManga,
                     activity,
-                    db,
                     sourceManager,
                     controller,
                     addManga = {
                         addOrRemoveToFavorites(
-                            db,
                             preferences,
                             view,
                             activity,
@@ -375,7 +372,6 @@ private fun showAddDuplicateDialog(
     newManga: Manga,
     libraryManga: Manga,
     activity: Activity,
-    db: DatabaseHelper,
     sourceManager: SourceManager,
     controller: Controller,
     addManga: () -> Unit,
@@ -389,18 +385,19 @@ private fun showAddDuplicateDialog(
         val enabled = titles.indices.map { listView.isItemChecked(it) }.toTypedArray()
         val flags = MigrationFlags.getFlagsFromPositions(enabled, libraryManga)
         val enhancedServices by lazy { Injekt.get<TrackManager>().services.filterIsInstance<EnhancedTrackService>() }
-        MigrationProcessAdapter.migrateMangaInternal(
-            flags,
-            db,
-            enhancedServices,
-            Injekt.get(),
-            Injekt.get(),
-            source,
-            sourceManager.getOrStub(newManga.source),
-            libraryManga,
-            newManga,
-            replace,
-        )
+        launchUI {
+            MigrationProcessAdapter.migrateMangaInternal(
+                flags,
+                enhancedServices,
+                Injekt.get(),
+                Injekt.get(),
+                source,
+                sourceManager.getOrStub(newManga.source),
+                libraryManga,
+                newManga,
+                replace,
+            )
+        }
         migrateManga(libraryManga.source, !replace)
     }
 

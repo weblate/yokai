@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.ui.migration
 import android.content.Context
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.data.cache.CoverCache
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.util.system.toInt
@@ -21,7 +20,6 @@ object MigrationFlags {
     private const val CUSTOM_MANGA_INFO = 0b1000
 
     private val coverCache: CoverCache by injectLazy()
-    private val db: DatabaseHelper by injectLazy()
     private val customMangaManager: CustomMangaManager by injectLazy()
     private val getTrack: GetTrack by injectLazy()
 

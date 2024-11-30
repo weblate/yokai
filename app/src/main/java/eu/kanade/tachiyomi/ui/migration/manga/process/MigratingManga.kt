@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.ui.migration.manga.process
 
-import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
@@ -13,7 +12,6 @@ import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.interactor.GetManga
 
 class MigratingManga(
-    private val db: DatabaseHelper,
     private val sourceManager: SourceManager,
     val mangaId: Long,
     parentContext: CoroutineContext,

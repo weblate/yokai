@@ -228,7 +228,7 @@ class NotificationReceiver : BroadcastReceiver() {
             }
             val newLastChapter = chapters.maxByOrNull { it.chapter_number.toInt() }
             LibraryUpdateJob.updateMutableFlow.tryEmit(manga.id)
-            updateTrackChapterMarkedAsRead(Injekt.get(), preferences, newLastChapter, mangaId, 0)
+            updateTrackChapterMarkedAsRead(preferences, newLastChapter, mangaId, 0)
         }
     }
 

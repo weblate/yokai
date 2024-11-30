@@ -220,7 +220,7 @@ class MigrationProcessAdapter(
             // Update categories
             if (MigrationFlags.hasCategories(flags)) {
                 val categories = Injekt.get<GetCategories>().awaitByMangaId(prevManga.id)
-                Injekt.get<SetMangaCategories>().await(prevManga.id, categories.mapNotNull { it.id?.toLong() })
+                Injekt.get<SetMangaCategories>().await(manga.id, categories.mapNotNull { it.id?.toLong() })
             }
             // Update track
             if (MigrationFlags.hasTracks(flags)) {

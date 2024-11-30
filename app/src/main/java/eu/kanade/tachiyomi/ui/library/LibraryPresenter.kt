@@ -815,7 +815,9 @@ class LibraryPresenter(
             getLibraryManga.subscribe(),
             getPreferencesFlow(),
             preferences.removeArticles().changes(),
-        ) { allCategories, libraryMangaList, prefs, removeArticles ->
+            preferences.collapsedCategories().changes(),
+            preferences.collapsedDynamicCategories().changes(),
+        ) { allCategories, libraryMangaList, prefs, removeArticles, collapsedCategories, collapsedDynamicCategories ->
             groupType = prefs.groupType
 
             val (items, categories, hiddenItems) = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {

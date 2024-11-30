@@ -71,6 +71,7 @@ import yokai.core.CrashlyticsLogWriter
 import yokai.core.RollingUniFileLogWriter
 import yokai.core.di.appModule
 import yokai.core.di.domainModule
+import yokai.core.di.initExpensiveComponents
 import yokai.core.di.preferenceModule
 import yokai.core.migration.Migrator
 import yokai.core.migration.migrations.migrations
@@ -106,6 +107,7 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         startKoin {
             modules(preferenceModule(this@App), appModule(this@App), domainModule())
         }
+        initExpensiveComponents(this)
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 

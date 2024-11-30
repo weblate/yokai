@@ -212,10 +212,6 @@ dependencies {
     // Database
     implementation(libs.sqlite.android)
     implementation(libs.bundles.sqlite)
-    //noinspection UseTomlInstead
-    implementation("com.github.inorichi.storio:storio-common:8be19de@aar")
-    //noinspection UseTomlInstead
-    implementation("com.github.inorichi.storio:storio-sqlite:8be19de@aar")
 
     // Model View Presenter
     implementation(libs.conductor)

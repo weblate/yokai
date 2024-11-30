@@ -12,14 +12,12 @@ class CategoriesBackupRestorer(
 ) {
     suspend fun restoreCategories(backupCategories: List<BackupCategory>, onComplete: () -> Unit) {
         // Get categories from file and from db
-        // Do it outside of transaction because StorIO might hang because we're using SQLDelight
-        val dbCategories = getCategories.await()
         handler.await(true) {
             // Iterate over them
             backupCategories.map { it.getCategoryImpl() }.forEach { category ->
                 // Used to know if the category is already in the db
                 var found = false
-                for (dbCategory in dbCategories) {
+                for (dbCategory in getCategories.await()) {
                     // If the category is already in the db, assign the id to the file's category
                     // and do nothing
                     if (category.name == dbCategory.name) {

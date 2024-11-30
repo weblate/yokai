@@ -3,12 +3,6 @@ FIXME: Delete `search_metadata` from sqldelight migration
 
 package eu.kanade.tachiyomi.data.database.queries
 
-import com.pushtorefresh.storio.sqlite.queries.DeleteQuery
-import com.pushtorefresh.storio.sqlite.queries.Query
-import eu.kanade.tachiyomi.data.database.DbProvider
-import eu.kanade.tachiyomi.data.database.models.SearchMetadata
-import eu.kanade.tachiyomi.data.database.tables.SearchMetadataTable
-
 interface SearchMetadataQueries : DbProvider {
 
     fun getSearchMetadataForManga(mangaId: Long) = db.get()

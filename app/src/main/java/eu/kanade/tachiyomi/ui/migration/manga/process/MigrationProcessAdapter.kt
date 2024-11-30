@@ -133,7 +133,6 @@ class MigrationProcessAdapter(
         sourceFinished()
     }
 
-    // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
     private suspend fun migrateMangaInternal(
         prevSource: Source?,
         source: Source,
@@ -158,7 +157,6 @@ class MigrationProcessAdapter(
 
     companion object {
 
-        // FIXME: Migrate to SQLDelight, on halt: in StorIO transaction
         suspend fun migrateMangaInternal(
             flags: Int,
             enhancedServices: List<EnhancedTrackService>,

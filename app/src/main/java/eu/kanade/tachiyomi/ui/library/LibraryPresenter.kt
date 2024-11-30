@@ -198,15 +198,6 @@ class LibraryPresenter(
             lastAllLibraryItems = null
         }
 
-        /*
-        presenterScope.launch {
-            getLibraryManga.subscribe().collectLatest {
-                libraryManga = it.apply { if (groupType > BY_DEFAULT) { distinctBy { it.id } } }
-                getLibrary()
-            }
-        }
-        */
-
         subscribeLibrary()
 
         if (!preferences.showLibrarySearchSuggestions().isSet()) {
@@ -272,7 +263,6 @@ class LibraryPresenter(
         }
     }
 
-    // FIXME: Remove this, it's useless
     /** Get favorited manga for library and sort and filter it */
     fun getLibrary() {
         presenterScope.launch {
@@ -825,11 +815,10 @@ class LibraryPresenter(
             getLibraryManga.subscribe(),
             getPreferencesFlow(),
             preferences.removeArticles().changes(),
-            fetchLibrary,
-        ) { allCategories, libraryMangaList, prefs, removeArticles, _ ->
+        ) { allCategories, libraryMangaList, prefs, removeArticles ->
             groupType = prefs.groupType
 
-            val data = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
+            val (items, categories, hiddenItems) = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
                 getLibraryItems(
                     allCategories,
                     libraryMangaList,
@@ -847,49 +836,13 @@ class LibraryPresenter(
             }
 
             LibraryData(
-                categories = data.second,
+                categories = categories,
                 allCategories = allCategories,
-                items = data.first,
-                hiddenItems = data.third,
+                items = items,
+                hiddenItems = hiddenItems,
                 removeArticles = removeArticles,
             )
         }
-    }
-
-    /**
-     * Get the categories and all its manga from the database.
-     *
-     * @return an list of all the manga in a itemized form.
-     */
-    private suspend fun getLibraryFromDB(): Pair<List<LibraryItem>, List<LibraryItem>> {
-        removeArticles = preferences.removeArticles().get()
-        allCategories = getCategories.await().toMutableList()
-
-        // In default grouping, which uses category as group, a manga can be in multiple categories.
-        // So before we group it by different type, we should make the list unique.
-        val libraryManga = getLibraryManga.await()
-        val showAll = showAllCategories
-
-        val (items, categories, hiddenItems) = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
-            getLibraryItems(
-                allCategories,
-                libraryManga,
-                preferences.librarySortingMode().get(),
-                preferences.librarySortingAscending().get(),
-                showAll,
-            )
-        } else {
-            getDynamicLibraryItems(
-                libraryManga,
-                preferences.librarySortingMode().get(),
-                preferences.librarySortingAscending().get(),
-                groupType,
-            )
-        }
-
-        this.categories = categories
-
-        return items to hiddenItems
     }
 
     private fun getLibraryItems(

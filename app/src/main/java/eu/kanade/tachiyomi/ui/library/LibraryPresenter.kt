@@ -1360,6 +1360,7 @@ class LibraryPresenter(
                     )
                 }
             }
+            updateLibrary()
         }
     }
 
@@ -1465,6 +1466,7 @@ class LibraryPresenter(
 
                 mapMangaChapters[manga] = chapters
             }
+            updateLibrary()
         }
         return mapMangaChapters
     }
@@ -1480,6 +1482,7 @@ class LibraryPresenter(
                 }
             }.flatten()
             updateChapter.awaitAll(updates)
+            updateLibrary()
         }
     }
 

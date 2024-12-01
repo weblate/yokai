@@ -13,11 +13,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ### Additions
 - Sync DoH provider list with upstream (added Mullvad, Control D, Njalla, and Shecan)
-- Added option to enable verbose logging
-- Added category hopper long-press action to open random series from **any** category
-- Added option to enable reader debug mode
-- Added option to adjust reader's hardware bitmap threshold (@AntsyLich)
-- Added option to scan local entries from `/storage/(sdcard|emulated/0)/Android/data/<yokai>/files/local`
+- Add option to enable verbose logging
+- Add category hopper long-press action to open random series from **any** category
+- Add option to enable reader debug mode
+- Add option to adjust reader's hardware bitmap threshold (@AntsyLich)
+- Add option to scan local entries from `/storage/(sdcard|emulated/0)/Android/data/<yokai>/files/local`
 
 ### Changes
 - Enable 'Split Tall Images' by default (@Smol-Ame)
@@ -28,14 +28,15 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Logs are now written to a file for easier debugging
 
 ### Fixes
-- Fixed only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
-- Fixed "Group by Ungrouped" showing duplicate entries
-- Fixed reader sometimes won't load images
+- Fix only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
+- Fix "Group by Ungrouped" showing duplicate entries
+- Fix reader sometimes won't load images
 - Handle some uncaught crashes
-- Fixed crashes due to GestureDetector's firstEvent is sometimes null on some devices
-- Fixed download failed due to invalid XML 1.0 character
-- Fixed issues with shizuku in a multi-user setup (@Redjard)
-- Fixed some regional/variant languages is not listed in app language option
+- Fix crashes due to GestureDetector's firstEvent is sometimes null on some devices
+- Fix download failed due to invalid XML 1.0 character
+- Fix issues with shizuku in a multi-user setup (@Redjard)
+- Fix some regional/variant languages is not listed in app language option
+- Fix browser not opening in some cases in Honor devices (@MajorTanya)
 
 ### Other
 - Simplify network helper code

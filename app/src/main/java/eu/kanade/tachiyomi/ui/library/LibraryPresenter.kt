@@ -196,6 +196,7 @@ class LibraryPresenter(
         }
 
         subscribeLibrary()
+        updateLibrary()
 
         if (!preferences.showLibrarySearchSuggestions().isSet()) {
             DelayedLibrarySuggestionsJob.setupTask(context, true)

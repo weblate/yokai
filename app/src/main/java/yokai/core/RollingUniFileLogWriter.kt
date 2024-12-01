@@ -27,6 +27,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.newSingleThreadContext
 
+// FIXME: Only keep 5 logs "globally"
 /**
  * Copyright (c) 2024 Touchlab
  * SPDX-License-Identifier: Apache-2.0

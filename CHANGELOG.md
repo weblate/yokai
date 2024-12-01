@@ -26,6 +26,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Re-enable fetching licensed manga (@Animeboynz)
 - Bangumi search now shows the score and summary of a search result (@MajorTanya)
 - Logs are now written to a file for easier debugging
+- Bump default user agent (@AntsyLich)
 
 ### Fixes
 - Fix only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)

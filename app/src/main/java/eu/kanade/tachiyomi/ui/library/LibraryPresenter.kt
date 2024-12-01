@@ -56,7 +56,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -231,33 +230,28 @@ class LibraryPresenter(
                 categories = lastCategories ?: getCategories.await().toMutableList()
             }
 
-            combine(
-                getLibraryFlow(),
-                emptyFlow<Unit>(),  // Placeholder flow for later usage
-            ) { data, _ ->
+            getLibraryFlow().collectLatest { data ->
                 categories = data.categories
                 allCategories = data.allCategories
 
-                data.items
+                val library = data.items
+                val hiddenItems = library.filter { it.manga.isHidden() }.mapNotNull { it.manga.items }.flatten()
+
+                setDownloadCount(library)
+                setUnreadBadge(library)
+                setSourceLanguage(library)
+                setDownloadCount(hiddenItems)
+                setUnreadBadge(hiddenItems)
+                setSourceLanguage(hiddenItems)
+
+                allLibraryItems = library
+                hiddenLibraryItems = hiddenItems
+                val mangaMap = library
+                    .applyFilters()
+                    .applySort()
+                val freshStart = libraryItems.isEmpty()
+                sectionLibrary(mangaMap, freshStart)
             }
-                .collectLatest { library ->
-                    val hiddenItems = library.filter { it.manga.isHidden() }.mapNotNull { it.manga.items }.flatten()
-
-                    setDownloadCount(library)
-                    setUnreadBadge(library)
-                    setSourceLanguage(library)
-                    setDownloadCount(hiddenItems)
-                    setUnreadBadge(hiddenItems)
-                    setSourceLanguage(hiddenItems)
-
-                    allLibraryItems = library
-                    hiddenLibraryItems = hiddenItems
-                    val mangaMap = library
-                        .applyFilters()
-                        .applySort()
-                    val freshStart = libraryItems.isEmpty()
-                    sectionLibrary(mangaMap, freshStart)
-                }
         }
     }
 

@@ -2,14 +2,16 @@ package eu.kanade.tachiyomi.ui.library.display
 
 import android.content.Context
 import android.util.AttributeSet
+import eu.kanade.tachiyomi.R
+import yokai.i18n.MR
+import yokai.util.lang.getString
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.databinding.LibraryCategoryLayoutBinding
 import eu.kanade.tachiyomi.util.bindToPreference
 import eu.kanade.tachiyomi.util.lang.withSubtitle
 import eu.kanade.tachiyomi.util.system.toInt
 import eu.kanade.tachiyomi.widget.BaseLibraryDisplayView
 import kotlin.math.min
-import yokai.i18n.MR
-import yokai.util.lang.getString
 
 class LibraryCategoryView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     BaseLibraryDisplayView<LibraryCategoryLayoutBinding>(context, attrs) {
@@ -18,7 +20,7 @@ class LibraryCategoryView @JvmOverloads constructor(context: Context, attrs: Att
     override fun initGeneralPreferences() {
         with(binding) {
             showAll.bindToPreference(preferences.showAllCategories()) {
-                controller?.presenter?.updateLibrary()
+                controller?.presenter?.getLibrary()
                 binding.categoryShow.isEnabled = it
             }
             categoryShow.isEnabled = showAll.isChecked
@@ -28,7 +30,7 @@ class LibraryCategoryView @JvmOverloads constructor(context: Context, attrs: Att
             dynamicToBottom.text = context.getString(MR.strings.move_dynamic_to_bottom)
                 .withSubtitle(context, MR.strings.when_grouping_by_sources_tags)
             dynamicToBottom.bindToPreference(preferences.collapsedDynamicAtBottom()) {
-                controller?.presenter?.updateLibrary()
+                controller?.presenter?.getLibrary()
             }
             showEmptyCatsFiltering.bindToPreference(preferences.showEmptyCategoriesWhileFiltering()) {
                 controller?.presenter?.requestFilterUpdate()

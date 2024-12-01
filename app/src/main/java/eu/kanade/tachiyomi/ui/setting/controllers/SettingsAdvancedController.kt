@@ -453,6 +453,7 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
         preferenceCategory {
             title = "Danger zone!"
+            isVisible = BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY
 
             preference {
                 title = "Crash the app!"

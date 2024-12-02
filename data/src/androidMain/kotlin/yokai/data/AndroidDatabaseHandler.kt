@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import yokai.data.util.executeAsFirstOrNull
 
 class AndroidDatabaseHandler(
     val db: Database,
@@ -51,6 +52,13 @@ class AndroidDatabaseHandler(
         block: suspend Database.() -> Query<T>
     ): T? {
         return dispatch(inTransaction) { block(db).executeAsOneOrNull() }
+    }
+
+    override suspend fun <T : Any> awaitFirstOrNull(
+        inTransaction: Boolean,
+        block: suspend Database.() -> Query<T>
+    ): T? {
+        return dispatch(inTransaction) { block(db).executeAsFirstOrNull() }
     }
 
     override suspend fun <T : Any> awaitOneOrNullExecutable(

@@ -27,6 +27,11 @@ interface DatabaseHandler {
         block: suspend Database.() -> Query<T>
     ): T?
 
+    suspend fun <T : Any> awaitFirstOrNull(
+        inTransaction: Boolean = false,
+        block: suspend Database.() -> Query<T>
+    ): T?
+
     suspend fun <T : Any> awaitOneOrNullExecutable(
         inTransaction: Boolean = false,
         block: suspend Database.() -> ExecutableQuery<T>,

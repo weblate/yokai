@@ -23,7 +23,7 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
         handler.awaitList { chaptersQueries.getChaptersByUrl(url, filterScanlators.toInt().toLong(), Chapter::mapper) }
 
     override suspend fun getChapterByUrl(url: String, filterScanlators: Boolean): Chapter? =
-        handler.awaitOneOrNull { chaptersQueries.getChaptersByUrl(url, filterScanlators.toInt().toLong(), Chapter::mapper) }
+        handler.awaitFirstOrNull { chaptersQueries.getChaptersByUrl(url, filterScanlators.toInt().toLong(), Chapter::mapper) }
 
     override suspend fun getChaptersByUrlAndMangaId(
         url: String,
@@ -39,7 +39,7 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
         mangaId: Long,
         filterScanlators: Boolean
     ): Chapter? =
-        handler.awaitOneOrNull {
+        handler.awaitFirstOrNull {
             chaptersQueries.getChaptersByUrlAndMangaId(url, mangaId, filterScanlators.toInt().toLong(), Chapter::mapper)
         }
 

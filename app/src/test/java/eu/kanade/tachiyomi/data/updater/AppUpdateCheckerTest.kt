@@ -76,6 +76,8 @@ class AppUpdateCheckerTest {
     @Test
     fun `Prod should get latest Prod build (Check for Betas)`() {
         assertTrue(isNewVersion("1.2.4-b1", "1.2.3"))
+        assertTrue(isNewVersion("1.3.0-b1", "1.2.3"))
+        assertTrue(isNewVersion("2.0.0-b1", "1.2.3"))
     }
 
     @Test

@@ -7,7 +7,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - `Changes` - Behaviour/visual changes
 - `Fixes` - Bugfixes
 - `Translation` - Translation changes/updates
-- `Other` - Technical stuff
+- `Other` - Technical changes/updates
 
 ## [Unreleased]
 
@@ -78,6 +78,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Replace WebView to use Compose (@arkon)
   - Fixed Keyboard is covering web page inputs
 - Increased `tryToSetForeground` delay to fix potential crashes
+
+## [1.8.5.13]
+
+### Fixed
+- Fix version checker
 
 ## [1.8.5.12]
 

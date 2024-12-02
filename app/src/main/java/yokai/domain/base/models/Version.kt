@@ -21,17 +21,21 @@ data class Version(
         // On nightly we only care about build number
         if (type == Type.NIGHTLY) return build.compareTo(other.build)
 
-        var rt = (major.compareTo(other.major) +
-            minor.compareTo(other.minor) +
-            patch.compareTo(other.patch)).compareTo(0)
-        // check if it's a hotfix (1.2.3 vs 1.2.3.1)
-        if (rt == 0) rt = hotfix.compareTo(other.hotfix)
-        // if semver is equal, check version stage (release (3) > beta (2) > alpha (1))
-        if (rt == 0) rt = stage.weight.compareTo(other.stage.weight)
-        // if everything are equal, we compare build number. This only matters on unstable (beta and nightly) releases
-        if (rt == 0) rt = build.compareTo(other.build)
+        val currentVer = listOf(major, minor, patch, hotfix, stage.weight, build)
+        val otherVer = listOf(other.major, other.minor, other.patch, other.hotfix, other.stage.weight, other.build)
 
-        return rt
+        // In case my brain fried and left out a value
+        if (currentVer.size != otherVer.size) throw RuntimeException("Version lists' size must be the same")
+
+        for (i in 1..currentVer.size) {
+            when (currentVer[i - 1].compareTo(otherVer[i - 1])) {
+                0 -> if (i == currentVer.size) return 0 else continue
+                1 -> return 1
+                else -> return -1
+            }
+        }
+
+        return 0
     }
 
     override fun toString(): String {

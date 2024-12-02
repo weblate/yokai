@@ -10,4 +10,4 @@
 ## Other  ?? Technical stuff, what happened behind the scene
 -->
 ### Fixed
-- Fixed scanlator data disappeared after reading
+- Fix version checker

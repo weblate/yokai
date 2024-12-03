@@ -75,7 +75,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update kotlin monorepo to v2.0.21
 - Update dependency androidx.work:work-runtime-ktx to v2.10.0
 - Update dependency androidx.core:core-ktx to v1.15.0
-- Update dependency io.coil-kt.coil3:coil-bom to v3.0.3
+- Update dependency io.coil-kt.coil3:coil-bom to v3.0.4
 - Update xml.serialization to v0.90.3
 - Update dependency co.touchlab:kermit to v2.0.5
 - Replace WebView to use Compose (@arkon)

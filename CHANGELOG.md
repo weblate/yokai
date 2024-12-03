@@ -38,6 +38,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fix issues with shizuku in a multi-user setup (@Redjard)
 - Fix some regional/variant languages is not listed in app language option
 - Fix browser not opening in some cases in Honor devices (@MajorTanya)
+- Fix "ConcurrentModificationException" crashes
+- Fix Komga unread badge, again
 
 ### Other
 - Simplify network helper code

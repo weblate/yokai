@@ -812,7 +812,8 @@ class LibraryPresenter(
     private fun getLibraryFlow(): Flow<LibraryData> {
         return combine(
             getCategories.subscribe(),
-            getLibraryManga.subscribe(),
+            // FIXME: Remove retry once a real solution is found
+            getLibraryManga.subscribe().retry(1),
             getPreferencesFlow(),
             preferences.removeArticles().changes(),
             fetchLibrary

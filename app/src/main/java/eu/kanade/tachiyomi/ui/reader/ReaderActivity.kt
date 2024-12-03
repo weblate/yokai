@@ -356,8 +356,8 @@ class ReaderActivity : BaseActivity<ReaderActivityBinding>() {
         if (viewModel.needsInit()) {
             fromUrl = handleIntentAction(intent)
             if (!fromUrl) {
-                val manga = intent.extras!!.getLong("manga", -1)
-                val chapter = intent.extras!!.getLong("chapter", -1)
+                val manga = intent.extras?.getLong("manga", -1L) ?: -1L
+                val chapter = intent.extras?.getLong("chapter", -1L) ?: -1L
                 if (manga == -1L || chapter == -1L) {
                     finish()
                     return

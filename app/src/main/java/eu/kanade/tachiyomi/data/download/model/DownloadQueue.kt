@@ -20,7 +20,7 @@ class DownloadQueue(
 
     private val updatedRelay = PublishRelay.create<Unit>()
 
-    private val downloadListeners = mutableListOf<DownloadListener>()
+    private val downloadListeners: MutableList<DownloadListener> = CopyOnWriteArrayList<DownloadListener>()
 
     private var scope = MainScope()
 

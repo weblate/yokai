@@ -814,7 +814,7 @@ class LibraryPresenter(
         return combine(
             getCategories.subscribe(),
             // FIXME: Remove retry once a real solution is found
-            getLibraryManga.subscribe().retry(1),
+            getLibraryManga.subscribe().retry(1) { e -> e is NullPointerException },
             getPreferencesFlow(),
             preferences.removeArticles().changes(),
             fetchLibrary

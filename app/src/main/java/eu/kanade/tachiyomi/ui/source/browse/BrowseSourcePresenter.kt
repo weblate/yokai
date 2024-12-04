@@ -46,7 +46,7 @@ import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.ui.UiPreferences
 
-// FIXME: Refactor to use AndroidX Paging
+// FIXME: Migrate to Compose
 /**
  * Presenter of [BrowseSourceController].
  */

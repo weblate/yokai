@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import yokai.data.util.executeAsFirstOrNull
+import yokai.data.util.mapToFirstOrNull
 
 class AndroidDatabaseHandler(
     val db: Database,
@@ -78,6 +79,10 @@ class AndroidDatabaseHandler(
 
     override fun <T : Any> subscribeToOneOrNull(block: Database.() -> Query<T>): Flow<T?> {
         return block(db).asFlow().mapToOneOrNull(queryDispatcher)
+    }
+
+    override fun <T : Any> subscribeToFirstOrNull(block: Database.() -> Query<T>): Flow<T?> {
+        return block(db).asFlow().mapToFirstOrNull(queryDispatcher)
     }
 
     /*

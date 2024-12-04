@@ -43,6 +43,8 @@ interface DatabaseHandler {
 
     fun <T : Any> subscribeToOneOrNull(block: Database.() -> Query<T>): Flow<T?>
 
+    fun <T : Any> subscribeToFirstOrNull(block: Database.() -> Query<T>): Flow<T?>
+
     /*
     fun <T : Any> subscribeToPagingSource(
         countQuery: Database.() -> Query<Long>,

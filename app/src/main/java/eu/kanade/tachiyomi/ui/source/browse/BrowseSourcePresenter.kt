@@ -72,7 +72,6 @@ open class BrowseSourcePresenter(
 
     var filtersChanged = false
 
-    var items = mutableListOf<BrowseSourceItem>()
     val page: Int
         get() = pager.currentPage
 
@@ -129,7 +128,6 @@ open class BrowseSourcePresenter(
                 }
             }
             filtersChanged = false
-            restartPager()
         }
     }
 
@@ -172,7 +170,6 @@ open class BrowseSourcePresenter(
         val browseAsList = preferences.browseAsList()
         val sourceListType = preferences.libraryLayout()
         val outlineCovers = uiPreferences.outlineOnCovers()
-        items.clear()
 
         // Prepare the pager.
         pagerJob?.cancel()
@@ -190,7 +187,6 @@ open class BrowseSourcePresenter(
                     val items = mangas.map {
                         BrowseSourceItem(it, browseAsList, sourceListType, outlineCovers)
                     }
-                    this@BrowseSourcePresenter.items.addAll(items)
                     withUIContext { view?.onAddPage(page, items) }
                 } catch (error: Exception) {
                     Logger.e(error) { "Unable to prepare a page" }

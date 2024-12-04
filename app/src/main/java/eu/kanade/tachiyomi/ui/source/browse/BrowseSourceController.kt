@@ -180,11 +180,10 @@ open class BrowseSourceController(bundle: Bundle) :
             }
             return
         }
-        if (presenter.items.isNotEmpty()) {
-            onAddPage(1, presenter.items)
-        } else {
-            binding.progress.isVisible = true
-        }
+
+        binding.progress.isVisible = true
+
+        presenter.restartPager()
     }
 
     override fun onDestroyView(view: View) {

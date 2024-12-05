@@ -50,7 +50,7 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
             options.bitmapConfig == Bitmap.Config.HARDWARE &&
-            !ImageUtil.isMaxTextureSizeExceeded(bitmap)
+            !ImageUtil.isHardwareThresholdExceeded(bitmap)
         ) {
             val hwBitmap = bitmap.copy(Bitmap.Config.HARDWARE, false)
             if (hwBitmap != null) {

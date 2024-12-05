@@ -776,20 +776,34 @@ object ImageUtil {
         return options
     }
 
-    fun isMaxTextureSizeExceeded(source: BufferedSource): Boolean =
-        extractImageOptions(source).let { opts -> isMaxTextureSizeExceeded(opts.outWidth, opts.outHeight) }
+    fun isHardwareThresholdExceeded(source: BufferedSource): Boolean = extractImageOptions(source).let { opts ->
+        isHardwareThresholdExceeded(opts.outWidth, opts.outHeight)
+    }
 
-    fun isMaxTextureSizeExceeded(drawable: BitmapDrawable): Boolean =
-        isMaxTextureSizeExceeded(drawable.bitmap)
+    fun isHardwareThresholdExceeded(drawable: BitmapDrawable): Boolean =
+        isHardwareThresholdExceeded(drawable.bitmap)
+
+    fun isHardwareThresholdExceeded(bitmap: Bitmap): Boolean =
+        isHardwareThresholdExceeded(bitmap.width, bitmap.height)
+
+    var hardwareBitmapThreshold: Int = GLUtil.SAFE_TEXTURE_LIMIT
+
+    private fun isHardwareThresholdExceeded(width: Int, height: Int): Boolean {
+        if (minOf(width, height) <= 0) return false
+
+        return maxOf(width, height) > hardwareBitmapThreshold
+    }
+
+    fun isMaxTextureSizeExceeded(source: BufferedSource): Boolean = extractImageOptions(source).let { opts ->
+        isMaxTextureSizeExceeded(opts.outWidth, opts.outHeight)
+    }
 
     fun isMaxTextureSizeExceeded(bitmap: Bitmap): Boolean =
         isMaxTextureSizeExceeded(bitmap.width, bitmap.height)
 
-    var hardwareBitmapThreshold: Int = GLUtil.SAFE_TEXTURE_LIMIT
-
     private fun isMaxTextureSizeExceeded(width: Int, height: Int): Boolean {
         if (minOf(width, height) <= 0) return false
 
-        return maxOf(width, height) > hardwareBitmapThreshold
+        return maxOf(width, height) > GLUtil.DEVICE_TEXTURE_LIMIT
     }
 }

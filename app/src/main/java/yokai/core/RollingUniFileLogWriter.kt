@@ -146,7 +146,7 @@ class RollingUniFileLogWriter(
                 }
                 .orEmpty()
                 .sortedByDescending { it.name }
-                .drop(maxLogFiles - 1)
+                .drop(maxLogFiles)
                 .forEach {
                     it.delete()
                     dupes[it.name]?.forEach { f -> f.delete() }

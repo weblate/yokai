@@ -12,6 +12,7 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.util.system.ImageUtil
+import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -100,7 +101,7 @@ class DownloadManager(val context: Context) {
      */
     fun clearQueue(isNotification: Boolean = false) {
         deletePendingDownloads(*downloader.queue.toTypedArray())
-        downloader.clearQueue(isNotification)
+        downloader.removeFromQueue(isNotification)
         DownloadJob.callListeners(false, this)
     }
 
@@ -298,7 +299,7 @@ class DownloadManager(val context: Context) {
      * @param manga the manga of the chapters.
      * @param source the source of the chapters.
      */
-    fun cleanupChapters(allChapters: List<Chapter>, manga: Manga, source: Source, removeRead: Boolean, removeNonFavorite: Boolean): Int {
+    suspend fun cleanupChapters(allChapters: List<Chapter>, manga: Manga, source: Source, removeRead: Boolean, removeNonFavorite: Boolean): Int {
         var cleaned = 0
 
         if (removeNonFavorite && !manga.favorite) {
@@ -311,7 +312,7 @@ class DownloadManager(val context: Context) {
 
         val filesWithNoChapter = provider.findUnmatchedChapterDirs(allChapters, manga, source)
         cleaned += filesWithNoChapter.size
-        cache.removeFolders(filesWithNoChapter.mapNotNull { it.name }, manga)
+        cache.removeChapterFolders(filesWithNoChapter.mapNotNull { it.name }, manga)
         filesWithNoChapter.forEach { it.delete() }
 
         if (removeRead) {
@@ -341,12 +342,23 @@ class DownloadManager(val context: Context) {
      * @param manga the manga to delete.
      * @param source the source of the manga.
      */
-    fun deleteManga(manga: Manga, source: Source) {
-        downloader.clearQueue(manga, true)
-        queue.remove(manga)
-        provider.findMangaDir(manga, source)?.delete()
-        cache.removeManga(manga)
-        queue.updateListeners()
+    fun deleteManga(manga: Manga, source: Source, removeQueued: Boolean = true) {
+        launchIO {
+            if (removeQueued) {
+                downloader.removeFromQueue(manga, true)
+                queue.remove(manga)
+                queue.updateListeners()
+            }
+            provider.findMangaDir(manga, source)?.delete()
+            cache.removeManga(manga)
+
+            // Delete source directory if empty
+            val sourceDir = provider.findSourceDir(source)
+            if (sourceDir?.listFiles()?.isEmpty() == true) {
+                sourceDir.delete()
+                cache.removeSource(source)
+            }
+        }
     }
 
     /**
@@ -377,7 +389,7 @@ class DownloadManager(val context: Context) {
      * @param oldChapter the existing chapter with the old name.
      * @param newChapter the target chapter with the new name.
      */
-    fun renameChapter(source: Source, manga: Manga, oldChapter: Chapter, newChapter: Chapter) {
+    suspend fun renameChapter(source: Source, manga: Manga, oldChapter: Chapter, newChapter: Chapter) {
         val oldNames = provider.getValidChapterDirNames(oldChapter).map { listOf(it, "$it.cbz") }.flatten()
         var newName = provider.getChapterDirName(newChapter, includeId = downloadPreferences.downloadWithId().get())
         val mangaDir = provider.getMangaDir(manga, source)
@@ -395,7 +407,7 @@ class DownloadManager(val context: Context) {
 
         if (oldDownload.renameTo(newName)) {
             cache.removeChapters(listOf(oldChapter), manga)
-            cache.addChapter(newName, manga)
+            cache.addChapter(newName, mangaDir, manga)
         } else {
             Logger.e { "Could not rename downloaded chapter: ${oldNames.joinToString()}" }
         }

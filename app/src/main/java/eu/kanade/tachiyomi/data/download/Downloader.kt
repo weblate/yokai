@@ -28,6 +28,9 @@ import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.system.writeText
+import java.io.File
+import java.util.*
+import java.util.zip.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -50,13 +53,10 @@ import yokai.core.archive.ZipWriter
 import yokai.core.metadata.COMIC_INFO_FILE
 import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.getComicInfo
+import yokai.domain.category.interactor.GetCategories
 import yokai.domain.download.DownloadPreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
-import java.io.File
-import java.util.*
-import java.util.zip.*
-import yokai.domain.category.interactor.GetCategories
 
 /**
  * This class is the one in charge of downloading chapters.
@@ -192,7 +192,7 @@ class Downloader(
      *
      * @param isNotification value that determines if status is set (needed for view updates)
      */
-    fun clearQueue(isNotification: Boolean = false) {
+    fun removeFromQueue(isNotification: Boolean = false) {
         destroySubscription()
 
         // Needed to update the chapter view
@@ -210,7 +210,7 @@ class Downloader(
      *
      * @param isNotification value that determines if status is set (needed for view updates)
      */
-    fun clearQueue(manga: Manga, isNotification: Boolean = false) {
+    fun removeFromQueue(manga: Manga, isNotification: Boolean = false) {
         // Needed to update the chapter view
         if (isNotification) {
             queue.filter { it.status == Download.State.QUEUE && it.manga.id == manga.id }
@@ -566,7 +566,7 @@ class Downloader(
      * @param tmpDir the directory where the download is currently stored.
      * @param dirname the real (non temporary) directory name of the download.
      */
-    private fun ensureSuccessfulDownload(
+    private suspend fun ensureSuccessfulDownload(
         download: Download,
         mangaDir: UniFile,
         tmpDir: UniFile,
@@ -602,7 +602,7 @@ class Downloader(
             } else {
                 tmpDir.renameTo(dirname)
             }
-            cache.addChapter(dirname, download.manga)
+            cache.addChapter(dirname, mangaDir, download.manga)
 
             DiskUtil.createNoMediaFile(tmpDir, context)
 

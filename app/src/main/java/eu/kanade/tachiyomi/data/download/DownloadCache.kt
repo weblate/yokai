@@ -199,6 +199,7 @@ class DownloadCache(
                 _isInitializing.emit(true)
             }
 
+            // FIXME: Wait for SourceManager to be initialized
             val sources = getSources()
 
             val sourceMap = sources.associate { provider.getSourceDirName(it).lowercase() to it.id }

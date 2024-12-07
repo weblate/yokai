@@ -83,6 +83,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
   - Fixed Keyboard is covering web page inputs
 - Increased `tryToSetForeground` delay to fix potential crashes (@nonproto)
 - Update dependency org.conscrypt:conscrypt-android to v2.5.3
+- Port upstream's download cache system
 
 ## [1.8.5.13]
 

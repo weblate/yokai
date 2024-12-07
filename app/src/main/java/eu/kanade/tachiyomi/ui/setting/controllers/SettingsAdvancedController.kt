@@ -58,6 +58,7 @@ import eu.kanade.tachiyomi.ui.setting.switchPreference
 import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.lang.addBetaTag
 import eu.kanade.tachiyomi.util.system.GLUtil
+import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.disableItems
 import eu.kanade.tachiyomi.util.system.isPackageInstalled
 import eu.kanade.tachiyomi.util.system.launchIO
@@ -416,7 +417,8 @@ class SettingsAdvancedController : SettingsLegacyController() {
                 entries = entryMap.values.toList()
                 entryValues = entryMap.keys.toList()
 
-                isVisible = GLUtil.DEVICE_TEXTURE_LIMIT > GLUtil.SAFE_TEXTURE_LIMIT
+                isVisible = !ImageUtil.HARDWARE_BITMAP_UNSUPPORTED &&
+                    GLUtil.DEVICE_TEXTURE_LIMIT > GLUtil.SAFE_TEXTURE_LIMIT
 
                 basePreferences.hardwareBitmapThreshold().changesIn(viewScope) { threshold ->
                     summary = context.getString(MR.strings.pref_hardware_bitmap_threshold_summary, entryMap[threshold].orEmpty())

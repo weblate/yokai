@@ -17,6 +17,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Add category hopper long-press action to open random series from **any** category
 - Add option to enable reader debug mode
 - Add option to adjust reader's hardware bitmap threshold (@AntsyLich)
+  - Always use software bitmap on certain devices (@MajorTanya)
 - Add option to scan local entries from `/storage/(sdcard|emulated/0)/Android/data/<yokai>/files/local`
 
 ### Changes

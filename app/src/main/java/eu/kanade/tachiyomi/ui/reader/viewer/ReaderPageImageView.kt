@@ -36,7 +36,6 @@ import eu.kanade.tachiyomi.data.coil.customDecoder
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
 import eu.kanade.tachiyomi.util.system.DeviceUtil
-import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
 import okio.BufferedSource
@@ -127,7 +126,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         } else {
             SubsamplingScaleImageView(context)
         }.apply {
-            setMaxTileSize(GLUtil.DEVICE_TEXTURE_LIMIT)
+            setMaxTileSize(ImageUtil.hardwareBitmapThreshold)
             setDoubleTapZoomStyle(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER)
             setPanLimit(SubsamplingScaleImageView.PAN_LIMIT_INSIDE)
             setMinimumTileDpi(180)

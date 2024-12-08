@@ -311,31 +311,33 @@ suspend fun Manga.addOrRemoveToFavorites(
             )
         )
         onMangaMoved()
-        return view.snack(view.context.getString(MR.strings.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
-            setAction(MR.strings.undo) {
-                favorite = true
-                date_added = lastAddedDate
-                scope.launchIO {
-                    updateManga.await(
-                        MangaUpdate(
-                            id = this@addOrRemoveToFavorites.id!!,
-                            favorite = true,
-                            dateAdded = lastAddedDate,
+        return withUIContext {
+            view.snack(view.context.getString(MR.strings.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
+                setAction(MR.strings.undo) {
+                    favorite = true
+                    date_added = lastAddedDate
+                    scope.launchIO {
+                        updateManga.await(
+                            MangaUpdate(
+                                id = this@addOrRemoveToFavorites.id!!,
+                                favorite = true,
+                                dateAdded = lastAddedDate,
+                            )
                         )
-                    )
-                }
-                onMangaMoved()
-            }
-            addCallback(
-                object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                        super.onDismissed(transientBottomBar, event)
-                        if (!favorite) {
-                            onMangaDeleted()
-                        }
                     }
-                },
-            )
+                    onMangaMoved()
+                }
+                addCallback(
+                    object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                            super.onDismissed(transientBottomBar, event)
+                            if (!favorite) {
+                                onMangaDeleted()
+                            }
+                        }
+                    },
+                )
+            }
         }
     }
     return null

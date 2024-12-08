@@ -216,9 +216,9 @@ suspend fun Manga.addOrRemoveToFavorites(
                     )
                 )
                 setMangaCategories.await(this@addOrRemoveToFavorites.id!!, listOf(defaultCategory.id!!.toLong()))
-                (activity as? MainActivity)?.showNotificationPermissionPrompt()
-                onMangaMoved()
                 return withUIContext {
+                    onMangaMoved()
+                    (activity as? MainActivity)?.showNotificationPermissionPrompt()
                     view.snack(activity.getString(MR.strings.added_to_, defaultCategory.name)) {
                         setAction(MR.strings.change) {
                             scope.launchIO {
@@ -243,9 +243,9 @@ suspend fun Manga.addOrRemoveToFavorites(
                     )
                 )
                 setMangaCategories.await(this@addOrRemoveToFavorites.id!!, lastUsedCategories.map { it.id!!.toLong() })
-                (activity as? MainActivity)?.showNotificationPermissionPrompt()
-                onMangaMoved()
                 return withUIContext {
+                    onMangaMoved()
+                    (activity as? MainActivity)?.showNotificationPermissionPrompt()
                     view.snack(
                         activity.getString(
                             MR.strings.added_to_,
@@ -280,9 +280,9 @@ suspend fun Manga.addOrRemoveToFavorites(
                     )
                 )
                 setMangaCategories.await(this@addOrRemoveToFavorites.id!!, emptyList())
-                onMangaMoved()
-                (activity as? MainActivity)?.showNotificationPermissionPrompt()
                 return withUIContext {
+                    onMangaMoved()
+                    (activity as? MainActivity)?.showNotificationPermissionPrompt()
                     if (categories.isNotEmpty()) {
                         view.snack(activity.getString(MR.strings.added_to_, activity.getString(MR.strings.default_value))) {
                             setAction(MR.strings.change) {
@@ -311,8 +311,8 @@ suspend fun Manga.addOrRemoveToFavorites(
                 dateAdded = 0,
             )
         )
-        onMangaMoved()
         return withUIContext {
+            onMangaMoved()
             view.snack(view.context.getString(MR.strings.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
                 setAction(MR.strings.undo) {
                     favorite = true

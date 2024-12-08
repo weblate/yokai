@@ -46,7 +46,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Simplify network helper code
 - Fully migrated from StorIO to SQLDelight
 - Update dependency com.android.tools:desugar_jdk_libs to v2.1.3
-- Update moko to v0.24.2
+- Update moko to v0.24.4
 - Refactor trackers to use DTOs (@MajorTanya)
   - Fix AniList `ALSearchItem.status` nullibility (@Secozzi)
 - Replace Injekt with Koin

@@ -818,16 +818,20 @@ class LibraryPresenter(
             getPreferencesFlow(),
             preferences.removeArticles().changes(),
             fetchLibrary
-        ) { allCategories, libraryMangaList, prefs, removeArticles, _ ->
+        ) { dbCategories, libraryMangaList, prefs, removeArticles, _ ->
             groupType = prefs.groupType
+
+            val defaultCategory = createDefaultCategory()
+            val allCategories = listOf(defaultCategory) + dbCategories
 
             val (items, categories, hiddenItems) = if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
                 getLibraryItems(
-                    allCategories,
+                    dbCategories,
                     libraryMangaList,
                     prefs.sortingMode,
                     prefs.sortAscending,
                     prefs.showAllCategories,
+                    defaultCategory,
                 )
             } else {
                 getDynamicLibraryItems(
@@ -854,6 +858,7 @@ class LibraryPresenter(
         sortingMode: Int,
         isAscending: Boolean,
         showAll: Boolean,
+        defaultCategory: Category,
     ): Triple<List<LibraryItem>, List<Category>, List<LibraryItem>> {
         val categories = allCategories.toMutableList()
         val hiddenItems = mutableListOf<LibraryItem>()
@@ -898,7 +903,7 @@ class LibraryPresenter(
             preferences.collapsedCategories().get().mapNotNull { it.toIntOrNull() }.toSet()
         }
 
-        if (categorySet.contains(0)) categories.add(0, createDefaultCategory())
+        if (categorySet.contains(0)) categories.add(0, defaultCategory)
         if (libraryIsGrouped) {
             categories.forEach { category ->
                 val catId = category.id ?: return@forEach

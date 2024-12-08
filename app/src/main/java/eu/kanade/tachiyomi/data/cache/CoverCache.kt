@@ -1,6 +1,9 @@
 package eu.kanade.tachiyomi.data.cache
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Build
 import android.text.format.Formatter
 import co.touchlab.kermit.Logger
 import coil3.imageLoader
@@ -171,8 +174,37 @@ class CoverCache(val context: Context) {
      */
     @Throws(IOException::class)
     fun setCustomCoverToCache(manga: Manga, inputStream: InputStream) {
+        val maxTextureSize = 4096f
+        var bitmap = BitmapFactory.decodeStream(inputStream)
+        if (maxOf(bitmap.width, bitmap.height) > maxTextureSize) {
+            val widthRatio = bitmap.width / maxTextureSize
+            val heightRatio = bitmap.height / maxTextureSize
+
+            val targetWidth: Float
+            val targetHeight: Float
+
+            if (widthRatio >= heightRatio) {
+                targetWidth = maxTextureSize
+                targetHeight = (targetWidth / bitmap.width) * bitmap.height
+            } else {
+                targetHeight = maxTextureSize
+                targetWidth = (targetHeight / bitmap.height) * bitmap.width
+            }
+
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth.toInt(), targetHeight.toInt(), true)
+            bitmap.recycle()
+            bitmap = scaledBitmap
+        }
         getCustomCoverFile(manga).outputStream().use {
-            inputStream.copyTo(it)
+            @Suppress("DEPRECATION")
+            bitmap.compress(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                    Bitmap.CompressFormat.WEBP_LOSSLESS
+                else
+                    Bitmap.CompressFormat.WEBP,
+                100,
+                it
+            )
         }
     }
 

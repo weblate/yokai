@@ -101,6 +101,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.getResourceDrawable
 import eu.kanade.tachiyomi.util.system.ignoredSystemInsets
 import eu.kanade.tachiyomi.util.system.isImeVisible
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.openInBrowser
@@ -128,7 +129,7 @@ import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.text
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.EmptyView
-import java.util.*
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -2191,9 +2192,11 @@ open class LibraryController(
      */
     private fun showChangeMangaCategoriesSheet() {
         val activity = activity ?: return
-        selectedMangas.toList().moveCategories(activity) {
-            presenter.getLibrary()
-            destroyActionModeIfNeeded()
+        viewScope.launchIO {
+            selectedMangas.toList().moveCategories(activity) {
+                presenter.getLibrary()
+                destroyActionModeIfNeeded()
+            }
         }
     }
 

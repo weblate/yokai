@@ -43,8 +43,10 @@ import eu.kanade.tachiyomi.util.addOrRemoveToFavorites
 import eu.kanade.tachiyomi.util.system.connectivityManager
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.e
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.applyBottomAnimatedInsets
 import eu.kanade.tachiyomi.util.view.fullAppBarHeight
@@ -766,22 +768,27 @@ open class BrowseSourceController(bundle: Bundle) :
         val manga = (adapter?.getItem(position) as? BrowseSourceItem?)?.manga ?: return
         val view = view ?: return
         val activity = activity ?: return
-        snack?.dismiss()
-        snack = manga.addOrRemoveToFavorites(
-            preferences,
-            view,
-            activity,
-            presenter.sourceManager,
-            this,
-            onMangaAdded = {
-                adapter?.notifyItemChanged(position)
-                snack = view.snack(MR.strings.added_to_library)
-            },
-            onMangaMoved = { adapter?.notifyItemChanged(position) },
-            onMangaDeleted = { presenter.confirmDeletion(manga) },
-        )
-        if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
-            (activity as? MainActivity)?.setUndoSnackBar(snack)
+        viewScope.launchIO {
+            withUIContext { snack?.dismiss() }
+            snack = manga.addOrRemoveToFavorites(
+                preferences,
+                view,
+                activity,
+                presenter.sourceManager,
+                this@BrowseSourceController,
+                onMangaAdded = {
+                    adapter?.notifyItemChanged(position)
+                    snack = view.snack(MR.strings.added_to_library)
+                },
+                onMangaMoved = { adapter?.notifyItemChanged(position) },
+                onMangaDeleted = { presenter.confirmDeletion(manga) },
+                scope = viewScope,
+            )
+            if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
+                withUIContext {
+                    (activity as? MainActivity)?.setUndoSnackBar(snack)
+                }
+            }
         }
     }
 

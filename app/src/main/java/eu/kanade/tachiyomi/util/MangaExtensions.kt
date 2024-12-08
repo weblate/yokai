@@ -191,6 +191,7 @@ suspend fun Manga.addOrRemoveToFavorites(
                     migrateManga = { source, faved ->
                         onMangaAdded(source to faved)
                     },
+                    scope = scope,
                 )
                 return null
             }
@@ -376,6 +377,8 @@ private suspend fun showAddDuplicateDialog(
     controller: Controller,
     addManga: suspend () -> Unit,
     migrateManga: (Long, Boolean) -> Unit,
+    @OptIn(DelicateCoroutinesApi::class)
+    scope: CoroutineScope = GlobalScope,
 ) = withUIContext {
     val source = sourceManager.getOrStub(libraryManga.source)
 
@@ -385,7 +388,7 @@ private suspend fun showAddDuplicateDialog(
         val enabled = titles.indices.map { listView.isItemChecked(it) }.toTypedArray()
         val flags = MigrationFlags.getFlagsFromPositions(enabled, libraryManga)
         val enhancedServices by lazy { Injekt.get<TrackManager>().services.filterIsInstance<EnhancedTrackService>() }
-        launchUI {
+        scope.launchUI {
             MigrationProcessAdapter.migrateMangaInternal(
                 flags,
                 enhancedServices,
@@ -415,7 +418,7 @@ private suspend fun showAddDuplicateDialog(
                     MangaDetailsController(libraryManga)
                         .withFadeTransaction(),
                 )
-                1 -> launchIO { addManga() }
+                1 -> scope.launchIO { addManga() }
                 2 -> {
                     if (!newManga.initialized) {
                         activity.toast(MR.strings.must_view_details_before_migration, Toast.LENGTH_LONG)

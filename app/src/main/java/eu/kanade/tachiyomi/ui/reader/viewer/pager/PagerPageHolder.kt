@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
+import androidx.core.os.postDelayed
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import co.touchlab.kermit.Logger

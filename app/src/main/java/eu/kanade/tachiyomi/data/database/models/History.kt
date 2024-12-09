@@ -49,8 +49,8 @@ interface History : Serializable {
         ): History = HistoryImpl().apply {
             this.id = id
             this.chapter_id = chapterId
-            this.last_read = lastRead ?: 0L
-            this.time_read = timeRead ?: 0L
+            lastRead?.let { this.last_read = it }
+            timeRead?.let { this.time_read = it }
         }
     }
 }

@@ -157,7 +157,7 @@ class ReaderViewModel(
     private var finished = false
     private var chapterToDownload: Download? = null
 
-    private var chapterList = emptyList<ReaderChapter>()
+    private var chapterList: List<ReaderChapter>? = null
 
     private var chapterItems = emptyList<ReaderChapterItem>()
 
@@ -215,7 +215,7 @@ class ReaderViewModel(
      * Whether this presenter is initialized yet.
      */
     fun needsInit(): Boolean {
-        return manga == null
+        return manga == null || chapterList == null
     }
 
     /**
@@ -246,7 +246,7 @@ class ReaderViewModel(
                     loader = ChapterLoader(context, downloadManager, downloadProvider, manga, source)
 
                     chapterList = getChapterList()
-                    loadChapter(loader!!, chapterList.first { chapterId == it.chapter.id })
+                    loadChapter(loader!!, chapterList!!.first { chapterId == it.chapter.id })
                     Result.success(true)
                 } else {
                     // Unlikely but okay
@@ -402,11 +402,11 @@ class ReaderViewModel(
     ): ViewerChapters {
         loader.loadChapter(chapter)
 
-        val chapterPos = chapterList.indexOf(chapter)
+        val chapterPos = chapterList?.indexOf(chapter) ?: -1
         val newChapters = ViewerChapters(
             chapter,
-            chapterList.getOrNull(chapterPos - 1),
-            chapterList.getOrNull(chapterPos + 1),
+            chapterList?.getOrNull(chapterPos - 1),
+            chapterList?.getOrNull(chapterPos + 1),
         )
 
         withUIContext {

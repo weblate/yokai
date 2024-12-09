@@ -68,7 +68,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import rx.Completable
 import rx.schedulers.Schedulers
@@ -158,22 +157,7 @@ class ReaderViewModel(
     private var finished = false
     private var chapterToDownload: Download? = null
 
-    /**
-     * Chapter list for the active manga. It's retrieved lazily and should be accessed for the first
-     * time in a background thread to avoid blocking the UI.
-     */
-    private val chapterList by lazy {
-        val manga = manga!!
-        val dbChapters = runBlocking { getChapter.awaitAll(manga) }
-
-        val selectedChapter = dbChapters.find { it.id == chapterId }
-            ?: error("Requested chapter of id $chapterId not found in chapter list")
-
-        val chaptersForReader =
-            chapterFilter.filterChaptersForReader(dbChapters, manga, selectedChapter)
-        val chapterSort = ChapterSort(manga, chapterFilter, preferences)
-        chaptersForReader.sortedWith(chapterSort.sortComparator(true)).map(::ReaderChapter)
-    }
+    private var chapterList = emptyList<ReaderChapter>()
 
     private var chapterItems = emptyList<ReaderChapterItem>()
 
@@ -261,6 +245,7 @@ class ReaderViewModel(
                     val context = Injekt.get<Application>()
                     loader = ChapterLoader(context, downloadManager, downloadProvider, manga, source)
 
+                    chapterList = getChapterList()
                     loadChapter(loader!!, chapterList.first { chapterId == it.chapter.id })
                     Result.success(true)
                 } else {
@@ -276,11 +261,24 @@ class ReaderViewModel(
         }
     }
 
+    private suspend fun getChapterList(): List<ReaderChapter> {
+        val manga = manga!!
+        val dbChapters = getChapter.awaitAll(manga.id!!, true)
+
+        val selectedChapter = dbChapters.find { it.id == chapterId }
+            ?: error("Requested chapter of id $chapterId not found in chapter list")
+
+        val chaptersForReader =
+            chapterFilter.filterChaptersForReader(dbChapters, manga, selectedChapter)
+        val chapterSort = ChapterSort(manga, chapterFilter, preferences)
+        return chaptersForReader.sortedWith(chapterSort.sortComparator(true)).map(::ReaderChapter)
+    }
+
     suspend fun getChapters(): List<ReaderChapterItem> {
         val manga = manga ?: return emptyList()
         chapterItems = withContext(Dispatchers.IO) {
             val chapterSort = ChapterSort(manga, chapterFilter, preferences)
-            val dbChapters = runBlocking { getChapter.awaitAll(manga) }
+            val dbChapters = getChapter.awaitAll(manga)
             chapterSort.getChaptersSorted(
                 dbChapters,
                 filterForReader = true,
@@ -544,26 +542,28 @@ class ReaderViewModel(
 
     private fun downloadNextChapters() {
         val manga = manga ?: return
-        if (getCurrentChapter()?.pageLoader !is DownloadPageLoader) return
-        val nextChapter = state.value.viewerChapters?.nextChapter?.chapter ?: return
-        val chaptersNumberToDownload = preferences.autoDownloadWhileReading().get()
-        if (chaptersNumberToDownload == 0 || !manga.favorite) return
-        val isNextChapterDownloaded = downloadManager.isChapterDownloaded(nextChapter, manga)
-        if (isNextChapterDownloaded) {
-            downloadAutoNextChapters(chaptersNumberToDownload, nextChapter.id)
+        viewModelScope.launchNonCancellableIO {
+            if (getCurrentChapter()?.pageLoader !is DownloadPageLoader) return@launchNonCancellableIO
+            val nextChapter = state.value.viewerChapters?.nextChapter?.chapter ?: return@launchNonCancellableIO
+            val chaptersNumberToDownload = preferences.autoDownloadWhileReading().get()
+            if (chaptersNumberToDownload == 0 || !manga.favorite) return@launchNonCancellableIO
+            val isNextChapterDownloaded = downloadManager.isChapterDownloaded(nextChapter, manga)
+            if (isNextChapterDownloaded) {
+                downloadAutoNextChapters(chaptersNumberToDownload, nextChapter.id)
+            }
         }
     }
 
-    private fun downloadAutoNextChapters(choice: Int, nextChapterId: Long?) {
+    private suspend fun downloadAutoNextChapters(choice: Int, nextChapterId: Long?) {
         val chaptersToDownload = getNextUnreadChaptersSorted(nextChapterId).take(choice - 1)
         if (chaptersToDownload.isNotEmpty()) {
             downloadChapters(chaptersToDownload)
         }
     }
 
-    private fun getNextUnreadChaptersSorted(nextChapterId: Long?): List<ChapterItem> {
+    private suspend fun getNextUnreadChaptersSorted(nextChapterId: Long?): List<ChapterItem> {
         val chapterSort = ChapterSort(manga!!, chapterFilter, preferences)
-        return chapterList.map { ChapterItem(it.chapter, manga!!) }
+        return getChapterList().map { ChapterItem(it.chapter, manga!!) }
             .filter { !it.read || it.id == nextChapterId }
             .sortedWith(chapterSort.sortComparator(true))
             .takeLastWhile { it.id != nextChapterId }
@@ -594,6 +594,7 @@ class ReaderViewModel(
      */
     private fun deleteChapterIfNeeded(currentChapter: ReaderChapter) {
         viewModelScope.launchNonCancellableIO {
+            val chapterList = getChapterList()
             // Determine which chapter should be deleted and enqueue
             val currentChapterPosition = chapterList.indexOf(currentChapter)
             val removeAfterReadSlots = preferences.removeAfterReadSlots().get()

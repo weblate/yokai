@@ -11,6 +11,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.9.0]
+
 ### Additions
 - Sync DoH provider list with upstream (added Mullvad, Control D, Njalla, and Shecan)
 - Add option to enable verbose logging
@@ -28,6 +30,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Bangumi search now shows the score and summary of a search result (@MajorTanya)
 - Logs are now written to a file for easier debugging
 - Bump default user agent (@AntsyLich)
+- Custom cover is now compressed to WebP to prevent OOM crashes
 
 ### Fixes
 - Fix only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
@@ -41,6 +44,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fix browser not opening in some cases in Honor devices (@MajorTanya)
 - Fix "ConcurrentModificationException" crashes
 - Fix Komga unread badge, again
+- Fix default category can't be updated manually
+- Fix crashes trying to load Library caused by cover being too large
 
 ### Other
 - Simplify network helper code

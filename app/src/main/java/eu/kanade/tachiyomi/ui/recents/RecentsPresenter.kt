@@ -179,7 +179,7 @@ class RecentsPresenter(
             RecentsViewType.GroupedAll, RecentsViewType.UngroupedAll -> {
                 getRecents.awaitAll(
                     showRead,
-                    true,
+                    false,
                     isEndless,
                     !updatePageCount && !isOnFirstPage,
                     query,
@@ -466,12 +466,14 @@ class RecentsPresenter(
     }
 
     private suspend fun getNextChapter(manga: Manga): Chapter? {
-        val chapters = getChapter.awaitAll(manga)
+        val mangaId = manga.id ?: return null
+        val chapters = getChapter.awaitAll(mangaId, true)
         return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
     }
 
     private suspend fun getFirstUpdatedChapter(manga: Manga, chapter: Chapter): Chapter? {
-        val chapters = getChapter.awaitAll(manga)
+        val mangaId = manga.id ?: return null
+        val chapters = getChapter.awaitAll(mangaId, true)
         return chapters
             .sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
                 !it.read && abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)

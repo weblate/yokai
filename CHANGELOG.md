@@ -11,6 +11,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Fixes
+- Fix chapters cannot be opened from `Recents > Grouped` and `Recents > All`
+
 ## [1.9.0]
 
 ### Additions

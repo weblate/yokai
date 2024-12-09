@@ -110,7 +110,6 @@ ORDER BY max_last_read.history_last_read DESC
 LIMIT :limit OFFSET :offset;
 
 getRecentsAll:
-SELECT R1.* FROM (
 SELECT
     M.*,
     C.*,
@@ -157,11 +156,9 @@ WHERE lower(title) LIKE '%' || :search || '%'
 AND (
     :apply_filter = 0 OR S.name IS NULL
 )
-) AS R1
 
 UNION  -- Newly added chapter
 
-SELECT R2.* FROM (
 SELECT
     M.*,
     C.*,
@@ -194,11 +191,9 @@ AND lower(title) LIKE '%' || :search || '%'
 AND (
     :apply_filter = 0 OR S.name IS NULL
 )
-) AS R2
 
 UNION  -- Newly added manga
 
-SELECT R3.* FROM (
 SELECT
     M.*,
     C.*,
@@ -225,6 +220,6 @@ JOIN (
 ) AS C
 WHERE favorite = 1
 AND lower(title) LIKE '%' || :search || '%'
-) AS R3
+
 ORDER BY history_last_read DESC
 LIMIT :limit OFFSET :offset;

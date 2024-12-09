@@ -179,7 +179,7 @@ class RecentsPresenter(
             RecentsViewType.GroupedAll, RecentsViewType.UngroupedAll -> {
                 getRecents.awaitAll(
                     showRead,
-                    false,
+                    true,
                     isEndless,
                     !updatePageCount && !isOnFirstPage,
                     query,

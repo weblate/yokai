@@ -69,11 +69,18 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     .filter { !it.isDirectory }
                     .firstOrNull { it.name == COMIC_INFO_FILE }
 
-                return if (localDetails != null) {
-                    decodeComicInfo(localDetails.openInputStream()).language?.value ?: "other"
+                val lang = if (localDetails != null) {
+                    try {
+                        decodeComicInfo(localDetails.openInputStream()).language?.value
+                    } catch (e: Exception) {
+                        Logger.e(e) { "Unable to retrieve manga language" }
+                        null
+                    }
                 } else {
-                    "other"
+                    null
                 }
+
+                return lang ?: "other"
             }
         }
 

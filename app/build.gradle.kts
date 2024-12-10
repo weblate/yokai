@@ -31,7 +31,7 @@ fun runCommand(command: String): String {
     return String(byteOut.toByteArray()).trim()
 }
 
-val _versionName = "1.9.0"
+val _versionName = "1.9.1"
 val betaCount by lazy {
     val betaTags = runCommand("git tag -l --sort=refname v${_versionName}-b*")
 

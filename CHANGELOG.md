@@ -24,6 +24,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency androidx.glance:glance-appwidget to v1.1.1
 - Update dependency com.google.firebase:firebase-bom to v33.7.0
 - Update fast.adapter to v5.7.0
+- Downgrade dependency org.conscrypt:conscrypt-android to v2.5.2
 
 ## [1.9.0]
 

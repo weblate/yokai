@@ -14,6 +14,16 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ### Fixes
 - Fix chapters cannot be opened from `Recents > Grouped` and `Recents > All`
 
+### Other
+- Update dependency io.github.kevinnzou:compose-webview to v0.33.6
+- Update dependency org.jsoup:jsoup to v1.18.3
+- Update voyager to v1.1.0-beta03
+- Update dependency androidx.annotation:annotation to v1.9.1
+- Update dependency androidx.constraintlayout:constraintlayout to v2.2.0
+- Update dependency androidx.glance:glance-appwidget to v1.1.1
+- Update dependency com.google.firebase:firebase-bom to v33.7.0
+- Update fast.adapter to v5.7.0
+
 ## [1.9.0]
 
 ### Additions

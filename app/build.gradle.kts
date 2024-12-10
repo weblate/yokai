@@ -272,7 +272,7 @@ dependencies {
 
     // For detecting memory leaks
     // REF: https://square.github.io/leakcanary/
-    // debugImplementation(libs.leakcanary.android)
+    debugImplementation(libs.leakcanary.android)
     implementation(libs.leakcanary.plumber)
 }
 

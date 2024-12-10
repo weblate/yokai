@@ -205,6 +205,7 @@ class CoverCache(val context: Context) {
                 100,
                 it
             )
+            bitmap.recycle()
         }
     }
 

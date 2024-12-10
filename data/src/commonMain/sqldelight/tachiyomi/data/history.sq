@@ -110,14 +110,14 @@ ORDER BY max_last_read.history_last_read DESC
 LIMIT :limit OFFSET :offset;
 
 getRecentsAll:
-SELECT
+SELECT  -- Recently read manga
     M.*,
     C.*,
     history.history_id AS history_id,
     history.history_chapter_id AS history_chapter_id,
     history.history_last_read AS history_last_read,
     history.history_time_read AS history_time_read
-FROM (
+FROM (  -- Check if there's any unread chapters and whether to include read chapters
     SELECT M2.*
     FROM mangas AS M2
     LEFT JOIN (
@@ -145,7 +145,7 @@ JOIN (
     FROM chapters AS C2 JOIN history AS H2
     ON C2._id = H2.history_chapter_id
     GROUP BY C2.manga_id
-) AS max_last_read
+) AS max_last_read  -- Most recent chapters
 ON C.manga_id = max_last_read.manga_id
 AND max_last_read.history_chapter_id = history.history_chapter_id
 AND max_last_read.history_last_read > 0
@@ -157,7 +157,7 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 )
 
-UNION  -- Newly added chapter
+UNION  -- Newly fetched chapter
 
 SELECT
     M.*,

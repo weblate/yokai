@@ -13,6 +13,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ### Fixes
 - Fix chapters cannot be opened from `Recents > Grouped` and `Recents > All`
+- Fix crashes caused by malformed XML
 
 ### Other
 - Update dependency io.github.kevinnzou:compose-webview to v0.33.6

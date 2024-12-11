@@ -13,6 +13,10 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ### Changes
 - Adjust chapter title-details contrast
+- Make app updater notification consistent with other notifications
+
+### Fixes
+- Fix "Remove from read" not working properly
 
 ## [1.9.1]
 

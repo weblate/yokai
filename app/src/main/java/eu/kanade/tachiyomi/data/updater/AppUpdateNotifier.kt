@@ -14,6 +14,7 @@ import eu.kanade.tachiyomi.data.notification.NotificationHandler
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.util.system.getResourceColor
+import eu.kanade.tachiyomi.util.system.notificationBuilder
 import eu.kanade.tachiyomi.util.system.notificationManager
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -30,7 +31,7 @@ internal class AppUpdateNotifier(private val context: Context) {
      * Builder to manage notifications.
      */
     val notificationBuilder by lazy {
-        NotificationCompat.Builder(context, Notifications.CHANNEL_COMMON).apply {
+        context.notificationBuilder(Notifications.CHANNEL_COMMON).apply {
             setSmallIcon(AR.drawable.stat_sys_download)
             setContentTitle(context.getString(MR.strings.app_name))
         }

@@ -11,6 +11,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Changes
+- Adjust chapter title-details contrast
+
 ## [1.9.1]
 
 ### Fixes

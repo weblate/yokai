@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.util.chapter
 import android.content.Context
 import android.content.res.ColorStateList
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import androidx.core.widget.TextViewCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import eu.kanade.tachiyomi.R
@@ -102,12 +103,11 @@ class ChapterUtil {
 
         private fun readColor(context: Context): Int = context.contextCompatColor(R.color.read_chapter)
 
-        private fun unreadColor(context: Context, secondary: Boolean = false): Int =
-            if (!secondary) {
-                context.getResourceColor(R.attr.colorOnBackground)
-            } else {
-                context.getResourceColor(android.R.attr.textColorSecondary)
-            }
+        private fun unreadColor(context: Context, secondary: Boolean = false): Int {
+            val color = context.getResourceColor(R.attr.colorOnSurface)
+            // 78% alpha for chapter details, 100% for chapter number/title
+            return ColorUtils.setAlphaComponent(color, if (secondary) 198 else 255)
+        }
 
         private fun bookmarkedColor(context: Context): Int = context.getResourceColor(R.attr.colorSecondary)
 

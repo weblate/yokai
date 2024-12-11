@@ -69,8 +69,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import rx.Completable
-import rx.schedulers.Schedulers
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -1012,13 +1010,9 @@ class ReaderViewModel(
         if (!chapter.chapter.read) return
         val manga = manga ?: return
 
-        Completable
-            .fromCallable {
-                downloadManager.enqueueDeleteChapters(listOf(chapter.chapter), manga)
-            }
-            .onErrorComplete()
-            .subscribeOn(Schedulers.io())
-            .subscribe()
+        viewModelScope.launchNonCancellableIO {
+            downloadManager.enqueueDeleteChapters(listOf(chapter.chapter), manga)
+        }
     }
 
     /**
@@ -1026,10 +1020,9 @@ class ReaderViewModel(
      * are ignored.
      */
     private fun deletePendingChapters() {
-        Completable.fromCallable { downloadManager.deletePendingChapters() }
-            .onErrorComplete()
-            .subscribeOn(Schedulers.io())
-            .subscribe()
+        viewModelScope.launchNonCancellableIO {
+            downloadManager.deletePendingChapters()
+        }
     }
 
     data class State(

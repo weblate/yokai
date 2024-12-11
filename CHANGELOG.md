@@ -11,6 +11,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.9.2]
+
 ### Changes
 - Adjust chapter title-details contrast
 - Make app updater notification consistent with other notifications

@@ -155,7 +155,7 @@ class ReaderViewModel(
     private var finished = false
     private var chapterToDownload: Download? = null
 
-    private var chapterList: List<ReaderChapter>? = null
+    private lateinit var chapterList: List<ReaderChapter>
 
     private var chapterItems = emptyList<ReaderChapterItem>()
 
@@ -213,7 +213,7 @@ class ReaderViewModel(
      * Whether this presenter is initialized yet.
      */
     fun needsInit(): Boolean {
-        return manga == null || chapterList == null
+        return manga == null || !this::chapterList.isInitialized
     }
 
     /**
@@ -400,11 +400,11 @@ class ReaderViewModel(
     ): ViewerChapters {
         loader.loadChapter(chapter)
 
-        val chapterPos = chapterList?.indexOf(chapter) ?: -1
+        val chapterPos = chapterList.indexOf(chapter) ?: -1
         val newChapters = ViewerChapters(
             chapter,
-            chapterList?.getOrNull(chapterPos - 1),
-            chapterList?.getOrNull(chapterPos + 1),
+            chapterList.getOrNull(chapterPos - 1),
+            chapterList.getOrNull(chapterPos + 1),
         )
 
         withUIContext {
@@ -561,7 +561,7 @@ class ReaderViewModel(
 
     private suspend fun getNextUnreadChaptersSorted(nextChapterId: Long?): List<ChapterItem> {
         val chapterSort = ChapterSort(manga!!, chapterFilter, preferences)
-        return getChapterList().map { ChapterItem(it.chapter, manga!!) }
+        return chapterList.map { ChapterItem(it.chapter, manga!!) }
             .filter { !it.read || it.id == nextChapterId }
             .sortedWith(chapterSort.sortComparator(true))
             .takeLastWhile { it.id != nextChapterId }
@@ -592,7 +592,6 @@ class ReaderViewModel(
      */
     private fun deleteChapterIfNeeded(currentChapter: ReaderChapter) {
         viewModelScope.launchNonCancellableIO {
-            val chapterList = getChapterList()
             // Determine which chapter should be deleted and enqueue
             val currentChapterPosition = chapterList.indexOf(currentChapter)
             val removeAfterReadSlots = preferences.removeAfterReadSlots().get()

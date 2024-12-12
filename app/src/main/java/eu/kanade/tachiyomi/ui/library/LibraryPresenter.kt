@@ -11,8 +11,6 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.data.download.DownloadManager
-import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.data.preference.DelayedLibrarySuggestionsJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackManager
@@ -58,6 +56,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.retry
@@ -95,7 +95,7 @@ class LibraryPresenter(
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val trackManager: TrackManager = Injekt.get(),
-) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
+) : BaseCoroutinePresenter<LibraryController>() {
     private val getCategories: GetCategories by injectLazy()
     private val setMangaCategories: SetMangaCategories by injectLazy()
     private val updateCategories: UpdateCategories by injectLazy()
@@ -189,7 +189,11 @@ class LibraryPresenter(
 
     override fun onCreate() {
         super.onCreate()
-        downloadManager.addListener(this)
+        downloadManager.queueState.onEach {
+            presenterScope.launchUI {
+                view?.updateDownloadStatus(!downloadManager.isPaused())
+            }
+        }.launchIn(presenterScope)
         if (!controllerIsSubClass) {
             lastLibraryItems?.let { libraryItems = it }
             lastCategories?.let { categories = it }
@@ -1637,13 +1641,6 @@ class LibraryPresenter(
                     updateManga.await(MangaUpdate(manga.id!!, thumbnailUrl = manga.thumbnail_url))
                 }
             }
-        }
-    }
-
-    override fun updateDownload(download: Download) = updateDownloads()
-    override fun updateDownloads() {
-        presenterScope.launchUI {
-            view?.updateDownloadStatus(!downloadManager.isPaused())
         }
     }
 

@@ -4,8 +4,9 @@ import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.online.HttpSource
-import rx.subjects.PublishSubject
 import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class Download(val source: HttpSource, val manga: Manga, val chapter: Chapter) {
 
@@ -17,17 +18,16 @@ class Download(val source: HttpSource, val manga: Manga, val chapter: Chapter) {
     val downloadedImages: Int
         get() = pages?.count { it.status == Page.State.READY } ?: 0
 
-    @Volatile @Transient
-    var status: State = State.default
+    @Transient
+    private val _statusFlow = MutableStateFlow(State.NOT_DOWNLOADED)
+
+    @Transient
+    val statusFlow = _statusFlow.asStateFlow()
+    var status: State
+        get() = _statusFlow.value
         set(status) {
-            field = status
-            statusSubject?.onNext(this)
-            statusCallback?.invoke(this)
+            _statusFlow.value = status
         }
-
-    @Transient private var statusSubject: PublishSubject<Download>? = null
-
-    @Transient private var statusCallback: ((Download) -> Unit)? = null
 
     val pageProgress: Int
         get() {
@@ -40,14 +40,6 @@ class Download(val source: HttpSource, val manga: Manga, val chapter: Chapter) {
             val pages = pages ?: return 0
             return pages.map(Page::progress).average().roundToInt()
         }
-
-    fun setStatusSubject(subject: PublishSubject<Download>?) {
-        statusSubject = subject
-    }
-
-    fun setStatusCallback(f: ((Download) -> Unit)?) {
-        statusCallback = f
-    }
 
     enum class State {
         CHECKED,

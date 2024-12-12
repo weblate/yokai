@@ -1059,7 +1059,6 @@ open class LibraryController(
                 presenter.getLibrary()
                 isPoppingIn = true
             }
-            DownloadJob.callListeners()
             binding.recyclerCover.isClickable = false
             binding.recyclerCover.isFocusable = false
             singleCategory = presenter.categories.size <= 1

@@ -5,10 +5,8 @@ import eu.kanade.tachiyomi.data.database.models.ChapterHistory
 import eu.kanade.tachiyomi.data.database.models.History
 import eu.kanade.tachiyomi.data.database.models.HistoryImpl
 import eu.kanade.tachiyomi.data.database.models.MangaChapterHistory
-import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -55,7 +53,7 @@ class RecentsPresenter(
     val preferences: PreferencesHelper = Injekt.get(),
     val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
-) : BaseCoroutinePresenter<RecentsController>(), DownloadQueue.DownloadListener {
+) : BaseCoroutinePresenter<RecentsController>() {
     private val handler: DatabaseHandler by injectLazy()
 
     private val getChapter: GetChapter by injectLazy()
@@ -101,8 +99,8 @@ class RecentsPresenter(
 
     override fun onCreate() {
         super.onCreate()
-        downloadManager.addListener(this)
-        DownloadJob.downloadFlow.onEach(::downloadStatusChanged).launchIn(presenterScope)
+        downloadManager.queueState.onEach(::updateDownloads).launchIn(presenterScope)
+        downloadManager.isDownloaderRunning.onEach(::downloadStatusChanged).launchIn(presenterScope)
         LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(presenterScope)
         if (lastRecents != null) {
             if (recentItems.isEmpty()) {
@@ -482,7 +480,6 @@ class RecentsPresenter(
 
     override fun onDestroy() {
         super.onDestroy()
-        downloadManager.removeListener(this)
         lastRecents = recentItems
     }
 
@@ -500,12 +497,12 @@ class RecentsPresenter(
      *
      * @param chapters the list of chapter from the database.
      */
-    private fun setDownloadedChapters(chapters: List<RecentMangaItem>) {
+    private fun setDownloadedChapters(chapters: List<RecentMangaItem>, queue: List<Download> = downloadManager.queueState.value) {
         for (item in chapters.filter { it.chapter.id != null }) {
             if (downloadManager.isChapterDownloaded(item.chapter, item.mch.manga)) {
                 item.status = Download.State.DOWNLOADED
-            } else if (downloadManager.hasQueue()) {
-                item.download = downloadManager.queue.find { it.chapter.id == item.chapter.id }
+            } else if (queue.isNotEmpty()) {
+                item.download = queue.find { it.chapter.id == item.chapter.id }
                 item.status = item.download?.status ?: Download.State.default
             }
 
@@ -514,8 +511,8 @@ class RecentsPresenter(
                 downloadInfo.chapterId = chapter.id
                 if (downloadManager.isChapterDownloaded(chapter, item.mch.manga)) {
                     downloadInfo.status = Download.State.DOWNLOADED
-                } else if (downloadManager.hasQueue()) {
-                    downloadInfo.download = downloadManager.queue.find { it.chapter.id == chapter.id }
+                } else if (queue.isNotEmpty()) {
+                    downloadInfo.download = queue.find { it.chapter.id == chapter.id }
                     downloadInfo.status = downloadInfo.download?.status ?: Download.State.default
                 }
                 downloadInfo
@@ -523,23 +520,7 @@ class RecentsPresenter(
         }
     }
 
-    override fun updateDownload(download: Download) {
-        recentItems.find {
-            download.chapter.id == it.chapter.id ||
-                download.chapter.id in it.mch.extraChapters.map { ch -> ch.id }
-        }?.apply {
-            if (chapter.id != download.chapter.id) {
-                val downloadInfo = downloadInfo.find { it.chapterId == download.chapter.id }
-                    ?: return@apply
-                downloadInfo.download = download
-            } else {
-                this.download = download
-            }
-        }
-        presenterScope.launchUI { view?.updateChapterDownload(download) }
-    }
-
-    override fun updateDownloads() {
+    fun updateDownloads(queue: List<Download>) {
         presenterScope.launch {
             setDownloadedChapters(recentItems)
             withContext(Dispatchers.Main) {

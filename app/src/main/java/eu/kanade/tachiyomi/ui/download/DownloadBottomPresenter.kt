@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.ui.download
 
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,12 +22,12 @@ class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>() {
     /**
      * Property to get the queue from the download manager.
      */
-    val downloadQueue: DownloadQueue
-        get() = downloadManager.queue
+    val downloadQueueState
+        get() = downloadManager.queueState
 
     fun getItems() {
         presenterScope.launch {
-            val items = downloadQueue
+            val items = downloadQueueState.value
                 .groupBy { it.source }
                 .map { entry ->
                     DownloadHeaderItem(entry.key.id, entry.key.name, entry.value.size).apply {

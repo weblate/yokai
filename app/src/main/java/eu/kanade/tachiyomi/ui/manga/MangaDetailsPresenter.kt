@@ -26,7 +26,6 @@ import eu.kanade.tachiyomi.data.database.models.sortDescending
 import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -63,7 +62,6 @@ import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchNow
-import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
@@ -108,7 +106,7 @@ class MangaDetailsPresenter(
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val storageManager: StorageManager = Injekt.get(),
-) : BaseCoroutinePresenter<MangaDetailsController>(), DownloadQueue.DownloadListener {
+) : BaseCoroutinePresenter<MangaDetailsController>() {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
     private val getCategories: GetCategories by injectLazy()
     private val getChapter: GetChapter by injectLazy()
@@ -181,7 +179,12 @@ class MangaDetailsPresenter(
         if (!::manga.isInitialized) runBlocking { refreshMangaFromDb() }
         syncData()
 
-        downloadManager.addListener(this)
+        downloadManager.queueState.onEach { queue ->
+            getChapters(queue)
+            withUIContext {
+                view?.updateChapters(chapters)
+            }
+        }.launchIn(presenterScope)
 
         runBlocking {
             tracks = getTrack.awaitAllByMangaId(manga.id!!)
@@ -219,11 +222,6 @@ class MangaDetailsPresenter(
         refreshTracking(false)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        downloadManager.removeListener(this)
-    }
-
     fun fetchChapters(andTracking: Boolean = true) {
         presenterScope.launch {
             getChapters()
@@ -252,12 +250,12 @@ class MangaDetailsPresenter(
         return chapters
     }
 
-    private suspend fun getChapters() {
+    private suspend fun getChapters(queue: List<Download> = downloadManager.queueState.value) {
         val chapters = getChapter.awaitAll(mangaId, isScanlatorFiltered()).map { it.toModel() }
         allChapters = if (!isScanlatorFiltered()) chapters else getChapter.awaitAll(mangaId, false).map { it.toModel() }
 
         // Find downloaded chapters
-        setDownloadedChapters(chapters)
+        setDownloadedChapters(chapters, queue)
         allChapterScanlators = allChapters.mapNotNull { it.chapter.scanlator }.toSet()
 
         this.chapters = applyChapterFilters(chapters)
@@ -274,29 +272,13 @@ class MangaDetailsPresenter(
      *
      * @param chapters the list of chapter from the database.
      */
-    private fun setDownloadedChapters(chapters: List<ChapterItem>) {
+    private fun setDownloadedChapters(chapters: List<ChapterItem>, queue: List<Download>) {
         for (chapter in chapters) {
             if (downloadManager.isChapterDownloaded(chapter, manga)) {
                 chapter.status = Download.State.DOWNLOADED
             } else if (downloadManager.hasQueue()) {
-                chapter.status = downloadManager.queue.find { it.chapter.id == chapter.id }
+                chapter.status = queue.find { it.chapter.id == chapter.id }
                     ?.status ?: Download.State.default
-            }
-        }
-    }
-
-    override fun updateDownload(download: Download) {
-        chapters.find { it.id == download.chapter.id }?.download = download
-        presenterScope.launchUI {
-            view?.updateChapterDownload(download)
-        }
-    }
-
-    override fun updateDownloads() {
-        presenterScope.launch(Dispatchers.Default) {
-            getChapters()
-            withContext(Dispatchers.Main) {
-                view?.updateChapters(chapters)
             }
         }
     }
@@ -310,7 +292,7 @@ class MangaDetailsPresenter(
         model.isLocked = isLockedFromSearch
 
         // Find an active download for this chapter.
-        val download = downloadManager.queue.find { it.chapter.id == id }
+        val download = downloadManager.queueState.value.find { it.chapter.id == id }
 
         if (download != null) {
             // If there's an active download, assign it.

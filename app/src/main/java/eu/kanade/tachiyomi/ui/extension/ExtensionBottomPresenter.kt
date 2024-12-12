@@ -2,8 +2,6 @@ package eu.kanade.tachiyomi.ui.extension
 
 import android.content.pm.PackageInstaller
 import eu.kanade.tachiyomi.data.download.DownloadManager
-import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
@@ -12,7 +10,6 @@ import eu.kanade.tachiyomi.extension.model.InstalledExtensionsOrder
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.ui.migration.BaseMigrationPresenter
 import eu.kanade.tachiyomi.util.system.LocaleHelper
-import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -31,7 +28,7 @@ typealias ExtensionIntallInfo = Pair<InstallStep, PackageInstaller.SessionInfo?>
 /**
  * Presenter of [ExtensionBottomSheet].
  */
-class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>(), DownloadQueue.DownloadListener {
+class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>() {
 
     private var extensions = emptyList<ExtensionItem>()
 
@@ -43,7 +40,15 @@ class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>(),
 
     override fun onCreate() {
         super.onCreate()
-        downloadManager.addListener(this)
+
+        presenterScope.launch {
+            downloadManager.queueState.collect {
+                withUIContext {
+                    view?.updateDownloadStatus(!downloadManager.isPaused())
+                }
+            }
+        }
+
         presenterScope.launch {
             val extensionJob = async {
                 extensionManager.findAvailableExtensions()
@@ -287,13 +292,6 @@ class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>(),
     fun trustExtension(pkgName: String, versionCode: Long, signatureHash: String) {
         presenterScope.launch {
             extensionManager.trust(pkgName, versionCode, signatureHash)
-        }
-    }
-
-    override fun updateDownload(download: Download) = updateDownloads()
-    override fun updateDownloads() {
-        presenterScope.launchUI {
-            view?.updateDownloadStatus(!downloadManager.isPaused())
         }
     }
 }

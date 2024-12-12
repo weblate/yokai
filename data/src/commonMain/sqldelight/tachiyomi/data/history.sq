@@ -157,7 +157,7 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 )
 
-UNION ALL  -- Newly fetched chapter
+UNION  -- Newly fetched chapter
 
 SELECT
     M.*,
@@ -192,7 +192,7 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 )
 
-UNION ALL  -- Newly added manga
+UNION  -- Newly added manga
 
 SELECT
     M.*,

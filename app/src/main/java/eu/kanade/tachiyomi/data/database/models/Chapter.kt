@@ -90,4 +90,8 @@ interface Chapter : SChapter, Serializable {
         source_order = other.source_order
         copyFrom(other as SChapter)
     }
+
+    fun copy() = ChapterImpl().apply {
+        copyFrom(this@Chapter)
+    }
 }

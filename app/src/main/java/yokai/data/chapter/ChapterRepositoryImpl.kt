@@ -54,27 +54,26 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
 
     override suspend fun delete(chapter: Chapter) =
         try {
-            partialDelete(chapter)
+            partialDelete(chapter.id!!)
             true
         } catch (e: Exception) {
             Logger.e(e) { "Failed to delete chapter with id '${chapter.id}'" }
             false
         }
 
-    override suspend fun deleteAll(chapters: List<Chapter>) =
+    override suspend fun deleteAllById(chapters: List<Long>) =
         try {
-            partialDelete(*chapters.toTypedArray())
+            partialDelete(*chapters.toLongArray())
             true
         } catch (e: Exception) {
             Logger.e(e) { "Failed to bulk delete chapters" }
             false
         }
 
-    private suspend fun partialDelete(vararg chapters: Chapter) {
+    private suspend fun partialDelete(vararg chapterIds: Long) {
         handler.await(inTransaction = true) {
-            chapters.forEach { chapter ->
-                if (chapter.id == null) return@forEach
-                chaptersQueries.delete(chapter.id!!)
+            chapterIds.forEach { chapterId ->
+                chaptersQueries.delete(chapterId)
             }
         }
     }
@@ -143,7 +142,7 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
 
     override suspend fun insertBulk(chapters: List<Chapter>) =
         handler.await(true) {
-            chapters.forEach { chapter ->
+            chapters.map { chapter ->
                 chaptersQueries.insert(
                     mangaId = chapter.manga_id!!,
                     url = chapter.url,
@@ -158,6 +157,8 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
                     dateFetch = chapter.date_fetch,
                     dateUpload = chapter.date_upload,
                 )
+                val lastInsertId = chaptersQueries.selectLastInsertedRowId().executeAsOne()
+                chapter.copy().apply { id = lastInsertId }
             }
         }
 }

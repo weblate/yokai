@@ -23,11 +23,11 @@ interface ChapterRepository {
     fun getScanlatorsByChapterAsFlow(mangaId: Long): Flow<List<String>>
 
     suspend fun delete(chapter: Chapter): Boolean
-    suspend fun deleteAll(chapters: List<Chapter>): Boolean
+    suspend fun deleteAllById(chapters: List<Long>): Boolean
 
     suspend fun update(update: ChapterUpdate): Boolean
     suspend fun updateAll(updates: List<ChapterUpdate>): Boolean
 
     suspend fun insert(chapter: Chapter): Long?
-    suspend fun insertBulk(chapters: List<Chapter>)
+    suspend fun insertBulk(chapters: List<Chapter>): List<Chapter>
 }

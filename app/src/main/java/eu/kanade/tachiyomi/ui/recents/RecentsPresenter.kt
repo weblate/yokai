@@ -7,6 +7,7 @@ import eu.kanade.tachiyomi.data.database.models.HistoryImpl
 import eu.kanade.tachiyomi.data.database.models.MangaChapterHistory
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
+import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.domain.manga.models.Manga
@@ -29,6 +30,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -53,7 +55,8 @@ class RecentsPresenter(
     val preferences: PreferencesHelper = Injekt.get(),
     val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
-) : BaseCoroutinePresenter<RecentsController>() {
+) : BaseCoroutinePresenter<RecentsController>(),
+    DownloadQueue.Listener {
     private val handler: DatabaseHandler by injectLazy()
 
     private val getChapter: GetChapter by injectLazy()
@@ -97,9 +100,26 @@ class RecentsPresenter(
     private val isOnFirstPage: Boolean
         get() = pageOffset == 0
 
+    override val progressJobs = mutableMapOf<Download, Job>()
+    override val queueListenerScope get() = presenterScope
+
     override fun onCreate() {
         super.onCreate()
-        downloadManager.queueState.onEach(::updateDownloads).launchIn(presenterScope)
+        presenterScope.launchUI {
+            downloadManager.statusFlow().collect(::onStatusChange)
+        }
+        presenterScope.launchUI {
+            downloadManager.progressFlow().collect(::onProgressUpdate)
+        }
+        presenterScope.launchIO {
+            downloadManager.queueState.collectLatest {
+                setDownloadedChapters(recentItems, it)
+                withUIContext {
+                    view?.showLists(recentItems, true)
+                    view?.updateDownloadStatus(!downloadManager.isPaused())
+                }
+            }
+        }
         downloadManager.isDownloaderRunning.onEach(::downloadStatusChanged).launchIn(presenterScope)
         LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(presenterScope)
         if (lastRecents != null) {
@@ -520,16 +540,6 @@ class RecentsPresenter(
         }
     }
 
-    fun updateDownloads(queue: List<Download>) {
-        presenterScope.launch {
-            setDownloadedChapters(recentItems)
-            withContext(Dispatchers.Main) {
-                view?.showLists(recentItems, true)
-                view?.updateDownloadStatus(!downloadManager.isPaused())
-            }
-        }
-    }
-
     private fun downloadStatusChanged(downloading: Boolean) {
         presenterScope.launchUI {
             view?.updateDownloadStatus(downloading)
@@ -683,6 +693,18 @@ class RecentsPresenter(
                 getRecents()
             }
         }
+    }
+
+    override fun onProgressUpdate(download: Download) {
+        // don't do anything
+    }
+
+    override fun onQueueUpdate(download: Download) {
+        view?.updateChapterDownload(download)
+    }
+
+    override fun onPageProgressUpdate(download: Download) {
+        view?.updateChapterDownload(download)
     }
 
     enum class GroupType {

@@ -2,8 +2,11 @@ package eu.kanade.tachiyomi.ui.download
 
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
+import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
+import eu.kanade.tachiyomi.util.system.launchUI
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
@@ -11,7 +14,8 @@ import uy.kohesive.injekt.injectLazy
 /**
  * Presenter of [DownloadBottomSheet].
  */
-class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>() {
+class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>(),
+    DownloadQueue.Listener {
 
     /**
      * Download manager.
@@ -19,11 +23,23 @@ class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>() {
     val downloadManager: DownloadManager by injectLazy()
     var items = listOf<DownloadHeaderItem>()
 
+    override val progressJobs = mutableMapOf<Download, Job>()
+    override val queueListenerScope get() = presenterScope
+
     /**
      * Property to get the queue from the download manager.
      */
     val downloadQueueState
         get() = downloadManager.queueState
+
+    override fun onCreate() {
+        presenterScope.launchUI {
+            downloadManager.statusFlow().collect(::onStatusChange)
+        }
+        presenterScope.launchUI {
+            downloadManager.progressFlow().collect { view?.onUpdateDownloadedPages(it) }
+        }
+    }
 
     fun getItems() {
         presenterScope.launch {
@@ -83,5 +99,23 @@ class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>() {
 
     fun cancelDownloads(downloads: List<Download>) {
         downloadManager.deletePendingDownloads(*downloads.toTypedArray())
+    }
+
+    override fun onStatusChange(download: Download) {
+        super.onStatusChange(download)
+        view?.update(downloadManager.isRunning)
+    }
+
+    override fun onQueueUpdate(download: Download) {
+        view?.onUpdateDownloadedPages(download)
+    }
+
+    override fun onProgressUpdate(download: Download) {
+        view?.onUpdateProgress(download)
+    }
+
+    override fun onPageProgressUpdate(download: Download) {
+        super.onPageProgressUpdate(download)
+        view?.onUpdateDownloadedPages(download)
     }
 }

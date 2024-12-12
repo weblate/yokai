@@ -5,8 +5,14 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.online.HttpSource
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 
 class Download(val source: HttpSource, val manga: Manga, val chapter: Chapter) {
 
@@ -28,6 +34,21 @@ class Download(val source: HttpSource, val manga: Manga, val chapter: Chapter) {
         set(status) {
             _statusFlow.value = status
         }
+
+    @Transient
+    val progressFlow = flow {
+        if (pages == null) {
+            emit(0)
+            while (pages == null) {
+                delay(50)
+            }
+        }
+
+        val progressFlows = pages!!.map(Page::progressFlow)
+        emitAll(combine(progressFlows) { it.average().toInt() })
+    }
+        .distinctUntilChanged()
+        .debounce(50)
 
     val pageProgress: Int
         get() {

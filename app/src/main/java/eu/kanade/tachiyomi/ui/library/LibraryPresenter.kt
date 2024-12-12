@@ -56,8 +56,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.retry
@@ -189,11 +187,7 @@ class LibraryPresenter(
 
     override fun onCreate() {
         super.onCreate()
-        downloadManager.queueState.onEach {
-            presenterScope.launchUI {
-                view?.updateDownloadStatus(!downloadManager.isPaused())
-            }
-        }.launchIn(presenterScope)
+
         if (!controllerIsSubClass) {
             lastLibraryItems?.let { libraryItems = it }
             lastCategories?.let { categories = it }
@@ -201,6 +195,12 @@ class LibraryPresenter(
             lastCategories = null
             lastLibraryItems = null
             lastAllLibraryItems = null
+        }
+
+        presenterScope.launchUI {
+            downloadManager.queueState.collect {
+                view?.updateDownloadStatus(downloadManager.isRunning)
+            }
         }
 
         subscribeLibrary()

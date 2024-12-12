@@ -320,7 +320,6 @@ class DownloadBottomSheet @JvmOverloads constructor(
             }
         }
         presenter.reorder(downloads)
-        controller?.updateChapterDownload(download, false)
     }
 
     /**

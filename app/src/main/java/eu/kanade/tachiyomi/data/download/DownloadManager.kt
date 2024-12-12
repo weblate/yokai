@@ -15,6 +15,14 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.download.DownloadPreferences
@@ -405,4 +413,33 @@ class DownloadManager(val context: Context) {
             chapters
         }
     }
+
+    fun statusFlow(): Flow<Download> = queueState
+        .flatMapLatest { downloads ->
+            downloads
+                .map { download ->
+                    download.statusFlow.drop(1).map { download }
+                }
+                .merge()
+        }
+        .onStart {
+            emitAll(
+                queueState.value.filter { download -> download.status == Download.State.DOWNLOADING }.asFlow(),
+            )
+        }
+
+    fun progressFlow(): Flow<Download> = queueState
+        .flatMapLatest { downloads ->
+            downloads
+                .map { download ->
+                    download.progressFlow.drop(1).map { download }
+                }
+                .merge()
+        }
+        .onStart {
+            emitAll(
+                queueState.value.filter { download -> download.status == Download.State.DOWNLOADING }
+                    .asFlow(),
+            )
+        }
 }

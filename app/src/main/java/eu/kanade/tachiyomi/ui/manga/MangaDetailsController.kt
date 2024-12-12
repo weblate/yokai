@@ -792,6 +792,15 @@ class MangaDetailsController :
         binding.swipeRefresh.isRefreshing = enabled
     }
 
+    fun updateChapterDownload(download: Download) {
+        getHolder(download.chapter)?.notifyStatus(
+            download.status,
+            presenter.isLockedFromSearch,
+            download.progress,
+            true,
+        )
+    }
+
     private fun getHolder(chapter: Chapter): ChapterHolder? {
         return binding.recycler.findViewHolderForItemId(chapter.id!!) as? ChapterHolder
     }

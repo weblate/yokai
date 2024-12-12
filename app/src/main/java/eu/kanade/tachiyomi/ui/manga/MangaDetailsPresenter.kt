@@ -26,6 +26,7 @@ import eu.kanade.tachiyomi.data.database.models.sortDescending
 import eu.kanade.tachiyomi.data.database.models.updateCoverLastModified
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
+import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.data.library.CustomMangaManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -62,6 +63,7 @@ import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchNow
+import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
@@ -70,8 +72,10 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -106,7 +110,8 @@ class MangaDetailsPresenter(
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val storageManager: StorageManager = Injekt.get(),
-) : BaseCoroutinePresenter<MangaDetailsController>() {
+) : BaseCoroutinePresenter<MangaDetailsController>(),
+    DownloadQueue.Listener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
     private val getCategories: GetCategories by injectLazy()
     private val getChapter: GetChapter by injectLazy()
@@ -172,6 +177,9 @@ class MangaDetailsPresenter(
 
     var allChapterScanlators: Set<String> = emptySet()
 
+    override val progressJobs: MutableMap<Download, Job> = mutableMapOf()
+    override val queueListenerScope get() = presenterScope
+
     override fun onCreate() {
         val controller = view ?: return
 
@@ -179,12 +187,15 @@ class MangaDetailsPresenter(
         if (!::manga.isInitialized) runBlocking { refreshMangaFromDb() }
         syncData()
 
-        downloadManager.queueState.onEach { queue ->
-            getChapters(queue)
-            withUIContext {
-                view?.updateChapters(chapters)
-            }
-        }.launchIn(presenterScope)
+        presenterScope.launchUI {
+            downloadManager.statusFlow().collect(::onStatusChange)
+        }
+        presenterScope.launchUI {
+            downloadManager.progressFlow().collect(::onProgressUpdate)
+        }
+        presenterScope.launchIO {
+            downloadManager.queueState.collectLatest(::onQueueUpdate)
+        }
 
         runBlocking {
             tracks = getTrack.awaitAllByMangaId(manga.id!!)
@@ -1130,6 +1141,24 @@ class MangaDetailsPresenter(
             TrackingBottomSheet.ReadingDate.Finish -> chapters.maxOfOrNull { it.last_read }
         } ?: return null
         return if (date <= 0L) null else date
+    }
+
+    private suspend fun onQueueUpdate(queue: List<Download>) = withIOContext {
+        getChapters(queue)
+        withUIContext {
+            view?.updateChapters(chapters)
+        }
+    }
+
+    override fun onQueueUpdate(download: Download) {
+        presenterScope.launchIO {
+            onQueueUpdate(downloadManager.queueState.value)
+        }
+    }
+
+    override fun onProgressUpdate(download: Download) {
+        chapters.find { it.id == download.chapter.id }?.download = download
+        view?.updateChapterDownload(download)
     }
 
     companion object {

@@ -12,9 +12,6 @@ import eu.kanade.tachiyomi.source.SourceManager
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.launchIO
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.drop
@@ -23,7 +20,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.download.DownloadPreferences
 import yokai.i18n.MR
@@ -242,24 +238,15 @@ class DownloadManager(val context: Context) {
      * @param manga the manga of the chapters.
      * @param source the source of the chapters.
      */
-    @OptIn(DelicateCoroutinesApi::class)
     fun deleteChapters(chapters: List<Chapter>, manga: Manga, source: Source, force: Boolean = false) {
-        val filteredChapters = if (force) chapters else getChaptersToDelete(chapters, manga)
-        GlobalScope.launch(Dispatchers.IO) {
-            val wasPaused = isPaused()
+        launchIO {
+            val filteredChapters = if (force) chapters else getChaptersToDelete(chapters, manga)
             if (filteredChapters.isEmpty()) {
-                return@launch
+                return@launchIO
             }
-            downloader.pause()
-            downloader.removeFromQueue(filteredChapters)
-            if (!wasPaused && queueState.value.isNotEmpty()) {
-                downloader.start()
-            } else if (queueState.value.isEmpty() && DownloadJob.isRunning(context)) {
-                DownloadJob.stop(context)
-            } else if (queueState.value.isEmpty()) {
-                downloader.stop()
-            }
-            downloader.removeFromQueue(filteredChapters)
+
+            removeFromDownloadQueue(filteredChapters)
+
             val chapterDirs =
                 provider.findChapterDirs(filteredChapters, manga, source) + provider.findTempChapterDirs(
                     filteredChapters,
@@ -268,8 +255,26 @@ class DownloadManager(val context: Context) {
                 )
             chapterDirs.forEach { it.delete() }
             cache.removeChapters(filteredChapters, manga)
+
             if (cache.getDownloadCount(manga, true) == 0) { // Delete manga directory if empty
                 chapterDirs.firstOrNull()?.parentFile?.delete()
+            }
+        }
+    }
+
+    private fun removeFromDownloadQueue(chapters: List<Chapter>) {
+        val wasRunning = downloader.isRunning
+        if (wasRunning) {
+            downloader.pause()
+        }
+
+        downloader.removeFromQueue(chapters)
+
+        if (wasRunning) {
+            if (queueState.value.isEmpty()) {
+                downloader.stop()
+            } else if (queueState.value.isNotEmpty()) {
+                downloader.start()
             }
         }
     }

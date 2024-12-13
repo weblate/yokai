@@ -60,6 +60,7 @@ import eu.kanade.tachiyomi.util.manga.MangaUtil
 import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
 import eu.kanade.tachiyomi.util.storage.DiskUtil
 import eu.kanade.tachiyomi.util.system.ImageUtil
+import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.launchNow
@@ -75,6 +76,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -188,17 +190,23 @@ class MangaDetailsPresenter(
         syncData()
 
         presenterScope.launchUI {
-            downloadManager.statusFlow().collect(::onStatusChange)
+            downloadManager.statusFlow()
+                .filter { it.manga.id == mangaId }
+                .catch { error -> Logger.e(error) }
+                .collect(::onStatusChange)
         }
         presenterScope.launchUI {
-            downloadManager.progressFlow().collect(::onProgressUpdate)
+            downloadManager.progressFlow()
+                .filter { it.manga.id == mangaId }
+                .catch { error -> Logger.e(error) }
+                .collect(::onQueueUpdate)
         }
         presenterScope.launchIO {
             downloadManager.queueState.collectLatest(::onQueueUpdate)
         }
 
         runBlocking {
-            tracks = getTrack.awaitAllByMangaId(manga.id!!)
+            tracks = getTrack.awaitAllByMangaId(mangaId)
         }
     }
 
@@ -287,7 +295,7 @@ class MangaDetailsPresenter(
         for (chapter in chapters) {
             if (downloadManager.isChapterDownloaded(chapter, manga)) {
                 chapter.status = Download.State.DOWNLOADED
-            } else if (downloadManager.hasQueue()) {
+            } else if (queue.isNotEmpty()) {
                 chapter.status = queue.find { it.chapter.id == chapter.id }
                     ?.status ?: Download.State.default
             }
@@ -380,14 +388,15 @@ class MangaDetailsPresenter(
      * @param chapter the chapter to delete.
      */
     fun deleteChapter(chapter: ChapterItem) {
-        downloadManager.deleteChapters(listOf(chapter), manga, source, true)
         this.chapters.find { it.id == chapter.id }?.apply {
             if (chapter.chapter.bookmark && !preferences.removeBookmarkedChapters().get()) return@apply
-            status = Download.State.QUEUE
+            status = Download.State.NOT_DOWNLOADED
             download = null
         }
 
         view?.updateChapters(this.chapters)
+
+        downloadManager.deleteChapters(listOf(chapter), manga, source, true)
     }
 
     /**
@@ -395,22 +404,21 @@ class MangaDetailsPresenter(
      * @param chapters the list of chapters to delete.
      */
     fun deleteChapters(chapters: List<ChapterItem>, update: Boolean = true, isEverything: Boolean = false) {
-        launchIO {
-            if (isEverything) {
-                downloadManager.deleteManga(manga, source)
-            } else {
-                downloadManager.deleteChapters(chapters, manga, source)
-            }
-        }
         chapters.forEach { chapter ->
             this.chapters.find { it.id == chapter.id }?.apply {
                 if (chapter.chapter.bookmark && !preferences.removeBookmarkedChapters().get() && !isEverything) return@apply
-                status = Download.State.QUEUE
+                status = Download.State.NOT_DOWNLOADED
                 download = null
             }
         }
 
         if (update) view?.updateChapters(this.chapters)
+
+        if (isEverything) {
+            downloadManager.deleteManga(manga, source)
+        } else {
+            downloadManager.deleteChapters(chapters, manga, source)
+        }
     }
 
     suspend fun refreshMangaFromDb(): Manga {
@@ -1143,6 +1151,12 @@ class MangaDetailsPresenter(
         return if (date <= 0L) null else date
     }
 
+    override fun onStatusChange(download: Download) {
+        super.onStatusChange(download)
+        chapters.find { it.id == download.chapter.id }?.status = download.status
+        onPageProgressUpdate(download)
+    }
+
     private suspend fun onQueueUpdate(queue: List<Download>) = withIOContext {
         getChapters(queue)
         withUIContext {
@@ -1151,12 +1165,14 @@ class MangaDetailsPresenter(
     }
 
     override fun onQueueUpdate(download: Download) {
-        presenterScope.launchIO {
-            onQueueUpdate(downloadManager.queueState.value)
-        }
+        // already handled by onStatusChange
     }
 
     override fun onProgressUpdate(download: Download) {
+        // already handled by onStatusChange
+    }
+
+    override fun onPageProgressUpdate(download: Download) {
         chapters.find { it.id == download.chapter.id }?.download = download
         view?.updateChapterDownload(download)
     }

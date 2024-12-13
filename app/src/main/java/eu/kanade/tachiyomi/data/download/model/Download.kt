@@ -45,7 +45,7 @@ class Download(val source: HttpSource, val manga: Manga, val chapter: Chapter) {
         }
 
         val progressFlows = pages!!.map(Page::progressFlow)
-        emitAll(combine(progressFlows) { it.average().toInt() })
+        emitAll(combine(progressFlows) { it.average().roundToInt() })
     }
         .distinctUntilChanged()
         .debounce(50)

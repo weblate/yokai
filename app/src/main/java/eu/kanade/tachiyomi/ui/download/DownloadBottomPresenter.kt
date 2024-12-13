@@ -37,7 +37,7 @@ class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>(),
             downloadManager.statusFlow().collect(::onStatusChange)
         }
         presenterScope.launchUI {
-            downloadManager.progressFlow().collect { view?.onUpdateDownloadedPages(it) }
+            downloadManager.progressFlow().collect(::onPageProgressUpdate)
         }
     }
 
@@ -115,7 +115,6 @@ class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>(),
     }
 
     override fun onPageProgressUpdate(download: Download) {
-        super.onPageProgressUpdate(download)
         view?.onUpdateDownloadedPages(download)
     }
 }

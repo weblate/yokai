@@ -700,7 +700,7 @@ class Downloader(
     }
 
     fun removeFromQueue(chapters: List<Chapter>) {
-        chapters.forEach(::removeFromQueue)
+        removeFromQueueIf { it.chapter.id in chapters.map { it.id } }
     }
 
     fun removeFromQueue(manga: Manga) {

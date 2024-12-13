@@ -1801,7 +1801,7 @@ class MangaDetailsController :
     override fun onDestroyActionMode(mode: ActionMode?) {
         actionMode = null
         setStatusBarAndToolbar()
-        if (startingRangeChapterPos != null && rangeMode == RangeMode.Download) {
+        if (startingRangeChapterPos != null && rangeMode in setOf(RangeMode.Download, RangeMode.RemoveDownload)) {
             val item = adapter?.getItem(startingRangeChapterPos!!) as? ChapterItem
             (binding.recycler.findViewHolderForAdapterPosition(startingRangeChapterPos!!) as? ChapterHolder)?.notifyStatus(
                 item?.status ?: Download.State.NOT_DOWNLOADED,

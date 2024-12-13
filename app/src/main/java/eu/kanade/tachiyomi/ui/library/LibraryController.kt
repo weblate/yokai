@@ -61,7 +61,6 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
-import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -2197,9 +2196,5 @@ open class LibraryController(
                 destroyActionModeIfNeeded()
             }
         }
-    }
-
-    fun updateDownloadStatus(isRunning: Boolean) {
-        (activity as? MainActivity)?.downloadStatusChanged(isRunning)
     }
 }

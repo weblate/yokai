@@ -42,7 +42,6 @@ import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.mapStatus
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
-import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import java.util.*
@@ -195,12 +194,6 @@ class LibraryPresenter(
             lastCategories = null
             lastLibraryItems = null
             lastAllLibraryItems = null
-        }
-
-        presenterScope.launchUI {
-            downloadManager.queueState.collect {
-                view?.updateDownloadStatus(downloadManager.isRunning)
-            }
         }
 
         subscribeLibrary()

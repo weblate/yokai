@@ -10,7 +10,6 @@ import eu.kanade.tachiyomi.extension.model.InstalledExtensionsOrder
 import eu.kanade.tachiyomi.extension.util.ExtensionLoader
 import eu.kanade.tachiyomi.ui.migration.BaseMigrationPresenter
 import eu.kanade.tachiyomi.util.system.LocaleHelper
-import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withUIContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -41,12 +40,6 @@ class ExtensionBottomPresenter : BaseMigrationPresenter<ExtensionBottomSheet>() 
 
     override fun onCreate() {
         super.onCreate()
-
-        presenterScope.launchUI {
-            downloadManager.queueState.collect {
-                view?.updateDownloadStatus(downloadManager.isRunning)
-            }
-        }
 
         presenterScope.launch {
             val extensionJob = async {

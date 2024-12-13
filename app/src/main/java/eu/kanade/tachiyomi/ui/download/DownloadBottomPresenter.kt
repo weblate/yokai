@@ -115,6 +115,7 @@ class DownloadBottomPresenter : BaseCoroutinePresenter<DownloadBottomSheet>(),
     }
 
     override fun onPageProgressUpdate(download: Download) {
+        super.onPageProgressUpdate(download)
         view?.onUpdateDownloadedPages(download)
     }
 }

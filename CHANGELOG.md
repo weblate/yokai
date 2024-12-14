@@ -11,6 +11,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Other
+- Update dependency androidx.compose:compose-bom to v2024.12.01
+
 ## [1.9.3]
 
 ### Fixes

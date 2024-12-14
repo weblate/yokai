@@ -113,7 +113,7 @@ suspend fun syncChaptersWithSource(
     // Return if there's nothing to add, delete or change, avoid unnecessary db transactions.
     if (toAdd.isEmpty() && toDelete.isEmpty() && toChange.isEmpty()) {
         val newestDate = dbChapters.maxOfOrNull { it.date_upload } ?: 0L
-        if (newestDate != 0L && newestDate != manga.last_update) {
+        if (newestDate != 0L && newestDate > manga.last_update) {
             manga.last_update = newestDate
             val update = MangaUpdate(manga.id!!, lastUpdate = newestDate)
             updateManga.await(update)

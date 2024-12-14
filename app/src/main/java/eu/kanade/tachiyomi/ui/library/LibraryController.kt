@@ -616,9 +616,11 @@ open class LibraryController(
         LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(viewScope)
         viewScope.launchUI {
             LibraryUpdateJob.isRunningFlow(view.context).collect {
-                val holder = if (mAdapter != null) visibleHeaderHolder() else null
-                val category = holder?.category ?: return@collect
-                holder.notifyStatus(LibraryUpdateJob.categoryInQueue(category.id), category)
+                adapter.getHeaderPositions().forEach {
+                    val holder = (binding.libraryGridRecycler.recycler.findViewHolderForAdapterPosition(it) as? LibraryHeaderHolder) ?: return@forEach
+                    val category = holder.category ?: return@forEach
+                    holder.notifyStatus(LibraryUpdateJob.categoryInQueue(category.id), category)
+                }
             }
         }
 

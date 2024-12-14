@@ -168,7 +168,7 @@ suspend fun syncChaptersWithSource(
     }
 
     if (updatedToAdd.isNotEmpty()) {
-        updatedToAdd = insertChapter.awaitBulk(toAdd)
+        updatedToAdd = insertChapter.awaitBulk(updatedToAdd)
     }
 
     if (toChange.isNotEmpty()) {

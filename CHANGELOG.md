@@ -17,6 +17,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update plugin gradle-versions to v0.51.0
 - Update kotlin monorepo to v2.1.0
 
+## [1.9.4]
+
+### Fixes
+- Fix chapter date fetch always null causing it to not appear on Updates tab
+
 ## [1.9.3]
 
 ### Fixes

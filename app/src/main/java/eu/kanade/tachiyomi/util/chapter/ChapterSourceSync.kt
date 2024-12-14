@@ -65,48 +65,6 @@ suspend fun syncChaptersWithSource(
     // Chapters whose metadata have changed.
     val toChange = mutableListOf<ChapterUpdate>()
 
-    for (sourceChapter in sourceChapters) {
-        val dbChapter = dbChapters.find { it.url == sourceChapter.url }
-
-        // Add the chapter if not in db already, or update if the metadata changed.
-        if (dbChapter == null) {
-            toAdd.add(sourceChapter)
-        } else {
-            // this forces metadata update for the main viewable things in the chapter list
-            if (source is HttpSource) {
-                source.prepareNewChapter(sourceChapter, manga)
-            }
-
-            sourceChapter.chapter_number =
-                ChapterRecognition.parseChapterNumber(sourceChapter.name, manga.title, sourceChapter.chapter_number)
-
-            if (shouldUpdateDbChapter(dbChapter, sourceChapter)) {
-                if ((dbChapter.name != sourceChapter.name || dbChapter.scanlator != sourceChapter.scanlator) &&
-                    downloadManager.isChapterDownloaded(dbChapter, manga)
-                ) {
-                    downloadManager.renameChapter(source, manga, dbChapter, sourceChapter)
-                }
-                val update = ChapterUpdate(
-                    dbChapter.id!!,
-                    scanlator = sourceChapter.scanlator,
-                    name = sourceChapter.name,
-                    dateUpload = sourceChapter.date_upload,
-                    chapterNumber = sourceChapter.chapter_number.toDouble(),
-                    sourceOrder = sourceChapter.source_order.toLong(),
-                )
-                toChange.add(update)
-            }
-        }
-    }
-
-    // Recognize number for new chapters.
-    toAdd.forEach {
-        if (source is HttpSource) {
-            source.prepareNewChapter(it, manga)
-        }
-        it.chapter_number = ChapterRecognition.parseChapterNumber(it.name, manga.title, it.chapter_number)
-    }
-
     val duplicates = dbChapters.groupBy { it.url }
         .filter { it.value.size > 1 }
         .flatMap { (_, chapters) ->
@@ -118,6 +76,39 @@ suspend fun syncChaptersWithSource(
         }
     }
     val toDelete = duplicates + notInSource
+
+    for (sourceChapter in sourceChapters) {
+        val chapter = sourceChapter
+
+        if (source is HttpSource) {
+            source.prepareNewChapter(chapter, manga)
+        }
+        chapter.chapter_number = ChapterRecognition.parseChapterNumber(chapter.name, manga.title, chapter.chapter_number)
+
+        val dbChapter = dbChapters.find { it.url == chapter.url }
+
+        // Add the chapter if not in db already, or update if the metadata changed.
+        if (dbChapter == null) {
+            toAdd.add(chapter)
+        } else {
+            if (shouldUpdateDbChapter(dbChapter, chapter)) {
+                if ((dbChapter.name != chapter.name || dbChapter.scanlator != chapter.scanlator) &&
+                    downloadManager.isChapterDownloaded(dbChapter, manga)
+                ) {
+                    downloadManager.renameChapter(source, manga, dbChapter, chapter)
+                }
+                val update = ChapterUpdate(
+                    dbChapter.id!!,
+                    scanlator = chapter.scanlator,
+                    name = chapter.name,
+                    dateUpload = chapter.date_upload,
+                    chapterNumber = chapter.chapter_number.toDouble(),
+                    sourceOrder = chapter.source_order.toLong(),
+                )
+                toChange.add(update)
+            }
+        }
+    }
 
     // Return if there's nothing to add, delete or change, avoid unnecessary db transactions.
     if (toAdd.isEmpty() && toDelete.isEmpty() && toChange.isEmpty()) {
@@ -198,19 +189,15 @@ suspend fun syncChaptersWithSource(
     manga.last_update = Date().time
     updateManga.await(MangaUpdate(manga.id!!, lastUpdate = manga.last_update))
 
-    val reAddedSet = reAdded.toSet()
+    val reAddedUrls = reAdded.map { it.url }.toHashSet()
+    val filteredScanlators = ChapterUtil.getScanlators(manga.filtered_scanlators).toHashSet()
+
     return Pair(
-        updatedToAdd.subtract(reAddedSet).toList().filterChaptersByScanlators(manga),
-        toDelete - reAddedSet,
+        updatedToAdd.filterNot {
+            it.url in reAddedUrls || it.scanlator in filteredScanlators
+        },
+        toDelete.filterNot { it.url in reAddedUrls },
     )
-}
-
-private fun List<Chapter>.filterChaptersByScanlators(manga: Manga): List<Chapter> {
-    if (manga.filtered_scanlators.isNullOrBlank()) return this
-
-    return this.filter { chapter ->
-        !ChapterUtil.getScanlators(manga.filtered_scanlators).contains(chapter.scanlator)
-    }
 }
 
 // checks if the chapter in db needs updated

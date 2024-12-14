@@ -62,13 +62,13 @@ class Download(val source: HttpSource, val manga: Manga, val chapter: Chapter) {
             return pages.map(Page::progress).average().roundToInt()
         }
 
-    enum class State {
-        CHECKED,
-        NOT_DOWNLOADED,
-        QUEUE,
-        DOWNLOADING,
-        DOWNLOADED,
-        ERROR,
+    enum class State(val value: Int) {
+        CHECKED(-1),
+        NOT_DOWNLOADED(0),
+        QUEUE(1),
+        DOWNLOADING(2),
+        DOWNLOADED(3),
+        ERROR(4),
         ;
 
         companion object {

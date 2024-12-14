@@ -92,7 +92,6 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import java.util.Locale
 import kotlin.math.max
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -390,7 +389,7 @@ class RecentsController(bundle: Bundle? = null) :
             },
         )
         viewScope.launch {
-            LibraryUpdateJob.isRunningFlow(view.context).collectLatest {
+            LibraryUpdateJob.isRunningFlow(view.context).collect {
                 binding.swipeRefresh.isRefreshing = it
             }
         }

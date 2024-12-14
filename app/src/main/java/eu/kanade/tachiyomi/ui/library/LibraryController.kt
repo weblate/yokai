@@ -135,7 +135,6 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.random.nextInt
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -616,9 +615,9 @@ open class LibraryController(
         setPreferenceFlows()
         LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(viewScope)
         viewScope.launchUI {
-            LibraryUpdateJob.isRunningFlow(view.context).collectLatest {
+            LibraryUpdateJob.isRunningFlow(view.context).collect {
                 val holder = if (mAdapter != null) visibleHeaderHolder() else null
-                val category = holder?.category ?: return@collectLatest
+                val category = holder?.category ?: return@collect
                 holder.notifyStatus(LibraryUpdateJob.categoryInQueue(category.id), category)
             }
         }

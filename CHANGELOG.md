@@ -11,6 +11,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.9.4]
+
+### Fixes
+- Fix chapter date fetch always null causing it to not appear on Updates tab
+
 ## [1.9.3]
 
 ### Fixes

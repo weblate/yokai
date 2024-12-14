@@ -11,6 +11,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.9.3]
+
 ### Fixes
 - Fix slow chapter load
 - Fix chapter bookmark state is not persistent

@@ -629,13 +629,8 @@ class RecentsController(bundle: Bundle? = null) :
         }
     }
 
-    fun updateChapterDownload(download: Download, updateDLSheet: Boolean = true) {
-        if (view == null) return
-        if (updateDLSheet) {
-            binding.downloadBottomSheet.dlBottomSheet.update(!presenter.downloadManager.isPaused())
-            binding.downloadBottomSheet.dlBottomSheet.onUpdateProgress(download)
-            binding.downloadBottomSheet.dlBottomSheet.onUpdateDownloadedPages(download)
-        }
+    fun updateChapterDownload(download: Download) {
+        if (view == null || !this::adapter.isInitialized) return
         val id = download.chapter.id ?: return
         val item = adapter.getItemByChapterId(id) ?: return
         val holder = binding.recycler.findViewHolderForItemId(item.id!!) as? RecentMangaHolder ?: return

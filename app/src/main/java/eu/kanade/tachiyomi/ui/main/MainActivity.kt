@@ -62,12 +62,12 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
+import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -458,7 +458,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
 
-        DownloadJob.downloadFlow.onEach(::downloadStatusChanged).launchIn(lifecycleScope)
+        downloadManager.isDownloaderRunning.onEach(::downloadStatusChanged).launchIn(lifecycleScope)
         lifecycleScope
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
@@ -947,7 +947,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             extensionManager.getExtensionUpdates(false)
         }
         setExtensionsBadge()
-        DownloadJob.callListeners(downloadManager = downloadManager)
         showDLQueueTutorial()
         reEnableBackPressedCallBack()
     }
@@ -1504,12 +1503,16 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
+    fun BadgeDrawable.updateQueueSize(queueSize: Int) {
+        number = queueSize
+    }
+
     fun downloadStatusChanged(downloading: Boolean) {
         lifecycleScope.launchUI {
             val hasQueue = downloading || downloadManager.hasQueue()
             if (hasQueue) {
                 val badge = nav.getOrCreateBadge(R.id.nav_recents)
-                badge.number = downloadManager.queue.size
+                badge.updateQueueSize(downloadManager.queueState.value.size)
                 if (downloading) badge.backgroundColor = -870219 else badge.backgroundColor = Color.GRAY
                 showDLQueueTutorial()
             } else {

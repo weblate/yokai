@@ -22,8 +22,9 @@ import eu.kanade.tachiyomi.util.system.workManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.map
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
@@ -39,7 +40,7 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
     private val preferences: PreferencesHelper = Injekt.get()
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        val firstDL = downloadManager.queue.firstOrNull()
+        val firstDL = downloadManager.queueState.value.firstOrNull()
         val notification = DownloadNotifier(context).setPlaceholder(firstDL).build()
         val id = Notifications.ID_DOWNLOAD_CHAPTER
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -70,7 +71,6 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
         } catch (_: CancellationException) {
             Result.success()
         } finally {
-            callListeners(false, downloadManager)
             if (runExtJobAfter) {
                 ExtensionUpdateJob.runJobAgain(applicationContext, NetworkType.CONNECTED)
             }
@@ -96,12 +96,6 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
         private const val TAG = "Downloader"
         private const val START_EXT_JOB_AFTER = "StartExtJobAfter"
 
-        private val downloadChannel = MutableSharedFlow<Boolean>(
-            extraBufferCapacity = 1,
-            onBufferOverflow = BufferOverflow.DROP_OLDEST,
-        )
-        val downloadFlow = downloadChannel.asSharedFlow()
-
         fun start(context: Context, alsoStartExtJob: Boolean = false) {
             val request = OneTimeWorkRequestBuilder<DownloadJob>()
                 .addTag(TAG)
@@ -118,16 +112,17 @@ class DownloadJob(val context: Context, workerParams: WorkerParameters) : Corout
             context.workManager.cancelUniqueWork(TAG)
         }
 
-        fun callListeners(downloading: Boolean? = null, downloadManager: DownloadManager? = null) {
-            val dManager by lazy { downloadManager ?: Injekt.get() }
-            downloadChannel.tryEmit(downloading ?: !dManager.isPaused())
-        }
-
         fun isRunning(context: Context): Boolean {
             return context.workManager
                 .getWorkInfosForUniqueWork(TAG)
                 .get()
                 .let { list -> list.count { it.state == WorkInfo.State.RUNNING } == 1 }
+        }
+
+        fun isRunningFlow(context: Context): Flow<Boolean> {
+            return context.workManager
+                .getWorkInfosForUniqueWorkFlow(TAG)
+                .map { list -> list.count { it.state == WorkInfo.State.RUNNING } == 1 }
         }
     }
 }

@@ -521,8 +521,4 @@ class ExtensionBottomSheet @JvmOverloads constructor(context: Context, attrs: At
             return if (index == -1) POSITION_NONE else index
         }
     }
-
-    fun updateDownloadStatus(isRunning: Boolean) {
-        (controller.activity as? MainActivity)?.downloadStatusChanged(isRunning)
-    }
 }

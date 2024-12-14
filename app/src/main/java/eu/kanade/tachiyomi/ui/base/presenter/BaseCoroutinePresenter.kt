@@ -1,10 +1,11 @@
 package eu.kanade.tachiyomi.ui.base.presenter
 
+import androidx.annotation.CallSuper
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import java.lang.ref.WeakReference
 
 open class BaseCoroutinePresenter<T> {
     var presenterScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -24,6 +25,7 @@ open class BaseCoroutinePresenter<T> {
     open fun onCreate() {
     }
 
+    @CallSuper
     open fun onDestroy() {
         presenterScope.cancel()
         weakView = null

@@ -11,8 +11,6 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.data.download.DownloadManager
-import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.data.preference.DelayedLibrarySuggestionsJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackManager
@@ -44,7 +42,6 @@ import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.mapStatus
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
-import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import java.util.*
@@ -95,7 +92,7 @@ class LibraryPresenter(
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val trackManager: TrackManager = Injekt.get(),
-) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
+) : BaseCoroutinePresenter<LibraryController>() {
     private val getCategories: GetCategories by injectLazy()
     private val setMangaCategories: SetMangaCategories by injectLazy()
     private val updateCategories: UpdateCategories by injectLazy()
@@ -189,7 +186,7 @@ class LibraryPresenter(
 
     override fun onCreate() {
         super.onCreate()
-        downloadManager.addListener(this)
+
         if (!controllerIsSubClass) {
             lastLibraryItems?.let { libraryItems = it }
             lastCategories?.let { categories = it }
@@ -1637,13 +1634,6 @@ class LibraryPresenter(
                     updateManga.await(MangaUpdate(manga.id!!, thumbnailUrl = manga.thumbnail_url))
                 }
             }
-        }
-    }
-
-    override fun updateDownload(download: Download) = updateDownloads()
-    override fun updateDownloads() {
-        presenterScope.launchUI {
-            view?.updateDownloadStatus(!downloadManager.isPaused())
         }
     }
 

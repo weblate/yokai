@@ -15,6 +15,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fix slow chapter load
 - Fix chapter bookmark state is not persistent
 
+## Other
+- Refactor downloader
+  - Replace RxJava usage with Kotlin coroutines
+  - Replace DownloadQueue with Flow to hopefully fix ConcurrentModificationException entirely
+
 ## [1.9.2]
 
 ### Changes

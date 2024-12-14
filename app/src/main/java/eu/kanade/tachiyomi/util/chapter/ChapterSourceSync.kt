@@ -107,12 +107,17 @@ suspend fun syncChaptersWithSource(
         it.chapter_number = ChapterRecognition.parseChapterNumber(it.name, manga.title, it.chapter_number)
     }
 
-    // Chapters from the db not in the source.
-    val toDelete = dbChapters.filterNot { dbChapter ->
+    val duplicates = dbChapters.groupBy { it.url }
+        .filter { it.value.size > 1 }
+        .flatMap { (_, chapters) ->
+            chapters.drop(1)
+        }
+    val notInSource = dbChapters.filterNot { dbChapter ->
         sourceChapters.any { sourceChapter ->
             dbChapter.url == sourceChapter.url
         }
     }
+    val toDelete = duplicates + notInSource
 
     // Return if there's nothing to add, delete or change, avoid unnecessary db transactions.
     if (toAdd.isEmpty() && toDelete.isEmpty() && toChange.isEmpty()) {

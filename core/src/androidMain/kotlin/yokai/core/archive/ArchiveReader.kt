@@ -3,7 +3,7 @@ package yokai.core.archive
 import java.io.Closeable
 import java.io.InputStream
 
-actual abstract class ArchiveReader : Closeable {
+abstract class ArchiveReader : Closeable {
     abstract val address: Long
     abstract val size: Long
 

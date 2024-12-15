@@ -137,7 +137,7 @@ suspend fun syncChaptersWithSource(
     // Date fetch is set in such a way that the upper ones will have bigger value than the lower ones
     // Sources MUST return the chapters from most to less recent, which is common.
     var itemCount = toAdd.size
-    var updatedToAdd = toAdd.map { toAddItem ->
+    var updatedToAdd = toAdd.distinctBy { it.url }.map { toAddItem ->
         val chapter: Chapter = toAddItem.copy()
 
         chapter.date_fetch = now + itemCount--

@@ -77,8 +77,12 @@ suspend fun syncChaptersWithSource(
     }
     val toDelete = duplicates + notInSource
 
+    val managedUrls = mutableListOf<String>()
+
     for (sourceChapter in sourceChapters) {
         val chapter = sourceChapter
+
+        if (chapter.url in managedUrls) continue
 
         if (source is HttpSource) {
             source.prepareNewChapter(chapter, manga)
@@ -108,6 +112,8 @@ suspend fun syncChaptersWithSource(
                 toChange.add(update)
             }
         }
+
+        managedUrls.add(chapter.url)
     }
 
     // Return if there's nothing to add, delete or change, avoid unnecessary db transactions.
@@ -137,7 +143,7 @@ suspend fun syncChaptersWithSource(
     // Date fetch is set in such a way that the upper ones will have bigger value than the lower ones
     // Sources MUST return the chapters from most to less recent, which is common.
     var itemCount = toAdd.size
-    var updatedToAdd = toAdd.distinctBy { it.url }.map { toAddItem ->
+    var updatedToAdd = toAdd.map { toAddItem ->
         val chapter: Chapter = toAddItem.copy()
 
         chapter.date_fetch = now + itemCount--

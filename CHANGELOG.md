@@ -11,6 +11,10 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Fixes
+- Fix new chapters not showing up in `Recents > Grouped`
+- Add potential workaround for duplicate chapter bug
+
 ### Other
 - Update dependency androidx.compose:compose-bom to v2024.12.01
 - Update plugin kotlinter to v5

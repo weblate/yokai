@@ -21,6 +21,7 @@ class GlobalSearchMangaItem(
 
     private val getManga: GetManga by injectLazy()
 
+    val mangaId: Long? = initialManga.id
     var manga: Manga = initialManga
         private set
     // TODO: Could potentially cause memleak, test it with leakcanary before deploying to stable!
@@ -62,12 +63,12 @@ class GlobalSearchMangaItem(
 
     override fun equals(other: Any?): Boolean {
         if (other is GlobalSearchMangaItem) {
-            return manga.id == other.manga.id
+            return mangaId == other.mangaId
         }
         return false
     }
 
     override fun hashCode(): Int {
-        return manga.id?.toInt() ?: 0
+        return mangaId?.toInt() ?: 0
     }
 }

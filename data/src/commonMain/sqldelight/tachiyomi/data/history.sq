@@ -169,12 +169,10 @@ SELECT
 FROM mangas AS M
 JOIN chapters AS C
 ON M._id = C.manga_id
-JOIN history
-ON C._id = history.history_chapter_id
 JOIN (
     SELECT
         C2.manga_id,
-        C2._id AS history_chapter_id,
+        C2._id,
         max(date_upload)
     FROM chapters AS C2 JOIN mangas AS M2
     ON M2._id = C2.manga_id
@@ -186,8 +184,8 @@ LEFT JOIN scanlators_view AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE favorite = 1
-AND newest_chapter.history_chapter_id = history.history_chapter_id
-AND date_fetch > date_added
+AND C._id = newest_chapter._id
+AND C.date_fetch > M.date_added
 AND lower(title) LIKE '%' || :search || '%'
 AND (
     :apply_filter = 0 OR S.name IS NULL

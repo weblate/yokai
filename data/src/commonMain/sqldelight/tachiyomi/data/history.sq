@@ -181,6 +181,7 @@ JOIN (
     WHERE C2.read = 0
     GROUP BY C2.manga_id
 ) AS newest_chapter
+ON C.manga_id = newest_chapter.manga_id
 LEFT JOIN scanlators_view AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name

@@ -35,6 +35,29 @@ interface Manga : SManga {
 
     var cover_last_modified: Long
 
+    override fun copy(): Manga {
+        return (super.copy() as Manga).also {
+            it.id = this.id
+            it.source = this.source
+            it.favorite = this.favorite
+            it.last_update = this.last_update
+            it.date_added = this.date_added
+            it.viewer_flags = this.viewer_flags
+            it.chapter_flags = this.chapter_flags
+            it.hide_title = this.hide_title
+            it.filtered_scanlators = this.filtered_scanlators
+
+            it.ogTitle = this.ogTitle
+            it.ogAuthor = this.ogAuthor
+            it.ogArtist = this.ogArtist
+            it.ogDesc = this.ogDesc
+            it.ogGenre = this.ogGenre
+            it.ogStatus = this.ogStatus
+
+            it.cover_last_modified = this.cover_last_modified
+        }
+    }
+
     @Deprecated("Use ogTitle directly instead", ReplaceWith("ogTitle"))
     val originalTitle: String
         get() = ogTitle

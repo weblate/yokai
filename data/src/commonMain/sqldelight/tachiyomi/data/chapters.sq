@@ -58,6 +58,17 @@ AND (
     :apply_filter = 0 OR S.name IS NULL
 );
 
+findUnreadByMangaId:
+SELECT C.*
+FROM chapters AS C
+LEFT JOIN scanlators_view AS S
+ON C.manga_id = S.manga_id
+AND C.scanlator = S.name
+WHERE C.manga_id = :manga_id AND C.read = 0
+AND (
+    :apply_filter = 0 OR S.name IS NULL
+);
+
 getRecents:
 SELECT
     M.*,

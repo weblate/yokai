@@ -43,6 +43,11 @@ class ChapterRepositoryImpl(private val handler: DatabaseHandler) : ChapterRepos
             chaptersQueries.getChaptersByUrlAndMangaId(url, mangaId, filterScanlators.toInt().toLong(), Chapter::mapper)
         }
 
+    override suspend fun getUnread(mangaId: Long, filterScanlators: Boolean): List<Chapter> =
+        handler.awaitList {
+            chaptersQueries.findUnreadByMangaId(mangaId, filterScanlators.toInt().toLong(), Chapter::mapper)
+        }
+
     override suspend fun getRecents(filterScanlators: Boolean, search: String, limit: Long, offset: Long): List<MangaChapter> =
         handler.awaitList { chaptersQueries.getRecents(search, filterScanlators.toInt().toLong(), limit, offset, MangaChapter::mapper) }
 

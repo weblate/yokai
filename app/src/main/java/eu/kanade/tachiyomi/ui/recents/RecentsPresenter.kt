@@ -485,17 +485,16 @@ class RecentsPresenter(
 
     private suspend fun getNextChapter(manga: Manga): Chapter? {
         val mangaId = manga.id ?: return null
-        val chapters = getChapter.awaitAll(mangaId, true)
-        return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
+        val chapters = getChapter.awaitUnread(mangaId, true)
+        return ChapterSort(manga, chapterFilter, preferences).getNextChapter(chapters, false)
     }
 
     private suspend fun getFirstUpdatedChapter(manga: Manga, chapter: Chapter): Chapter? {
         val mangaId = manga.id ?: return null
-        val chapters = getChapter.awaitAll(mangaId, true)
-        return chapters
-            .sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
-                !it.read && abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)
-            }
+        val chapters = getChapter.awaitUnread(mangaId, true)
+        return chapters.sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
+            abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)
+        }
     }
 
     override fun onDestroy() {

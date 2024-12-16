@@ -7,8 +7,25 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.domain.manga.models.Manga
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 
-class GlobalSearchMangaItem(val manga: Manga) : AbstractFlexibleItem<GlobalSearchMangaHolder>() {
+// FIXME: Migrate to compose
+class GlobalSearchMangaItem(
+    initialManga: Manga
+) : AbstractFlexibleItem<GlobalSearchMangaHolder>() {
+
+    private val getManga: GetManga by injectLazy()
+
+    var manga: Manga = initialManga
+        private set
+    // TODO: Could potentially cause memleak, test it with leakcanary before deploying to stable!
+    private val scope = MainScope()
+    private var job: Job? = null
 
     override fun getLayoutRes(): Int {
         return R.layout.source_global_search_controller_card_item
@@ -24,7 +41,23 @@ class GlobalSearchMangaItem(val manga: Manga) : AbstractFlexibleItem<GlobalSearc
         position: Int,
         payloads: MutableList<Any?>?,
     ) {
-        holder.bind(manga)
+        if (job == null) holder.bind(manga)
+        job?.cancel()
+        job = scope.launch {
+            getManga.subscribeByUrlAndSource(manga.url, manga.source).collectLatest {
+                manga = it ?: return@collectLatest
+                holder.bind(manga)
+            }
+        }
+    }
+
+    override fun unbindViewHolder(
+        adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?,
+        holder: GlobalSearchMangaHolder?,
+        position: Int
+    ) {
+        job?.cancel()
+        job = null
     }
 
     override fun equals(other: Any?): Boolean {

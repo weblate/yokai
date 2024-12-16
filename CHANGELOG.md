@@ -14,6 +14,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ### Fixes
 - Fix new chapters not showing up in `Recents > Grouped`
 - Add potential workaround for duplicate chapter bug
+- Fix favorite state is not being updated when browsing source
 
 ### Other
 - Update dependency androidx.compose:compose-bom to v2024.12.01

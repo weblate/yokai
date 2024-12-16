@@ -18,14 +18,30 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.ui.library.LibraryItem
 import eu.kanade.tachiyomi.ui.library.setBGAndFG
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 
+// FIXME: Migrate to compose
 class BrowseSourceItem(
-    val manga: Manga,
+    initialManga: Manga,
     private val catalogueAsList: Preference<Boolean>,
     private val catalogueListType: Preference<Int>,
     private val outlineOnCovers: Preference<Boolean>,
 ) :
     AbstractFlexibleItem<BrowseSourceHolder>() {
+
+    private val getManga: GetManga by injectLazy()
+
+    val mangaId: Long = initialManga.id!!
+    var manga: Manga = initialManga
+        private set
+    // TODO: Could potentially cause memleak, test it with leakcanary before deploying to stable!
+    private val scope = MainScope()
+    private var job: Job? = null
 
     override fun getLayoutRes(): Int {
         return if (catalogueAsList.get()) {
@@ -76,18 +92,34 @@ class BrowseSourceItem(
         position: Int,
         payloads: MutableList<Any?>?,
     ) {
-        holder.onSetValues(manga)
+        if (job == null) holder.onSetValues(manga)
+        job?.cancel()
+        job = scope.launch {
+            getManga.subscribeByUrlAndSource(manga.url, manga.source).collectLatest {
+                manga = it ?: return@collectLatest
+                holder.onSetValues(manga)
+            }
+        }
+    }
+
+    override fun unbindViewHolder(
+        adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?,
+        holder: BrowseSourceHolder?,
+        position: Int
+    ) {
+        job?.cancel()
+        job = null
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other is BrowseSourceItem) {
-            return manga.id!! == other.manga.id!!
+            return mangaId == other.mangaId
         }
         return false
     }
 
     override fun hashCode(): Int {
-        return manga.id!!.hashCode()
+        return mangaId.hashCode()
     }
 }

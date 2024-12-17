@@ -11,6 +11,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.9.5]
+
 ### Changes
 - Entries from local source now behaves similar to entries from online sources
 

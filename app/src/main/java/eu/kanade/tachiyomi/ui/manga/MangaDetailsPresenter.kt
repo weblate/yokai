@@ -227,7 +227,9 @@ class MangaDetailsPresenter(
 
         presenterScope.launch {
             isLoading = true
-            controller.updateHeader()
+            withUIContext {
+                controller.updateHeader()
+            }
             val tasks = listOf(
                 async { if (fetchMangaNeeded) fetchMangaFromSource() },
                 async { if (fetchChaptersNeeded) fetchChaptersFromSource(false) },
@@ -539,7 +541,7 @@ class MangaDetailsPresenter(
             }
             updateChapter.awaitAll(updates)
             getChapters()
-            withContext(Dispatchers.Main) { view?.updateChapters() }
+            withUIContext { view?.updateChapters() }
         }
     }
 

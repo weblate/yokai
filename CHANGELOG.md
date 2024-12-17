@@ -11,6 +11,10 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Fixes
+- Fix weird flickering when browsing sources
+- Fix some crashes
+
 ## [1.9.5]
 
 ### Changes

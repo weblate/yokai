@@ -222,8 +222,8 @@ class MangaDetailsPresenter(
             .onEach { onUpdateManga() }
             .launchIn(presenterScope)
 
-        val fetchMangaNeeded = !manga.initialized
-        val fetchChaptersNeeded = runBlocking { getChaptersNow() }.isEmpty()
+        val fetchMangaNeeded = !manga.initialized || manga.isLocal()
+        val fetchChaptersNeeded = runBlocking { getChaptersNow() }.isEmpty() || manga.isLocal()
 
         presenterScope.launch {
             isLoading = true

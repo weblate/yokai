@@ -194,7 +194,7 @@ class MangaDetailsController :
         }
     }
 
-    private val manga: Manga? get() = presenter.currentManga.value
+    private val manga: Manga? get() = if (presenter.isMangaLateInitInitialized()) presenter.manga else null
     private var colorAnimator: ValueAnimator? = null
     override val presenter: MangaDetailsPresenter
     private var coverColor: Int? = null
@@ -674,7 +674,7 @@ class MangaDetailsController :
         returningFromReader = false
         runBlocking {
             val itemAnimator = binding.recycler.itemAnimator
-            val chapters = withTimeoutOrNull(1000) { presenter.setAndGetChapters() } ?: return@runBlocking
+            val chapters = withTimeoutOrNull(1000) { presenter.getChaptersNow() } ?: return@runBlocking
             binding.recycler.itemAnimator = null
             tabletAdapter?.notifyItemChanged(0)
             adapter?.setChapters(chapters)
@@ -821,11 +821,15 @@ class MangaDetailsController :
         updateMenuVisibility(activityBinding?.toolbar?.menu)
     }
 
-    fun updateChapters() {
+    fun updateChapters(chapters: List<ChapterItem>) {
         view ?: return
         binding.swipeRefresh.isRefreshing = presenter.isLoading
-        adapter?.setChapters(presenter.chapters)
+        if (presenter.chapters.isEmpty() && fromCatalogue && !presenter.hasRequested) {
+            launchUI { binding.swipeRefresh.isRefreshing = true }
+            presenter.fetchChaptersFromSource()
+        }
         tabletAdapter?.notifyItemChanged(0)
+        adapter?.setChapters(chapters)
         addMangaHeader()
         colorToolbar(binding.recycler.canScrollVertically(-1))
         updateMenuVisibility(activityBinding?.toolbar?.menu)

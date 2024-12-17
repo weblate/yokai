@@ -182,37 +182,6 @@ var Manga.vibrantCoverColor: Int?
         id?.let { MangaCoverMetadata.setVibrantColor(it, value) }
     }
 
-fun Manga.copyDomain(): Manga = MangaImpl().also { other ->
-    other.url = this.url
-    other.title = this.title
-    other.artist = this.artist
-    other.author = this.author
-    other.description = this.description
-    other.genre = this.genre
-    other.status = this.status
-    other.thumbnail_url = this.thumbnail_url
-    other.initialized = this.initialized
-
-    other.id = this.id
-    other.source = this.source
-    other.favorite = this.favorite
-    other.last_update = this.last_update
-    other.date_added = this.date_added
-    other.viewer_flags = this.viewer_flags
-    other.chapter_flags = this.chapter_flags
-    other.hide_title = this.hide_title
-    other.filtered_scanlators = this.filtered_scanlators
-
-    other.ogTitle = this.ogTitle
-    other.ogAuthor = this.ogAuthor
-    other.ogArtist = this.ogArtist
-    other.ogDesc = this.ogDesc
-    other.ogGenre = this.ogGenre
-    other.ogStatus = this.ogStatus
-
-    other.cover_last_modified = this.cover_last_modified
-}
-
 fun Manga.Companion.create(source: Long) = MangaImpl().apply {
     this.source = source
 }

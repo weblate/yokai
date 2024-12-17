@@ -11,9 +11,12 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Changes
+- Entries from local source now behaves similar to entries from online sources
+
 ### Fixes
 - Fix new chapters not showing up in `Recents > Grouped`
-- Add potential workaround for duplicate chapter bug
+- Add potential workarounds for duplicate chapter bug
 - Fix favorite state is not being updated when browsing source
 
 ### Other

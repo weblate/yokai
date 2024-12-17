@@ -200,6 +200,14 @@ class MangaDetailsPresenter(
         val controller = view ?: return
 
         isLockedFromSearch = controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
+
+        presenterScope.launchUI {
+            currentManga.collectLatest {
+                if (it == null) return@collectLatest
+
+                controller.updateHeader()
+            }
+        }
         if (currentManga.value == null) runBlocking { refreshMangaFromDb() }
         syncData()
 
@@ -217,13 +225,6 @@ class MangaDetailsPresenter(
         }
         presenterScope.launchIO {
             downloadManager.queueState.collectLatest(::onQueueUpdate)
-        }
-        presenterScope.launchUI {
-            currentManga.collectLatest {
-                if (it == null) return@collectLatest
-
-                controller.updateHeader()
-            }
         }
         presenterScope.launchIO {
             currentChapters.collectLatest { chapters ->
@@ -258,7 +259,7 @@ class MangaDetailsPresenter(
             .onEach { onUpdateManga() }
             .launchIn(presenterScope)
 
-        val updateMangaNeeded = !manga.initialized
+        val updateMangaNeeded = currentManga.value?.initialized != true
         val updateChaptersNeeded = runBlocking { setAndGetChapters() }.isEmpty()
 
         presenterScope.launch {
@@ -496,7 +497,7 @@ class MangaDetailsPresenter(
                         .build()
 
                 if (preferences.context.imageLoader.execute(request) is SuccessResult) {
-                    withContext(Dispatchers.Main) {
+                    withUIContext {
                         view?.setPaletteColor()
                     }
                 }

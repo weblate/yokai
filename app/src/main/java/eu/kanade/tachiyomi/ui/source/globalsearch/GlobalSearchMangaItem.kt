@@ -9,17 +9,15 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uy.kohesive.injekt.injectLazy
-import yokai.domain.manga.interactor.GetManga
 
 // FIXME: Migrate to compose
 class GlobalSearchMangaItem(
-    initialManga: Manga
+    initialManga: Manga,
+    private val mangaFlow: Flow<Manga?>,
 ) : AbstractFlexibleItem<GlobalSearchMangaHolder>() {
-
-    private val getManga: GetManga by injectLazy()
 
     val mangaId: Long? = initialManga.id
     var manga: Manga = initialManga
@@ -44,7 +42,7 @@ class GlobalSearchMangaItem(
         if (job == null) holder.bind(manga)
         job?.cancel()
         job = scope.launch {
-            getManga.subscribeByUrlAndSource(manga.url, manga.source).collectLatest {
+            mangaFlow.collectLatest {
                 manga = it ?: return@collectLatest
                 holder.bind(manga)
             }

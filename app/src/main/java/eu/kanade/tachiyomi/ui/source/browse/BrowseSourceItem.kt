@@ -20,21 +20,19 @@ import eu.kanade.tachiyomi.ui.library.setBGAndFG
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uy.kohesive.injekt.injectLazy
-import yokai.domain.manga.interactor.GetManga
 
 // FIXME: Migrate to compose
 class BrowseSourceItem(
     initialManga: Manga,
+    private val mangaFlow: Flow<Manga?>,
     private val catalogueAsList: Preference<Boolean>,
     private val catalogueListType: Preference<Int>,
     private val outlineOnCovers: Preference<Boolean>,
 ) :
     AbstractFlexibleItem<BrowseSourceHolder>() {
-
-    private val getManga: GetManga by injectLazy()
 
     val mangaId: Long = initialManga.id!!
     var manga: Manga = initialManga
@@ -94,7 +92,7 @@ class BrowseSourceItem(
         if (job == null) holder.onSetValues(manga)
         job?.cancel()
         job = scope.launch {
-            getManga.subscribeByUrlAndSource(manga.url, manga.source).collectLatest {
+            mangaFlow.collectLatest {
                 manga = it ?: return@collectLatest
                 holder.onSetValues(manga)
             }

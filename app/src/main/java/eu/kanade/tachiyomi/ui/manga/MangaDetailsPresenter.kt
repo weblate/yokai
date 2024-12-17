@@ -174,7 +174,7 @@ class MangaDetailsPresenter(
     var allHistory: List<History> = emptyList()
         private set
 
-    val headerItem: MangaHeaderItem by lazy { MangaHeaderItem(mangaId, view?.fromCatalogue == true)}
+    val headerItem: MangaHeaderItem get() = MangaHeaderItem(mangaId, view?.fromCatalogue == true)
     var tabletChapterHeaderItem: MangaHeaderItem? = null
         get() {
             when (view?.isTablet) {
@@ -262,11 +262,13 @@ class MangaDetailsPresenter(
         val updateChaptersNeeded = runBlocking { setAndGetChapters() }.isEmpty()
 
         presenterScope.launch {
+            isLoading = true
             val tasks = listOf(
                 async { if (updateMangaNeeded) fetchMangaFromSource() },
                 async { if (updateChaptersNeeded) fetchChaptersFromSource(false) },
             )
             tasks.awaitAll()
+            isLoading = false
 
             setTrackItems()
         }

@@ -9,7 +9,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - `Translation` - Translation changes/updates
 - `Other` - Technical changes/updates
 
-## [Unreleased]
+## [1.9.6]
 
 ### Fixes
 - Fix weird flickering when browsing sources

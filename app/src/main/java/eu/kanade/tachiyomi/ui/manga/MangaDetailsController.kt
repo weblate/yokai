@@ -821,15 +821,11 @@ class MangaDetailsController :
         updateMenuVisibility(activityBinding?.toolbar?.menu)
     }
 
-    fun updateChapters(chapters: List<ChapterItem>) {
+    fun updateChapters() {
         view ?: return
         binding.swipeRefresh.isRefreshing = presenter.isLoading
-        if (presenter.chapters.isEmpty() && fromCatalogue && !presenter.hasRequested) {
-            launchUI { binding.swipeRefresh.isRefreshing = true }
-            presenter.fetchChaptersFromSource()
-        }
         tabletAdapter?.notifyItemChanged(0)
-        adapter?.setChapters(chapters)
+        adapter?.setChapters(presenter.chapters)
         addMangaHeader()
         colorToolbar(binding.recycler.canScrollVertically(-1))
         updateMenuVisibility(activityBinding?.toolbar?.menu)

@@ -24,7 +24,6 @@ class GlobalSearchMangaItem(
     val mangaId: Long? = initialManga.id
     var manga: Manga = initialManga
         private set
-    // TODO: Could potentially cause memleak, test it with leakcanary before deploying to stable!
     private val scope = MainScope()
     private var job: Job? = null
 

@@ -118,12 +118,7 @@ suspend fun syncChaptersWithSource(
 
     // Return if there's nothing to add, delete or change, avoid unnecessary db transactions.
     if (toAdd.isEmpty() && toDelete.isEmpty() && toChange.isEmpty()) {
-        val newestDate = dbChapters.maxOfOrNull { it.date_upload } ?: 0L
-        if (newestDate != 0L && newestDate > manga.last_update) {
-            manga.last_update = newestDate
-            val update = MangaUpdate(manga.id!!, lastUpdate = newestDate)
-            updateManga.await(update)
-        }
+        // TODO: Predict when the next chapter gonna release
         return Pair(emptyList(), emptyList())
     }
 
@@ -188,6 +183,8 @@ suspend fun syncChaptersWithSource(
             )
         }
     }
+
+    // TODO: Predict when the next chapter gonna release
 
     // Set this manga as updated since chapters were changed
     // Note that last_update actually represents last time the chapter list changed at all

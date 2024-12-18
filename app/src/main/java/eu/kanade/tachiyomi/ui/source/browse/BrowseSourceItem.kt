@@ -104,10 +104,6 @@ class BrowseSourceItem(
         holder: BrowseSourceHolder?,
         position: Int
     ) {
-        recycle()
-    }
-
-    fun recycle() {
         job?.cancel()
         job = null
     }

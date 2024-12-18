@@ -9,10 +9,14 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - `Translation` - Translation changes/updates
 - `Other` - Technical changes/updates
 
+## [Unreleased]
+
+### Fixes
+- Fix sorting by latest chapter is not working properly
+
 ## [1.9.6]
 
 ### Fixes
-- Fix weird flickering when browsing sources
 - Fix some crashes
 
 ## [1.9.5]

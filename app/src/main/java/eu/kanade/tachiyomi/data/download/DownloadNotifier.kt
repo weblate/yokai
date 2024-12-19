@@ -155,9 +155,10 @@ internal class DownloadNotifier(private val context: Context) {
             }
             setStyle(null)
             setProgress(download.pages!!.size, download.downloadedImages, false)
+
+            // Displays the progress bar on notification
+            show()
         }
-        // Displays the progress bar on notification
-        notification.show()
     }
 
     /**
@@ -212,8 +213,9 @@ internal class DownloadNotifier(private val context: Context) {
             clearActions()
             setContentIntent(NotificationHandler.openDownloadManagerPendingActivity(context))
             setProgress(0, 0, false)
+
+            show(Notifications.ID_DOWNLOAD_CHAPTER_ERROR)
         }
-        notification.show(Notifications.ID_DOWNLOAD_CHAPTER_ERROR)
 
         // Reset download information
         isDownloading = false
@@ -291,8 +293,9 @@ internal class DownloadNotifier(private val context: Context) {
             }
             color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)
             setProgress(0, 0, false)
+
+            show(Notifications.ID_DOWNLOAD_CHAPTER_ERROR)
         }
-        notification.show(Notifications.ID_DOWNLOAD_CHAPTER_ERROR)
 
         // Reset download information
         errorThrown = true

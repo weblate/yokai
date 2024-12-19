@@ -170,6 +170,7 @@ jobs:
           set -e
 
           dir="app/build/outputs/apk/standard/${{ steps.version_stage.outputs.STAGE }}"
+          echo "APK_DIR=$dir" >> $GITHUB_ENV
 
           mv $dir/app-standard-universal-*-signed.apk yokai-${{ env.VERSION_TAG }}.apk
           sha=`sha256sum yokai-${{ env.VERSION_TAG }}.apk | awk '{ print $1 }'`
@@ -190,6 +191,12 @@ jobs:
           cp $dir/app-standard-x86_64-*-signed.apk yokai-x86_64-${{ env.VERSION_TAG }}.apk
           sha=`sha256sum yokai-x86_64-${{ env.VERSION_TAG }}.apk | awk '{ print $1 }'`
           echo "APK_X86_64_SHA=$sha" >> $GITHUB_ENV
+
+      - name: Upload to artifact
+        if: env.VERSION_TAG != ''
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${{ env.APK_DIR }}/yokai-*
 
       - name: Create Release
         if: startsWith(env.VERSION_TAG, 'v')

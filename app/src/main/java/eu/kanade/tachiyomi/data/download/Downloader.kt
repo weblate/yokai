@@ -389,7 +389,30 @@ class Downloader(
                 }
 
             // Do after download completes
-            ensureSuccessfulDownload(download, mangaDir, tmpDir, chapterDirname)
+
+            if (!isDownloadSuccessful(download, tmpDir)) {
+                download.status = Download.State.ERROR
+                return
+            }
+
+            createComicInfoFile(
+                tmpDir,
+                download.manga,
+                download.chapter,
+                download.source,
+            )
+
+            // Only rename the directory if it's downloaded
+            if (preferences.saveChaptersAsCBZ().get()) {
+                archiveChapter(mangaDir, chapterDirname, tmpDir)
+            } else {
+                tmpDir.renameTo(chapterDirname)
+            }
+            cache.addChapter(chapterDirname, mangaDir, download.manga)
+
+            DiskUtil.createNoMediaFile(tmpDir, context)
+
+            download.status = Download.State.DOWNLOADED
         } catch (error: Throwable) {
             if (error is CancellationException) throw error
             // If the page list threw, it will resume here
@@ -397,6 +420,31 @@ class Downloader(
             download.status = Download.State.ERROR
             notifier.onError(error.message, chapName, download.manga.title)
         }
+    }
+
+    private fun isDownloadSuccessful(
+        download: Download,
+        tmpDir: UniFile,
+    ): Boolean {
+        // Page list hasn't been initialized
+        val downloadPageCount = download.pages?.size ?: return false
+
+        // Ensure that all pages has been downloaded
+        if (download.downloadedImages != downloadPageCount) return false
+
+        // Ensure that the chapter folder has all the pages
+        val downloadedImagesCount = tmpDir.listFiles().orEmpty().count {
+            val fileName = it.name.orEmpty()
+            when {
+                fileName in listOf(COMIC_INFO_FILE, NOMEDIA_FILE) -> false
+                fileName.endsWith(".tmp") -> false
+                // Only count the first split page and not the others
+                fileName.contains("__") && !fileName.endsWith("__001.jpg") -> false
+                else -> true
+            }
+        }
+
+        return downloadedImagesCount == downloadPageCount
     }
 
     /**
@@ -550,60 +598,6 @@ class Downloader(
     }
 
     /**
-     * Checks if the download was successful.
-     *
-     * @param download the download to check.
-     * @param mangaDir the manga directory of the download.
-     * @param tmpDir the directory where the download is currently stored.
-     * @param dirname the real (non temporary) directory name of the download.
-     */
-    private suspend fun ensureSuccessfulDownload(
-        download: Download,
-        mangaDir: UniFile,
-        tmpDir: UniFile,
-        dirname: String,
-    ) {
-        // Page list hasn't been initialized
-        val downloadPageCount = download.pages?.size ?: return
-        // Ensure that all pages has been downloaded
-        if (download.downloadedImages < downloadPageCount) return
-        // Ensure that the chapter folder has all the pages
-        val downloadedImagesCount = tmpDir.listFiles().orEmpty().count {
-            val fileName = it.name.orEmpty()
-            when {
-                fileName in listOf(COMIC_INFO_FILE, NOMEDIA_FILE) -> false
-                fileName.endsWith(".tmp") -> false
-                // Only count the first split page and not the others
-                fileName.contains("__") && !fileName.endsWith("__001.jpg") -> false
-                else -> true
-            }
-        }
-
-        download.status = if (downloadedImagesCount == downloadPageCount) {
-            createComicInfoFile(
-                tmpDir,
-                download.manga,
-                download.chapter,
-                download.source,
-            )
-
-            // Only rename the directory if it's downloaded
-            if (preferences.saveChaptersAsCBZ().get()) {
-                archiveChapter(mangaDir, dirname, tmpDir)
-            } else {
-                tmpDir.renameTo(dirname)
-            }
-            cache.addChapter(dirname, mangaDir, download.manga)
-
-            DiskUtil.createNoMediaFile(tmpDir, context)
-
-            Download.State.DOWNLOADED
-        } else {
-            Download.State.ERROR
-        }
-    }
-
-    /**
      * Archive the chapter pages as a CBZ.
      */
     private fun archiveChapter(
@@ -611,7 +605,7 @@ class Downloader(
         dirname: String,
         tmpDir: UniFile,
     ) {
-        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX") ?: return
+        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")!!
         ZipWriter(context, zip).use { writer ->
             tmpDir.listFiles()?.forEach { file ->
                 writer.write(file)

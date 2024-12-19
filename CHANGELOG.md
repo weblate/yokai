@@ -14,6 +14,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ### Fixes
 - Fix sorting by latest chapter is not working properly
 
+### Other
+- Update NDK to v27.2.12479018
+
 ## [1.9.6]
 
 ### Fixes

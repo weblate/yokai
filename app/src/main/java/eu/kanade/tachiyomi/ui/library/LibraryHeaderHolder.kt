@@ -260,24 +260,24 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
     }
 
     private fun showCatSortOptions() {
-        if (category == null) return
+        val cat = category ?: return
         adapter.controller?.activity?.let { activity ->
-            val items = LibrarySort.entries.map { it.menuSheetItem(category!!.isDynamic) }
-            val sortingMode = category!!.sortingMode(true)
+            val items = LibrarySort.entries.map { it.menuSheetItem(cat.isDynamic) }
+            val sortingMode = cat.sortingMode(true)
             val sheet = MaterialMenuSheet(
                 activity,
                 items,
                 activity.getString(MR.strings.sort_by),
                 sortingMode?.mainValue,
             ) { sheet, item ->
-                onCatSortClicked(category!!, item)
+                onCatSortClicked(cat, item)
                 val nCategory = (adapter.getItem(flexibleAdapterPosition) as? LibraryHeaderItem)?.category
                 val isAscending = nCategory?.isAscending() ?: false
                 val drawableRes = getSortRes(item, isAscending)
                 sheet.setDrawable(item, drawableRes)
                 false
             }
-            val isAscending = category!!.isAscending()
+            val isAscending = cat.isAscending()
             val drawableRes = getSortRes(sortingMode, isAscending)
             sheet.setDrawable(sortingMode?.mainValue ?: -1, drawableRes)
             sheet.show()

@@ -34,6 +34,8 @@ import coil3.util.DebugLogger
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.hippo.unifile.UniFile
+import eu.davidea.flexibleadapter.FlexibleAdapter
+import eu.davidea.flexibleadapter.utils.Log.Level
 import eu.kanade.tachiyomi.appwidget.TachiyomiWidgetManager
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
@@ -137,6 +139,12 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         }
         basePreferences.hardwareBitmapThreshold().changes()
             .onEach { ImageUtil.hardwareBitmapThreshold = it }
+            .launchIn(scope)
+
+        networkPreferences.verboseLogging().changes()
+            .onEach { enabled ->
+                FlexibleAdapter.enableLogs(if (enabled) Level.VERBOSE else Level.SUPPRESS)
+            }
             .launchIn(scope)
 
         scope.launchIO {

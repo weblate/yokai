@@ -1517,7 +1517,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     private fun downloadStatusChanged(downloading: Boolean, queueSize: Int) {
         lifecycleScope.launchUI {
-            val hasQueue = downloading || downloadManager.hasQueue()
+            val hasQueue = downloading || queueSize > 0
             if (hasQueue) {
                 val badge = nav.getOrCreateBadge(R.id.nav_recents)
                 badge.updateQueueSize(queueSize)

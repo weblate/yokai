@@ -191,12 +191,6 @@ jobs:
           sha=`sha256sum yokai-x86_64-${{ env.VERSION_TAG }}.apk | awk '{ print $1 }'`
           echo "APK_X86_64_SHA=$sha" >> $GITHUB_ENV
 
-      - name: Upload to artifact
-        if: env.VERSION_TAG != ''
-        uses: actions/upload-artifact@v4
-        with:
-          path: yokai-*
-
       - name: Create Release
         if: startsWith(env.VERSION_TAG, 'v')
         uses: softprops/action-gh-release@v2

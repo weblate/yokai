@@ -18,16 +18,10 @@ import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.ui.library.LibraryItem
 import eu.kanade.tachiyomi.ui.library.setBGAndFG
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 // FIXME: Migrate to compose
 class BrowseSourceItem(
     initialManga: Manga,
-    private val mangaFlow: Flow<Manga?>,
     private val catalogueAsList: Preference<Boolean>,
     private val catalogueListType: Preference<Int>,
     private val outlineOnCovers: Preference<Boolean>,
@@ -37,8 +31,6 @@ class BrowseSourceItem(
     val mangaId: Long = initialManga.id!!
     var manga: Manga = initialManga
         private set
-    private val scope = MainScope()
-    private var job: Job? = null
 
     override fun getLayoutRes(): Int {
         return if (catalogueAsList.get()) {
@@ -83,35 +75,29 @@ class BrowseSourceItem(
         }
     }
 
+    fun updateManga(
+        holder: BrowseSourceHolder,
+        manga: Manga,
+    ) {
+        if (manga.id != mangaId) return
+
+        this.manga = manga
+        holder.onSetValues(manga)
+    }
+
     override fun bindViewHolder(
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>,
         holder: BrowseSourceHolder,
         position: Int,
         payloads: MutableList<Any?>?,
     ) {
-        if (job == null) holder.onSetValues(manga)
-        job?.cancel()
-        job = scope.launch {
-            mangaFlow.collectLatest {
-                manga = it ?: return@collectLatest
-                holder.onSetValues(manga)
-            }
-        }
-    }
-
-    override fun unbindViewHolder(
-        adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?,
-        holder: BrowseSourceHolder?,
-        position: Int
-    ) {
-        job?.cancel()
-        job = null
+        holder.onSetValues(manga)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other is BrowseSourceItem) {
-            return mangaId == other.mangaId
+            return this.mangaId == other.mangaId
         }
         return false
     }

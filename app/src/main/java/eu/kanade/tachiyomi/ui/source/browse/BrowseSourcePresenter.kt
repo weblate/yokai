@@ -185,7 +185,6 @@ open class BrowseSourcePresenter(
                     first to second.map {
                         BrowseSourceItem(
                             it,
-                            getManga.subscribeByUrlAndSource(it.url, it.source),
                             browseAsList,
                             sourceListType,
                             outlineCovers,

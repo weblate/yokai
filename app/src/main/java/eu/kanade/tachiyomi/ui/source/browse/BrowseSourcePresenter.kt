@@ -171,6 +171,8 @@ open class BrowseSourcePresenter(
         val sourceListType = preferences.libraryLayout()
         val outlineCovers = uiPreferences.outlineOnCovers()
 
+        view?.unsubscribe()
+
         // Prepare the pager.
         pagerJob?.cancel()
         pagerJob = presenterScope.launchIO {

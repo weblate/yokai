@@ -752,6 +752,11 @@ open class BrowseSourceController(bundle: Bundle) :
         binding.progress.isVisible = false
     }
 
+    fun unsubscribe() {
+        watchJob?.cancel()
+        watchJob = null
+    }
+
     /**
      * Workaround to fix data state de-sync issues when controller detached,
      * and attaching flow directly into Item caused some flickering issues.

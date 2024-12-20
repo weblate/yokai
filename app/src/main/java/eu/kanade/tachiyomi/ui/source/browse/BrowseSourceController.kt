@@ -165,7 +165,7 @@ open class BrowseSourceController(bundle: Bundle) :
         super.onViewCreated(view)
 
         // Initialize adapter, scroll listener and recycler views
-        adapter = FlexibleAdapter(null, this)
+        adapter = FlexibleAdapter(null, this, true)
         setupRecycler(view)
 
         binding.fab.isVisible = presenter.sourceFilters.isNotEmpty()

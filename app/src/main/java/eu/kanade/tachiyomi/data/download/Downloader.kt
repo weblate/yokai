@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.data.download
 
 import android.content.Context
-import android.os.Handler
 import android.os.Looper
 import co.touchlab.kermit.Logger
 import com.hippo.unifile.UniFile
@@ -93,8 +92,6 @@ class Downloader(
     private val _queueState = MutableStateFlow<List<Download>>(emptyList())
     val queueState = _queueState.asStateFlow()
 
-    private val handler = Handler(Looper.getMainLooper())
-
     /**
      * Notifier for the downloader state and progress.
      */
@@ -158,7 +155,7 @@ class Downloader(
         }
 
         if (isPaused && queueState.value.isNotEmpty()) {
-            handler.postDelayed({ notifier.onDownloadPaused() }, 150)
+            notifier.onDownloadPaused()
         } else {
             notifier.dismiss()
         }

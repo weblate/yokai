@@ -14,6 +14,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ### Fixes
 - Fix sorting by latest chapter is not working properly
 - Prevent some NPE crashes
+- Fix some flickering issues when browsing sources
 
 ### Other
 - Update NDK to v27.2.12479018

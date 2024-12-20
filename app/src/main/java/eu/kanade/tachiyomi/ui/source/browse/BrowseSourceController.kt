@@ -758,10 +758,10 @@ open class BrowseSourceController(bundle: Bundle) :
      *
      * FIXME: Could easily be fixed by migrating to Compose.
      */
-    private fun BrowseSourceItem.subscribe(mangaFlow: Flow<Manga?>) {
+    private fun BrowseSourceItem.subscribe() {
         watchJob?.cancel()
         watchJob = viewScope.launch {
-            mangaFlow.collectLatest {
+            getManga.subscribeByUrlAndSource(manga.url, manga.source).collectLatest {
                 if (it == null) return@collectLatest
                 val holder = getHolder(mangaId) ?: return@collectLatest
                 updateManga(holder, it)
@@ -777,7 +777,7 @@ open class BrowseSourceController(bundle: Bundle) :
      */
     override fun onItemClick(view: View?, position: Int): Boolean {
         val item = adapter?.getItem(position) as? BrowseSourceItem ?: return false
-        item.subscribe(getManga.subscribeByUrlAndSource(item.manga.url, item.manga.source))
+        item.subscribe()
         router.pushController(MangaDetailsController(item.manga, true).withFadeTransaction())
         lastPosition = position
         return false

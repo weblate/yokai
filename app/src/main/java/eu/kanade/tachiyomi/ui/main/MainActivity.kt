@@ -463,11 +463,9 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         combine(
             downloadManager.isDownloaderRunning,
             downloadManager.queueState,
-        ) { isDownloading, queueState ->
-            isDownloading to queueState.size
-        }.onEach { (isDownloading, queueSize) ->
-            downloadStatusChanged(isDownloading, queueSize)
-        }.launchIn(lifecycleScope)
+        ) { isDownloading, queueState -> isDownloading to queueState.size }
+            .onEach { downloadStatusChanged(it.first, it.second) }
+            .launchIn(lifecycleScope)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowCustomEnabled(true)

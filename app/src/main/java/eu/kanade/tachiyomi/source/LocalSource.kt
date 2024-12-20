@@ -286,8 +286,9 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
         if (!directory.exists()) return
 
         lang?.let { langMap[manga.url] = it }
-        val file = directory.createFile(COMIC_INFO_FILE)!!
-        file.writeText(xml.encodeToString(ComicInfo.serializer(), manga.toComicInfo(lang = lang)))
+        directory.createFile(COMIC_INFO_FILE)?.let { file ->
+            file.writeText(xml.encodeToString(ComicInfo.serializer(), manga.toComicInfo(lang = lang)))
+        }
     }
 
     @Serializable

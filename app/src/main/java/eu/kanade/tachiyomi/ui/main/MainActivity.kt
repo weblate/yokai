@@ -102,6 +102,7 @@ import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.manga.MangaShortcutManager
 import eu.kanade.tachiyomi.util.showNotificationPermissionPrompt
+import eu.kanade.tachiyomi.util.system.contextCompatColor
 import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.e
@@ -138,6 +139,7 @@ import kotlin.math.min
 import kotlin.math.roundToLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -458,8 +460,14 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
 
-        downloadManager.isDownloaderRunning.onEach(::downloadStatusChanged).launchIn(lifecycleScope)
-        lifecycleScope
+        combine(
+            downloadManager.isDownloaderRunning,
+            downloadManager.queueState,
+        ) { isDownloading, queueState ->
+            isDownloading to queueState.size
+        }.onEach { (isDownloading, queueSize) ->
+            downloadStatusChanged(isDownloading, queueSize)
+        }.launchIn(lifecycleScope)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowCustomEnabled(true)
@@ -1503,17 +1511,17 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
-    fun BadgeDrawable.updateQueueSize(queueSize: Int) {
+    private fun BadgeDrawable.updateQueueSize(queueSize: Int) {
         number = queueSize
     }
 
-    fun downloadStatusChanged(downloading: Boolean) {
+    private fun downloadStatusChanged(downloading: Boolean, queueSize: Int) {
         lifecycleScope.launchUI {
             val hasQueue = downloading || downloadManager.hasQueue()
             if (hasQueue) {
                 val badge = nav.getOrCreateBadge(R.id.nav_recents)
-                badge.updateQueueSize(downloadManager.queueState.value.size)
-                if (downloading) badge.backgroundColor = -870219 else badge.backgroundColor = Color.GRAY
+                badge.updateQueueSize(queueSize)
+                badge.backgroundColor = if (downloading) contextCompatColor(R.attr.colorError) else Color.GRAY
                 showDLQueueTutorial()
             } else {
                 nav.removeBadge(R.id.nav_recents)

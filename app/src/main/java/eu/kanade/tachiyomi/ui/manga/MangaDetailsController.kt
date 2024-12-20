@@ -832,12 +832,13 @@ class MangaDetailsController :
     }
 
     private fun addMangaHeader() {
-        if (tabletAdapter?.scrollableHeaders?.isEmpty() == true) {
+        val tabletHeader = presenter.tabletChapterHeaderItem
+        if (tabletHeader != null && tabletAdapter?.scrollableHeaders?.isEmpty() == true) {
             tabletAdapter?.removeAllScrollableHeaders()
             tabletAdapter?.addScrollableHeader(presenter.headerItem)
             adapter?.removeAllScrollableHeaders()
-            adapter?.addScrollableHeader(presenter.tabletChapterHeaderItem!!)
-        } else if (!isTablet && adapter?.scrollableHeaders?.isEmpty() == true) {
+            adapter?.addScrollableHeader(tabletHeader)
+        } else if (adapter?.scrollableHeaders?.isEmpty() == true) {
             adapter?.removeAllScrollableHeaders()
             adapter?.addScrollableHeader(presenter.headerItem)
         }

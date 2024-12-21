@@ -102,7 +102,6 @@ import eu.kanade.tachiyomi.ui.source.globalsearch.GlobalSearchController
 import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.manga.MangaShortcutManager
 import eu.kanade.tachiyomi.util.showNotificationPermissionPrompt
-import eu.kanade.tachiyomi.util.system.contextCompatColor
 import eu.kanade.tachiyomi.util.system.contextCompatDrawable
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.e
@@ -1519,7 +1518,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             if (hasQueue) {
                 val badge = nav.getOrCreateBadge(R.id.nav_recents)
                 badge.updateQueueSize(queueSize)
-                badge.backgroundColor = if (downloading) contextCompatColor(R.attr.colorError) else Color.GRAY
+                badge.backgroundColor = if (downloading) getResourceColor(R.attr.colorError) else Color.GRAY
                 showDLQueueTutorial()
             } else {
                 nav.removeBadge(R.id.nav_recents)

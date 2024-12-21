@@ -62,8 +62,8 @@ import yokai.domain.storage.StorageManager
  */
 class DownloadCache(
     private val context: Context,
-    private val provider: DownloadProvider,
-    private val sourceManager: SourceManager,
+    private val provider: DownloadProvider = Injekt.get(),
+    private val sourceManager: SourceManager = Injekt.get(),
     private val storageManager: StorageManager = Injekt.get(),
 ) {
 

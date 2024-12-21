@@ -20,7 +20,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
+import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.injectLazy
+import uy.kohesive.injekt.api.get
 import yokai.domain.download.DownloadPreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
@@ -32,31 +34,21 @@ import yokai.util.lang.getString
  *
  * @param context the application context.
  */
-class DownloadManager(val context: Context) {
-
-    /**
-     * The sources manager.
-     */
-    private val sourceManager by injectLazy<SourceManager>()
+class DownloadManager(
+    val context: Context,
+    private val sourceManager: SourceManager = Injekt.get(),
+    private val provider: DownloadProvider = Injekt.get(),
+    private val cache: DownloadCache = Injekt.get(),
+) {
 
     private val preferences by injectLazy<PreferencesHelper>()
 
     private val downloadPreferences by injectLazy<DownloadPreferences>()
 
     /**
-     * Downloads provider, used to retrieve the folders where the chapters are or should be stored.
-     */
-    private val provider = DownloadProvider(context)
-
-    /**
-     * Cache of downloaded chapters.
-     */
-    private val cache = DownloadCache(context, provider, sourceManager)
-
-    /**
      * Downloader whose only task is to download chapters.
      */
-    private val downloader = Downloader(context, provider, cache, sourceManager)
+    private val downloader = Downloader(context)
 
     val isRunning: Boolean get() = downloader.isRunning
 

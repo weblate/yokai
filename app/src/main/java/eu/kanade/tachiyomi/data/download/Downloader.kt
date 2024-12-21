@@ -54,7 +54,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
 import nl.adaptivity.xmlutil.serialization.XML
 import okhttp3.Response
+import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.injectLazy
+import uy.kohesive.injekt.api.get
 import yokai.core.archive.ZipWriter
 import yokai.core.metadata.COMIC_INFO_FILE
 import yokai.core.metadata.ComicInfo
@@ -71,9 +73,9 @@ import yokai.util.lang.getString
  */
 class Downloader(
     private val context: Context,
-    private val provider: DownloadProvider,
-    private val cache: DownloadCache,
-    private val sourceManager: SourceManager,
+    private val provider: DownloadProvider = Injekt.get(),
+    private val cache: DownloadCache = Injekt.get(),
+    private val sourceManager: SourceManager = Injekt.get(),
 ) {
     private val preferences: PreferencesHelper by injectLazy()
     private val downloadPreferences: DownloadPreferences by injectLazy()

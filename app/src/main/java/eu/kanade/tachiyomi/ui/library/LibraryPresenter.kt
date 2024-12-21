@@ -229,7 +229,10 @@ class LibraryPresenter(
                 categories = lastCategories ?: getCategories.await().toMutableList()
             }
 
-            getLibraryFlow().collectLatest { data ->
+            combine(
+                getLibraryFlow(),
+                downloadManager.cache.changes,
+            ) { data, _ -> data }.collectLatest { data ->
                 categories = data.categories
                 allCategories = data.allCategories
 
@@ -805,8 +808,9 @@ class LibraryPresenter(
             getPreferencesFlow(),
             forceUpdateEvent.receiveAsFlow(),
         ) { allCategories, libraryMangaList, prefs, _ ->
-            this.groupType = prefs.groupType
-            this.allCategories = allCategories
+            groupType = prefs.groupType
+            val defaultCategory = createDefaultCategory()
+            allCategories = listOf(defaultCategory) + dbCategories
 
             // FIXME: Should return Map<Int, LibraryItem> where Int is category id
             if (groupType <= BY_DEFAULT || !libraryIsGrouped) {

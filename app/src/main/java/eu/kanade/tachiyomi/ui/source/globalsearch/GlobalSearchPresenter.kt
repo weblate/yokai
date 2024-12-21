@@ -192,7 +192,12 @@ open class GlobalSearchPresenter(
                         }
                         val result = createCatalogueSearchItem(
                             source,
-                            mangas.map { GlobalSearchMangaItem(it) },
+                            mangas.map {
+                                GlobalSearchMangaItem(
+                                    it,
+                                    getManga.subscribeByUrlAndSource(it.url, it.source),
+                                )
+                            },
                         )
                         items = items
                             .map { item -> if (item.source == result.source) result else item }

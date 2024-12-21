@@ -50,7 +50,7 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
             options.bitmapConfig == Bitmap.Config.HARDWARE &&
-            !ImageUtil.isMaxTextureSizeExceeded(bitmap)
+            !ImageUtil.isHardwareThresholdExceeded(bitmap)
         ) {
             val hwBitmap = bitmap.copy(Bitmap.Config.HARDWARE, false)
             if (hwBitmap != null) {
@@ -58,29 +58,6 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
                 bitmap = hwBitmap
             }
         }
-
-        /*
-        val maxTextureSize = 4096f
-        if (maxOf(bitmap.width, bitmap.height) > maxTextureSize) {
-            val widthRatio = bitmap.width / maxTextureSize
-            val heightRatio = bitmap.height / maxTextureSize
-
-            val targetWidth: Float
-            val targetHeight: Float
-
-            if (widthRatio >= heightRatio) {
-                targetWidth = maxTextureSize
-                targetHeight = (targetWidth / bitmap.width) * bitmap.height
-            } else {
-                targetHeight = maxTextureSize
-                targetWidth = (targetHeight / bitmap.height) * bitmap.width
-            }
-
-            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth.toInt(), targetHeight.toInt(), true)
-            bitmap.recycle()
-            bitmap = scaledBitmap
-        }
-        */
 
         return DecodeResult(
             image = bitmap.asImage(),

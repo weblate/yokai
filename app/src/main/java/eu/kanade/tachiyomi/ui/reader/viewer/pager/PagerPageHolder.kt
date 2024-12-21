@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
+import androidx.core.os.postDelayed
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import co.touchlab.kermit.Logger
@@ -301,34 +302,31 @@ class PagerPageHolder(
     private fun SubsamplingScaleImageView.landscapeZoom(forward: Boolean?) {
         forward ?: return
         if (viewer.config.landscapeZoom && viewer.config.imageScaleType == SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE && sWidth > sHeight && scale == minScale) {
-            handler.postDelayed(
-                {
-                    val point = when (viewer.config.imageZoomType) {
-                        ZoomType.Left -> if (forward) PointF(0F, 0F) else PointF(sWidth.toFloat(), 0F)
-                        ZoomType.Right -> if (forward) PointF(sWidth.toFloat(), 0F) else PointF(0F, 0F)
-                        ZoomType.Center -> center.also { it?.y = 0F }
-                    }
+            handler.postDelayed(500) {
+                val point = when (viewer.config.imageZoomType) {
+                    ZoomType.Left -> if (forward) PointF(0F, 0F) else PointF(sWidth.toFloat(), 0F)
+                    ZoomType.Right -> if (forward) PointF(sWidth.toFloat(), 0F) else PointF(0F, 0F)
+                    ZoomType.Center -> center.also { it?.y = 0F }
+                }
 
-                    val rootInsets = viewer.activity.window.decorView.rootWindowInsets
-                    val topInsets = if (viewer.activity.isSplitScreen) {
-                        0f
-                    } else {
-                        rootInsets?.topCutoutInset()?.toFloat() ?: 0f
-                    }
-                    val bottomInsets = if (viewer.activity.isSplitScreen) {
-                        0f
-                    } else {
-                        rootInsets?.bottomCutoutInset()?.toFloat() ?: 0f
-                    }
-                    val targetScale = (height.toFloat() - topInsets - bottomInsets) / sHeight.toFloat()
-                    animateScaleAndCenter(min(targetScale, minScale * 2), point)!!
-                        .withDuration(500)
-                        .withEasing(SubsamplingScaleImageView.EASE_IN_OUT_QUAD)
-                        .withInterruptible(true)
-                        .start()
-                },
-                500,
-            )
+                val rootInsets = viewer.activity.window.decorView.rootWindowInsets
+                val topInsets = if (viewer.activity.isSplitScreen) {
+                    0f
+                } else {
+                    rootInsets?.topCutoutInset()?.toFloat() ?: 0f
+                }
+                val bottomInsets = if (viewer.activity.isSplitScreen) {
+                    0f
+                } else {
+                    rootInsets?.bottomCutoutInset()?.toFloat() ?: 0f
+                }
+                val targetScale = (height.toFloat() - topInsets - bottomInsets) / sHeight.toFloat()
+                (animateScaleAndCenter(min(targetScale, minScale * 2), point) ?: return@postDelayed)
+                    .withDuration(500)
+                    .withEasing(SubsamplingScaleImageView.EASE_IN_OUT_QUAD)
+                    .withInterruptible(true)
+                    .start()
+            }
         }
     }
 

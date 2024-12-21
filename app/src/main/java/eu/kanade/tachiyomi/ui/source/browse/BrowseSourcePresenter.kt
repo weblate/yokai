@@ -33,6 +33,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -45,6 +46,7 @@ import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 import yokai.domain.ui.UiPreferences
 
+// FIXME: Migrate to Compose
 /**
  * Presenter of [BrowseSourceController].
  */
@@ -71,7 +73,6 @@ open class BrowseSourcePresenter(
 
     var filtersChanged = false
 
-    var items = mutableListOf<BrowseSourceItem>()
     val page: Int
         get() = pager.currentPage
 
@@ -128,7 +129,6 @@ open class BrowseSourcePresenter(
                 }
             }
             filtersChanged = false
-            restartPager()
         }
     }
 
@@ -162,8 +162,7 @@ open class BrowseSourcePresenter(
         // Create a new pager.
         pager = createPager(
             query,
-            filters.takeIf { it.isNotEmpty() || query.isBlank() }
-                ?: source.getFilterList(),
+            filters.takeIf { it.isNotEmpty() || query.isBlank() } ?: source.getFilterList(),
         )
 
         val sourceId = source.id
@@ -171,30 +170,39 @@ open class BrowseSourcePresenter(
         val browseAsList = preferences.browseAsList()
         val sourceListType = preferences.libraryLayout()
         val outlineCovers = uiPreferences.outlineOnCovers()
-        items.clear()
+
+        view?.unsubscribe()
 
         // Prepare the pager.
         pagerJob?.cancel()
         pagerJob = presenterScope.launchIO {
-            pager.results().onEach { (page, second) ->
-                try {
-                    val mangas = second
+            pager.asFlow()
+                .map { (first, second) ->
+                    first to second
                         .map { networkToLocalManga(it, sourceId) }
                         .filter { !preferences.hideInLibraryItems().get() || !it.favorite }
-                    if (mangas.isEmpty() && page == 1) {
-                        withUIContext { view?.onAddPageError(NoResultsException()) }
-                        return@onEach
+                }
+                .onEach { initializeMangas(it.second) }
+                .map { (first, second) ->
+                    first to second.map {
+                        BrowseSourceItem(
+                            it,
+                            browseAsList,
+                            sourceListType,
+                            outlineCovers,
+                        )
                     }
-                    initializeMangas(mangas)
-                    val items = mangas.map {
-                        BrowseSourceItem(it, browseAsList, sourceListType, outlineCovers)
-                    }
-                    this@BrowseSourcePresenter.items.addAll(items)
-                    withUIContext { view?.onAddPage(page, items) }
-                } catch (error: Exception) {
+                }
+                .catch { error ->
                     Logger.e(error) { "Unable to prepare a page" }
                 }
-            }.collect()
+                .collectLatest { (page, mangas) ->
+                    if (mangas.isEmpty() && page == 1) {
+                        withUIContext { view?.onAddPageError(NoResultsException()) }
+                        return@collectLatest
+                    }
+                    withUIContext { view?.onAddPage(page, mangas) }
+                }
         }
 
         // Request first page.

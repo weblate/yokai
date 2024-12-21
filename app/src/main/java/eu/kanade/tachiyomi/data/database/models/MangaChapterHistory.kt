@@ -38,7 +38,7 @@ data class MangaChapterHistory(val manga: Manga, val chapter: Chapter, val histo
             coverLastModified: Long,
             // chapter
             chapterId: Long?,
-            _mangaId: Long?,
+            chapterMangaId: Long?,
             chapterUrl: String?,
             name: String?,
             scanlator: String?,
@@ -80,36 +80,38 @@ data class MangaChapterHistory(val manga: Manga, val chapter: Chapter, val histo
             )
 
             val chapter = try {
-                chapterId?.let {
-                    Chapter.mapper(
-                        id = chapterId,
-                        mangaId = _mangaId ?: mangaId,
-                        url = chapterUrl!!,
-                        name = name!!,
-                        scanlator = scanlator,
-                        read = read!!,
-                        bookmark = bookmark!!,
-                        lastPageRead = lastPageRead!!,
-                        pagesLeft = pagesLeft!!,
-                        chapterNumber = chapterNumber!!,
-                        sourceOrder = sourceOrder!!,
-                        dateFetch = dateFetch!!,
-                        dateUpload = dateUpload!!,
-                    )
-                }
-            } catch (_: NullPointerException) { null } ?: Chapter.create()
+                Chapter.mapper(
+                    id = chapterId!!,
+                    mangaId = chapterMangaId!!,
+                    url = chapterUrl!!,
+                    name = name!!,
+                    scanlator = scanlator,
+                    read = read!!,
+                    bookmark = bookmark!!,
+                    lastPageRead = lastPageRead!!,
+                    pagesLeft = pagesLeft!!,
+                    chapterNumber = chapterNumber!!,
+                    sourceOrder = sourceOrder!!,
+                    dateFetch = dateFetch!!,
+                    dateUpload = dateUpload!!,
+                )
+            } catch (_: NullPointerException) {
+                ChapterImpl()
+            }
 
             val history = try {
-                historyId?.let {
-                    History.mapper(
-                        id = historyId,
-                        chapterId = historyChapterId ?: chapterId ?: 0L,
-                        lastRead = historyLastRead,
-                        timeRead = historyTimeRead,
-                    )
+                History.mapper(
+                    id = historyId!!,
+                    chapterId = historyChapterId!!,
+                    lastRead = historyLastRead,
+                    timeRead = historyTimeRead,
+                )
+            } catch (_: NullPointerException) {
+                HistoryImpl().apply {
+                    historyChapterId?.let { chapter_id = it }
+                    historyLastRead?.let { last_read = it }
+                    historyTimeRead?.let { time_read = it }
                 }
-            } catch (_: NullPointerException) { null } ?: History.create().apply {
-                historyLastRead?.let { last_read = it }
             }
 
             return MangaChapterHistory(manga, chapter, history)

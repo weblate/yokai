@@ -61,7 +61,6 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.data.database.models.Category
 import eu.kanade.tachiyomi.data.database.models.LibraryManga
-import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -101,6 +100,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.system.getResourceDrawable
 import eu.kanade.tachiyomi.util.system.ignoredSystemInsets
 import eu.kanade.tachiyomi.util.system.isImeVisible
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.openInBrowser
@@ -128,14 +128,13 @@ import eu.kanade.tachiyomi.util.view.snack
 import eu.kanade.tachiyomi.util.view.text
 import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.EmptyView
-import java.util.*
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.random.nextInt
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -616,10 +615,12 @@ open class LibraryController(
         setPreferenceFlows()
         LibraryUpdateJob.updateFlow.onEach(::onUpdateManga).launchIn(viewScope)
         viewScope.launchUI {
-            LibraryUpdateJob.isRunningFlow(view.context).collectLatest {
-                val holder = if (mAdapter != null) visibleHeaderHolder() else null
-                val category = holder?.category ?: return@collectLatest
-                holder.notifyStatus(LibraryUpdateJob.categoryInQueue(category.id), category)
+            LibraryUpdateJob.isRunningFlow(view.context).collect {
+                adapter.getHeaderPositions().forEach {
+                    val holder = (binding.libraryGridRecycler.recycler.findViewHolderForAdapterPosition(it) as? LibraryHeaderHolder) ?: return@forEach
+                    val category = holder.category ?: return@forEach
+                    holder.notifyStatus(LibraryUpdateJob.categoryInQueue(category.id), category)
+                }
             }
         }
 
@@ -1058,7 +1059,6 @@ open class LibraryController(
                 presenter.updateLibrary()
                 isPoppingIn = true
             }
-            DownloadJob.callListeners()
             binding.recyclerCover.isClickable = false
             binding.recyclerCover.isFocusable = false
             singleCategory = presenter.categories.size <= 1
@@ -2191,13 +2191,11 @@ open class LibraryController(
      */
     private fun showChangeMangaCategoriesSheet() {
         val activity = activity ?: return
-        selectedMangas.toList().moveCategories(activity) {
-            presenter.updateLibrary()
-            destroyActionModeIfNeeded()
+        viewScope.launchIO {
+            selectedMangas.toList().moveCategories(activity) {
+                presenter.updateLibrary()
+                destroyActionModeIfNeeded()
+            }
         }
-    }
-
-    fun updateDownloadStatus(isRunning: Boolean) {
-        (activity as? MainActivity)?.downloadStatusChanged(isRunning)
     }
 }

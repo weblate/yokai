@@ -7,9 +7,84 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - `Changes` - Behaviour/visual changes
 - `Fixes` - Bugfixes
 - `Translation` - Translation changes/updates
-- `Other` - Technical stuff
+- `Other` - Technical changes/updates
 
 ## [Unreleased]
+
+### Fixes
+- Fix sorting by latest chapter is not working properly
+- Prevent some NPE crashes
+- Fix some flickering issues when browsing sources
+- Fix download count is not updating
+
+### Other
+- Update NDK to v27.2.12479018
+
+## [1.9.6]
+
+### Fixes
+- Fix some crashes
+
+## [1.9.5]
+
+### Changes
+- Entries from local source now behaves similar to entries from online sources
+
+### Fixes
+- Fix new chapters not showing up in `Recents > Grouped`
+- Add potential workarounds for duplicate chapter bug
+- Fix favorite state is not being updated when browsing source
+
+### Other
+- Update dependency androidx.compose:compose-bom to v2024.12.01
+- Update plugin kotlinter to v5
+- Update plugin gradle-versions to v0.51.0
+- Update kotlin monorepo to v2.1.0
+
+## [1.9.4]
+
+### Fixes
+- Fix chapter date fetch always null causing it to not appear on Updates tab
+
+## [1.9.3]
+
+### Fixes
+- Fix slow chapter load
+- Fix chapter bookmark state is not persistent
+
+### Other
+- Refactor downloader
+  - Replace RxJava usage with Kotlin coroutines
+  - Replace DownloadQueue with Flow to hopefully fix ConcurrentModificationException entirely
+
+## [1.9.2]
+
+### Changes
+- Adjust chapter title-details contrast
+- Make app updater notification consistent with other notifications
+
+### Fixes
+- Fix "Remove from read" not working properly
+
+## [1.9.1]
+
+### Fixes
+- Fix chapters cannot be opened from `Recents > Grouped` and `Recents > All`
+- Fix crashes caused by malformed XML
+- Fix potential memory leak
+
+### Other
+- Update dependency io.github.kevinnzou:compose-webview to v0.33.6
+- Update dependency org.jsoup:jsoup to v1.18.3
+- Update voyager to v1.1.0-beta03
+- Update dependency androidx.annotation:annotation to v1.9.1
+- Update dependency androidx.constraintlayout:constraintlayout to v2.2.0
+- Update dependency androidx.glance:glance-appwidget to v1.1.1
+- Update dependency com.google.firebase:firebase-bom to v33.7.0
+- Update fast.adapter to v5.7.0
+- Downgrade dependency org.conscrypt:conscrypt-android to v2.5.2
+
+## [1.9.0]
 
 ### Additions
 - Sync DoH provider list with upstream (added Mullvad, Control D, Njalla, and Shecan)
@@ -17,6 +92,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Add category hopper long-press action to open random series from **any** category
 - Add option to enable reader debug mode
 - Add option to adjust reader's hardware bitmap threshold (@AntsyLich)
+  - Always use software bitmap on certain devices (@MajorTanya)
 - Add option to scan local entries from `/storage/(sdcard|emulated/0)/Android/data/<yokai>/files/local`
 
 ### Changes
@@ -27,6 +103,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Bangumi search now shows the score and summary of a search result (@MajorTanya)
 - Logs are now written to a file for easier debugging
 - Bump default user agent (@AntsyLich)
+- Custom cover is now compressed to WebP to prevent OOM crashes
 
 ### Fixes
 - Fix only few DoH provider is actually being used (Cloudflare, Google, AdGuard, and Quad9)
@@ -38,13 +115,18 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fix issues with shizuku in a multi-user setup (@Redjard)
 - Fix some regional/variant languages is not listed in app language option
 - Fix browser not opening in some cases in Honor devices (@MajorTanya)
+- Fix "ConcurrentModificationException" crashes
+- Fix Komga unread badge, again
+- Fix default category can't be updated manually
+- Fix crashes trying to load Library caused by cover being too large
 
 ### Other
 - Simplify network helper code
 - Fully migrated from StorIO to SQLDelight
 - Update dependency com.android.tools:desugar_jdk_libs to v2.1.3
-- Update moko to v0.24.2
+- Update moko to v0.24.4
 - Refactor trackers to use DTOs (@MajorTanya)
+  - Fix AniList `ALSearchItem.status` nullibility (@Secozzi)
 - Replace Injekt with Koin
 - Remove unnecessary permission added by Firebase
 - Remove unnecessary features added by Firebase
@@ -55,7 +137,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update activity to v1.9.3
 - Update lifecycle to v2.8.7
 - Update dependency me.zhanghai.android.libarchive:library to v1.1.4
-- Update agp to v8.7.2
+- Update agp to v8.7.3
 - Update junit5 monorepo to v5.11.3
 - Update dependency androidx.test.ext:junit to v1.2.1
 - Update dependency org.jetbrains.kotlinx:kotlinx-collections-immutable to v0.3.8
@@ -67,17 +149,24 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Update dependency io.mockk:mockk to v1.13.13
 - Update shizuku to v13.1.5
   - Use reflection to fix shizuku breaking changes (@Jobobby04)
-- Bump comple sdk to 35
+- Bump compile sdk to 35
   - Handle Android SDK 35 API collision (@AntsyLich)
 - Update kotlin monorepo to v2.0.21
 - Update dependency androidx.work:work-runtime-ktx to v2.10.0
 - Update dependency androidx.core:core-ktx to v1.15.0
-- Update dependency io.coil-kt.coil3:coil-bom to v3.0.3
+- Update dependency io.coil-kt.coil3:coil-bom to v3.0.4
 - Update xml.serialization to v0.90.3
 - Update dependency co.touchlab:kermit to v2.0.5
 - Replace WebView to use Compose (@arkon)
   - Fixed Keyboard is covering web page inputs
-- Increased `tryToSetForeground` delay to fix potential crashes
+- Increased `tryToSetForeground` delay to fix potential crashes (@nonproto)
+- Update dependency org.conscrypt:conscrypt-android to v2.5.3
+- Port upstream's download cache system
+
+## [1.8.5.13]
+
+### Fixed
+- Fix version checker
 
 ## [1.8.5.12]
 

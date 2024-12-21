@@ -111,12 +111,14 @@ import eu.kanade.tachiyomi.util.system.isLandscape
 import eu.kanade.tachiyomi.util.system.isOnline
 import eu.kanade.tachiyomi.util.system.isPromptChecked
 import eu.kanade.tachiyomi.util.system.isTablet
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.system.setCustomTitleAndMessage
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.copyToClipboard
 import eu.kanade.tachiyomi.util.view.findChild
@@ -790,7 +792,6 @@ class MangaDetailsController :
         binding.swipeRefresh.isRefreshing = enabled
     }
 
-    //region Recycler methods
     fun updateChapterDownload(download: Download) {
         getHolder(download.chapter)?.notifyStatus(
             download.status,
@@ -820,27 +821,24 @@ class MangaDetailsController :
         updateMenuVisibility(activityBinding?.toolbar?.menu)
     }
 
-    fun updateChapters(chapters: List<ChapterItem>) {
+    fun updateChapters() {
         view ?: return
         binding.swipeRefresh.isRefreshing = presenter.isLoading
-        if (presenter.chapters.isEmpty() && fromCatalogue && !presenter.hasRequested) {
-            launchUI { binding.swipeRefresh.isRefreshing = true }
-            presenter.fetchChaptersFromSource()
-        }
         tabletAdapter?.notifyItemChanged(0)
-        adapter?.setChapters(chapters)
+        adapter?.setChapters(presenter.chapters)
         addMangaHeader()
         colorToolbar(binding.recycler.canScrollVertically(-1))
         updateMenuVisibility(activityBinding?.toolbar?.menu)
     }
 
     private fun addMangaHeader() {
-        if (tabletAdapter?.scrollableHeaders?.isEmpty() == true) {
+        val tabletHeader = presenter.tabletChapterHeaderItem
+        if (tabletHeader != null && tabletAdapter?.scrollableHeaders?.isEmpty() == true) {
             tabletAdapter?.removeAllScrollableHeaders()
             tabletAdapter?.addScrollableHeader(presenter.headerItem)
             adapter?.removeAllScrollableHeaders()
-            adapter?.addScrollableHeader(presenter.tabletChapterHeaderItem!!)
-        } else if (!isTablet && adapter?.scrollableHeaders?.isEmpty() == true) {
+            adapter?.addScrollableHeader(tabletHeader)
+        } else if (adapter?.scrollableHeaders?.isEmpty() == true) {
             adapter?.removeAllScrollableHeaders()
             adapter?.addScrollableHeader(presenter.headerItem)
         }
@@ -1633,10 +1631,12 @@ class MangaDetailsController :
 
     private fun showCategoriesSheet() {
         val adding = !presenter.manga.favorite
-        presenter.manga.moveCategories(activity!!, adding) {
-            updateHeader()
-            if (adding) {
-                showAddedSnack()
+        viewScope.launchIO {
+            presenter.manga.moveCategories(activity!!, adding) {
+                updateHeader()
+                if (adding) {
+                    showAddedSnack()
+                }
             }
         }
     }
@@ -1644,32 +1644,37 @@ class MangaDetailsController :
     private fun toggleMangaFavorite() {
         val view = view ?: return
         val activity = activity ?: return
-        snack?.dismiss()
-        snack = presenter.manga.addOrRemoveToFavorites(
-            presenter.preferences,
-            view,
-            activity,
-            presenter.sourceManager,
-            this,
-            onMangaAdded = { migrationInfo ->
-                migrationInfo?.let {
+        viewScope.launchIO {
+            withUIContext { snack?.dismiss() }
+            snack = presenter.manga.addOrRemoveToFavorites(
+                presenter.preferences,
+                view,
+                activity,
+                presenter.sourceManager,
+                this@MangaDetailsController,
+                onMangaAdded = { migrationInfo ->
+                    migrationInfo?.let {
+                        presenter.fetchChapters(andTracking = true)
+                    }
+                    updateHeader()
+                    showAddedSnack()
+                },
+                onMangaMoved = {
+                    updateHeader()
                     presenter.fetchChapters(andTracking = true)
+                },
+                onMangaDeleted = {
+                    updateHeader()
+                    presenter.confirmDeletion()
+                },
+                scope = viewScope,
+            )
+            if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
+                withUIContext {
+                    val favButton = getHeader()?.binding?.favoriteButton
+                    (activity as? MainActivity)?.setUndoSnackBar(snack, favButton)
                 }
-                updateHeader()
-                showAddedSnack()
-            },
-            onMangaMoved = {
-                updateHeader()
-                presenter.fetchChapters(andTracking = true)
-            },
-            onMangaDeleted = {
-                updateHeader()
-                presenter.confirmDeletion()
-            },
-        )
-        if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
-            val favButton = getHeader()?.binding?.favoriteButton
-            (activity as? MainActivity)?.setUndoSnackBar(snack, favButton)
+            }
         }
     }
 
@@ -1793,7 +1798,7 @@ class MangaDetailsController :
     override fun onDestroyActionMode(mode: ActionMode?) {
         actionMode = null
         setStatusBarAndToolbar()
-        if (startingRangeChapterPos != null && rangeMode == RangeMode.Download) {
+        if (startingRangeChapterPos != null && rangeMode in setOf(RangeMode.Download, RangeMode.RemoveDownload)) {
             val item = adapter?.getItem(startingRangeChapterPos!!) as? ChapterItem
             (binding.recycler.findViewHolderForAdapterPosition(startingRangeChapterPos!!) as? ChapterHolder)?.notifyStatus(
                 item?.status ?: Download.State.NOT_DOWNLOADED,

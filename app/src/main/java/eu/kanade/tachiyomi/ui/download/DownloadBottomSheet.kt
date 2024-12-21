@@ -117,14 +117,14 @@ class DownloadBottomSheet @JvmOverloads constructor(
     fun update(isRunning: Boolean) {
         presenter.getItems()
         onQueueStatusChange(isRunning)
-        if (binding.downloadFab.isInvisible != presenter.downloadQueue.isEmpty()) {
-            binding.downloadFab.isInvisible = presenter.downloadQueue.isEmpty()
+        if (binding.downloadFab.isInvisible != presenter.downloadQueueState.value.isEmpty()) {
+            binding.downloadFab.isInvisible = presenter.downloadQueueState.value.isEmpty()
         }
         prepareMenu()
     }
 
     private fun updateDLTitle() {
-        val extCount = presenter.downloadQueue.firstOrNull()
+        val extCount = presenter.downloadQueueState.value.firstOrNull()
         binding.titleText.text = if (extCount != null) {
             context.getString(
                 MR.strings.downloading_,
@@ -143,8 +143,8 @@ class DownloadBottomSheet @JvmOverloads constructor(
     private fun onQueueStatusChange(running: Boolean) {
         val oldRunning = isRunning
         isRunning = running
-        if (binding.downloadFab.isInvisible != presenter.downloadQueue.isEmpty()) {
-            binding.downloadFab.isInvisible = presenter.downloadQueue.isEmpty()
+        if (binding.downloadFab.isInvisible != presenter.downloadQueueState.value.isEmpty()) {
+            binding.downloadFab.isInvisible = presenter.downloadQueueState.value.isEmpty()
         }
         updateFab()
         if (oldRunning != running) {
@@ -210,7 +210,7 @@ class DownloadBottomSheet @JvmOverloads constructor(
     private fun setInformationView() {
         updateDLTitle()
         setBottomSheet()
-        if (presenter.downloadQueue.isEmpty()) {
+        if (presenter.downloadQueueState.value.isEmpty()) {
             binding.emptyView.show(
                 R.drawable.ic_download_off_24dp,
                 MR.strings.nothing_is_downloading,
@@ -224,10 +224,10 @@ class DownloadBottomSheet @JvmOverloads constructor(
         val menu = binding.sheetToolbar.menu
         updateFab()
         // Set clear button visibility.
-        menu.findItem(R.id.clear_queue)?.isVisible = !presenter.downloadQueue.isEmpty()
+        menu.findItem(R.id.clear_queue)?.isVisible = presenter.downloadQueueState.value.isNotEmpty()
 
         // Set reorder button visibility.
-        menu.findItem(R.id.reorder)?.isVisible = !presenter.downloadQueue.isEmpty()
+        menu.findItem(R.id.reorder)?.isVisible = presenter.downloadQueueState.value.isNotEmpty()
     }
 
     private fun updateFab() {
@@ -274,7 +274,7 @@ class DownloadBottomSheet @JvmOverloads constructor(
     }
 
     private fun setBottomSheet() {
-        val hasQueue = presenter.downloadQueue.isNotEmpty()
+        val hasQueue = presenter.downloadQueueState.value.isNotEmpty()
         if (hasQueue) {
             sheetBehavior?.skipCollapsed = !hasQueue
             if (sheetBehavior.isHidden()) sheetBehavior?.collapse()
@@ -320,7 +320,6 @@ class DownloadBottomSheet @JvmOverloads constructor(
             }
         }
         presenter.reorder(downloads)
-        controller?.updateChapterDownload(download, false)
     }
 
     /**

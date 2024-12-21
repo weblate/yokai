@@ -24,7 +24,9 @@ import eu.kanade.tachiyomi.ui.manga.MangaDetailsController
 import eu.kanade.tachiyomi.ui.source.browse.BrowseSourceController
 import eu.kanade.tachiyomi.util.addOrRemoveToFavorites
 import eu.kanade.tachiyomi.util.system.extensionIntentForText
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
+import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.isControllerVisible
 import eu.kanade.tachiyomi.util.view.scrollViewWith
@@ -114,34 +116,39 @@ open class GlobalSearchController(
 
         val view = view ?: return
         val activity = activity ?: return
-        snack?.dismiss()
-        snack = manga.addOrRemoveToFavorites(
-            preferences,
-            view,
-            activity,
-            presenter.sourceManager,
-            this,
-            onMangaAdded = { migrationInfo ->
-                migrationInfo?.let { (source, stillFaved) ->
-                    val index = this.adapter
-                        ?.currentItems?.indexOfFirst { it.source.id == source } ?: return@let
-                    val item = this.adapter?.getItem(index) ?: return@let
-                    val oldMangaIndex = item.results?.indexOfFirst {
-                        it.manga.title.lowercase() == manga.title.lowercase()
-                    } ?: return@let
-                    val oldMangaItem = item.results.getOrNull(oldMangaIndex)
-                    oldMangaItem?.manga?.favorite = stillFaved
-                    val holder = binding.recycler.findViewHolderForAdapterPosition(index) as? GlobalSearchHolder
-                    holder?.updateManga(oldMangaIndex)
+        viewScope.launchIO {
+            withUIContext { snack?.dismiss() }
+            snack = manga.addOrRemoveToFavorites(
+                preferences,
+                view,
+                activity,
+                presenter.sourceManager,
+                this@GlobalSearchController,
+                onMangaAdded = { migrationInfo ->
+                    migrationInfo?.let { (source, stillFaved) ->
+                        val index = this@GlobalSearchController.adapter
+                            ?.currentItems?.indexOfFirst { it.source.id == source } ?: return@let
+                        val item = this@GlobalSearchController.adapter?.getItem(index) ?: return@let
+                        val oldMangaIndex = item.results?.indexOfFirst {
+                            it.manga.title.lowercase() == manga.title.lowercase()
+                        } ?: return@let
+                        val oldMangaItem = item.results.getOrNull(oldMangaIndex)
+                        oldMangaItem?.manga?.favorite = stillFaved
+                        val holder = binding.recycler.findViewHolderForAdapterPosition(index) as? GlobalSearchHolder
+                        holder?.updateManga(oldMangaIndex)
+                    }
+                    adapter.notifyItemChanged(position)
+                    snack = view.snack(MR.strings.added_to_library)
+                },
+                onMangaMoved = { adapter.notifyItemChanged(position) },
+                onMangaDeleted = { presenter.confirmDeletion(manga) },
+                scope = viewScope,
+            )
+            if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
+                withUIContext {
+                    (activity as? MainActivity)?.setUndoSnackBar(snack)
                 }
-                adapter.notifyItemChanged(position)
-                snack = view.snack(MR.strings.added_to_library)
-            },
-            onMangaMoved = { adapter.notifyItemChanged(position) },
-            onMangaDeleted = { presenter.confirmDeletion(manga) },
-        )
-        if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
-            (activity as? MainActivity)?.setUndoSnackBar(snack)
+            }
         }
     }
 

@@ -19,13 +19,18 @@ import eu.kanade.tachiyomi.ui.library.LibraryItem
 import eu.kanade.tachiyomi.ui.library.setBGAndFG
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
 
+// FIXME: Migrate to compose
 class BrowseSourceItem(
-    val manga: Manga,
+    initialManga: Manga,
     private val catalogueAsList: Preference<Boolean>,
     private val catalogueListType: Preference<Int>,
     private val outlineOnCovers: Preference<Boolean>,
 ) :
     AbstractFlexibleItem<BrowseSourceHolder>() {
+
+    val mangaId: Long = initialManga.id!!
+    var manga: Manga = initialManga
+        private set
 
     override fun getLayoutRes(): Int {
         return if (catalogueAsList.get()) {
@@ -70,6 +75,16 @@ class BrowseSourceItem(
         }
     }
 
+    fun updateManga(
+        holder: BrowseSourceHolder,
+        manga: Manga,
+    ) {
+        if (manga.id != mangaId) return
+
+        this.manga = manga
+        holder.onSetValues(manga)
+    }
+
     override fun bindViewHolder(
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>,
         holder: BrowseSourceHolder,
@@ -82,12 +97,12 @@ class BrowseSourceItem(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other is BrowseSourceItem) {
-            return manga.id!! == other.manga.id!!
+            return this.mangaId == other.mangaId
         }
         return false
     }
 
     override fun hashCode(): Int {
-        return manga.id!!.hashCode()
+        return mangaId.hashCode()
     }
 }

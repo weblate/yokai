@@ -43,8 +43,10 @@ import eu.kanade.tachiyomi.util.addOrRemoveToFavorites
 import eu.kanade.tachiyomi.util.system.connectivityManager
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.system.e
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.activityBinding
 import eu.kanade.tachiyomi.util.view.applyBottomAnimatedInsets
 import eu.kanade.tachiyomi.util.view.fullAppBarHeight
@@ -59,7 +61,12 @@ import eu.kanade.tachiyomi.widget.AutofitRecyclerView
 import eu.kanade.tachiyomi.widget.EmptyView
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import kotlin.math.roundToInt
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
+import yokai.domain.manga.interactor.GetManga
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -99,6 +106,8 @@ open class BrowseSourceController(bundle: Bundle) :
         },
     )
 
+    private val getManga: GetManga by injectLazy()
+
     /**
      * Preferences helper.
      */
@@ -130,6 +139,9 @@ open class BrowseSourceController(bundle: Bundle) :
 
     private val isBehindGlobalSearch: Boolean
         get() = router.backstackSize >= 2 && router.backstack[router.backstackSize - 2].controller is GlobalSearchController
+
+    /** Watch for manga data changes */
+    private var watchJob: Job? = null
 
     init {
         setHasOptionsMenu(true)
@@ -163,7 +175,7 @@ open class BrowseSourceController(bundle: Bundle) :
         super.onViewCreated(view)
 
         // Initialize adapter, scroll listener and recycler views
-        adapter = FlexibleAdapter(null, this)
+        adapter = FlexibleAdapter(null, this, true)
         setupRecycler(view)
 
         binding.fab.isVisible = presenter.sourceFilters.isNotEmpty()
@@ -180,11 +192,10 @@ open class BrowseSourceController(bundle: Bundle) :
             }
             return
         }
-        if (presenter.items.isNotEmpty()) {
-            onAddPage(1, presenter.items)
-        } else {
-            binding.progress.isVisible = true
-        }
+
+        binding.progress.isVisible = true
+
+        presenter.restartPager()
     }
 
     override fun onDestroyView(view: View) {
@@ -654,7 +665,7 @@ open class BrowseSourceController(bundle: Bundle) :
      * @param manga the manga initialized
      */
     fun onMangaInitialized(manga: Manga) {
-        getHolder(manga)?.setImage(manga)
+        getHolder(manga.id!!)?.setImage(manga)
     }
 
     /**
@@ -710,12 +721,12 @@ open class BrowseSourceController(bundle: Bundle) :
      * @param manga the manga to find.
      * @return the holder of the manga or null if it's not bound.
      */
-    private fun getHolder(manga: Manga): BrowseSourceHolder? {
+    private fun getHolder(mangaId: Long): BrowseSourceHolder? {
         val adapter = adapter ?: return null
 
         adapter.allBoundViewHolders.forEach { holder ->
             val item = adapter.getItem(holder.flexibleAdapterPosition) as? BrowseSourceItem
-            if (item != null && item.manga.id!! == manga.id!!) {
+            if (item != null && item.mangaId == mangaId) {
                 return holder as BrowseSourceHolder
             }
         }
@@ -741,6 +752,28 @@ open class BrowseSourceController(bundle: Bundle) :
         binding.progress.isVisible = false
     }
 
+    fun unsubscribe() {
+        watchJob?.cancel()
+        watchJob = null
+    }
+
+    /**
+     * Workaround to fix data state de-sync issues when controller detached,
+     * and attaching flow directly into Item caused some flickering issues.
+     *
+     * FIXME: Could easily be fixed by migrating to Compose.
+     */
+    private fun BrowseSourceItem.subscribe() {
+        watchJob?.cancel()
+        watchJob = viewScope.launch {
+            getManga.subscribeByUrlAndSource(manga.url, manga.source).collectLatest {
+                if (it == null) return@collectLatest
+                val holder = getHolder(mangaId) ?: return@collectLatest
+                updateManga(holder, it)
+            }
+        }
+    }
+
     /**
      * Called when a manga is clicked.
      *
@@ -749,6 +782,7 @@ open class BrowseSourceController(bundle: Bundle) :
      */
     override fun onItemClick(view: View?, position: Int): Boolean {
         val item = adapter?.getItem(position) as? BrowseSourceItem ?: return false
+        item.subscribe()
         router.pushController(MangaDetailsController(item.manga, true).withFadeTransaction())
         lastPosition = position
         return false
@@ -767,22 +801,27 @@ open class BrowseSourceController(bundle: Bundle) :
         val manga = (adapter?.getItem(position) as? BrowseSourceItem?)?.manga ?: return
         val view = view ?: return
         val activity = activity ?: return
-        snack?.dismiss()
-        snack = manga.addOrRemoveToFavorites(
-            preferences,
-            view,
-            activity,
-            presenter.sourceManager,
-            this,
-            onMangaAdded = {
-                adapter?.notifyItemChanged(position)
-                snack = view.snack(MR.strings.added_to_library)
-            },
-            onMangaMoved = { adapter?.notifyItemChanged(position) },
-            onMangaDeleted = { presenter.confirmDeletion(manga) },
-        )
-        if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
-            (activity as? MainActivity)?.setUndoSnackBar(snack)
+        viewScope.launchIO {
+            withUIContext { snack?.dismiss() }
+            snack = manga.addOrRemoveToFavorites(
+                preferences,
+                view,
+                activity,
+                presenter.sourceManager,
+                this@BrowseSourceController,
+                onMangaAdded = {
+                    adapter?.notifyItemChanged(position)
+                    snack = view.snack(MR.strings.added_to_library)
+                },
+                onMangaMoved = { adapter?.notifyItemChanged(position) },
+                onMangaDeleted = { presenter.confirmDeletion(manga) },
+                scope = viewScope,
+            )
+            if (snack?.duration == Snackbar.LENGTH_INDEFINITE) {
+                withUIContext {
+                    (activity as? MainActivity)?.setUndoSnackBar(snack)
+                }
+            }
         }
     }
 

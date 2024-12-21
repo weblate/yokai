@@ -7,5 +7,5 @@ class DeleteChapter(
     private val chapterRepository: ChapterRepository,
 ) {
     suspend fun await(chapter: Chapter) = chapterRepository.delete(chapter)
-    suspend fun awaitAll(chapters: List<Chapter>) = chapterRepository.deleteAll(chapters)
+    suspend fun awaitAllById(chapterIds: List<Long>) = chapterRepository.deleteAllById(chapterIds)
 }

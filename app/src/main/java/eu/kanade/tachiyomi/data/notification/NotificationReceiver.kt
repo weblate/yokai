@@ -64,7 +64,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 downloadManager.pauseDownloads()
             }
             // Clear the download queue
-            ACTION_CLEAR_DOWNLOADS -> downloadManager.clearQueue(true)
+            ACTION_CLEAR_DOWNLOADS -> downloadManager.clearQueue()
             // Delete image from path and dismiss notification
             ACTION_DELETE_IMAGE -> deleteImage(
                 context,
@@ -608,6 +608,11 @@ class NotificationReceiver : BroadcastReceiver() {
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
+        }
+
+        internal fun dismissFailThenStartAppUpdatePendingJob(context: Context, url: String, notifyOnInstall: Boolean = false): PendingIntent {
+            dismissNotification(context, Notifications.ID_UPDATER_FAILED)
+            return startAppUpdatePendingJob(context, url, notifyOnInstall)
         }
 
         /**

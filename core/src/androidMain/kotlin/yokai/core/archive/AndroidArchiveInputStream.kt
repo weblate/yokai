@@ -53,7 +53,7 @@ class AndroidArchiveInputStream(buffer: Long, size: Long) : ArchiveInputStream()
         Archive.readFree(archive)
     }
 
-    override fun getNextEntry() = Archive.readNextHeader(archive).takeUnless { it == 0L }?.let { entry ->
+    fun getNextEntry() = Archive.readNextHeader(archive).takeUnless { it == 0L }?.let { entry ->
         val name = ArchiveEntry.pathnameUtf8(entry) ?: ArchiveEntry.pathname(entry)?.decodeToString() ?: return null
         val isFile = ArchiveEntry.filetype(entry) == ArchiveEntry.AE_IFREG
         ArchiveEntry(name, isFile)

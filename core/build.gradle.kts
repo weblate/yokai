@@ -8,9 +8,9 @@ plugins {
 
 kotlin {
     androidTarget()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    // iosX64()
+    // iosArm64()
+    // iosSimulatorArm64()
     sourceSets {
         commonMain {
             dependencies {
@@ -52,10 +52,10 @@ kotlin {
                 implementation(libs.libarchive)
             }
         }
-        iosMain {
-            dependencies {
-            }
-        }
+        // iosMain {
+        //     dependencies {
+        //     }
+        // }
     }
 }
 
@@ -66,7 +66,6 @@ android {
 tasks {
     withType<KotlinCompile> {
         compilerOptions.freeCompilerArgs.addAll(
-            "-Xexpect-actual-classes",
             "-Xcontext-receivers",
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",

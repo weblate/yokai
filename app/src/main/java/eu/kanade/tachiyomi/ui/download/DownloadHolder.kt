@@ -68,7 +68,7 @@ class DownloadHolder(private val view: View, val adapter: DownloadAdapter) :
         if (binding.downloadProgress.max == 1) {
             binding.downloadProgress.max = pages.size * 100
         }
-        binding.downloadProgress.progress = download.pageProgress
+        binding.downloadProgress.setProgressCompat(download.pageProgress, true)
     }
 
     /**

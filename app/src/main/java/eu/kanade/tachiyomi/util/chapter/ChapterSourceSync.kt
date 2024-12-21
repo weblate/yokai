@@ -65,105 +65,107 @@ suspend fun syncChaptersWithSource(
     // Chapters whose metadata have changed.
     val toChange = mutableListOf<ChapterUpdate>()
 
-    for (sourceChapter in sourceChapters) {
-        val dbChapter = dbChapters.find { it.url == sourceChapter.url }
-
-        // Add the chapter if not in db already, or update if the metadata changed.
-        if (dbChapter == null) {
-            toAdd.add(sourceChapter)
-        } else {
-            // this forces metadata update for the main viewable things in the chapter list
-            if (source is HttpSource) {
-                source.prepareNewChapter(sourceChapter, manga)
-            }
-
-            sourceChapter.chapter_number =
-                ChapterRecognition.parseChapterNumber(sourceChapter.name, manga.title, sourceChapter.chapter_number)
-
-            if (shouldUpdateDbChapter(dbChapter, sourceChapter)) {
-                if ((dbChapter.name != sourceChapter.name || dbChapter.scanlator != sourceChapter.scanlator) &&
-                    downloadManager.isChapterDownloaded(dbChapter, manga)
-                ) {
-                    downloadManager.renameChapter(source, manga, dbChapter, sourceChapter)
-                }
-                val update = ChapterUpdate(
-                    dbChapter.id!!,
-                    scanlator = sourceChapter.scanlator,
-                    name = sourceChapter.name,
-                    dateUpload = sourceChapter.date_upload,
-                    chapterNumber = sourceChapter.chapter_number.toDouble(),
-                    sourceOrder = sourceChapter.source_order.toLong(),
-                )
-                toChange.add(update)
-            }
+    val duplicates = dbChapters.groupBy { it.url }
+        .filter { it.value.size > 1 }
+        .flatMap { (_, chapters) ->
+            chapters.drop(1)
         }
-    }
-
-    // Recognize number for new chapters.
-    toAdd.forEach {
-        if (source is HttpSource) {
-            source.prepareNewChapter(it, manga)
-        }
-        it.chapter_number = ChapterRecognition.parseChapterNumber(it.name, manga.title, it.chapter_number)
-    }
-
-    // Chapters from the db not in the source.
-    val toDelete = dbChapters.filterNot { dbChapter ->
+    val notInSource = dbChapters.filterNot { dbChapter ->
         sourceChapters.any { sourceChapter ->
             dbChapter.url == sourceChapter.url
         }
     }
+    val toDelete = duplicates + notInSource
+
+    val managedUrls = mutableListOf<String>()
+
+    for (sourceChapter in sourceChapters) {
+        val chapter = sourceChapter
+
+        if (chapter.url in managedUrls) continue
+
+        if (source is HttpSource) {
+            source.prepareNewChapter(chapter, manga)
+        }
+        chapter.chapter_number = ChapterRecognition.parseChapterNumber(chapter.name, manga.title, chapter.chapter_number)
+
+        val dbChapter = dbChapters.find { it.url == chapter.url }
+
+        // Add the chapter if not in db already, or update if the metadata changed.
+        if (dbChapter == null) {
+            toAdd.add(chapter)
+        } else {
+            if (shouldUpdateDbChapter(dbChapter, chapter)) {
+                if ((dbChapter.name != chapter.name || dbChapter.scanlator != chapter.scanlator) &&
+                    downloadManager.isChapterDownloaded(dbChapter, manga)
+                ) {
+                    downloadManager.renameChapter(source, manga, dbChapter, chapter)
+                }
+                val update = ChapterUpdate(
+                    dbChapter.id!!,
+                    scanlator = chapter.scanlator,
+                    name = chapter.name,
+                    dateUpload = chapter.date_upload,
+                    chapterNumber = chapter.chapter_number.toDouble(),
+                    sourceOrder = chapter.source_order.toLong(),
+                )
+                toChange.add(update)
+            }
+        }
+
+        managedUrls.add(chapter.url)
+    }
 
     // Return if there's nothing to add, delete or change, avoid unnecessary db transactions.
     if (toAdd.isEmpty() && toDelete.isEmpty() && toChange.isEmpty()) {
-        val newestDate = dbChapters.maxOfOrNull { it.date_upload } ?: 0L
-        if (newestDate != 0L && newestDate != manga.last_update) {
-            manga.last_update = newestDate
-            val update = MangaUpdate(manga.id!!, lastUpdate = manga.last_update)
-            updateManga.await(update)
-        }
+        // TODO: Predict when the next chapter gonna release
         return Pair(emptyList(), emptyList())
     }
 
-    val readded = mutableListOf<Chapter>()
+    val reAdded = mutableListOf<Chapter>()
 
     val deletedChapterNumbers = TreeSet<Float>()
     val deletedReadChapterNumbers = TreeSet<Float>()
-    if (toDelete.isNotEmpty()) {
-        for (c in toDelete) {
-            if (c.read) {
-                deletedReadChapterNumbers.add(c.chapter_number)
-            }
-            deletedChapterNumbers.add(c.chapter_number)
-        }
-        deleteChapter.awaitAll(toDelete)
+    val deletedBookmarkedChapterNumbers = TreeSet<Float>()
+    toDelete.forEach {
+        if (it.read) deletedReadChapterNumbers.add(it.chapter_number)
+        if (it.bookmark) deletedBookmarkedChapterNumbers.add(it.chapter_number)
+        deletedChapterNumbers.add(it.chapter_number)
     }
 
-    if (toAdd.isNotEmpty()) {
-        // Set the date fetch for new items in reverse order to allow another sorting method.
-        // Sources MUST return the chapters from most to less recent, which is common.
-        var now = Date().time
+    val now = Date().time
 
-        for (i in toAdd.indices.reversed()) {
-            val chapter = toAdd[i]
-            chapter.date_fetch = now++
-            if (chapter.isRecognizedNumber && chapter.chapter_number in deletedChapterNumbers) {
-                // Try to mark already read chapters as read when the source deletes them
-                if (chapter.chapter_number in deletedReadChapterNumbers) {
-                    chapter.read = true
-                }
-                // Try to to use the fetch date it originally had to not pollute 'Updates' tab
-                toDelete.filter { it.chapter_number == chapter.chapter_number }
-                    .minByOrNull { it.date_fetch }?.let {
-                        chapter.date_fetch = it.date_fetch
-                    }
+    // Date fetch is set in such a way that the upper ones will have bigger value than the lower ones
+    // Sources MUST return the chapters from most to less recent, which is common.
+    var itemCount = toAdd.size
+    var updatedToAdd = toAdd.map { toAddItem ->
+        val chapter: Chapter = toAddItem.copy()
 
-                readded.add(chapter)
+        chapter.date_fetch = now + itemCount--
+
+        if (!chapter.isRecognizedNumber || chapter.chapter_number !in deletedChapterNumbers) return@map chapter
+
+        chapter.read = chapter.chapter_number in deletedReadChapterNumbers
+        chapter.bookmark = chapter.chapter_number in deletedBookmarkedChapterNumbers
+
+        // Try to use the fetch date it originally had to not pollute 'Updates' tab
+        toDelete.filter { it.chapter_number == chapter.chapter_number }
+            .minByOrNull { it.date_fetch }?.let {
+                chapter.date_fetch = it.date_fetch
             }
-        }
-        toAdd.forEach { chapter ->
-            chapter.id = insertChapter.await(chapter)
-        }
+
+        reAdded.add(chapter)
+
+        chapter
+    }
+
+    if (toDelete.isNotEmpty()) {
+        val idsToDelete = toDelete.mapNotNull { it.id }
+        deleteChapter.awaitAllById(idsToDelete)
+    }
+
+    if (updatedToAdd.isNotEmpty()) {
+        updatedToAdd = insertChapter.awaitBulk(updatedToAdd)
     }
 
     if (toChange.isNotEmpty()) {
@@ -182,34 +184,23 @@ suspend fun syncChaptersWithSource(
         }
     }
 
-    var mangaUpdate: MangaUpdate? = null
+    // TODO: Predict when the next chapter gonna release
+
     // Set this manga as updated since chapters were changed
-    val newestChapterDate = getChapter.awaitAll(manga, false)
-        .maxOfOrNull { it.date_upload } ?: 0L
-    if (newestChapterDate == 0L) {
-        if (toAdd.isNotEmpty()) {
-            manga.last_update = Date().time
-            mangaUpdate = MangaUpdate(manga.id!!, lastUpdate = manga.last_update)
-        }
-    } else {
-        manga.last_update = newestChapterDate
-        mangaUpdate = MangaUpdate(manga.id!!, lastUpdate = manga.last_update)
-    }
-    mangaUpdate?.let { updateManga.await(it) }
+    // Note that last_update actually represents last time the chapter list changed at all
+    // Those changes already checked beforehand, so we can proceed to updating the manga
+    manga.last_update = Date().time
+    updateManga.await(MangaUpdate(manga.id!!, lastUpdate = manga.last_update))
 
-    val reAddedSet = readded.toSet()
+    val reAddedUrls = reAdded.map { it.url }.toHashSet()
+    val filteredScanlators = ChapterUtil.getScanlators(manga.filtered_scanlators).toHashSet()
+
     return Pair(
-        toAdd.subtract(reAddedSet).toList().filterChaptersByScanlators(manga),
-        toDelete - reAddedSet,
+        updatedToAdd.filterNot {
+            it.url in reAddedUrls || it.scanlator in filteredScanlators
+        },
+        toDelete.filterNot { it.url in reAddedUrls },
     )
-}
-
-private fun List<Chapter>.filterChaptersByScanlators(manga: Manga): List<Chapter> {
-    if (manga.filtered_scanlators.isNullOrBlank()) return this
-
-    return this.filter { chapter ->
-        !ChapterUtil.getScanlators(manga.filtered_scanlators).contains(chapter.scanlator)
-    }
 }
 
 // checks if the chapter in db needs updated

@@ -11,6 +11,7 @@ import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.withIOContext
 import java.io.IOException
+import java.io.OutputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,6 +40,7 @@ import kotlinx.coroutines.newSingleThreadContext
 class RollingUniFileLogWriter(
     private val logPath: UniFile,
     private val rollOnSize: Long = 10 * 1024 * 1024, // 10MB
+    private val maxRolledLogFiles: Int = 5,
     private val maxLogFiles: Int = 5,
     private val messageStringFormatter: MessageStringFormatter = DefaultFormatter,
     private val messageDateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
@@ -95,11 +97,11 @@ class RollingUniFileLogWriter(
     }
 
     private fun rollLogs() {
-        if (pathForLogIndex(maxLogFiles - 1)?.exists() == true) {
-            pathForLogIndex(maxLogFiles - 1)?.delete()
+        if (pathForLogIndex(maxRolledLogFiles - 1)?.exists() == true) {
+            pathForLogIndex(maxRolledLogFiles - 1)?.delete()
         }
 
-        (0..<(maxLogFiles  - 1)).reversed().forEach {
+        (0..<(maxRolledLogFiles - 1)).reversed().forEach {
             val sourcePath = pathForLogIndex(it)
             val targetFileName = fileNameForLogIndex(it + 1)
             if (sourcePath?.exists() == true) {
@@ -115,7 +117,8 @@ class RollingUniFileLogWriter(
 
     private fun fileNameForLogIndex(index: Int): String {
         val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        return if (index == 0) "${date}-${BuildConfig.BUILD_TYPE}.log" else "${date}-${BuildConfig.BUILD_TYPE} (${index}).log"
+        val name = "${date}-${BuildConfig.BUILD_TYPE}"
+        return if (index == 0) "${name}.log" else "$name (${index}).log"
     }
 
     private fun pathForLogIndex(index: Int, create: Boolean = false): UniFile? {
@@ -129,7 +132,27 @@ class RollingUniFileLogWriter(
             maybeRollLogs(fileSize(logFilePath))
         }
 
-        fun openNewOutput() = pathForLogIndex(0, true)?.openOutputStream(true)
+        fun openNewOutput(): OutputStream? {
+            val newLog = pathForLogIndex(0, true)
+            val dupes = mutableMapOf<String, List<UniFile>>()
+            logPath
+                .listFiles { file, filename ->
+                    val match = LOG_FILE_REGEX.find(filename)
+                    match?.groupValues?.get(1)?.let { key ->
+                        dupes["${key}.log"] = dupes["${key}.log"].orEmpty() + listOf(file)
+                    }
+
+                    match == null
+                }
+                .orEmpty()
+                .sortedByDescending { it.name }
+                .drop(maxLogFiles)
+                .forEach {
+                    it.delete()
+                    dupes[it.name]?.forEach { f -> f.delete() }
+                }
+            return newLog?.openOutputStream(true)
+        }
 
         var currentLogSink = openNewOutput()
 
@@ -157,4 +180,8 @@ class RollingUniFileLogWriter(
     }
 
     private fun fileSize(path: UniFile?) = path?.length() ?: -1L
+
+    companion object {
+        private val LOG_FILE_REGEX = """(\d+-\d+-\d+-${BuildConfig.BUILD_TYPE}) \(\d+\)\.log""".toRegex()
+    }
 }

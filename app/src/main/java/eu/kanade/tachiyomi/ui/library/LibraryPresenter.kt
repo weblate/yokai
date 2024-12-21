@@ -11,8 +11,6 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.database.models.removeCover
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.data.download.DownloadManager
-import eu.kanade.tachiyomi.data.download.model.Download
-import eu.kanade.tachiyomi.data.download.model.DownloadQueue
 import eu.kanade.tachiyomi.data.preference.DelayedLibrarySuggestionsJob
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.track.TrackManager
@@ -44,7 +42,6 @@ import eu.kanade.tachiyomi.util.manga.MangaCoverMetadata
 import eu.kanade.tachiyomi.util.mapStatus
 import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
-import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.withIOContext
 import eu.kanade.tachiyomi.util.system.withUIContext
 import java.util.*
@@ -58,6 +55,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -91,7 +90,7 @@ class LibraryPresenter(
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
     private val trackManager: TrackManager = Injekt.get(),
-) : BaseCoroutinePresenter<LibraryController>(), DownloadQueue.DownloadListener {
+) : BaseCoroutinePresenter<LibraryController>() {
     private val getCategories: GetCategories by injectLazy()
     private val setMangaCategories: SetMangaCategories by injectLazy()
     private val updateCategories: UpdateCategories by injectLazy()
@@ -184,7 +183,7 @@ class LibraryPresenter(
 
     override fun onCreate() {
         super.onCreate()
-        downloadManager.addListener(this)
+
         if (!controllerIsSubClass) {
             lastLibraryItems?.let { libraryItems = it }
             lastCategories?.let { categories = it }
@@ -644,7 +643,7 @@ class LibraryPresenter(
                     category.mangaSort != null -> {
                         var sort = when (category.sortingMode() ?: LibrarySort.Title) {
                             LibrarySort.Title -> sortAlphabetical(i1, i2)
-                            LibrarySort.LatestChapter -> i2.manga.last_update.compareTo(i1.manga.last_update)
+                            LibrarySort.LatestChapter -> i2.manga.latestUpdate.compareTo(i1.manga.latestUpdate)
                             LibrarySort.Unread -> when {
                                 i1.manga.unread == i2.manga.unread -> 0
                                 i1.manga.unread == 0 -> if (category.isAscending()) 1 else -1
@@ -801,7 +800,8 @@ class LibraryPresenter(
     private fun getLibraryFlow(): Flow<LibraryData> {
         val libraryItemFlow = combine(
             getCategories.subscribe(),
-            getLibraryManga.subscribe(),
+            // FIXME: Remove retry once a real solution is found
+            getLibraryManga.subscribe().retry(1) { e -> e is NullPointerException },
             getPreferencesFlow(),
             forceUpdateEvent.receiveAsFlow(),
         ) { allCategories, libraryMangaList, prefs, _ ->
@@ -817,6 +817,7 @@ class LibraryPresenter(
                     prefs.sortAscending,
                     prefs.showAllCategories,
                     prefs.collapsedCategories,
+                    defaultCategory,
                 )
             } else {
                 getDynamicLibraryItems(
@@ -852,6 +853,7 @@ class LibraryPresenter(
         isAscending: Boolean,
         showAll: Boolean,
         collapsedCategories: Set<String>,
+        defaultCategory: Category,
     ): Triple<List<LibraryItem>, List<Category>, List<LibraryItem>> {
         val categories = allCategories.toMutableList()
         val hiddenItems = mutableListOf<LibraryItem>()
@@ -901,7 +903,7 @@ class LibraryPresenter(
             collapsedCategories.mapNotNull { it.toIntOrNull() }.toSet()
         }
 
-        if (categorySet.contains(0)) categories.add(0, createDefaultCategory())
+        if (categorySet.contains(0)) categories.add(0, defaultCategory)
         if (libraryIsGrouped) {
             categories.forEach { category ->
                 val catId = category.id ?: return@forEach
@@ -1633,13 +1635,6 @@ class LibraryPresenter(
                     updateManga.await(MangaUpdate(manga.id!!, thumbnailUrl = manga.thumbnail_url))
                 }
             }
-        }
-    }
-
-    override fun updateDownload(download: Download) = updateDownloads()
-    override fun updateDownloads() {
-        presenterScope.launchUI {
-            view?.updateDownloadStatus(!downloadManager.isPaused())
         }
     }
 

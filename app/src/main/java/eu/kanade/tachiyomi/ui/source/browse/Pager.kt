@@ -16,7 +16,7 @@ abstract class Pager(var currentPage: Int = 1) {
 
     protected val results = MutableSharedFlow<Pair<Int, List<SManga>>>()
 
-    fun results(): SharedFlow<Pair<Int, List<SManga>>> {
+    fun asFlow(): SharedFlow<Pair<Int, List<SManga>>> {
         return results.asSharedFlow()
     }
 

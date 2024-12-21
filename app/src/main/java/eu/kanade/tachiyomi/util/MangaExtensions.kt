@@ -41,8 +41,9 @@ import eu.kanade.tachiyomi.util.view.withFadeTransaction
 import eu.kanade.tachiyomi.widget.TriStateCheckBox
 import java.util.Date
 import java.util.Locale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.category.interactor.GetCategories
@@ -84,69 +85,69 @@ suspend fun Manga.shouldDownloadNewChapters(prefs: PreferencesHelper, getCategor
     return categoriesForManga.any { it in includedCategories }
 }
 
-fun Manga.moveCategories(activity: Activity, onMangaMoved: () -> Unit) {
+suspend fun Manga.moveCategories(activity: Activity, onMangaMoved: () -> Unit) {
     moveCategories(activity, false, onMangaMoved)
 }
 
-fun Manga.moveCategories(
+suspend fun Manga.moveCategories(
     activity: Activity,
     addingToLibrary: Boolean,
     onMangaMoved: () -> Unit,
 ) {
     val getCategories: GetCategories = Injekt.get()
-    // FIXME: Don't do blocking
-    val categories = runBlocking { getCategories.await() }
-    val categoriesForManga = runBlocking {
-        this@moveCategories.id?.let { mangaId -> getCategories.awaitByMangaId(mangaId) }
-            .orEmpty()
-    }
+    val categories = getCategories.await()
+    val categoriesForManga = this.id?.let { mangaId -> getCategories.awaitByMangaId(mangaId) }.orEmpty()
     val ids = categoriesForManga.mapNotNull { it.id }.toTypedArray()
-    SetCategoriesSheet(
-        activity,
-        this,
-        categories.toMutableList(),
-        ids,
-        addingToLibrary,
-    ) {
-        onMangaMoved()
-        if (addingToLibrary) {
-            autoAddTrack(onMangaMoved)
-        }
-    }.show()
+    withUIContext {
+        SetCategoriesSheet(
+            activity,
+            this@moveCategories,
+            categories.toMutableList(),
+            ids,
+            addingToLibrary,
+        ) {
+            onMangaMoved()
+            if (addingToLibrary) {
+                autoAddTrack(onMangaMoved)
+            }
+        }.show()
+    }
 }
 
-fun List<Manga>.moveCategories(
+suspend fun List<Manga>.moveCategories(
     activity: Activity,
     onMangaMoved: () -> Unit,
 ) {
     if (this.isEmpty()) return
 
     val getCategories: GetCategories = Injekt.get()
-    // FIXME: Don't do blocking
-    val categories = runBlocking { getCategories.await() }
+    val categories = getCategories.await()
     val mangaCategories = map { manga ->
-        manga.id?.let { mangaId -> runBlocking { getCategories.awaitByMangaId(mangaId) } }.orEmpty()
+        manga.id?.let { mangaId -> getCategories.awaitByMangaId(mangaId) }.orEmpty()
     }
     val commonCategories = mangaCategories.reduce { set1, set2 -> set1.intersect(set2.toSet()).toMutableList() }.toSet()
     val mixedCategories = mangaCategories.flatten().distinct().subtract(commonCategories).toMutableList()
-    SetCategoriesSheet(
-        activity,
-        this,
-        categories.toMutableList(),
-        categories.map {
-            when (it) {
-                in commonCategories -> TriStateCheckBox.State.CHECKED
-                in mixedCategories -> TriStateCheckBox.State.IGNORE
-                else -> TriStateCheckBox.State.UNCHECKED
-            }
-        }.toTypedArray(),
-        false,
-    ) {
-        onMangaMoved()
-    }.show()
+
+    withUIContext {
+        SetCategoriesSheet(
+            activity,
+            this@moveCategories,
+            categories.toMutableList(),
+            categories.map {
+                when (it) {
+                    in commonCategories -> TriStateCheckBox.State.CHECKED
+                    in mixedCategories -> TriStateCheckBox.State.IGNORE
+                    else -> TriStateCheckBox.State.UNCHECKED
+                }
+            }.toTypedArray(),
+            false,
+        ) {
+            onMangaMoved()
+        }.show()
+    }
 }
 
-fun Manga.addOrRemoveToFavorites(
+suspend fun Manga.addOrRemoveToFavorites(
     preferences: PreferencesHelper,
     view: View,
     activity: Activity,
@@ -160,15 +161,12 @@ fun Manga.addOrRemoveToFavorites(
     setMangaCategories: SetMangaCategories = Injekt.get(),
     getManga: GetManga = Injekt.get(),
     updateManga: UpdateManga = Injekt.get(),
+    @OptIn(DelicateCoroutinesApi::class)
+    scope: CoroutineScope = GlobalScope,
 ): Snackbar? {
     if (!favorite) {
         if (checkForDupes) {
-            val duplicateManga = runBlocking(Dispatchers.IO) {
-                getManga.awaitDuplicateFavorite(
-                    this@addOrRemoveToFavorites.title,
-                    this@addOrRemoveToFavorites.source,
-                )
-            }
+            val duplicateManga = getManga.awaitDuplicateFavorite(this.title, this.source)
             if (duplicateManga != null) {
                 showAddDuplicateDialog(
                     this,
@@ -187,18 +185,19 @@ fun Manga.addOrRemoveToFavorites(
                             onMangaAdded,
                             onMangaMoved,
                             onMangaDeleted,
+                            scope = scope,
                         )
                     },
                     migrateManga = { source, faved ->
                         onMangaAdded(source to faved)
                     },
+                    scope = scope,
                 )
                 return null
             }
         }
 
-        // FIXME: Don't do blocking
-        val categories = runBlocking { getCategories.await() }
+        val categories = getCategories.await()
         val defaultCategoryId = preferences.defaultCategory().get()
         val defaultCategory = categories.find { it.id == defaultCategoryId }
         val lastUsedCategories = Category.lastCategoriesAddedTo.mapNotNull { catId ->
@@ -209,22 +208,23 @@ fun Manga.addOrRemoveToFavorites(
                 favorite = true
                 date_added = Date().time
                 autoAddTrack(onMangaMoved)
-                // FIXME: Don't do blocking
-                runBlocking {
-                    updateManga.await(
-                        MangaUpdate(
-                            id = this@addOrRemoveToFavorites.id!!,
-                            favorite = true,
-                            dateAdded = this@addOrRemoveToFavorites.date_added,
-                        )
+                updateManga.await(
+                    MangaUpdate(
+                        id = this@addOrRemoveToFavorites.id!!,
+                        favorite = true,
+                        dateAdded = this@addOrRemoveToFavorites.date_added,
                     )
-                    setMangaCategories.await(this@addOrRemoveToFavorites.id!!, listOf(defaultCategory.id!!.toLong()))
-                }
-                (activity as? MainActivity)?.showNotificationPermissionPrompt()
-                onMangaMoved()
-                return view.snack(activity.getString(MR.strings.added_to_, defaultCategory.name)) {
-                    setAction(MR.strings.change) {
-                        moveCategories(activity, onMangaMoved)
+                )
+                setMangaCategories.await(this@addOrRemoveToFavorites.id!!, listOf(defaultCategory.id!!.toLong()))
+                return withUIContext {
+                    onMangaMoved()
+                    (activity as? MainActivity)?.showNotificationPermissionPrompt()
+                    view.snack(activity.getString(MR.strings.added_to_, defaultCategory.name)) {
+                        setAction(MR.strings.change) {
+                            scope.launchIO {
+                                moveCategories(activity, onMangaMoved)
+                            }
+                        }
                     }
                 }
             }
@@ -235,35 +235,36 @@ fun Manga.addOrRemoveToFavorites(
                 favorite = true
                 date_added = Date().time
                 autoAddTrack(onMangaMoved)
-                // FIXME: Don't do blocking
-                runBlocking {
-                    updateManga.await(
-                        MangaUpdate(
-                            id = this@addOrRemoveToFavorites.id!!,
-                            favorite = true,
-                            dateAdded = this@addOrRemoveToFavorites.date_added,
-                        )
+                updateManga.await(
+                    MangaUpdate(
+                        id = this@addOrRemoveToFavorites.id!!,
+                        favorite = true,
+                        dateAdded = this@addOrRemoveToFavorites.date_added,
                     )
-                    setMangaCategories.await(this@addOrRemoveToFavorites.id!!, lastUsedCategories.map { it.id!!.toLong() })
-                }
-                (activity as? MainActivity)?.showNotificationPermissionPrompt()
-                onMangaMoved()
-                return view.snack(
-                    activity.getString(
-                        MR.strings.added_to_,
-                        when (lastUsedCategories.size) {
-                            0 -> activity.getString(MR.strings.default_category).lowercase(Locale.ROOT)
-                            1 -> lastUsedCategories.firstOrNull()?.name ?: ""
-                            else -> activity.getString(
-                                MR.plurals.category_plural,
-                                lastUsedCategories.size,
-                                lastUsedCategories.size,
-                            )
-                        },
-                    ),
-                ) {
-                    setAction(MR.strings.change) {
-                        moveCategories(activity, onMangaMoved)
+                )
+                setMangaCategories.await(this@addOrRemoveToFavorites.id!!, lastUsedCategories.map { it.id!!.toLong() })
+                return withUIContext {
+                    onMangaMoved()
+                    (activity as? MainActivity)?.showNotificationPermissionPrompt()
+                    view.snack(
+                        activity.getString(
+                            MR.strings.added_to_,
+                            when (lastUsedCategories.size) {
+                                0 -> activity.getString(MR.strings.default_category).lowercase(Locale.ROOT)
+                                1 -> lastUsedCategories.firstOrNull()?.name ?: ""
+                                else -> activity.getString(
+                                    MR.plurals.category_plural,
+                                    lastUsedCategories.size,
+                                    lastUsedCategories.size,
+                                )
+                            },
+                        ),
+                    ) {
+                        setAction(MR.strings.change) {
+                            scope.launchIO {
+                                moveCategories(activity, onMangaMoved)
+                            }
+                        }
                     }
                 }
             }
@@ -271,27 +272,28 @@ fun Manga.addOrRemoveToFavorites(
                 favorite = true
                 date_added = Date().time
                 autoAddTrack(onMangaMoved)
-                // FIXME: Don't do blocking
-                runBlocking {
-                    updateManga.await(
-                        MangaUpdate(
-                            id = this@addOrRemoveToFavorites.id!!,
-                            favorite = true,
-                            dateAdded = this@addOrRemoveToFavorites.date_added,
-                        )
+                updateManga.await(
+                    MangaUpdate(
+                        id = this@addOrRemoveToFavorites.id!!,
+                        favorite = true,
+                        dateAdded = this@addOrRemoveToFavorites.date_added,
                     )
-                    setMangaCategories.await(this@addOrRemoveToFavorites.id!!, emptyList())
-                }
-                onMangaMoved()
-                (activity as? MainActivity)?.showNotificationPermissionPrompt()
-                return if (categories.isNotEmpty()) {
-                    view.snack(activity.getString(MR.strings.added_to_, activity.getString(MR.strings.default_value))) {
-                        setAction(MR.strings.change) {
-                            moveCategories(activity, onMangaMoved)
+                )
+                setMangaCategories.await(this@addOrRemoveToFavorites.id!!, emptyList())
+                return withUIContext {
+                    onMangaMoved()
+                    (activity as? MainActivity)?.showNotificationPermissionPrompt()
+                    if (categories.isNotEmpty()) {
+                        view.snack(activity.getString(MR.strings.added_to_, activity.getString(MR.strings.default_value))) {
+                            setAction(MR.strings.change) {
+                                scope.launchIO {
+                                    moveCategories(activity, onMangaMoved)
+                                }
+                            }
                         }
+                    } else {
+                        view.snack(MR.strings.added_to_library)
                     }
-                } else {
-                    view.snack(MR.strings.added_to_library)
                 }
             }
             else -> { // Always ask
@@ -302,81 +304,82 @@ fun Manga.addOrRemoveToFavorites(
         val lastAddedDate = date_added
         favorite = false
         date_added = 0
-        // FIXME: Don't do blocking
-        runBlocking {
-            updateManga.await(
-                MangaUpdate(
-                    id = this@addOrRemoveToFavorites.id!!,
-                    favorite = false,
-                    dateAdded = 0,
-                )
+        updateManga.await(
+            MangaUpdate(
+                id = this@addOrRemoveToFavorites.id!!,
+                favorite = false,
+                dateAdded = 0,
             )
-        }
-        onMangaMoved()
-        return view.snack(view.context.getString(MR.strings.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
-            setAction(MR.strings.undo) {
-                favorite = true
-                date_added = lastAddedDate
-                // FIXME: Don't do blocking
-                runBlocking {
-                    updateManga.await(
-                        MangaUpdate(
-                            id = this@addOrRemoveToFavorites.id!!,
-                            favorite = true,
-                            dateAdded = lastAddedDate,
+        )
+        return withUIContext {
+            onMangaMoved()
+            view.snack(view.context.getString(MR.strings.removed_from_library), Snackbar.LENGTH_INDEFINITE) {
+                setAction(MR.strings.undo) {
+                    favorite = true
+                    date_added = lastAddedDate
+                    scope.launchIO {
+                        updateManga.await(
+                            MangaUpdate(
+                                id = this@addOrRemoveToFavorites.id!!,
+                                favorite = true,
+                                dateAdded = lastAddedDate,
+                            )
                         )
-                    )
-                }
-                onMangaMoved()
-            }
-            addCallback(
-                object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                        super.onDismissed(transientBottomBar, event)
-                        if (!favorite) {
-                            onMangaDeleted()
-                        }
                     }
-                },
-            )
+                    onMangaMoved()
+                }
+                addCallback(
+                    object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                            super.onDismissed(transientBottomBar, event)
+                            if (!favorite) {
+                                onMangaDeleted()
+                            }
+                        }
+                    },
+                )
+            }
         }
     }
     return null
 }
 
-private fun Manga.showSetCategoriesSheet(
+private suspend fun Manga.showSetCategoriesSheet(
     activity: Activity,
     categories: List<Category>,
     onMangaAdded: (Pair<Long, Boolean>?) -> Unit,
     onMangaMoved: () -> Unit,
     getCategories: GetCategories = Injekt.get(),
 ) {
-    // FIXME: Don't do blocking
-    val categoriesForManga = runBlocking { getCategories.awaitByMangaId(this@showSetCategoriesSheet.id!!) }
+    val categoriesForManga = getCategories.awaitByMangaId(this.id!!)
     val ids = categoriesForManga.mapNotNull { it.id }.toTypedArray()
 
-    SetCategoriesSheet(
-        activity,
-        this,
-        categories.toMutableList(),
-        ids,
-        true,
-    ) {
-        (activity as? MainActivity)?.showNotificationPermissionPrompt()
-        onMangaAdded(null)
-        autoAddTrack(onMangaMoved)
-    }.show()
+    withUIContext {
+        SetCategoriesSheet(
+            activity,
+            this@showSetCategoriesSheet,
+            categories.toMutableList(),
+            ids,
+            true,
+        ) {
+            (activity as? MainActivity)?.showNotificationPermissionPrompt()
+            onMangaAdded(null)
+            autoAddTrack(onMangaMoved)
+        }.show()
+    }
 }
 
-private fun showAddDuplicateDialog(
+private suspend fun showAddDuplicateDialog(
     newManga: Manga,
     libraryManga: Manga,
     activity: Activity,
     sourceManager: SourceManager,
     controller: Controller,
-    addManga: () -> Unit,
+    addManga: suspend () -> Unit,
     migrateManga: (Long, Boolean) -> Unit,
-) {
+    @OptIn(DelicateCoroutinesApi::class)
+    scope: CoroutineScope = GlobalScope,
+) = withUIContext {
     val source = sourceManager.getOrStub(libraryManga.source)
 
     val titles by lazy { MigrationFlags.titles(activity, libraryManga) }
@@ -385,7 +388,7 @@ private fun showAddDuplicateDialog(
         val enabled = titles.indices.map { listView.isItemChecked(it) }.toTypedArray()
         val flags = MigrationFlags.getFlagsFromPositions(enabled, libraryManga)
         val enhancedServices by lazy { Injekt.get<TrackManager>().services.filterIsInstance<EnhancedTrackService>() }
-        launchUI {
+        scope.launchUI {
             MigrationProcessAdapter.migrateMangaInternal(
                 flags,
                 enhancedServices,
@@ -415,7 +418,7 @@ private fun showAddDuplicateDialog(
                     MangaDetailsController(libraryManga)
                         .withFadeTransaction(),
                 )
-                1 -> addManga()
+                1 -> scope.launchIO { addManga() }
                 2 -> {
                     if (!newManga.initialized) {
                         activity.toast(MR.strings.must_view_details_before_migration, Toast.LENGTH_LONG)

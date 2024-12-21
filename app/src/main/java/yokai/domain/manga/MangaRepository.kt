@@ -9,6 +9,7 @@ import yokai.domain.manga.models.MangaUpdate
 interface MangaRepository {
     suspend fun getMangaList(): List<Manga>
     suspend fun getMangaByUrlAndSource(url: String, source: Long): Manga?
+    fun getMangaByUrlAndSourceAsFlow(url: String, source: Long): Flow<Manga?>
     suspend fun getMangaById(id: Long): Manga?
     suspend fun getFavorites(): List<Manga>
     suspend fun getReadNotFavorites(): List<Manga>

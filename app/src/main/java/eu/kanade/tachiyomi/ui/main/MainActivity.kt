@@ -62,12 +62,12 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
+import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.data.download.DownloadJob
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
@@ -138,6 +138,7 @@ import kotlin.math.min
 import kotlin.math.roundToLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -458,8 +459,12 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
 
-        DownloadJob.downloadFlow.onEach(::downloadStatusChanged).launchIn(lifecycleScope)
-        lifecycleScope
+        combine(
+            downloadManager.isDownloaderRunning,
+            downloadManager.queueState,
+        ) { isDownloading, queueState -> isDownloading to queueState.size }
+            .onEach { downloadStatusChanged(it.first, it.second) }
+            .launchIn(lifecycleScope)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowCustomEnabled(true)
@@ -947,7 +952,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             extensionManager.getExtensionUpdates(false)
         }
         setExtensionsBadge()
-        DownloadJob.callListeners(downloadManager = downloadManager)
         showDLQueueTutorial()
         reEnableBackPressedCallBack()
     }
@@ -1504,13 +1508,17 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         }
     }
 
-    fun downloadStatusChanged(downloading: Boolean) {
+    private fun BadgeDrawable.updateQueueSize(queueSize: Int) {
+        number = queueSize
+    }
+
+    private fun downloadStatusChanged(downloading: Boolean, queueSize: Int) {
         lifecycleScope.launchUI {
-            val hasQueue = downloading || downloadManager.hasQueue()
+            val hasQueue = downloading || queueSize > 0
             if (hasQueue) {
                 val badge = nav.getOrCreateBadge(R.id.nav_recents)
-                badge.number = downloadManager.queue.size
-                if (downloading) badge.backgroundColor = -870219 else badge.backgroundColor = Color.GRAY
+                badge.updateQueueSize(queueSize)
+                badge.backgroundColor = if (downloading) getResourceColor(R.attr.colorError) else Color.GRAY
                 showDLQueueTutorial()
             } else {
                 nav.removeBadge(R.id.nav_recents)

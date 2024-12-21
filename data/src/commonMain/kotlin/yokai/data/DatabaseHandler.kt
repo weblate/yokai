@@ -27,6 +27,11 @@ interface DatabaseHandler {
         block: suspend Database.() -> Query<T>
     ): T?
 
+    suspend fun <T : Any> awaitFirstOrNull(
+        inTransaction: Boolean = false,
+        block: suspend Database.() -> Query<T>
+    ): T?
+
     suspend fun <T : Any> awaitOneOrNullExecutable(
         inTransaction: Boolean = false,
         block: suspend Database.() -> ExecutableQuery<T>,
@@ -37,6 +42,8 @@ interface DatabaseHandler {
     fun <T : Any> subscribeToOne(block: Database.() -> Query<T>): Flow<T>
 
     fun <T : Any> subscribeToOneOrNull(block: Database.() -> Query<T>): Flow<T?>
+
+    fun <T : Any> subscribeToFirstOrNull(block: Database.() -> Query<T>): Flow<T?>
 
     /*
     fun <T : Any> subscribeToPagingSource(

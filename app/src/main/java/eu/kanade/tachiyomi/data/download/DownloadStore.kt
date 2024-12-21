@@ -59,6 +59,12 @@ class DownloadStore(
         }
     }
 
+    fun removeAll(downloads: List<Download>) {
+        preferences.edit {
+            downloads.forEach { remove(getKey(it)) }
+        }
+    }
+
     /**
      * Removes all the downloads from the store.
      */

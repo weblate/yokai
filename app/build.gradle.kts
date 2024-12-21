@@ -31,7 +31,7 @@ fun runCommand(command: String): String {
     return String(byteOut.toByteArray()).trim()
 }
 
-val _versionName = "1.8.5.12"
+val _versionName = "1.9.7"
 val betaCount by lazy {
     val betaTags = runCommand("git tag -l --sort=refname v${_versionName}-b*")
 
@@ -54,7 +54,7 @@ val supportedAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 android {
     defaultConfig {
         applicationId = "eu.kanade.tachiyomi"
-        versionCode = 150
+        versionCode = 156
         versionName = _versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
@@ -269,6 +269,11 @@ dependencies {
     testRuntimeOnly(libs.bundles.test.runtime)
     androidTestImplementation(libs.bundles.test.android)
     testImplementation(kotlinx.coroutines.test)
+
+    // For detecting memory leaks
+    // REF: https://square.github.io/leakcanary/
+    debugImplementation(libs.leakcanary.android)
+    implementation(libs.leakcanary.plumber)
 }
 
 tasks {

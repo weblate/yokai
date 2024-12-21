@@ -16,6 +16,7 @@ interface ChapterRepository {
 
     suspend fun getChaptersByUrlAndMangaId(url: String, mangaId: Long, filterScanlators: Boolean): List<Chapter>
     suspend fun getChapterByUrlAndMangaId(url: String, mangaId: Long, filterScanlators: Boolean): Chapter?
+    suspend fun getUnread(mangaId: Long, filterScanlators: Boolean): List<Chapter>
 
     suspend fun getRecents(filterScanlators: Boolean, search: String = "", limit: Long = 25L, offset: Long = 0L): List<MangaChapter>
 
@@ -23,11 +24,11 @@ interface ChapterRepository {
     fun getScanlatorsByChapterAsFlow(mangaId: Long): Flow<List<String>>
 
     suspend fun delete(chapter: Chapter): Boolean
-    suspend fun deleteAll(chapters: List<Chapter>): Boolean
+    suspend fun deleteAllById(chapters: List<Long>): Boolean
 
     suspend fun update(update: ChapterUpdate): Boolean
     suspend fun updateAll(updates: List<ChapterUpdate>): Boolean
 
     suspend fun insert(chapter: Chapter): Long?
-    suspend fun insertBulk(chapters: List<Chapter>)
+    suspend fun insertBulk(chapters: List<Chapter>): List<Chapter>
 }

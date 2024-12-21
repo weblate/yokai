@@ -16,7 +16,7 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
         handler.awaitList { mangasQueries.findAll(Manga::mapper) }
 
     override suspend fun getMangaByUrlAndSource(url: String, source: Long): Manga? =
-        handler.awaitOneOrNull { mangasQueries.findByUrlAndSource(url, source, Manga::mapper) }
+        handler.awaitFirstOrNull { mangasQueries.findByUrlAndSource(url, source, Manga::mapper) }
 
     override suspend fun getMangaById(id: Long): Manga? =
         handler.awaitOneOrNull { mangasQueries.findById(id, Manga::mapper) }
@@ -30,6 +30,9 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
     override fun getMangaListAsFlow(): Flow<List<Manga>> =
         handler.subscribeToList { mangasQueries.findAll(Manga::mapper) }
 
+    override fun getMangaByUrlAndSourceAsFlow(url: String, source: Long): Flow<Manga?> =
+        handler.subscribeToFirstOrNull { mangasQueries.findByUrlAndSource(url, source, Manga::mapper) }
+
     override suspend fun getLibraryManga(): List<LibraryManga> =
         handler.awaitList { library_viewQueries.findAll(LibraryManga::mapper) }
 
@@ -37,7 +40,7 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
         handler.subscribeToList { library_viewQueries.findAll(LibraryManga::mapper) }
 
     override suspend fun getDuplicateFavorite(title: String, source: Long): Manga? =
-        handler.awaitOneOrNull { mangasQueries.findDuplicateFavorite(title.lowercase(), source, Manga::mapper) }
+        handler.awaitFirstOrNull { mangasQueries.findDuplicateFavorite(title.lowercase(), source, Manga::mapper) }
 
     override suspend fun update(update: MangaUpdate): Boolean {
         return try {

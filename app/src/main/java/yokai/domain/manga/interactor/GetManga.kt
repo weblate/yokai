@@ -7,6 +7,7 @@ class GetManga (
 ) {
     suspend fun awaitAll() = mangaRepository.getMangaList()
     fun subscribeAll() = mangaRepository.getMangaListAsFlow()
+    fun subscribeByUrlAndSource(url: String, source: Long) = mangaRepository.getMangaByUrlAndSourceAsFlow(url, source)
 
     suspend fun awaitByUrlAndSource(url: String, source: Long) = mangaRepository.getMangaByUrlAndSource(url, source)
     suspend fun awaitById(id: Long) = mangaRepository.getMangaById(id)

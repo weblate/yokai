@@ -233,7 +233,7 @@ internal class AppUpdateNotifier(private val context: Context) {
             addAction(
                 R.drawable.ic_refresh_24dp,
                 context.getString(MR.strings.retry),
-                NotificationReceiver.startAppUpdatePendingJob(context, url),
+                NotificationReceiver.dismissFailThenStartAppUpdatePendingJob(context, url),
             )
             // Cancel action
             addAction(

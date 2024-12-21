@@ -610,6 +610,11 @@ class NotificationReceiver : BroadcastReceiver() {
             )
         }
 
+        internal fun dismissFailThenStartAppUpdatePendingJob(context: Context, url: String, notifyOnInstall: Boolean = false): PendingIntent {
+            dismissNotification(context, Notifications.ID_UPDATER_FAILED)
+            return startAppUpdatePendingJob(context, url, notifyOnInstall)
+        }
+
         /**
          * Returns [PendingIntent] that cancels the download for a Tachiyomi update
          *

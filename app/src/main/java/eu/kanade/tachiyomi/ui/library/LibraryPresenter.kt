@@ -801,16 +801,17 @@ class LibraryPresenter(
      * If category id '-1' is not empty, it means the library not grouped by categories
      */
     private fun getLibraryFlow(): Flow<LibraryData> {
-        val libraryItemFlow = combine(
+        val libraryFlow = combine(
             getCategories.subscribe(),
             // FIXME: Remove retry once a real solution is found
             getLibraryManga.subscribe().retry(1) { e -> e is NullPointerException },
             getPreferencesFlow(),
             forceUpdateEvent.receiveAsFlow(),
-        ) { allCategories, libraryMangaList, prefs, _ ->
+        ) { dbCategories, libraryMangaList, prefs, _ ->
             groupType = prefs.groupType
+
             val defaultCategory = createDefaultCategory()
-            allCategories = listOf(defaultCategory) + dbCategories
+            val allCategories = listOf(defaultCategory) + dbCategories
 
             // FIXME: Should return Map<Int, LibraryItem> where Int is category id
             if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
@@ -831,13 +832,14 @@ class LibraryPresenter(
                     groupType,
                     prefs.collapsedDynamicCategories,
                 )
-            }
+            } to allCategories
         }
 
         return combine(
-            libraryItemFlow,
+            libraryFlow,
             preferences.removeArticles().changes(),
-        ) { libraryItems, removeArticles ->
+        ) { library, removeArticles ->
+            val (libraryItems, allCategories) = library
             val (items, categories, hiddenItems) = libraryItems
 
             LibraryData(

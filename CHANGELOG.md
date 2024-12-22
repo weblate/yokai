@@ -20,6 +20,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fix some flickering issues when browsing sources
 - Fix download count is not updating
 
+### Translation
+- Update Korean translation (@Meokjeng)
+
 ### Other
 - Update NDK to v27.2.12479018
 

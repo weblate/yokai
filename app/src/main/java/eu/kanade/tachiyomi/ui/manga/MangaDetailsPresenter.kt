@@ -285,10 +285,8 @@ class MangaDetailsPresenter(
         this.chapters = applyChapterFilters(chapters)
     }
 
-    private fun getHistory() {
-        presenterScope.launchIO {
-            allHistory = getHistory.awaitAllByMangaId(mangaId)
-        }
+    private suspend fun getHistory() {
+        allHistory = getHistory.awaitAllByMangaId(mangaId)
     }
 
     /**

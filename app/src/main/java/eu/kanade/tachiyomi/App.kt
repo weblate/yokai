@@ -22,6 +22,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.multidex.MultiDex
+import co.touchlab.kermit.LogWriter
 import co.touchlab.kermit.Logger
 import coil3.ImageLoader
 import coil3.PlatformContext
@@ -113,7 +114,12 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
 
         val scope = ProcessLifecycleOwner.get().lifecycleScope
 
-        Logger.setToDefault(buildLogWritersToAdd(storageManager.getLogsDirectory()))
+        networkPreferences.verboseLogging().changes()
+            .onEach { enabled ->
+                // FlexibleAdapter.enableLogs(if (enabled) Level.VERBOSE else Level.SUPPRESS)
+                Logger.setToDefault(buildLogWritersToAdd(storageManager.getLogsDirectory(), enabled))
+            }
+            .launchIn(scope)
 
         basePreferences.crashReport().changes()
             .onEach {
@@ -138,12 +144,6 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
         basePreferences.hardwareBitmapThreshold().changes()
             .onEach { ImageUtil.hardwareBitmapThreshold = it }
             .launchIn(scope)
-
-//        networkPreferences.verboseLogging().changes()
-//            .onEach { enabled ->
-//                FlexibleAdapter.enableLogs(if (enabled) Level.VERBOSE else Level.SUPPRESS)
-//            }
-//            .launchIn(scope)
 
         scope.launchIO {
             with(TachiyomiWidgetManager()) { this@App.init() }
@@ -289,12 +289,18 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
     }
 }
 
+fun buildLogWritersToAdd(logPath: UniFile?): List<LogWriter> {
+    val networkPreferences: NetworkPreferences = Injekt.get()
+    return buildLogWritersToAdd(logPath, networkPreferences.verboseLogging().get())
+}
+
 fun buildLogWritersToAdd(
     logPath: UniFile?,
+    isVerbose: Boolean,
 ) = buildList {
     if (!BuildConfig.DEBUG) add(CrashlyticsLogWriter())
 
-    if (logPath != null) add(RollingUniFileLogWriter(logPath))
+    if (logPath != null) add(RollingUniFileLogWriter(logPath = logPath, isVerbose = isVerbose))
 }
 
 private const val ACTION_DISABLE_INCOGNITO_MODE = "tachi.action.DISABLE_INCOGNITO_MODE"

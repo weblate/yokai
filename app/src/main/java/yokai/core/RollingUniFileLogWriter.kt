@@ -43,7 +43,8 @@ class RollingUniFileLogWriter(
     private val maxRolledLogFiles: Int = 5,
     private val maxLogFiles: Int = 5,
     private val messageStringFormatter: MessageStringFormatter = DefaultFormatter,
-    private val messageDateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+    private val messageDateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()),
+    private val isVerbose: Boolean = false,
 ) : LogWriter() {
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     private val coroutineScope = CoroutineScope(
@@ -63,6 +64,9 @@ class RollingUniFileLogWriter(
             writer()
         }
     }
+
+    override fun isLoggable(tag: String, severity: Severity): Boolean =
+        severity >= if (isVerbose) Severity.Debug else Severity.Info
 
     override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
         bufferLog(

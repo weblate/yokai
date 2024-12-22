@@ -37,20 +37,20 @@ abstract class BaseController(bundle: Bundle? = null) :
 
                 override fun preCreateView(controller: Controller) {
                     viewScope = MainScope()
-                    Logger.d { "Create view for ${controller.instance()}" }
+                    Logger.v { "Create view for ${controller.instance()}" }
                 }
 
                 override fun preAttach(controller: Controller, view: View) {
-                    Logger.d { "Attach view for ${controller.instance()}" }
+                    Logger.v { "Attach view for ${controller.instance()}" }
                 }
 
                 override fun preDetach(controller: Controller, view: View) {
-                    Logger.d { "Detach view for ${controller.instance()}" }
+                    Logger.v { "Detach view for ${controller.instance()}" }
                 }
 
                 override fun preDestroyView(controller: Controller, view: View) {
                     viewScope.cancel()
-                    Logger.d { "Destroy view for ${controller.instance()}" }
+                    Logger.v { "Destroy view for ${controller.instance()}" }
                 }
             },
         )

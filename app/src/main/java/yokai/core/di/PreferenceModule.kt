@@ -39,7 +39,7 @@ fun preferenceModule(application: Application) = module {
     single {
         NetworkPreferences(
             get(),
-            BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY,
+            BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG,
         )
     }
 

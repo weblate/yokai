@@ -11,6 +11,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Changes
+- Adjust log file to only log important information by default
+
 ### Fixes
 - Fix sorting by latest chapter is not working properly
 - Prevent some NPE crashes

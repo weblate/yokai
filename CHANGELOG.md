@@ -11,7 +11,11 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Fixes
+- Allow users to bypass onboarding's permission step if Shizuku is installed
+
 ### Other
+- Refactor Library to utilize Flow even more
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-bom to v1.10.1
 
 ## [1.9.7]

@@ -28,6 +28,8 @@ import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HeartBroken
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.view.ViewCompat
@@ -1135,7 +1137,7 @@ open class LibraryController(
             binding.emptyView.hide()
         } else {
             binding.emptyView.show(
-                R.drawable.ic_heart_off_24dp,
+                Icons.Filled.HeartBroken,
                 if (hasActiveFilters) {
                     MR.strings.no_matches_for_filters
                 } else {

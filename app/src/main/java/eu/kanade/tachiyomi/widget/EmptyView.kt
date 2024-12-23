@@ -2,28 +2,60 @@ package eu.kanade.tachiyomi.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.RelativeLayout
-import androidx.annotation.DrawableRes
+import android.view.Gravity
+import android.widget.FrameLayout
 import androidx.annotation.StringRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.vectorResource
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import com.google.android.material.button.MaterialButton
 import dev.icerock.moko.resources.StringResource
-import eu.kanade.tachiyomi.R
-import eu.kanade.tachiyomi.databinding.CommonViewEmptyBinding
-import eu.kanade.tachiyomi.util.view.setText
-import eu.kanade.tachiyomi.util.view.setVectorCompat
+import eu.kanade.tachiyomi.util.isTablet
+import yokai.presentation.component.EmptyScreen
+import yokai.presentation.theme.YokaiTheme
 import yokai.util.lang.getString
-import android.R as AR
 
-class EmptyView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
-    RelativeLayout(context, attrs) {
+class EmptyView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : AbstractComposeView(context, attrs, defStyleAttr) {
 
-    private val binding: CommonViewEmptyBinding =
-        CommonViewEmptyBinding.inflate(LayoutInflater.from(context), this, true)
+    private var image by mutableStateOf<Image>(Image.Vector(Icons.Filled.Download))
+    private var message by mutableStateOf("")
+    private var actions by mutableStateOf(emptyList<Action>())
+
+    init {
+        layoutParams = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER)
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
+    }
+
+    @Composable
+    fun image(): ImageVector {
+        return when (image) {
+            is Image.Vector -> (image as Image.Vector).image
+            is Image.ResourceVector -> ImageVector.vectorResource((image as Image.ResourceVector).id)
+        }
+    }
+
+    @Composable
+    override fun Content() {
+        YokaiTheme {
+            EmptyScreen(
+                image = image(),
+                message = message,
+                isTablet = isTablet(),
+                actions = actions,
+            )
+        }
+    }
 
     /**
      * Hide the information view
@@ -36,16 +68,21 @@ class EmptyView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      * Show the information view
      * @param textResource text of information view
      */
-    fun show(@DrawableRes drawable: Int, textResource: StringResource, actions: List<Action>? = null) {
-        show(drawable, context.getString(textResource), actions)
+    fun show(image: ImageVector, textResource: StringResource, actions: List<Action> = emptyList()) {
+        show(Image.Vector(image), context.getString(textResource), actions)
     }
 
     /**
      * Show the information view
      * @param textResource text of information view
      */
-    fun show(@DrawableRes drawable: Int, @StringRes textResource: Int, actions: List<Action>? = null) {
-        show(drawable, context.getString(textResource), actions)
+    fun show(image: ImageVector, @StringRes textResource: Int, actions: List<Action> = emptyList()) {
+        show(Image.Vector(image), context.getString(textResource), actions)
+    }
+
+    @Deprecated("Use EmptyView.Image instead of passing ImageVector directly")
+    fun show(image: ImageVector, message: String, actions: List<Action> = emptyList()) {
+        show(Image.Vector(image), message, actions)
     }
 
     /**
@@ -53,36 +90,20 @@ class EmptyView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      * @param drawable icon of information view
      * @param textResource text of information view
      */
-    fun show(@DrawableRes drawable: Int, message: String, actions: List<Action>? = null) {
-        binding.imageView.setVectorCompat(drawable, AR.attr.textColorHint)
-        binding.textLabel.text = message
-
-        binding.actionsContainer.removeAllViews()
-        binding.actionsContainer.isVisible = !actions.isNullOrEmpty()
-        if (!actions.isNullOrEmpty()) {
-            actions.forEach {
-                val button =
-                    (inflate(context, R.layout.material_text_button, null) as MaterialButton)
-                        .apply {
-                            setText(it.resId)
-                            setOnClickListener(it.listener)
-                        }
-                binding.actionsContainer.addView(button)
-                if (context.resources.configuration.screenHeightDp < 600) {
-                    button.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    button.updateLayoutParams<MarginLayoutParams> {
-                        width = ViewGroup.LayoutParams.WRAP_CONTENT
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                }
-            }
-        }
-
+    fun show(image: Image, message: String, actions: List<Action> = emptyList()) {
+        this.image = image
+        this.message = message
+        this.actions = actions
         this.isVisible = true
     }
 
     data class Action(
         val resId: StringResource,
-        val listener: OnClickListener,
+        val listener: () -> Unit,
     )
+
+    sealed class Image {
+        data class Vector(val image: ImageVector) : Image()
+        data class ResourceVector(val id: Int) : Image()
+    }
 }

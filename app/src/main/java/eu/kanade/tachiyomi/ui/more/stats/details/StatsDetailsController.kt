@@ -12,6 +12,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HeartBroken
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.ColorUtils
 import androidx.core.util.Pair
@@ -458,7 +460,10 @@ class StatsDetailsController :
         with(binding ?: headerBinding) {
             val hasNoData = currentStats.isNullOrEmpty() || currentStats.all { it.count == 0 }
             if (hasNoData) {
-                this@StatsDetailsController.binding.noChartData.show(R.drawable.ic_heart_off_24dp, MR.strings.no_data_for_filters)
+                this@StatsDetailsController.binding.noChartData.show(
+                    Icons.Filled.HeartBroken,
+                    MR.strings.no_data_for_filters,
+                )
                 presenter.currentStats?.removeAll { it.count == 0 }
                 handleNoChartLayout()
                 this?.statsPieChart?.isVisible = false

@@ -29,6 +29,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
+import eu.kanade.tachiyomi.util.isTablet
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
 import yokai.domain.ComposableAlertDialog
@@ -101,6 +102,7 @@ fun ExtensionRepoScreen(
                         modifier = Modifier.fillParentMaxSize(),
                         image = Icons.Filled.ExtensionOff,
                         message = stringResource(MR.strings.information_empty_repos),
+                        isTablet = isTablet(),
                     )
                 }
                 return@LazyColumn

@@ -18,6 +18,8 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
@@ -31,7 +33,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.listeners.addClickListener
-import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.track.EnhancedTrackService
 import eu.kanade.tachiyomi.data.track.TrackService
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
@@ -317,7 +318,7 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
         if (results.isEmpty()) {
             setMiddleTrackView(binding.searchEmptyView.id)
             binding.searchEmptyView.show(
-                R.drawable.ic_search_off_24dp,
+                Icons.Filled.SearchOff,
                 MR.strings.no_results_found,
             )
         } else {
@@ -338,7 +339,7 @@ class TrackingBottomSheet(private val controller: MangaDetailsController) :
         binding.trackSearchRecycler.isVisible = false
         searchItemAdapter.clear()
         binding.searchEmptyView.show(
-            R.drawable.ic_search_off_24dp,
+            Icons.Filled.SearchOff,
             error.message ?: "",
         )
     }

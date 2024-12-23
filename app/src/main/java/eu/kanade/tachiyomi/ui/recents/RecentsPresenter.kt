@@ -75,8 +75,8 @@ class RecentsPresenter(
         }
     private val newAdditionsHeader = RecentMangaHeaderItem(RecentMangaHeaderItem.NEWLY_ADDED)
     private val newChaptersHeader = RecentMangaHeaderItem(RecentMangaHeaderItem.NEW_CHAPTERS)
-    private val continueReadingHeader =
-        RecentMangaHeaderItem(RecentMangaHeaderItem.CONTINUE_READING)
+    private val continueReadingHeader = RecentMangaHeaderItem(RecentMangaHeaderItem.CONTINUE_READING)
+
     var finished = false
     private var shouldMoveToTop = false
     var viewType: RecentsViewType = RecentsViewType.valueOf(uiPreferences.recentsViewType().get())

@@ -8,6 +8,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExploreOff
 import androidx.core.view.WindowInsetsCompat.Type.ime
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.isVisible
@@ -62,7 +64,6 @@ import eu.kanade.tachiyomi.widget.EmptyView
 import eu.kanade.tachiyomi.widget.LinearLayoutManagerAccurateOffset
 import kotlin.math.roundToInt
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
@@ -577,7 +578,7 @@ open class BrowseSourceController(bundle: Bundle) :
         snack?.dismiss()
 
         val message = getErrorMessage(error)
-        val retryAction = View.OnClickListener {
+        val retryAction = {
             // If not the first page, show bottom binding.progress bar.
             if (adapter.mainItemCount > 0 && progressItem != null) {
                 adapter.addScrollableFooterWithDelay(progressItem!!, 0, true)
@@ -606,16 +607,16 @@ open class BrowseSourceController(bundle: Bundle) :
 
             binding.emptyView.show(
                 if (presenter.source is HttpSource) {
-                    R.drawable.ic_browse_off_24dp
+                    EmptyView.Image.Vector(Icons.Filled.ExploreOff)
                 } else {
-                    R.drawable.ic_local_library_24dp
+                    EmptyView.Image.ResourceVector(R.drawable.ic_local_library_24dp)
                 },
                 message,
                 actions,
             )
         } else {
             snack = binding.sourceLayout.snack(message, Snackbar.LENGTH_INDEFINITE) {
-                setAction(MR.strings.retry, retryAction)
+                setAction(MR.strings.retry) { retryAction() }
             }
         }
         if (isControllerVisible) {

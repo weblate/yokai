@@ -12,6 +12,9 @@ import android.view.RoundedCorner
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.BackEventCompat
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HistoryToggleOff
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -596,9 +599,9 @@ class RecentsController(bundle: Bundle? = null) :
         if (recents.isEmpty()) {
             binding.recentsEmptyView.show(
                 if (!isSearching()) {
-                    R.drawable.ic_history_off_24dp
+                    Icons.Filled.HistoryToggleOff
                 } else {
-                    R.drawable.ic_search_off_24dp
+                    Icons.Filled.SearchOff
                 },
                 if (isSearching()) {
                     MR.strings.no_results_found

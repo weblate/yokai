@@ -7,6 +7,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
@@ -193,7 +195,7 @@ class ClearDatabaseController :
             binding.emptyView.hide()
         } else {
             binding.emptyView.show(
-                R.drawable.ic_book_24dp,
+                Icons.Filled.Book,
                 MR.strings.database_clean,
             )
         }

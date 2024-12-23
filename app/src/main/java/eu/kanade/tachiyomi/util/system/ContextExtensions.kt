@@ -54,6 +54,8 @@ import yokai.i18n.MR
 
 private const val TABLET_UI_MIN_SCREEN_WIDTH_DP = 720
 
+private const val TABLET_UI_MIN_SCREEN_WIDTH_LANDSCAPE_DP = 600
+
 /**
  * Helper method to create a notification.
  *
@@ -113,7 +115,8 @@ fun Float.dpToPxEnd(resources: Resources): Float {
 val Resources.isLTR
     get() = configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR
 
-fun Context.isTablet() = resources.configuration.smallestScreenWidthDp >= 600
+fun Configuration.isTablet() = smallestScreenWidthDp >= TABLET_UI_MIN_SCREEN_WIDTH_LANDSCAPE_DP
+fun Context.isTablet() = resources.configuration.isTablet()
 
 val displayMaxHeightInPx: Int
     get() = Resources.getSystem().displayMetrics.let { max(it.heightPixels, it.widthPixels) }

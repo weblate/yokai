@@ -5,6 +5,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MenuItem
 import android.widget.LinearLayout
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FileDownloadOff
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.isInvisible
 import androidx.core.view.updateLayoutParams
@@ -212,7 +214,7 @@ class DownloadBottomSheet @JvmOverloads constructor(
         setBottomSheet()
         if (presenter.downloadQueueState.value.isEmpty()) {
             binding.emptyView.show(
-                R.drawable.ic_download_off_24dp,
+                Icons.Filled.FileDownloadOff,
                 MR.strings.nothing_is_downloading,
             )
         } else {

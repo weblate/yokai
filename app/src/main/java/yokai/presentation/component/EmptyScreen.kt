@@ -95,6 +95,7 @@ private fun EmptyScreenActions(actions: List<EmptyView.Action>, isTablet: Boolea
     } else {
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             actions.forEach { action ->
                 TextButton(onClick = { action.listener() }) {

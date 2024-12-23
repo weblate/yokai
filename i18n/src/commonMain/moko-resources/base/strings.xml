@@ -500,7 +500,7 @@
     <string name="start_past_cutout">Start past cutout</string>
     <string name="cutout_behavior_only_applies">Cutout area behavior only applies in portrait mode with certain scale types</string>
     <string name="pref_legacy_cutout">Open legacy cutout settings</string>
-    <string name="pref_legacy_cutout_info">On devices older than Android 9.0, there\'s no way to modify cutout setting other than setting it manually through to your system settings</string>
+    <string name="pref_legacy_cutout_info">On devices older than Android 9.0, you need to set cutout settings manually through your system settings</string>
     <string name="pref_cutout_short">Show content in cutout area</string>
     <string name="cutout_ignore">Ignore cutout areas</string>
     <string name="page_layout">Page layout</string>
@@ -794,8 +794,8 @@
 
     <!-- Advanced section -->
     <string name="clear_chapter_cache">Clear chapter cache</string>
-    <string name="force_download_cache_refresh">Refresh the download cache</string>
-    <string name="force_download_cache_refresh_summary">This will force the download cache to recalculate. Useful if you modified downloads outside of this app and want the app to pick them up</string>
+    <string name="force_download_cache_refresh">Reindex downloads</string>
+    <string name="force_download_cache_refresh_summary">Force app to recheck downloaded chapters</string>
 
     <string name="data_management">Data Management</string>
     <string name="check_for_beta_releases">Check for beta releases</string>

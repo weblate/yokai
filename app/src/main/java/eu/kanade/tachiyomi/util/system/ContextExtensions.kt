@@ -47,6 +47,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import rikka.sui.Sui
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.i18n.MR
@@ -207,10 +208,12 @@ fun Context.isPackageInstalled(packageName: String): Boolean {
     return try {
         packageManager.getApplicationInfoCompat(packageName, 0)
         true
-    } catch (_: Exception) {
+    } catch (_: PackageManager.NameNotFoundException) {
         false
     }
 }
+
+val Context.isShizukuInstalled get() = isPackageInstalled("moe.shizuku.privileged.api") || Sui.isSui()
 
 /**
  * Property to get the notification manager from the context.

@@ -15,7 +15,7 @@ import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.extension.util.ExtensionInstaller.Companion.EXTRA_DOWNLOAD_ID
 import eu.kanade.tachiyomi.util.system.getUriSize
-import eu.kanade.tachiyomi.util.system.isPackageInstalled
+import eu.kanade.tachiyomi.util.system.isShizukuInstalled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -23,7 +23,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuRemoteProcess
-import rikka.sui.Sui
 import uy.kohesive.injekt.injectLazy
 import java.io.BufferedReader
 import java.io.InputStream
@@ -75,7 +74,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
 
     init {
         Shizuku.addBinderDeadListener(shizukuDeadListener)
-        require(Shizuku.pingBinder() && (context.isPackageInstalled(shizukuPkgName) || Sui.isSui())) {
+        require(Shizuku.pingBinder() && context.isShizukuInstalled) {
             finishedQueue(this)
             context.getString(MR.strings.ext_installer_shizuku_stopped)
         }

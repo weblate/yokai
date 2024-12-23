@@ -17,6 +17,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ### Other
 - Refactor Library to utilize Flow even more
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-bom to v1.10.1
+- Refactor EmptyView to use Compose
 
 ## [1.9.7]
 

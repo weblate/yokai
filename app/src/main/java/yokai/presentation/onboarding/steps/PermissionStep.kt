@@ -34,6 +34,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import eu.kanade.tachiyomi.R
+import eu.kanade.tachiyomi.util.system.isShizukuInstalled
 import yokai.i18n.MR
 import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
@@ -66,7 +67,7 @@ internal class PermissionStep : OnboardingStep {
                                 context.contentResolver,
                                 Settings.Secure.INSTALL_NON_MARKET_APPS
                             ) != 0
-                        }
+                        } || context.isShizukuInstalled
                     notificationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
                             PackageManager.PERMISSION_GRANTED

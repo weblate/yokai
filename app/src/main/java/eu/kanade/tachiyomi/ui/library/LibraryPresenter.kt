@@ -813,12 +813,11 @@ class LibraryPresenter(
             groupType = prefs.groupType
 
             val defaultCategory = createDefaultCategory()
-            val allCategories = listOf(defaultCategory) + dbCategories
 
             // FIXME: Should return Map<Int, LibraryItem> where Int is category id
             if (groupType <= BY_DEFAULT || !libraryIsGrouped) {
                 getLibraryItems(
-                    allCategories,  // FIXME: Don't depends on allCategories
+                    dbCategories,
                     libraryMangaList,
                     prefs.sortingMode,
                     prefs.sortAscending,
@@ -834,7 +833,7 @@ class LibraryPresenter(
                     groupType,
                     prefs.collapsedDynamicCategories,
                 )
-            } to allCategories
+            } to listOf(defaultCategory) + dbCategories
         }
 
         return combine(
@@ -884,10 +883,10 @@ class LibraryPresenter(
             } + (-1 to catItemAll) + (0 to LibraryHeaderItem({ categories.getOrDefault(0) }, 0))
         ).toMap()
 
-        // TODO
-        val map = libraryManga.groupBy {
-            categories.getOrDefault(it.category)
-        }
+        // TODO: -
+        // val map = libraryManga.groupBy {
+        //     categories.getOrDefault(it.category)
+        // }
 
         val items = if (libraryIsGrouped) {
             libraryManga

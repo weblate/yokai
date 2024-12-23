@@ -94,7 +94,7 @@ private fun EmptyScreenActions(actions: List<EmptyView.Action>, isTablet: Boolea
         }
     } else {
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             actions.forEach { action ->

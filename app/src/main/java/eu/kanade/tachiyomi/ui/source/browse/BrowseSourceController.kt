@@ -69,6 +69,7 @@ import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.interactor.GetManga
 import yokai.i18n.MR
+import yokai.presentation.component.icons.LocalSource
 import yokai.util.lang.getString
 
 /**
@@ -607,9 +608,9 @@ open class BrowseSourceController(bundle: Bundle) :
 
             binding.emptyView.show(
                 if (presenter.source is HttpSource) {
-                    EmptyView.Image.Vector(Icons.Filled.ExploreOff)
+                    Icons.Filled.ExploreOff
                 } else {
-                    EmptyView.Image.ResourceVector(R.drawable.ic_local_library_24dp)
+                    Icons.Filled.LocalSource
                 },
                 message,
                 actions,

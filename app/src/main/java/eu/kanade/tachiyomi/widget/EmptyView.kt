@@ -14,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.vectorResource
 import androidx.core.view.isVisible
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.util.isTablet
@@ -28,7 +27,7 @@ class EmptyView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyleAttr) {
 
-    private var image by mutableStateOf<Image>(Image.Vector(Icons.Filled.Download))
+    private var image by mutableStateOf(Icons.Filled.Download)
     private var message by mutableStateOf("")
     private var actions by mutableStateOf(emptyList<Action>())
 
@@ -38,18 +37,10 @@ class EmptyView @JvmOverloads constructor(
     }
 
     @Composable
-    fun image(): ImageVector {
-        return when (image) {
-            is Image.Vector -> (image as Image.Vector).image
-            is Image.ResourceVector -> ImageVector.vectorResource((image as Image.ResourceVector).id)
-        }
-    }
-
-    @Composable
     override fun Content() {
         YokaiTheme {
             EmptyScreen(
-                image = image(),
+                image = image,
                 message = message,
                 isTablet = isTablet(),
                 actions = actions,
@@ -69,7 +60,7 @@ class EmptyView @JvmOverloads constructor(
      * @param textResource text of information view
      */
     fun show(image: ImageVector, textResource: StringResource, actions: List<Action> = emptyList()) {
-        show(Image.Vector(image), context.getString(textResource), actions)
+        show(image, context.getString(textResource), actions)
     }
 
     /**
@@ -77,12 +68,7 @@ class EmptyView @JvmOverloads constructor(
      * @param textResource text of information view
      */
     fun show(image: ImageVector, @StringRes textResource: Int, actions: List<Action> = emptyList()) {
-        show(Image.Vector(image), context.getString(textResource), actions)
-    }
-
-    @Deprecated("Use EmptyView.Image instead of passing ImageVector directly")
-    fun show(image: ImageVector, message: String, actions: List<Action> = emptyList()) {
-        show(Image.Vector(image), message, actions)
+        show(image, context.getString(textResource), actions)
     }
 
     /**
@@ -90,7 +76,7 @@ class EmptyView @JvmOverloads constructor(
      * @param drawable icon of information view
      * @param textResource text of information view
      */
-    fun show(image: Image, message: String, actions: List<Action> = emptyList()) {
+    fun show(image: ImageVector, message: String, actions: List<Action> = emptyList()) {
         this.image = image
         this.message = message
         this.actions = actions
@@ -101,9 +87,4 @@ class EmptyView @JvmOverloads constructor(
         val resId: StringResource,
         val listener: () -> Unit,
     )
-
-    sealed class Image {
-        data class Vector(val image: ImageVector) : Image()
-        data class ResourceVector(val id: Int) : Image()
-    }
 }

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.ProvideTextStyle
@@ -291,7 +292,7 @@ private val CardColor: CardColors
     @Composable
     get() = CardDefaults.outlinedCardColors(
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onSurface,
+        contentColor = LocalContentColor.current,
     )
 
 private val VerticalSpacerSize = 24.dp

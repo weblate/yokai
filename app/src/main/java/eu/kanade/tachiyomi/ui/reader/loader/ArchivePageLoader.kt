@@ -11,6 +11,8 @@ import yokai.core.archive.ArchiveReader
  */
 internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader() {
 
+    override val isLocal: Boolean = true
+
     /**
      * Recycles this loader and the open archive.
      */

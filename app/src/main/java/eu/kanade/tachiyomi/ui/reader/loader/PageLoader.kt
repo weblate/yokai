@@ -9,6 +9,8 @@ import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
  */
 abstract class PageLoader {
 
+    abstract val isLocal: Boolean
+
     /**
      * Whether this loader has been already recycled.
      */

@@ -11,6 +11,8 @@ import eu.kanade.tachiyomi.util.system.ImageUtil
  */
 class DirectoryPageLoader(val file: UniFile) : PageLoader() {
 
+    override val isLocal: Boolean = true
+
     /**
      * Returns the pages found on this directory ordered with a natural comparator.
      */

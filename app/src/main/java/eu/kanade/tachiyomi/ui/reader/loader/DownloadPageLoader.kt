@@ -24,6 +24,8 @@ class DownloadPageLoader(
     private val downloadProvider: DownloadProvider,
 ) : PageLoader() {
 
+    override val isLocal: Boolean = true
+
     // Needed to open input streams
     private val context: Application by injectLazy()
 

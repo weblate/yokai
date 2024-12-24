@@ -10,6 +10,8 @@ import yokai.core.archive.ArchiveReader
  */
 class EpubPageLoader(reader: ArchiveReader) : PageLoader() {
 
+    override val isLocal: Boolean = true
+
     /**
      * The epub file.
      */

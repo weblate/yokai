@@ -13,6 +13,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ### Fixes
 - Allow users to bypass onboarding's permission step if Shizuku is installed
+- Fix Recents page shows "No recent chapters" instead of a loading screen
 
 ### Other
 - Refactor Library to utilize Flow even more

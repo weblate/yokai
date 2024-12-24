@@ -52,11 +52,10 @@ class ReaderTransitionView @JvmOverloads constructor(context: Context, attrs: At
     @Composable
     override fun Content() {
         data?.let {
-            val contentColor = ThemeUtil.readerContentColor(it.theme, MaterialTheme.colorScheme.onBackground)
             YokaiTheme {
                 CompositionLocalProvider (
                     LocalTextStyle provides MaterialTheme.typography.bodySmall,
-                    LocalContentColor provides contentColor,
+                    LocalContentColor provides ThemeUtil.readerContentColor(it.theme, MaterialTheme.colorScheme.onBackground),
                 ) {
                     ChapterTransition(
                         manga = it.manga,

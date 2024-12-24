@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.ui.reader.viewer
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -13,12 +12,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AbstractComposeView
 import eu.kanade.tachiyomi.data.download.DownloadManager
-import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.databinding.ReaderTransitionViewBinding
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.util.isLocal
-import uy.kohesive.injekt.injectLazy
+import eu.kanade.tachiyomi.util.system.ThemeUtil
 import yokai.presentation.reader.ChapterTransition
 import yokai.presentation.theme.YokaiTheme
 
@@ -27,17 +24,14 @@ class ReaderTransitionView @JvmOverloads constructor(context: Context, attrs: At
 
     private var data: Data? by mutableStateOf(null)
 
-    private val binding: ReaderTransitionViewBinding =
-        ReaderTransitionViewBinding.inflate(LayoutInflater.from(context), this, true)
-    private val preferences: PreferencesHelper by injectLazy()
-
     init {
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
 
-    fun bind(transition: ChapterTransition, downloadManager: DownloadManager, manga: Manga?) {
+    fun bind(theme: Int, transition: ChapterTransition, downloadManager: DownloadManager, manga: Manga?) {
         data = if (manga != null) {
             Data(
+                theme = theme,
                 manga = manga,
                 transition = transition,
                 currChapterDownloaded = transition.from.pageLoader?.isLocal == true,
@@ -58,10 +52,11 @@ class ReaderTransitionView @JvmOverloads constructor(context: Context, attrs: At
     @Composable
     override fun Content() {
         data?.let {
+            val contentColor = ThemeUtil.readerContentColor(it.theme, MaterialTheme.colorScheme.onBackground)
             YokaiTheme {
                 CompositionLocalProvider (
                     LocalTextStyle provides MaterialTheme.typography.bodySmall,
-                    LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+                    LocalContentColor provides contentColor,
                 ) {
                     ChapterTransition(
                         manga = it.manga,
@@ -75,6 +70,7 @@ class ReaderTransitionView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private data class Data(
+        val theme: Int,
         val manga: Manga,
         val transition: ChapterTransition,
         val currChapterDownloaded: Boolean,

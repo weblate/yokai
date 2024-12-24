@@ -113,9 +113,9 @@ class RecentsPresenter(
         }
         presenterScope.launchIO {
             downloadManager.queueState.collectLatest {
-                setDownloadedChapters(recentItems, it)
+                if (recentItems.isNotEmpty()) setDownloadedChapters(recentItems, it)
                 withUIContext {
-                    view?.showLists(recentItems, true)
+                    if (recentItems.isNotEmpty()) view?.showLists(recentItems, true)
                     view?.updateDownloadStatus(!downloadManager.isPaused())
                 }
             }

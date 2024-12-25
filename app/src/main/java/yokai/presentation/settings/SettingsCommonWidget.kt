@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +19,7 @@ import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import uy.kohesive.injekt.injectLazy
 import yokai.presentation.AppBarType
@@ -28,7 +28,7 @@ import yokai.presentation.component.Gap
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.PreferenceItem
 import yokai.presentation.component.preference.widget.PreferenceGroupHeader
-import kotlin.time.Duration.Companion.seconds
+import yokai.presentation.core.enterAlwaysCollapsedScrollBehavior
 
 @Composable
 fun SettingsScaffold(
@@ -48,7 +48,7 @@ fun SettingsScaffold(
         title = title,
         appBarType = appBarType ?: if (useLargeAppBar) AppBarType.LARGE else AppBarType.SMALL,
         actions = appBarActions,
-        scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        scrollBehavior = enterAlwaysCollapsedScrollBehavior(
             state = rememberTopAppBarState(),
             canScroll = { listState.canScrollForward || listState.canScrollBackward },
         ),

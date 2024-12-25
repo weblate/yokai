@@ -489,9 +489,21 @@ private suspend fun settleAppBar(
     return Velocity(0f, remainingVelocity)
 }
 
+/**
+ * Default values:
+ * - Top app bar height: 128px
+ * - Total app bar height: 304px
+ * - Bottom app bar height: 176px
+ * - Top offset limit: (-(Total), (Top - Total)) = (-304px, -176px)
+ * - Bottom offset limit: ((Top - Total), 0) = (-176px, 0px)
+ */
+
+private fun TopAppBarState.rawTopHeightOffset(topHeightPx: Float, totalHeightPx: Float): Float {
+    return heightOffset + (totalHeightPx - topHeightPx)
+}
+
 private fun TopAppBarState.topHeightOffset(topHeightPx: Float, totalHeightPx: Float): Float {
-    val offset = heightOffset + (totalHeightPx - topHeightPx)
-    return offset.coerceIn(-topHeightPx, 0f)
+    return rawTopHeightOffset(topHeightPx, totalHeightPx).coerceIn(-topHeightPx, 0f)
 }
 
 private fun TopAppBarState.bottomHeightOffset(topHeightPx: Float, totalHeightPx: Float): Float {
@@ -512,6 +524,7 @@ private fun TopAppBarState.bottomCollapsedFraction(topHeightPx: Float, totalHeig
 fun enterAlwaysCollapsedScrollBehavior(
     state: TopAppBarState = rememberTopAppBarState(),
     canScroll: () -> Boolean = { true },
+    isAtTop: () -> Boolean = { true },
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
 ): TopAppBarScrollBehavior {
@@ -527,30 +540,40 @@ fun enterAlwaysCollapsedScrollBehavior(
         snapAnimationSpec = snapAnimationSpec,
         flingAnimationSpec = flingAnimationSpec,
         canScroll = canScroll,
+        isAtTop = isAtTop,
         topHeightPx = topHeightPx,
         totalHeightPx = totalHeightPx,
     )
 }
 
-// FIXME: AppBar size is overflowing if user flick the screen too fast
 private class EnterAlwaysCollapsedScrollBehavior(
     override val state: TopAppBarState,
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
     val canScroll: () -> Boolean = { true },
+    // FIXME: See if it's possible to eliminate this argument
+    val isAtTop: () -> Boolean = { true },
     val topHeightPx: Float,
     val totalHeightPx: Float,
 ) : TopAppBarScrollBehavior {
     override val isPinned: Boolean = false
     override var nestedScrollConnection =
         object : NestedScrollConnection {
+            private fun TopAppBarState.setClampedOffsetIfAtTop(offset: Float) {
+                heightOffset = if (isAtTop()) {
+                    offset
+                } else {
+                    offset.coerceIn(-totalHeightPx, (topHeightPx - totalHeightPx))
+                }
+            }
+
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 // Don't intercept if scrolling down.
-                if (!canScroll() || (available.y > 0f && state.topHeightOffset(topHeightPx, totalHeightPx) >= 0f))
+                if (!canScroll() || (available.y > 0f && state.rawTopHeightOffset(topHeightPx, totalHeightPx) >= 0f))
                     return Offset.Zero
 
                 val prevHeightOffset = state.heightOffset
-                state.heightOffset += available.y
+                state.setClampedOffsetIfAtTop(state.heightOffset + available.y)
                 return if (prevHeightOffset != state.heightOffset) {
                     // We're in the middle of top app bar collapse or expand.
                     // Consume only the scroll on the Y axis.
@@ -571,7 +594,7 @@ private class EnterAlwaysCollapsedScrollBehavior(
                 if (available.y < 0f || consumed.y < 0f) {
                     // When scrolling up, just update the state's height offset.
                     val oldHeightOffset = state.heightOffset
-                    state.heightOffset += consumed.y
+                    state.setClampedOffsetIfAtTop(state.heightOffset + consumed.y)
                     return Offset(0f, state.heightOffset - oldHeightOffset)
                 }
 
@@ -585,7 +608,7 @@ private class EnterAlwaysCollapsedScrollBehavior(
                     // Adjust the height offset in case the consumed delta Y is less than what was
                     // recorded as available delta Y in the pre-scroll.
                     val oldHeightOffset = state.heightOffset
-                    state.heightOffset += available.y
+                    state.setClampedOffsetIfAtTop(state.heightOffset + available.y)
                     return Offset(0f, state.heightOffset - oldHeightOffset)
                 }
                 return Offset.Zero

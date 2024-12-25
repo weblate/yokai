@@ -51,6 +51,7 @@ fun SettingsScaffold(
         scrollBehavior = enterAlwaysCollapsedScrollBehavior(
             state = rememberTopAppBarState(),
             canScroll = { listState.canScrollForward || listState.canScrollBackward },
+            isAtTop = { listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0 },
         ),
     ) { innerPadding ->
         alertDialog.content?.let { it() }

@@ -8,58 +8,12 @@ import java.util.*
 plugins {
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.gradle.versions)
-    alias(androidx.plugins.application) apply false
-    alias(androidx.plugins.library) apply false
-    alias(kotlinx.plugins.android) apply false
-    alias(kotlinx.plugins.compose.compiler) apply false
-    alias(kotlinx.plugins.multiplatform) apply false
-    alias(kotlinx.plugins.parcelize) apply false
     alias(kotlinx.plugins.serialization) apply false
     alias(libs.plugins.aboutlibraries) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.moko) apply false
     alias(libs.plugins.sqldelight) apply false
-}
-
-subprojects {
-    tasks.withType<KotlinCompile> {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
-        }
-    }
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
-        }
-    }
-
-    plugins.withType<BasePlugin> {
-        configure<BaseExtension> {
-            compileSdkVersion(AndroidConfig.compileSdk)
-            ndkVersion = AndroidConfig.ndk
-
-            defaultConfig {
-                minSdk = AndroidConfig.minSdk
-                targetSdk = AndroidConfig.targetSdk
-                ndk {
-                    version = AndroidConfig.ndk
-                }
-            }
-
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
-                isCoreLibraryDesugaringEnabled = true
-            }
-
-            dependencies {
-                add("coreLibraryDesugaring", libs.desugar)
-            }
-        }
-    }
 }
 
 tasks.named("dependencyUpdates", com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask::class.java).configure {

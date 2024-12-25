@@ -7,9 +7,8 @@ import java.time.format.DateTimeFormatter
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    alias(androidx.plugins.application)
-    alias(kotlinx.plugins.android)
-    alias(kotlinx.plugins.compose.compiler)
+    id("yokai.android.application")
+    id("yokai.android.application.compose")
     alias(kotlinx.plugins.serialization)
     alias(kotlinx.plugins.parcelize)
     alias(libs.plugins.aboutlibraries)
@@ -122,7 +121,6 @@ android {
 
     buildFeatures {
         viewBinding = true
-        compose = true
         // If you're here because there's not BuildConfig, build the app first, it'll generate it for you
         buildConfig = true
 
@@ -284,13 +282,12 @@ tasks {
             // "-opt-in=kotlin.Experimental",
             "-opt-in=kotlin.RequiresOptIn",
             "-opt-in=kotlin.ExperimentalStdlibApi",
+            "-opt-in=coil3.annotation.ExperimentalCoilApi",
             "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
             "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
             "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
             "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
             "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
-            // "-opt-in=androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi",
-            "-opt-in=coil3.annotation.ExperimentalCoilApi",
             // "-opt-in=com.google.accompanist.permissions.ExperimentalPermissionsApi",
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.coroutines.FlowPreview",
@@ -298,19 +295,6 @@ tasks {
             "-opt-in=kotlinx.coroutines.InternalCoroutinesApi",
             "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
         )
-
-        if (project.findProperty("tachiyomi.enableComposeCompilerMetrics") == "true") {
-            compilerOptions.freeCompilerArgs.addAll(
-                "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
-                    (project.layout.buildDirectory.asFile.orNull?.absolutePath ?: "/tmp/yokai") + "/compose_metrics",
-            )
-            compilerOptions.freeCompilerArgs.addAll(
-                "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
-                        (project.layout.buildDirectory.asFile.orNull?.absolutePath ?: "/tmp/yokai") + "/compose_metrics",
-            )
-        }
     }
 
     // Duplicating Hebrew string assets due to some locale code issues on different devices

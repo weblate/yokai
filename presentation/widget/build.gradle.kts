@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    alias(androidx.plugins.library)
-    alias(kotlinx.plugins.android)
-    alias(kotlinx.plugins.compose.compiler)
+    id("yokai.android.library")
+    id("yokai.android.library.compose")
+    kotlin("android")
 }
 
 android {

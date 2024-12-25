@@ -4,6 +4,8 @@ agp = "8.7.3"
 lifecycle = "2.8.7"
 
 [libraries]
+gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+
 activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 annotation = { module = "androidx.annotation:annotation", version = "1.9.1" }

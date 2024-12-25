@@ -1,6 +1,7 @@
 plugins {
-    alias(androidx.plugins.library)
-    alias(kotlinx.plugins.android)
+    id("yokai.android.library")
+    id("yokai.android.library.compose")
+    kotlin("android")
 }
 
 android {
@@ -12,6 +13,22 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
+            "-opt-in=androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi",
+            "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+            "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+            "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+            "-opt-in=kotlinx.coroutines.FlowPreview",
+        )
+    }
+}
+
 dependencies {
     api(libs.material)
+
+    implementation(compose.bundles.compose)
 }

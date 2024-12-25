@@ -1,7 +1,7 @@
 plugins {
-    alias(kotlinx.plugins.multiplatform)
+    id("yokai.android.library")
+    kotlin("multiplatform")
     alias(kotlinx.plugins.serialization)
-    alias(androidx.plugins.library)
     alias(libs.plugins.sqldelight)
 }
 

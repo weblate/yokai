@@ -19,7 +19,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Refactor Library to utilize Flow even more
 - Update dependency org.jetbrains.kotlinx:kotlinx-coroutines-bom to v1.10.1
 - Refactor EmptyView to use Compose
-- Refactor Reader ChapterTransition to use Compose
+- Refactor Reader ChapterTransition to use Compose (@arkon)
+- [Experimental] Add modified version of LargeTopAppBar that mimic J2K's ExpandedAppBarLayout
 
 ## [1.9.7]
 

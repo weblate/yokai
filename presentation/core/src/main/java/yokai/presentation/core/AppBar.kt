@@ -5,8 +5,10 @@ import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.animateTo
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -141,9 +143,7 @@ private fun TwoRowsTopAppBar(
     // collapse.
     // This will potentially animate or interpolate a transition between the container color and the
     // container's scrolled color according to the app bar's scroll state.
-    val colorTransitionFraction = scrollBehavior?.state?.collapsedFraction ?: 0f
-    val topColorTransitionFraction = scrollBehavior?.state?.topCollapsedFraction(collapsedHeightPx) ?: 0f
-    val bottomColorTransitionFraction = scrollBehavior?.state?.bottomCollapsedFraction(collapsedHeightPx, expandedHeightPx) ?: 0f
+    val colorTransitionFraction = scrollBehavior?.state?.bottomCollapsedFraction(collapsedHeightPx, expandedHeightPx) ?: 0f
 
     val appBarContainerColor =
         lerp(
@@ -161,12 +161,12 @@ private fun TwoRowsTopAppBar(
                 content = actions
             )
         }
-    val topTitleAlpha = TopTitleAlphaEasing.transform(topColorTransitionFraction)
-    val bottomTitleAlpha = 1f - bottomColorTransitionFraction
+    val topTitleAlpha = TitleAlphaEasing.transform(colorTransitionFraction)
+    val bottomTitleAlpha = 1f - colorTransitionFraction
     // Hide the top row title semantics when its alpha value goes below 0.5 threshold.
     // Hide the bottom row title semantics when the top title semantics are active.
-    val hideTopRowSemantics = topColorTransitionFraction < 0.5f
-    val hideBottomRowSemantics = bottomColorTransitionFraction < 0.5f
+    val hideTopRowSemantics = colorTransitionFraction < 0.5f
+    val hideBottomRowSemantics = !hideTopRowSemantics
 
     // Set up support for resizing the top app bar when vertically dragging the bar itself.
     val appBarDragModifier =
@@ -179,6 +179,8 @@ private fun TwoRowsTopAppBar(
                     settleAppBar(
                         scrollBehavior.state,
                         velocity,
+                        collapsedHeightPx,
+                        expandedHeightPx,
                         scrollBehavior.flingAnimationSpec,
                         scrollBehavior.snapAnimationSpec
                     )
@@ -461,14 +463,16 @@ private fun interface ScrolledOffset {
 private suspend fun settleAppBar(
     state: TopAppBarState,
     velocity: Float,
+    topHeightPx: Float,
+    totalHeightPx: Float,
     flingAnimationSpec: DecayAnimationSpec<Float>?,
-    snapAnimationSpec: AnimationSpec<Float>?
+    snapAnimationSpec: AnimationSpec<Float>?,
 ): Velocity {
     // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
     // and just return Zero Velocity.
     // Note that we don't check for 0f due to float precision with the collapsedFraction
     // calculation.
-    if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
+    if (state.topCollapsedFraction(topHeightPx, totalHeightPx) < 0.01f || state.topCollapsedFraction(topHeightPx, totalHeightPx) == 1f) {
         return Velocity.Zero
     }
     var remainingVelocity = velocity
@@ -493,17 +497,16 @@ private suspend fun settleAppBar(
     }
     // Snap if animation specs were provided.
     if (snapAnimationSpec != null) {
-        // FIXME: Only snap the top app bar
-        if (state.heightOffset < 0 && state.heightOffset > state.heightOffsetLimit) {
-            AnimationState(initialValue = state.heightOffset).animateTo(
-                if (state.collapsedFraction < 0.5f) {
+        if (state.topHeightOffset(topHeightPx, totalHeightPx) < 0 && state.topHeightOffset(topHeightPx, totalHeightPx) > -topHeightPx) {
+            AnimationState(initialValue = state.topHeightOffset(topHeightPx, totalHeightPx)).animateTo(
+                if (state.topCollapsedFraction(topHeightPx, totalHeightPx) < 0.5f) {
                     0f
                 } else {
-                    state.heightOffsetLimit
+                    -topHeightPx
                 },
                 animationSpec = snapAnimationSpec
             ) {
-                state.heightOffset = value
+                state.heightOffset = value + (topHeightPx - totalHeightPx)
             }
         }
     }
@@ -520,18 +523,21 @@ private fun TopAppBarState.bottomHeightOffset(topHeightPx: Float, totalHeightPx:
     return heightOffset.coerceIn(topHeightPx - totalHeightPx, 0f)
 }
 
-private fun TopAppBarState.topCollapsedFraction(topHeightPx: Float): Float {
-    return heightOffset / -topHeightPx
+private fun TopAppBarState.topCollapsedFraction(topHeightPx: Float, totalHeightPx: Float): Float {
+    val offset = topHeightOffset(topHeightPx, totalHeightPx)
+    return offset / -topHeightPx
 }
 
 private fun TopAppBarState.bottomCollapsedFraction(topHeightPx: Float, totalHeightPx: Float): Float {
-    return heightOffset / (topHeightPx - totalHeightPx)
+    val offset = bottomHeightOffset(topHeightPx, totalHeightPx)
+    return offset / (topHeightPx - totalHeightPx)
 }
 
 @Composable
 fun enterAlwaysCollapsedScrollBehavior(
     state: TopAppBarState = rememberTopAppBarState(),
     canScroll: () -> Boolean = { true },
+    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
 ): TopAppBarScrollBehavior {
     val topHeightPx: Float
@@ -543,6 +549,7 @@ fun enterAlwaysCollapsedScrollBehavior(
 
     return EnterAlwaysCollapsedScrollBehavior(
         state = state,
+        snapAnimationSpec = snapAnimationSpec,
         flingAnimationSpec = flingAnimationSpec,
         canScroll = canScroll,
         topHeightPx = topHeightPx,
@@ -550,21 +557,21 @@ fun enterAlwaysCollapsedScrollBehavior(
     )
 }
 
-// TODO: Current it behaves exactly like EnterAlways
 private class EnterAlwaysCollapsedScrollBehavior(
     override val state: TopAppBarState,
+    override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
     val canScroll: () -> Boolean = { true },
     val topHeightPx: Float,
     val totalHeightPx: Float,
 ) : TopAppBarScrollBehavior {
-    override val snapAnimationSpec: AnimationSpec<Float>? = null  // J2K's app bar doesn't do snap
     override val isPinned: Boolean = false
     override var nestedScrollConnection =
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 // Don't intercept if scrolling down.
-                if (!canScroll()) return Offset.Zero
+                if (!canScroll() || (available.y > 0f && state.topHeightOffset(topHeightPx, totalHeightPx) >= 0f))
+                    return Offset.Zero
 
                 val prevHeightOffset = state.heightOffset
                 state.heightOffset += available.y
@@ -611,14 +618,14 @@ private class EnterAlwaysCollapsedScrollBehavior(
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 val superConsumed = super.onPostFling(consumed, available)
                 return superConsumed +
-                    settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
+                    settleAppBar(state, available.y, topHeightPx, totalHeightPx, flingAnimationSpec, snapAnimationSpec)
             }
         }
 }
 
 val CollapsedContainerHeight = 64.0.dp
 val ExpandedContainerHeight = 152.0.dp
-internal val TopTitleAlphaEasing = CubicBezierEasing(.8f, 0f, .8f, .15f)
+internal val TitleAlphaEasing = CubicBezierEasing(.8f, 0f, .8f, .15f)
 private val MediumTitleBottomPadding = 24.dp
 private val LargeTitleBottomPadding = 28.dp
 private val TopAppBarHorizontalPadding = 4.dp

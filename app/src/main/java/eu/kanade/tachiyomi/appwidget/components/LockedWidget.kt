@@ -17,15 +17,15 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
 import eu.kanade.tachiyomi.appwidget.ContainerModifier
 import eu.kanade.tachiyomi.appwidget.util.stringResource
-import eu.kanade.tachiyomi.ui.main.MainActivity
+import yokai.i18n.MR
+import yokai.presentation.core.Constants
 
 @Composable
 fun LockedWidget() {
     val context = LocalContext.current
-    val intent = Intent(LocalContext.current, Class.forName(MainActivity.MAIN_ACTIVITY)).apply {
+    val intent = Intent(LocalContext.current, Class.forName(Constants.MAIN_ACTIVITY)).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
     Box(

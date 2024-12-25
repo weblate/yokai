@@ -487,7 +487,7 @@ class NotificationReceiver : BroadcastReceiver() {
          */
         internal fun openChapterPendingActivity(context: Context, manga: Manga, groupId: Int): PendingIntent {
             val newIntent =
-                Intent(context, MainActivity::class.java).setAction(MainActivity.SHORTCUT_MANGA)
+                Intent(context, MainActivity::class.java).setAction(Constants.SHORTCUT_MANGA)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     .putExtra(Constants.MANGA_EXTRA, manga.id)
                     .putExtra("notificationId", manga.id.hashCode())

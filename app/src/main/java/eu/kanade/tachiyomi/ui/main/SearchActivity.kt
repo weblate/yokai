@@ -97,7 +97,7 @@ class SearchActivity : MainActivity() {
     }
 
     private fun intentShouldGoBack() =
-        intent.action in listOf(SHORTCUT_MANGA, SHORTCUT_READER_SETTINGS, SHORTCUT_BROWSE)
+        intent.action in listOf(Constants.SHORTCUT_MANGA, SHORTCUT_READER_SETTINGS, SHORTCUT_BROWSE)
 
     override fun syncActivityViewWithController(
         to: Controller?,

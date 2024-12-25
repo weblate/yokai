@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +27,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.i18n.MR
 import yokai.presentation.component.ToolTipButton
+import yokai.presentation.core.ExpandedAppBar
 
 @Composable
 fun YokaiScaffold(
@@ -78,7 +78,7 @@ fun YokaiScaffold(
                     scrollBehavior = scrollBehavior,
                     actions = actions,
                 )
-                AppBarType.LARGE -> LargeTopAppBar(
+                AppBarType.LARGE -> ExpandedAppBar(
                     title = {
                         Text(text = title)
                     },

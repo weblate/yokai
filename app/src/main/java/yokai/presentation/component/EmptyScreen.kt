@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -154,6 +155,7 @@ private fun EmptyScreenImpl(
                 text = message,
                 color = MaterialTheme.colorScheme.textHint,
                 style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
             )
             actions()
         }

@@ -338,7 +338,7 @@ private fun AppBarLayout(
                             layoutHeight - navigationIconPlaceable.height - max(0, adjustedBottomPadding)
                         }
                         else -> (layoutHeight - navigationIconPlaceable.height) / 2
-                    }
+                    },
             )
 
             // Title
@@ -405,13 +405,30 @@ private fun AppBarLayout(
                         }
                         // Arrangement.Top
                         else -> 0
-                    }
+                    },
             )
 
             // Action icons
             actionIconsPlaceable.placeRelative(
                 x = constraints.maxWidth - actionIconsPlaceable.width,
-                y = (layoutHeight - actionIconsPlaceable.height) / 2
+                y =
+                    when (titleVerticalArrangement) {
+                        Arrangement.Bottom -> {
+                            val padding = (constraints.maxHeight - actionIconsPlaceable.height) / 2
+                            val paddingFromBottom = padding - (actionIconsPlaceable.height - titleBaseline)
+                            val heightWithPadding = paddingFromBottom + actionIconsPlaceable.height
+                            val adjustedBottomPadding =
+                                if (heightWithPadding > constraints.maxHeight) {
+                                    paddingFromBottom -
+                                        (heightWithPadding - constraints.maxHeight)
+                                } else {
+                                    paddingFromBottom
+                                }
+
+                            layoutHeight - actionIconsPlaceable.height - max(0, adjustedBottomPadding)
+                        }
+                        else -> (layoutHeight - actionIconsPlaceable.height) / 2
+                    },
             )
         }
     }

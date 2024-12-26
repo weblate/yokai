@@ -92,7 +92,7 @@ class LibraryItem(
                         binding.coverThumbnail.adjustViewBounds = false
                         binding.coverThumbnail.updateLayoutParams<ConstraintLayout.LayoutParams> {
                             height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-                            dimensionRatio = "15:22"
+                            dimensionRatio = "2:3"
                         }
                     }
                     if (libraryLayout != LAYOUT_COMFORTABLE_GRID) {

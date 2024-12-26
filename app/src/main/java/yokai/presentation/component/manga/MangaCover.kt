@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import eu.kanade.tachiyomi.R
+import yokai.util.conditional
 import yokai.util.rememberResourceBitmapPainter
 
 @Composable
@@ -30,7 +31,7 @@ fun MangaCover(
     minimumHeight: (() -> Int)? = null,
     modifier: Modifier = Modifier,
     contentDescription: String = "",
-    shape: Shape = MaterialTheme.shapes.extraSmall,
+    shape: Shape = MaterialTheme.shapes.small,
     contentScale: () -> ContentScale = { ContentScale.Crop },
     onClick: (() -> Unit)? = null,
     onLoading: ((AsyncImagePainter.State.Loading) -> Unit)? = null,
@@ -45,30 +46,24 @@ fun MangaCover(
         maximumHeightDp = maximumHeight?.let { it().toDp() } ?: Dp.Unspecified
     }
 
-    val ratioModifier = if (adjustViewBounds()) Modifier.aspectRatio(ratio()) else Modifier
-
     AsyncImage(
         model = data,
         placeholder = ColorPainter(CoverPlaceholderColor),
         error = rememberResourceBitmapPainter(id = R.drawable.ic_broken_image_24dp),
         contentDescription = contentDescription,
         modifier = modifier
-            .then(ratioModifier)
+            .conditional(adjustViewBounds()) { aspectRatio(ratio()) }
             .clip(shape)
             .heightIn(
                 min = minimumHeightDp,
                 max = maximumHeightDp,
             )
-            .then(
-                if (onClick != null) {
-                    Modifier.clickable(
-                        role = Role.Button,
-                        onClick = onClick,
-                    )
-                } else {
-                    Modifier
-                },
-            ),
+            .conditional(onClick != null) {
+                clickable(
+                    role = Role.Button,
+                    onClick = onClick!!,
+                )
+            },
         contentScale = contentScale(),
         onLoading = onLoading,
         onError = onError,

@@ -1,4 +1,4 @@
-package yokai.presentation.core.util
+package yokai.util
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

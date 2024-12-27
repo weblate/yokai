@@ -27,7 +27,7 @@ import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.models.cover
 import yokai.i18n.MR
-import yokai.presentation.core.util.coil.loadManga
+import yokai.util.coil.loadManga
 import yokai.util.lang.getString
 
 class MigrationProcessHolder(

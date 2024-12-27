@@ -10,8 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import yokai.presentation.core.util.secondaryItemAlpha
 import yokai.presentation.theme.Size
+import yokai.util.secondaryItemAlpha
 
 @Composable
 internal fun InfoWidget(text: String) {

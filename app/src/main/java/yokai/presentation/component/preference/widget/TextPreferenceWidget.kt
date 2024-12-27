@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import yokai.presentation.core.util.secondaryItemAlpha
+import yokai.util.secondaryItemAlpha
 
 @Composable
 fun TextPreferenceWidget(

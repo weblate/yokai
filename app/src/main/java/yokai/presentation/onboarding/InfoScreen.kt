@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
-import yokai.presentation.core.util.secondaryItemAlpha
 import yokai.presentation.theme.Size
+import yokai.util.secondaryItemAlpha
 
 @Composable
 fun InfoScreen(

@@ -10,7 +10,7 @@ import eu.kanade.tachiyomi.util.lang.highlightText
 import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.view.setCards
 import yokai.i18n.MR
-import yokai.presentation.core.util.coil.loadManga
+import yokai.util.coil.loadManga
 import yokai.util.lang.getString
 
 /**

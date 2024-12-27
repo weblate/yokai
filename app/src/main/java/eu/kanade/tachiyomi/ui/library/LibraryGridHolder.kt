@@ -23,7 +23,7 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.setCards
 import eu.kanade.tachiyomi.widget.AutofitRecyclerView
-import yokai.presentation.core.util.coil.loadManga
+import yokai.util.coil.loadManga
 
 /**
  * Class used to hold the displayed data of a manga in the library, like the cover or the title.

@@ -1,4 +1,4 @@
-package yokai.presentation.core.util.coil
+package yokai.util.coil
 
 import android.view.View
 import android.widget.ImageView

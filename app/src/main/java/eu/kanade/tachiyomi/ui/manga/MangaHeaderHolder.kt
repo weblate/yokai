@@ -47,7 +47,7 @@ import eu.kanade.tachiyomi.util.system.isInNightMode
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.view.resetStrokeColor
 import yokai.i18n.MR
-import yokai.presentation.core.util.coil.loadManga
+import yokai.util.coil.loadManga
 import yokai.util.lang.getString
 import android.R as AR
 

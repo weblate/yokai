@@ -11,7 +11,7 @@ import eu.kanade.tachiyomi.util.system.dpToPx
 import eu.kanade.tachiyomi.util.view.makeShapeCorners
 import eu.kanade.tachiyomi.util.view.setCards
 import yokai.domain.manga.models.cover
-import yokai.presentation.core.util.coil.loadManga
+import yokai.util.coil.loadManga
 
 class GlobalSearchMangaHolder(view: View, adapter: GlobalSearchCardAdapter) :
     BaseFlexibleViewHolder(view, adapter) {

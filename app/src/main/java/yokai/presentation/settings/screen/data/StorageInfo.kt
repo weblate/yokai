@@ -18,9 +18,9 @@ import yokai.i18n.MR
 import yokai.util.lang.getString
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.storage.DiskUtil
-import yokai.presentation.core.util.secondaryItemAlpha
 import yokai.presentation.theme.Size
 import yokai.presentation.theme.header
+import yokai.util.secondaryItemAlpha
 import java.io.File
 
 @Composable

@@ -23,11 +23,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsControllerCompat
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.i18n.MR
 import yokai.presentation.component.ToolTipButton
 import yokai.presentation.core.ExpandedAppBar
+import yokai.util.applyElevationOverlay
 
 @Composable
 fun YokaiScaffold(
@@ -44,7 +46,7 @@ fun YokaiScaffold(
 ) {
     val view = LocalView.current
     val useDarkIcons = MaterialTheme.colorScheme.surface.luminance() > .5
-    val (color, scrolledColor) = getTopAppBarColor(title)
+    val color = getTopAppBarColor(title)
 
     SideEffect {
         val activity  = view.context as Activity
@@ -66,7 +68,7 @@ fun YokaiScaffold(
                     // modifier = Modifier.statusBarsPadding(),
                     colors = topAppBarColors(
                         containerColor = color,
-                        scrolledContainerColor = scrolledColor,
+                        scrolledContainerColor = color.applyElevationOverlay(4.dp),
                     ),
                     navigationIcon = {
                         ToolTipButton(
@@ -85,7 +87,7 @@ fun YokaiScaffold(
                     // modifier = Modifier.statusBarsPadding(),
                     colors = topAppBarColors(
                         containerColor = color,
-                        scrolledContainerColor = scrolledColor,
+                        scrolledContainerColor = color.applyElevationOverlay(4.dp),
                     ),
                     navigationIcon = {
                         ToolTipButton(
@@ -104,10 +106,10 @@ fun YokaiScaffold(
 }
 
 @Composable
-fun getTopAppBarColor(title: String): Pair<Color, Color> {
+fun getTopAppBarColor(title: String): Color {
     return when (title.isEmpty()) {
-        true -> Color.Transparent to Color.Transparent
-        false -> MaterialTheme.colorScheme.surface to MaterialTheme.colorScheme.surfaceContainer
+        true -> Color.Transparent
+        false -> MaterialTheme.colorScheme.surface
     }
 }
 

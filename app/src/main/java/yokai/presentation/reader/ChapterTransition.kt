@@ -42,7 +42,7 @@ import eu.kanade.tachiyomi.ui.reader.viewer.missingChapterCount
 import eu.kanade.tachiyomi.util.chapter.ChapterUtil.Companion.preferredChapterName
 import kotlinx.collections.immutable.persistentMapOf
 import yokai.i18n.MR
-import yokai.presentation.core.util.secondaryItemAlpha
+import yokai.util.secondaryItemAlpha
 
 @Composable
 fun ChapterTransition(

@@ -8,6 +8,7 @@
     <style name="Theme.ActionBar.DayNight" parent="ThemeOverlay.Material3.ActionBar">
         <item name="elevationOverlayEnabled">true</item>
         <item name="elevationOverlayColor">?colorSecondary</item>
+        <item name="elevation">4dp</item>
     </style>
 
     <!--===============-->

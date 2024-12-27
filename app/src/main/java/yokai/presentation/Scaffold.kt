@@ -29,7 +29,6 @@ import dev.icerock.moko.resources.compose.stringResource
 import yokai.i18n.MR
 import yokai.presentation.component.ToolTipButton
 import yokai.presentation.core.ExpandedAppBar
-import yokai.util.applyElevationOverlay
 
 @Composable
 fun YokaiScaffold(
@@ -46,7 +45,7 @@ fun YokaiScaffold(
 ) {
     val view = LocalView.current
     val useDarkIcons = MaterialTheme.colorScheme.surface.luminance() > .5
-    val color = getTopAppBarColor(title)
+    val (color, scrolledColor) = getTopAppBarColor(title)
 
     SideEffect {
         val activity  = view.context as Activity
@@ -68,7 +67,7 @@ fun YokaiScaffold(
                     // modifier = Modifier.statusBarsPadding(),
                     colors = topAppBarColors(
                         containerColor = color,
-                        scrolledContainerColor = color.applyElevationOverlay(4.dp),
+                        scrolledContainerColor = scrolledColor,
                     ),
                     navigationIcon = {
                         ToolTipButton(
@@ -87,7 +86,7 @@ fun YokaiScaffold(
                     // modifier = Modifier.statusBarsPadding(),
                     colors = topAppBarColors(
                         containerColor = color,
-                        scrolledContainerColor = color.applyElevationOverlay(4.dp),
+                        scrolledContainerColor = scrolledColor,
                     ),
                     navigationIcon = {
                         ToolTipButton(
@@ -106,10 +105,10 @@ fun YokaiScaffold(
 }
 
 @Composable
-fun getTopAppBarColor(title: String): Color {
+fun getTopAppBarColor(title: String): Pair<Color, Color> {
     return when (title.isEmpty()) {
-        true -> Color.Transparent
-        false -> MaterialTheme.colorScheme.surface
+        true -> Color.Transparent to Color.Transparent
+        false -> MaterialTheme.colorScheme.surface to MaterialTheme.colorScheme.primaryContainer
     }
 }
 

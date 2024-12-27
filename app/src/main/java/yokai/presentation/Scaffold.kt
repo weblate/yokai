@@ -50,7 +50,7 @@ fun YokaiScaffold(
     SideEffect {
         val activity  = view.context as Activity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            activity.window.statusBarColor = color.toArgb()
+            //activity.window.statusBarColor = color.toArgb()
             WindowInsetsControllerCompat(activity.window, view).isAppearanceLightStatusBars = useDarkIcons
         }
     }

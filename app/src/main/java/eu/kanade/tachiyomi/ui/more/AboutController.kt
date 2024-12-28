@@ -16,6 +16,7 @@ import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
 import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import eu.kanade.tachiyomi.util.compose.LocalRouter
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.view.setNegativeButton
 import eu.kanade.tachiyomi.util.view.setPositiveButton
@@ -32,13 +33,12 @@ class AboutController : BaseComposeController() {
     @Composable
     override fun ScreenContent() {
         Navigator(
-            screen = AboutScreen { body, url, isBeta ->
-                NewUpdateDialogController(body, url, isBeta).showDialog(router)
-            },
+            screen = AboutScreen(),
             content = {
                 CompositionLocalProvider(
                     LocalAlertDialog provides ComposableAlertDialog(null),
                     LocalBackPress provides router::handleBack,
+                    LocalRouter provides router,
                 ) {
                     ScreenTransition(
                         navigator = it,

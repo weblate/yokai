@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import cafe.adriel.voyager.navigator.LocalNavigator
 import co.touchlab.kermit.Logger
+import com.bluelinelabs.conductor.Router
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.storage.preference.asDateFormat
@@ -35,7 +36,9 @@ import eu.kanade.tachiyomi.data.updater.AppUpdateChecker
 import eu.kanade.tachiyomi.data.updater.AppUpdateNotifier
 import eu.kanade.tachiyomi.data.updater.AppUpdateResult
 import eu.kanade.tachiyomi.data.updater.RELEASE_URL
+import eu.kanade.tachiyomi.ui.more.AboutController.NewUpdateDialogController
 import eu.kanade.tachiyomi.util.CrashLogUtil
+import eu.kanade.tachiyomi.util.compose.LocalRouter
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.lang.toTimestampString
 import eu.kanade.tachiyomi.util.system.isOnline
@@ -60,11 +63,12 @@ import yokai.presentation.settings.SettingsScaffold
 import yokai.util.Screen
 import yokai.util.lang.getString
 
-class AboutScreen(private val showNewUpdateDialog: (String, String, Boolean?) -> Unit) : Screen() {
+class AboutScreen : Screen() {
     @Composable
     override fun Content() {
         val context = LocalContext.current
         val navigator = LocalNavigator.currentOrThrow
+        val router = LocalRouter.currentOrThrow
         val uriHandler = LocalUriHandler.current
 
         val snackbarHostState = remember { SnackbarHostState() }
@@ -105,7 +109,7 @@ class AboutScreen(private val showNewUpdateDialog: (String, String, Boolean?) ->
                                 onPreferenceClick = {
                                     if (context.isOnline()) {
                                         scope.launch {
-                                            context.checkVersion()
+                                            context.checkVersion(router)
                                         }
                                     } else {
                                         context.toast(MR.strings.no_network_connection)
@@ -189,7 +193,7 @@ class AboutScreen(private val showNewUpdateDialog: (String, String, Boolean?) ->
         else -> "Release ${BuildConfig.VERSION_NAME}"
     }
 
-    private suspend fun Context.checkVersion() {
+    private suspend fun Context.checkVersion(router: Router) {
         val updateChecker = AppUpdateChecker()
 
         withUIContext { toast(MR.strings.searching_for_updates) }
@@ -211,7 +215,7 @@ class AboutScreen(private val showNewUpdateDialog: (String, String, Boolean?) ->
                 // Create confirmation window
                 withUIContext {
                     AppUpdateNotifier.releasePageUrl = result.release.releaseLink
-                    showNewUpdateDialog(body, url, isBeta)
+                    NewUpdateDialogController(body, url, isBeta).showDialog(router)
                 }
             }
             is AppUpdateResult.NoNewUpdate -> {

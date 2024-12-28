@@ -137,7 +137,7 @@ class AboutScreen(private val showNewUpdateDialog: (String, String, Boolean?) ->
 
                     item {
                         TextPreferenceWidget(
-                            title = stringResource(MR.strings.version),
+                            title = stringResource(MR.strings.build_time),
                             subtitle = getFormattedBuildTime(dateFormat),
                         )
                     }

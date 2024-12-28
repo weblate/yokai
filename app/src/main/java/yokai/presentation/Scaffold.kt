@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsControllerCompat
 import dev.icerock.moko.resources.compose.stringResource
 import yokai.i18n.MR
@@ -35,14 +34,16 @@ fun YokaiScaffold(
     onNavigationIconClicked: () -> Unit,
     modifier: Modifier = Modifier,
     title: String = "",
-    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(state = rememberTopAppBarState()),
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     fab: @Composable () -> Unit = {},
     navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     navigationIconLabel: String = stringResource(MR.strings.back),
     actions: @Composable RowScope.() -> Unit = {},
     appBarType: AppBarType = AppBarType.LARGE,
+    snackbarHost: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
+    val scrollBehaviorOrDefault = scrollBehavior ?: TopAppBarDefaults.enterAlwaysScrollBehavior(state = rememberTopAppBarState())
     val view = LocalView.current
     val useDarkIcons = MaterialTheme.colorScheme.surface.luminance() > .5
     val (color, scrolledColor) = getTopAppBarColor(title)
@@ -56,7 +57,7 @@ fun YokaiScaffold(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehaviorOrDefault.nestedScrollConnection),
         floatingActionButton = fab,
         topBar = {
             when (appBarType) {
@@ -76,7 +77,7 @@ fun YokaiScaffold(
                             buttonClicked = onNavigationIconClicked,
                         )
                     },
-                    scrollBehavior = scrollBehavior,
+                    scrollBehavior = scrollBehaviorOrDefault,
                     actions = actions,
                 )
                 AppBarType.LARGE -> ExpandedAppBar(
@@ -95,11 +96,12 @@ fun YokaiScaffold(
                             buttonClicked = onNavigationIconClicked,
                         )
                     },
-                    scrollBehavior = scrollBehavior,
+                    scrollBehavior = scrollBehaviorOrDefault,
                     actions = actions,
                 )
             }
         },
+        snackbarHost = snackbarHost,
         content = content,
     )
 }

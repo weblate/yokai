@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.ui.more
+package yokai.presentation.settings.screen.about
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.TopAppBarDefaults

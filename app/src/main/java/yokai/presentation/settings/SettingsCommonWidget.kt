@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,11 +36,12 @@ fun SettingsScaffold(
     title: String,
     appBarType: AppBarType? = null,
     appBarActions: @Composable RowScope.() -> Unit = {},
-    itemsProvider: @Composable () -> List<Preference>,
+    appBarScrollBehavior: TopAppBarScrollBehavior? = null,
+    snackbarHost: @Composable () -> Unit = {},
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     val preferences: PreferencesHelper by injectLazy()
     val useLargeAppBar by preferences.useLargeToolbar().collectAsState()
-    val listState = rememberLazyListState()
     val onBackPress = LocalBackPress.currentOrThrow
     val alertDialog = LocalAlertDialog.currentOrThrow
 
@@ -48,14 +50,34 @@ fun SettingsScaffold(
         title = title,
         appBarType = appBarType ?: if (useLargeAppBar) AppBarType.LARGE else AppBarType.SMALL,
         actions = appBarActions,
-        scrollBehavior = enterAlwaysCollapsedScrollBehavior(
+        scrollBehavior = appBarScrollBehavior,
+        snackbarHost = snackbarHost,
+    ) { innerPadding ->
+        alertDialog.content?.let { it() }
+
+        content(innerPadding)
+    }
+}
+
+@Composable
+fun SettingsScaffold(
+    title: String,
+    appBarType: AppBarType? = null,
+    appBarActions: @Composable RowScope.() -> Unit = {},
+    itemsProvider: @Composable () -> List<Preference>,
+) {
+    val listState = rememberLazyListState()
+
+    SettingsScaffold(
+        title = title,
+        appBarType = appBarType,
+        appBarActions = appBarActions,
+        appBarScrollBehavior = enterAlwaysCollapsedScrollBehavior(
             state = rememberTopAppBarState(),
             canScroll = { listState.canScrollForward || listState.canScrollBackward },
             isAtTop = { listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0 },
         ),
     ) { innerPadding ->
-        alertDialog.content?.let { it() }
-
         PreferenceScreen(
             items = itemsProvider(),
             listState = listState,

@@ -7,6 +7,7 @@ import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.preference.Preference
 import eu.kanade.tachiyomi.core.preference.PreferenceStore
 import eu.kanade.tachiyomi.core.preference.getEnum
+import eu.kanade.tachiyomi.core.storage.preference.asDateFormat
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.domain.manga.models.Manga
 import eu.kanade.tachiyomi.extension.model.InstalledExtensionsOrder
@@ -19,13 +20,12 @@ import eu.kanade.tachiyomi.ui.reader.settings.ReadingModeType
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation
 import eu.kanade.tachiyomi.ui.recents.RecentsPresenter
 import eu.kanade.tachiyomi.util.system.Themes
+import java.text.DateFormat
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 import eu.kanade.tachiyomi.data.preference.PreferenceValues as Values
 
@@ -187,10 +187,10 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun anilistScoreType() = preferenceStore.getString("anilist_score_type", "POINT_10")
 
-    fun dateFormat(format: String = preferenceStore.getString(Keys.dateFormat, "").get()): DateFormat = when (format) {
-        "" -> DateFormat.getDateInstance(DateFormat.SHORT)
-        else -> SimpleDateFormat(format, Locale.getDefault())
-    }
+    fun dateFormatRaw() = preferenceStore.getString(Keys.dateFormat, "")
+
+    @Deprecated("Use dateFormatRaw().get().asDateFormat() instead")
+    fun dateFormat(format: String = dateFormatRaw().get()): DateFormat = format.asDateFormat()
 
     fun appLanguage() = preferenceStore.getString("app_language", "")
 

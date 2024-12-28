@@ -21,6 +21,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Refactor EmptyView to use Compose
 - Refactor Reader ChapterTransition to use Compose (@arkon)
 - [Experimental] Add modified version of LargeTopAppBar that mimic J2K's ExpandedAppBarLayout
+- Refactor About page to use Compose
 
 ## [1.9.7]
 

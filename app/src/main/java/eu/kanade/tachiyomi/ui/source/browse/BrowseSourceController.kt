@@ -69,7 +69,8 @@ import kotlinx.coroutines.launch
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.interactor.GetManga
 import yokai.i18n.MR
-import yokai.presentation.component.icons.LocalSource
+import yokai.presentation.core.icons.CustomIcons
+import yokai.presentation.core.icons.LocalSource
 import yokai.util.lang.getString
 
 /**
@@ -610,7 +611,7 @@ open class BrowseSourceController(bundle: Bundle) :
                 if (presenter.source is HttpSource) {
                     Icons.Filled.ExploreOff
                 } else {
-                    Icons.Filled.LocalSource
+                    CustomIcons.LocalSource
                 },
                 message,
                 actions,

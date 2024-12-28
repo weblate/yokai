@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.ScreenTransition
+import cafe.adriel.voyager.transitions.CrossfadeTransition
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
@@ -22,7 +22,6 @@ import eu.kanade.tachiyomi.util.view.setNegativeButton
 import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTitle
 import io.noties.markwon.Markwon
-import soup.compose.material.motion.animation.materialSharedAxisZ
 import yokai.domain.ComposableAlertDialog
 import yokai.i18n.MR
 import yokai.presentation.settings.screen.about.AboutScreen
@@ -40,11 +39,7 @@ class AboutController : BaseComposeController() {
                     LocalBackPress provides router::handleBack,
                     LocalRouter provides router,
                 ) {
-                    ScreenTransition(
-                        navigator = it,
-                        // FIXME: Mimic J2K's Conductor transition
-                        transition = { materialSharedAxisZ(forward = it.lastEvent != StackEvent.Pop) },
-                    )
+                    CrossfadeTransition(navigator = it)
                 }
             },
         )

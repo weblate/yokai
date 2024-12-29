@@ -22,6 +22,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Refactor Reader ChapterTransition to use Compose (@arkon)
 - [Experimental] Add modified version of LargeTopAppBar that mimic J2K's ExpandedAppBarLayout
 - Refactor About page to use Compose
+- Adjust Compose-based pages' transition to match J2K's Conductor transition
 
 ## [1.9.7]
 

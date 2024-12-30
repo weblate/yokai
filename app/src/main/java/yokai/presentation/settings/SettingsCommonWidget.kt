@@ -29,6 +29,7 @@ import yokai.presentation.component.Gap
 import yokai.presentation.component.preference.Preference
 import yokai.presentation.component.preference.PreferenceItem
 import yokai.presentation.component.preference.widget.PreferenceGroupHeader
+import yokai.presentation.core.drawVerticalScrollbar
 import yokai.presentation.core.enterAlwaysCollapsedScrollBehavior
 
 @Composable
@@ -106,7 +107,7 @@ fun PreferenceScreen(
     }
 
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.drawVerticalScrollbar(listState),
         contentPadding = contentPadding,
         state = listState
     ) {

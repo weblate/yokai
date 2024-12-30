@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isFinite
 import androidx.compose.ui.unit.isSpecified
+import androidx.compose.ui.util.fastCoerceIn
 import androidx.compose.ui.util.fastFirst
 import kotlin.math.abs
 import kotlin.math.max
@@ -520,11 +521,11 @@ private fun TopAppBarState.rawTopHeightOffset(topHeightPx: Float, totalHeightPx:
 }
 
 private fun TopAppBarState.topHeightOffset(topHeightPx: Float, totalHeightPx: Float): Float {
-    return rawTopHeightOffset(topHeightPx, totalHeightPx).coerceIn(-topHeightPx, 0f)
+    return rawTopHeightOffset(topHeightPx, totalHeightPx).fastCoerceIn(-topHeightPx, 0f)
 }
 
 private fun TopAppBarState.bottomHeightOffset(topHeightPx: Float, totalHeightPx: Float): Float {
-    return heightOffset.coerceIn(topHeightPx - totalHeightPx, 0f)
+    return heightOffset.fastCoerceIn(topHeightPx - totalHeightPx, 0f)
 }
 
 private fun TopAppBarState.topCollapsedFraction(topHeightPx: Float, totalHeightPx: Float): Float {
@@ -580,7 +581,7 @@ private class EnterAlwaysCollapsedScrollBehavior(
                 heightOffset = if (isAtTop()) {
                     offset
                 } else {
-                    offset.coerceIn(-totalHeightPx, (topHeightPx - totalHeightPx))
+                    offset.fastCoerceIn(-totalHeightPx, (topHeightPx - totalHeightPx))
                 }
             }
 

@@ -6,7 +6,6 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - `Additions` - New features
 - `Changes` - Behaviour/visual changes
 - `Fixes` - Bugfixes
-- `Translation` - Translation changes/updates
 - `Other` - Technical changes/updates
 
 ## [Unreleased]

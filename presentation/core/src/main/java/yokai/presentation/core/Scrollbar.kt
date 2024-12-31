@@ -166,12 +166,8 @@ private fun Modifier.drawScrollbar(
     }
     val nestedScrollConnection = remember(orientation, scrolled) {
         object : NestedScrollConnection {
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource,
-            ): Offset {
-                val delta = if (orientation == Orientation.Horizontal) consumed.x else consumed.y
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val delta = if (orientation == Orientation.Horizontal) available.x else available.y
                 if (delta != 0f) scrolled.tryEmit(Unit)
                 return Offset.Zero
             }

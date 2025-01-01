@@ -66,11 +66,6 @@ android {
             //noinspection ChromeOsAbiSupport
             abiFilters += supportedAbis
         }
-        externalNativeBuild {
-            cmake {
-                this.arguments("-DHAVE_LIBJXL=FALSE")
-            }
-        }
     }
 
     splits {

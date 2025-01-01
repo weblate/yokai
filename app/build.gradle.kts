@@ -23,7 +23,7 @@ if (gradle.startParameter.taskRequests.toString().contains("standard", true)) {
 
 fun runCommand(command: String): String {
     val byteOut = ByteArrayOutputStream()
-    project.exec {
+    providers.exec {
         commandLine = command.split(" ")
         standardOutput = byteOut
     }

@@ -1,12 +1,13 @@
 package yokai.core.archive
 
+import java.io.InputStream
 import java.nio.ByteBuffer
 import kotlin.concurrent.Volatile
 import me.zhanghai.android.libarchive.Archive
 import me.zhanghai.android.libarchive.ArchiveEntry
 import me.zhanghai.android.libarchive.ArchiveException
 
-class AndroidArchiveInputStream(buffer: Long, size: Long) : ArchiveInputStream() {
+class ArchiveInputStream(buffer: Long, size: Long) : InputStream() {
     private val lock = Any()
     @Volatile
     private var isClosed = false

@@ -12,8 +12,6 @@ import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.util.lang.compareToCaseInsensitiveNaturalOrder
 import eu.kanade.tachiyomi.util.storage.DiskUtil
-import eu.kanade.tachiyomi.util.storage.EpubFile
-import eu.kanade.tachiyomi.util.storage.fillMetadata
 import eu.kanade.tachiyomi.util.system.ImageUtil
 import eu.kanade.tachiyomi.util.system.extension
 import eu.kanade.tachiyomi.util.system.nameWithoutExtension
@@ -33,7 +31,8 @@ import nl.adaptivity.xmlutil.serialization.XML
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
-import yokai.core.archive.archiveReader
+import yokai.core.archive.util.archiveReader
+import yokai.core.archive.util.epubReader
 import yokai.core.metadata.COMIC_INFO_FILE
 import yokai.core.metadata.ComicInfo
 import yokai.core.metadata.copyFromComicInfo
@@ -42,6 +41,7 @@ import yokai.domain.chapter.services.ChapterRecognition
 import yokai.domain.source.SourcePreferences
 import yokai.domain.storage.StorageManager
 import yokai.i18n.MR
+import yokai.util.fillMetadata
 import yokai.util.lang.getString
 
 class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSource {
@@ -410,7 +410,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     }
                 }
                 is Format.Epub -> {
-                    EpubFile(format.file.archiveReader(context)).use { epub ->
+                    format.file.epubReader(context).use { epub ->
                         val entry = epub.getImagesFromPages().firstOrNull()
 
                         entry?.let { updateCover(manga, epub.getInputStream(it)!!, context) }
@@ -433,7 +433,7 @@ class LocalSource(private val context: Context) : CatalogueSource, UnmeteredSour
                     true
                 }
                 is Format.Epub -> {
-                    EpubFile(format.file.archiveReader(context)).use { epub ->
+                    format.file.epubReader(context).use { epub ->
                         epub.fillMetadata(chapter, manga)
                     }
                     true

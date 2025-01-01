@@ -31,6 +31,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Yokai"
 include(":app")
+include(":core:archive")
 include(":core:main")
 include(":data")
 include(":domain")

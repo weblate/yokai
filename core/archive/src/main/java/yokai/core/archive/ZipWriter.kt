@@ -4,12 +4,12 @@ import android.content.Context
 import android.system.Os
 import android.system.StructStat
 import com.hippo.unifile.UniFile
-import eu.kanade.tachiyomi.util.system.openFileDescriptor
 import java.io.Closeable
 import java.nio.ByteBuffer
 import me.zhanghai.android.libarchive.Archive
 import me.zhanghai.android.libarchive.ArchiveEntry
 import me.zhanghai.android.libarchive.ArchiveException
+import yokai.core.archive.util.openFileDescriptor
 
 class ZipWriter(val context: Context, file: UniFile) : Closeable {
     private val pfd = file.openFileDescriptor(context, "wt")

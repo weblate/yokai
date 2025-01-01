@@ -1,15 +1,16 @@
-package eu.kanade.tachiyomi.util.storage
+package yokai.util
 
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import yokai.core.archive.EpubReader
 
 /**
  * Fills manga and chapter metadata using this epub file's metadata.
  */
-fun EpubFile.fillMetadata(chapter: SChapter, manga: SManga) {
+fun EpubReader.fillMetadata(chapter: SChapter, manga: SManga) {
     val ref = getPackageHref()
     val doc = getPackageDocument(ref)
 

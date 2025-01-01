@@ -10,7 +10,8 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.util.system.withIOContext
-import yokai.core.archive.archiveReader
+import yokai.core.archive.util.archiveReader
+import yokai.core.archive.util.epubReader
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
@@ -82,7 +83,7 @@ class ChapterLoader(
                 when (format) {
                     is LocalSource.Format.Directory -> DirectoryPageLoader(format.file)
                     is LocalSource.Format.Archive -> ArchivePageLoader(format.file.archiveReader(context))
-                    is LocalSource.Format.Epub -> EpubPageLoader(format.file.archiveReader(context))
+                    is LocalSource.Format.Epub -> EpubPageLoader(format.file.epubReader(context))
                 }
             }
             else -> error(context.getString(MR.strings.source_not_installed))

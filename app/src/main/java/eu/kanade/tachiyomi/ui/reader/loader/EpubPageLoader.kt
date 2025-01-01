@@ -2,20 +2,14 @@ package eu.kanade.tachiyomi.ui.reader.loader
 
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
-import eu.kanade.tachiyomi.util.storage.EpubFile
-import yokai.core.archive.ArchiveReader
+import yokai.core.archive.EpubReader
 
 /**
  * Loader used to load a chapter from a .epub file.
  */
-class EpubPageLoader(reader: ArchiveReader) : PageLoader() {
+class EpubPageLoader(private val epub: EpubReader) : PageLoader() {
 
     override val isLocal: Boolean = true
-
-    /**
-     * The epub file.
-     */
-    private val epub = EpubFile(reader)
 
     /**
      * Recycles this loader and the open zip.

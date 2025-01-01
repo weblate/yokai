@@ -1,16 +1,15 @@
-package eu.kanade.tachiyomi.util.storage
+package yokai.core.archive
 
 import java.io.Closeable
 import java.io.File
 import java.io.InputStream
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import yokai.core.archive.ArchiveReader
 
 /**
  * Wrapper over ZipFile to load files in epub format.
  */
-class EpubFile(private val reader: ArchiveReader) : Closeable by reader {
+class EpubReader(private val reader: ArchiveReader) : Closeable by reader {
 
     /**
      * Path separator used by this epub.

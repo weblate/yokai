@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.util.system
 import android.content.Context
 import android.os.Build
 import android.os.FileUtils
-import android.os.ParcelFileDescriptor
 import com.hippo.unifile.UniFile
 import java.io.BufferedOutputStream
 import java.io.File
@@ -48,6 +47,3 @@ fun UniFile.writeText(string: String, onComplete: () -> Unit = {}) {
         onComplete()
     }
 }
-
-fun UniFile.openFileDescriptor(context: Context, mode: String): ParcelFileDescriptor =
-    context.contentResolver.openFileDescriptor(uri, mode) ?: error("Failed to open file descriptor: $displayablePath")

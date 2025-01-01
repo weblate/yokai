@@ -55,4 +55,13 @@ class GetRecents(
 
         return historyRepository.getRecentsAll(includeRead, filterScanlators, search, limit, actualOffset)
     }
+
+    suspend fun awaitUpdates(limit: Long = 0L): List<MangaChapterHistory> =
+        historyRepository.getRecentsAll(
+            includeRead = false,
+            filterScanlators = true,
+            search = "",
+            limit = limit,
+            offset = 0L
+        )
 }

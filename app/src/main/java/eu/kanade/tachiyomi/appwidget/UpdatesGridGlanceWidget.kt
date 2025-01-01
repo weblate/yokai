@@ -40,9 +40,13 @@ import eu.kanade.tachiyomi.util.system.launchIO
 import java.util.Calendar
 import java.util.Date
 import kotlin.math.min
+import kotlin.math.roundToLong
 import kotlinx.coroutines.MainScope
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.manga.models.cover
+import yokai.domain.recents.interactor.GetRecents
 
 class UpdatesGridGlanceWidget : GlanceAppWidget() {
     private val app: Application by injectLazy()
@@ -64,6 +68,33 @@ class UpdatesGridGlanceWidget : GlanceAppWidget() {
         }
     }
 
+    // FIXME: Don't depends on RecentsPresenter
+    private suspend fun getUpdates(customAmount: Int = 0, getRecents: GetRecents = Injekt.get()): List<Pair<Manga, Long>> {
+        return getRecents
+            .awaitUpdates(
+                limit = when {
+                    customAmount > 0 -> (customAmount * 1.5).roundToLong()
+                    else -> 25L
+                }
+            )
+            .mapNotNull {
+                when {
+                    it.chapter.read || it.chapter.id == null -> RecentsPresenter.getNextChapter(it.manga)
+                    it.history.id == null -> RecentsPresenter.getFirstUpdatedChapter(it.manga, it.chapter)
+                    else -> it.chapter
+                } ?: return@mapNotNull null
+                it
+            }
+            .asSequence()
+            .distinctBy { it.manga.id }
+            .sortedByDescending { it.history.last_read }
+            // nChapterItems + nAdditionalItems + cReadingItems
+            .take((RecentsPresenter.UPDATES_CHAPTER_LIMIT * 2) + RecentsPresenter.UPDATES_READING_LIMIT_LOWER)
+            .filter { it.manga.id != null }
+            .map { it.manga to it.history.last_read }
+            .toList()
+    }
+
     fun loadData(list: List<Pair<Manga, Long>>? = null) {
         coroutineScope.launchIO {
             // Don't show anything when lock is active
@@ -80,7 +111,7 @@ class UpdatesGridGlanceWidget : GlanceAppWidget() {
                 .flatMap { manager.getAppWidgetSizes(it) }
                 .maxBy { it.height.value * it.width.value }
                 .calculateRowAndColumnCount()
-            val processList = list ?: RecentsPresenter.getRecentManga(customAmount = min(50, rowCount * columnCount))
+            val processList = list ?: getUpdates(customAmount = min(50, rowCount * columnCount))
 
             data = prepareList(processList, rowCount * columnCount)
             ids.forEach { update(app, it) }

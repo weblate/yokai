@@ -379,20 +379,22 @@ class RecentsPresenter(
                             f2.second.date_fetch.compareTo(f1.second.date_fetch)
                         }
                     }
-                    .take(4).map {
-                        RecentMangaItem(it.first, it.second, newChaptersHeader)
-                    }.toMutableList()
+                    .take(UPDATES_CHAPTER_LIMIT)
+                    .map { RecentMangaItem(it.first, it.second, newChaptersHeader) }
+                    .toMutableList()
             val cReadingItems =
-                pairs.filter { it.first.history.id != null }.take(9 - nChaptersItems.size).map {
-                    RecentMangaItem(it.first, it.second, continueReadingHeader)
-                }.toMutableList()
+                pairs.filter { it.first.history.id != null }
+                    .take(UPDATES_READING_LIMIT_UPPER - nChaptersItems.size)
+                    .map { RecentMangaItem(it.first, it.second, continueReadingHeader) }
+                    .toMutableList()
             if (nChaptersItems.isNotEmpty()) {
                 nChaptersItems.add(RecentMangaItem(header = newChaptersHeader))
             }
             if (cReadingItems.isNotEmpty()) {
                 cReadingItems.add(RecentMangaItem(header = continueReadingHeader))
             }
-            val nAdditionsItems = pairs.filter { it.first.chapter.id == null }.take(4)
+            val nAdditionsItems = pairs.filter { it.first.chapter.id == null }
+                .take(UPDATES_CHAPTER_LIMIT)
                 .map { RecentMangaItem(it.first, it.second, newAdditionsHeader) }
             listOf(nChaptersItems, cReadingItems, nAdditionsItems).sortedByDescending {
                 it.firstOrNull()?.mch?.history?.last_read ?: 0L
@@ -481,20 +483,6 @@ class RecentsPresenter(
                 ).toMutableList()
         }
         return Triple(sortedChapters, firstChapter, extraCount)
-    }
-
-    private suspend fun getNextChapter(manga: Manga): Chapter? {
-        val mangaId = manga.id ?: return null
-        val chapters = getChapter.awaitUnread(mangaId, true)
-        return ChapterSort(manga, chapterFilter, preferences).getNextChapter(chapters, false)
-    }
-
-    private suspend fun getFirstUpdatedChapter(manga: Manga, chapter: Chapter): Chapter? {
-        val mangaId = manga.id ?: return null
-        val chapters = getChapter.awaitUnread(mangaId, true)
-        return chapters.sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
-            abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)
-        }
     }
 
     override fun onDestroy() {
@@ -727,6 +715,31 @@ class RecentsPresenter(
         var SHORT_LIMIT = 25
             private set
 
+        suspend fun getNextChapter(
+            manga: Manga,
+            getChapter: GetChapter = Injekt.get(),
+            chapterFilter: ChapterFilter = Injekt.get(),
+            preferences: PreferencesHelper = Injekt.get(),
+        ): Chapter? {
+            val mangaId = manga.id ?: return null
+            val chapters = getChapter.awaitUnread(mangaId, true)
+            return ChapterSort(manga, chapterFilter, preferences).getNextChapter(chapters, false)
+        }
+
+        suspend fun getFirstUpdatedChapter(
+            manga: Manga,
+            chapter: Chapter,
+            getChapter: GetChapter = Injekt.get(),
+            chapterFilter: ChapterFilter = Injekt.get(),
+            preferences: PreferencesHelper = Injekt.get(),
+        ): Chapter? {
+            val mangaId = manga.id ?: return null
+            val chapters = getChapter.awaitUnread(mangaId, true)
+            return chapters.sortedWith(ChapterSort(manga, chapterFilter, preferences).sortComparator(true)).find {
+                abs(it.date_fetch - chapter.date_fetch) <= TimeUnit.HOURS.toMillis(12)
+            }
+        }
+
         suspend fun getRecentManga(includeRead: Boolean = false, customAmount: Int = 0): List<Pair<Manga, Long>> {
             val presenter = RecentsPresenter()
             presenter.viewType = RecentsViewType.UngroupedAll
@@ -741,5 +754,9 @@ class RecentsPresenter(
                 .filter { it.mch.manga.id != null }
                 .map { it.mch.manga to it.mch.history.last_read }
         }
+
+        const val UPDATES_CHAPTER_LIMIT = 4
+        const val UPDATES_READING_LIMIT_UPPER = 9
+        const val UPDATES_READING_LIMIT_LOWER = 5
     }
 }

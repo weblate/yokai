@@ -12,21 +12,22 @@ import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.util.awaitSingle
+import java.net.URI
+import java.net.URISyntaxException
+import java.security.MessageDigest
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import rx.Observable
 import uy.kohesive.injekt.injectLazy
-import java.net.URI
-import java.net.URISyntaxException
-import java.security.MessageDigest
 
 /**
  * A simple implementation for sources from a website.
  */
 @Suppress("unused")
 abstract class HttpSource : CatalogueSource {
+    private var delegate: DelegatedHttpSource? = null
 
     /**
      * Network service.
@@ -59,13 +60,17 @@ abstract class HttpSource : CatalogueSource {
     /**
      * Headers used for requests.
      */
-    val headers: Headers by lazy { headersBuilder().build() }
+    open val headers: Headers by lazy { headersBuilder().build() }
 
     /**
      * Default network client for doing requests.
      */
     open val client: OkHttpClient
         get() = network.client
+
+    fun bindDelegate(delegate: DelegatedHttpSource) {
+        this.delegate = delegate
+    }
 
     /**
      * Generates a unique ID for the source based on the provided [name], [lang] and
@@ -282,6 +287,13 @@ abstract class HttpSource : CatalogueSource {
      * @param response the response from the site.
      */
     protected abstract fun chapterListParse(response: Response): List<SChapter>
+
+    /**
+     * Parses the response from the site and returns a SChapter Object.
+     *
+     * @param response the response from the site.
+     */
+    protected abstract fun chapterPageParse(response: Response): SChapter
 
     /**
      * Get the list of pages a chapter has. Pages should be returned

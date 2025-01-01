@@ -1,20 +1,13 @@
 package eu.kanade.tachiyomi.source
 
 import android.content.Context
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.online.DelegatedHttpSource
 import eu.kanade.tachiyomi.source.online.HttpSource
-import eu.kanade.tachiyomi.source.online.all.Cubari
-import eu.kanade.tachiyomi.source.online.all.MangaDex
-import eu.kanade.tachiyomi.source.online.english.KireiCake
-import eu.kanade.tachiyomi.source.online.english.MangaPlus
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,7 +17,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.ConcurrentHashMap
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 class SourceManager(
     private val context: Context,
@@ -40,28 +34,8 @@ class SourceManager(
     val catalogueSources: Flow<List<CatalogueSource>> = sourcesMapFlow.map { it.values.filterIsInstance<CatalogueSource>() }
     val onlineSources: Flow<List<HttpSource>> = catalogueSources.map { it.filterIsInstance<HttpSource>() }
 
-    private val delegatedSources = listOf(
-        DelegatedSource(
-            "reader.kireicake.com",
-            5509224355268673176,
-            KireiCake(),
-        ),
-        DelegatedSource(
-            "mangadex.org",
-            2499283573021220255,
-            MangaDex(),
-        ),
-        DelegatedSource(
-            "mangaplus.shueisha.co.jp",
-            1998944621602463790,
-            MangaPlus(),
-        ),
-        DelegatedSource(
-            "cubari.moe",
-            6338219619148105941,
-            Cubari(),
-        ),
-    ).associateBy { it.sourceId }
+    // FIXME: Delegated source, unused at the moment, J2K only delegate deep links
+    private val delegatedSources = emptyList<DelegatedSource>().associateBy { it.sourceId }
 
     init {
         scope.launch {
@@ -71,8 +45,8 @@ class SourceManager(
                     extensions.forEach { extension ->
                         extension.sources.forEach {
                             mutableMap[it.id] = it
-                            delegatedSources[it.id]?.delegatedHttpSource?.delegate = it as? HttpSource
-//                            registerStubSource(it)
+                            //delegatedSources[it.id]?.delegatedHttpSource?.delegate = it as? HttpSource
+                            //registerStubSource(it)
                         }
                     }
                     sourcesMapFlow.value = mutableMap

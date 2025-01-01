@@ -12,6 +12,7 @@ import com.hippo.unifile.UniFile
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.database.models.Chapter
 import eu.kanade.tachiyomi.data.database.models.History
+import eu.kanade.tachiyomi.data.database.models.create
 import eu.kanade.tachiyomi.data.database.models.defaultReaderType
 import eu.kanade.tachiyomi.data.database.models.orientationType
 import eu.kanade.tachiyomi.data.database.models.readingModeType
@@ -307,6 +308,7 @@ class ReaderViewModel(
         return delegatedSource.pageNumber(url)?.minus(1)
     }
 
+    // FIXME: Unused at the moment, handles J2K's delegated deep link, refactor or remove later
     suspend fun loadChapterURL(url: Uri) {
         val host = url.host ?: return
         val context = Injekt.get<Application>()
@@ -314,9 +316,7 @@ class ReaderViewModel(
             context.getString(MR.strings.source_not_installed),
         )
         val chapterUrl = delegatedSource.chapterUrl(url)
-        val sourceId = delegatedSource.delegate?.id ?: error(
-            context.getString(MR.strings.source_not_installed),
-        )
+        val sourceId = delegatedSource.delegate.id
         if (chapterUrl != null) {
             val dbChapter = getChapter.awaitAllByUrl(chapterUrl, false).find {
                 val source = getManga.awaitById(it.manga_id!!)?.source ?: return@find false
@@ -334,7 +334,9 @@ class ReaderViewModel(
         }
         val info = delegatedSource.fetchMangaFromChapterUrl(url)
         if (info != null) {
-            val (chapter, manga, chapters) = info
+            val (sChapter, sManga, chapters) = info
+            val manga = Manga.create(sourceId).apply { copyFrom(sManga) }
+            val chapter = Chapter.create().apply { copyFrom(sChapter) }
             val id = insertManga.await(manga)
             manga.id = id ?: manga.id
             chapter.manga_id = manga.id

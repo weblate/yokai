@@ -75,29 +75,25 @@ class BangumiApi(
                 .appendQueryParameter("responseGroup", "large")
                 .appendQueryParameter("max_results", "20")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .awaitSuccess()
-                    .parseAs<BGMSearchResult>()
-                    .let { result ->
-                        if (result.code == 404) emptyList<TrackSearch>()
+            authClient.newCall(GET(url.toString()))
+                .awaitSuccess()
+                .parseAs<BGMSearchResult>()
+                .let { result ->
+                    if (result.code == 404) emptyList<TrackSearch>()
 
-                        result.list
-                            ?.map { it.toTrackSearch(trackId) }
-                            .orEmpty()
-                    }
-            }
+                    result.list
+                        ?.map { it.toTrackSearch(trackId) }
+                        .orEmpty()
+                }
         }
     }
 
     suspend fun findLibManga(track: Track): Track? {
         return withIOContext {
-            with(json) {
-                authClient.newCall(GET("$API_URL/subject/${track.media_id}"))
-                    .awaitSuccess()
-                    .parseAs<BGMSearchItem>()
-                    .toTrackSearch(trackId)
-            }
+            authClient.newCall(GET("$API_URL/subject/${track.media_id}"))
+                .awaitSuccess()
+                .parseAs<BGMSearchItem>()
+                .toTrackSearch(trackId)
         }
     }
 
@@ -111,29 +107,25 @@ class BangumiApi(
                 .build()
 
             // TODO: get user readed chapter here
-            with(json) {
-                authClient.newCall(requestUserRead)
-                    .awaitSuccess()
-                    .parseAs<BGMCollectionResponse>()
-                    .let {
-                        if (it.code == 400) return@let null
+            authClient.newCall(requestUserRead)
+                .awaitSuccess()
+                .parseAs<BGMCollectionResponse>()
+                .let {
+                    if (it.code == 400) return@let null
 
-                        track.status = it.status?.id?.toInt() ?: Bangumi.DEFAULT_STATUS
-                        track.last_chapter_read = it.epStatus!!.toFloat()
-                        track.score = it.rating!!.toFloat()
-                        track
-                    }
-            }
+                    track.status = it.status?.id?.toInt() ?: Bangumi.DEFAULT_STATUS
+                    track.last_chapter_read = it.epStatus!!.toFloat()
+                    track.score = it.rating!!.toFloat()
+                    track
+                }
         }
     }
 
     suspend fun accessToken(code: String): BGMOAuth {
         return withIOContext {
-            with(json) {
-                client.newCall(accessTokenRequest(code))
-                    .awaitSuccess()
-                    .parseAs()
-            }
+            client.newCall(accessTokenRequest(code))
+                .awaitSuccess()
+                .parseAs()
         }
     }
 

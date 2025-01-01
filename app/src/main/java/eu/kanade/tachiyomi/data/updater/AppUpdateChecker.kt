@@ -11,12 +11,12 @@ import eu.kanade.tachiyomi.network.await
 import eu.kanade.tachiyomi.network.parseAs
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.withIOContext
+import java.util.Date
+import java.util.concurrent.TimeUnit
 import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.base.models.Version
-import java.util.*
-import java.util.concurrent.*
 
 class AppUpdateChecker(
     private val json: Json = Injekt.get(),
@@ -31,48 +31,46 @@ class AppUpdateChecker(
         }
 
         return withIOContext {
-            val result = with(json) {
-                if (preferences.checkForBetas().get()) {
-                    networkService.client
-                        .newCall(GET("https://api.github.com/repos/$GITHUB_REPO/releases"))
-                        .await()
-                        .parseAs<List<GithubRelease>>()
-                        .let { githubReleases ->
-                            val releases =
-                                githubReleases.take(10).filter { isNewVersion(it.version) }
-                            // Check if any of the latest versions are newer than the current version
-                            val release = releases
-                                .maxWithOrNull { r1, r2 ->
-                                    when {
-                                        r1.version == r2.version -> 0
-                                        isNewVersion(r2.version, r1.version) -> -1
-                                        else -> 1
-                                    }
+            val result = if (preferences.checkForBetas().get()) {
+                networkService.client
+                    .newCall(GET("https://api.github.com/repos/$GITHUB_REPO/releases"))
+                    .await()
+                    .parseAs<List<GithubRelease>>()
+                    .let { githubReleases ->
+                        val releases =
+                            githubReleases.take(10).filter { isNewVersion(it.version) }
+                        // Check if any of the latest versions are newer than the current version
+                        val release = releases
+                            .maxWithOrNull { r1, r2 ->
+                                when {
+                                    r1.version == r2.version -> 0
+                                    isNewVersion(r2.version, r1.version) -> -1
+                                    else -> 1
                                 }
-                            preferences.lastAppCheck().set(Date().time)
-
-                            if (release != null) {
-                                AppUpdateResult.NewUpdate(release)
-                            } else {
-                                AppUpdateResult.NoNewUpdate
                             }
-                        }
-                } else {
-                    networkService.client
-                        .newCall(GET("https://api.github.com/repos/$GITHUB_REPO/releases/latest"))
-                        .await()
-                        .parseAs<GithubRelease>()
-                        .let {
-                            preferences.lastAppCheck().set(Date().time)
+                        preferences.lastAppCheck().set(Date().time)
 
-                            // Check if latest version is newer than the current version
-                            if (isNewVersion(it.version)) {
-                                AppUpdateResult.NewUpdate(it)
-                            } else {
-                                AppUpdateResult.NoNewUpdate
-                            }
+                        if (release != null) {
+                            AppUpdateResult.NewUpdate(release)
+                        } else {
+                            AppUpdateResult.NoNewUpdate
                         }
-                }
+                    }
+            } else {
+                networkService.client
+                    .newCall(GET("https://api.github.com/repos/$GITHUB_REPO/releases/latest"))
+                    .await()
+                    .parseAs<GithubRelease>()
+                    .let {
+                        preferences.lastAppCheck().set(Date().time)
+
+                        // Check if latest version is newer than the current version
+                        if (isNewVersion(it.version)) {
+                            AppUpdateResult.NewUpdate(it)
+                        } else {
+                            AppUpdateResult.NoNewUpdate
+                        }
+                    }
             }
             if (doExtrasAfterNewUpdate && result is AppUpdateResult.NewUpdate) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&

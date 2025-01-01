@@ -74,12 +74,10 @@ class ShikimoriApi(
                 .appendQueryParameter("search", search)
                 .appendQueryParameter("limit", "20")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .awaitSuccess()
-                    .parseAs<List<SMManga>>()
-                    .map { it.toTrack(trackId) }
-            }
+            authClient.newCall(GET(url.toString()))
+                .awaitSuccess()
+                .parseAs<List<SMManga>>()
+                .map { it.toTrack(trackId) }
         }
     }
 
@@ -102,51 +100,44 @@ class ShikimoriApi(
             val urlMangas = "$API_URL/mangas".toUri().buildUpon()
                 .appendPath(track.media_id.toString())
                 .build()
-            val manga = with(json) {
+            val manga =
                 authClient.newCall(GET(urlMangas.toString()))
                     .awaitSuccess()
                     .parseAs<SMManga>()
-            }
 
             val url = "$API_URL/v2/user_rates".toUri().buildUpon()
                 .appendQueryParameter("user_id", user_id)
                 .appendQueryParameter("target_id", track.media_id.toString())
                 .appendQueryParameter("target_type", "Manga")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .execute()
-                    .parseAs<List<SMUserListEntry>>()
-                    .let { entries ->
-                        if (entries.size > 1) {
-                            throw Exception("Too manga manga in response")
-                        }
-                        entries
-                            .map { it.toTrack(trackId, manga) }
-                            .firstOrNull()
+            authClient.newCall(GET(url.toString()))
+                .execute()
+                .parseAs<List<SMUserListEntry>>()
+                .let { entries ->
+                    if (entries.size > 1) {
+                        throw Exception("Too manga manga in response")
                     }
-            }
+                    entries
+                        .map { it.toTrack(trackId, manga) }
+                        .firstOrNull()
+                }
         }
     }
 
     suspend fun getCurrentUser(): Int {
         return withIOContext {
-            with(json) {
-                authClient.newCall(GET("$API_URL/users/whoami"))
-                    .awaitSuccess()
-                    .parseAs<SMUser>()
-                    .id
-            }
+            authClient.newCall(GET("$API_URL/users/whoami"))
+                .awaitSuccess()
+                .parseAs<SMUser>()
+                .id
         }
     }
 
     suspend fun accessToken(code: String): SMOAuth {
         return withIOContext {
-            with(json) {
-                client.newCall(accessTokenRequest(code))
-                    .awaitSuccess()
-                    .parseAs()
-            }
+            client.newCall(accessTokenRequest(code))
+                .awaitSuccess()
+                .parseAs()
         }
     }
 

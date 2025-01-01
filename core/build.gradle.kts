@@ -66,7 +66,6 @@ android {
 tasks {
     withType<KotlinCompile> {
         compilerOptions.freeCompilerArgs.addAll(
-            "-Xcontext-receivers",
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
         )

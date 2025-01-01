@@ -131,14 +131,12 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
 
     suspend fun search(query: String): List<TrackSearch> {
         return withIOContext {
-            with(json) {
-                authClient.newCall(GET(ALGOLIA_KEY_URL))
-                    .awaitSuccess()
-                    .parseAs<KitsuSearchResult>()
-                    .let {
-                        algoliaSearch(it.media.key, query)
-                    }
-            }
+            authClient.newCall(GET(ALGOLIA_KEY_URL))
+                .awaitSuccess()
+                .parseAs<KitsuSearchResult>()
+                .let {
+                    algoliaSearch(it.media.key, query)
+                }
         }
     }
 
@@ -147,25 +145,23 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
             val jsonObject = buildJsonObject {
                 put("params", "query=$query$ALGOLIA_FILTER")
             }
-            with(json) {
-                client.newCall(
-                    POST(
-                        ALGOLIA_URL,
-                        headers = headersOf(
-                            "X-Algolia-Application-Id",
-                            ALGOLIA_APP_ID,
-                            "X-Algolia-API-Key",
-                            key,
-                        ),
-                        body = jsonObject.toString().toRequestBody(jsonMime),
+            client.newCall(
+                POST(
+                    ALGOLIA_URL,
+                    headers = headersOf(
+                        "X-Algolia-Application-Id",
+                        ALGOLIA_APP_ID,
+                        "X-Algolia-API-Key",
+                        key,
                     ),
-                )
-                    .awaitSuccess()
-                    .parseAs<KitsuAlgoliaSearchResult>()
-                    .hits
-                    .filter { it.subtype != "novel" }
-                    .map { it.toTrack() }
-            }
+                    body = jsonObject.toString().toRequestBody(jsonMime),
+                ),
+            )
+                .awaitSuccess()
+                .parseAs<KitsuAlgoliaSearchResult>()
+                .hits
+                .filter { it.subtype != "novel" }
+                .map { it.toTrack() }
         }
     }
 
@@ -175,18 +171,16 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
                 .encodedQuery("filter[manga_id]=${track.media_id}&filter[user_id]=$userId")
                 .appendQueryParameter("include", "manga")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .awaitSuccess()
-                    .parseAs<KitsuListSearchResult>()
-                    .let {
-                        if (it.data.isNotEmpty() && it.included.isNotEmpty()) {
-                            it.firstToTrack()
-                        } else {
-                            null
-                        }
+            authClient.newCall(GET(url.toString()))
+                .awaitSuccess()
+                .parseAs<KitsuListSearchResult>()
+                .let {
+                    if (it.data.isNotEmpty() && it.included.isNotEmpty()) {
+                        it.firstToTrack()
+                    } else {
+                        null
                     }
-            }
+                }
         }
     }
 
@@ -196,18 +190,16 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
                 .encodedQuery("filter[id]=${track.media_id}")
                 .appendQueryParameter("include", "manga")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .awaitSuccess()
-                    .parseAs<KitsuListSearchResult>()
-                    .let {
-                        if (it.data.isNotEmpty() && it.included.isNotEmpty()) {
-                            it.firstToTrack()
-                        } else {
-                            throw Exception("Could not find manga")
-                        }
+            authClient.newCall(GET(url.toString()))
+                .awaitSuccess()
+                .parseAs<KitsuListSearchResult>()
+                .let {
+                    if (it.data.isNotEmpty() && it.included.isNotEmpty()) {
+                        it.firstToTrack()
+                    } else {
+                        throw Exception("Could not find manga")
                     }
-            }
+                }
         }
     }
 
@@ -220,11 +212,9 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
                 .add("client_id", CLIENT_ID)
                 .add("client_secret", CLIENT_SECRET)
                 .build()
-            with(json) {
-                client.newCall(POST(LOGIN_URL, body = formBody))
-                    .awaitSuccess()
-                    .parseAs()
-            }
+            client.newCall(POST(LOGIN_URL, body = formBody))
+                .awaitSuccess()
+                .parseAs()
         }
     }
 
@@ -233,13 +223,11 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
             val url = "${BASE_URL}users".toUri().buildUpon()
                 .encodedQuery("filter[self]=true")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .awaitSuccess()
-                    .parseAs<KitsuCurrentUserResult>()
-                    .data[0]
-                    .id
-            }
+            authClient.newCall(GET(url.toString()))
+                .awaitSuccess()
+                .parseAs<KitsuCurrentUserResult>()
+                .data[0]
+                .id
         }
     }
 

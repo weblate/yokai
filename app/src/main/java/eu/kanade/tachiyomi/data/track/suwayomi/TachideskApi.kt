@@ -52,9 +52,7 @@ class TachideskApi {
             trackUrl
         }
 
-        val manga = with(json) {
-            client.newCall(GET("$url/full", headers)).awaitSuccess().parseAs<MangaDataClass>()
-        }
+        val manga = client.newCall(GET("$url/full", headers)).awaitSuccess().parseAs<MangaDataClass>()
 
         TrackSearch.create(TrackManager.SUWAYOMI).apply {
             title = manga.title
@@ -74,9 +72,7 @@ class TachideskApi {
 
     suspend fun updateProgress(track: Track): Track {
         val url = track.tracking_url
-        val chapters = with(json) {
-            client.newCall(GET("$url/chapters", headers)).awaitSuccess().parseAs<List<ChapterDataClass>>()
-        }
+        val chapters = client.newCall(GET("$url/chapters", headers)).awaitSuccess().parseAs<List<ChapterDataClass>>()
         val lastChapterIndex = chapters.first { it.chapterNumber == track.last_chapter_read }.index
 
         client.newCall(

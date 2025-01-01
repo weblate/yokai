@@ -45,11 +45,9 @@ class MyAnimeListApi(private val client: OkHttpClient, interceptor: MyAnimeListI
                 .add("code_verifier", codeVerifier)
                 .add("grant_type", "authorization_code")
                 .build()
-            with(json) {
-                client.newCall(POST("$BASE_OAUTH_URL/token", body = formBody))
-                    .awaitSuccess()
-                    .parseAs()
-            }
+            client.newCall(POST("$BASE_OAUTH_URL/token", body = formBody))
+                .awaitSuccess()
+                .parseAs()
         }
     }
 
@@ -59,12 +57,10 @@ class MyAnimeListApi(private val client: OkHttpClient, interceptor: MyAnimeListI
                 .url("$BASE_API_URL/users/@me")
                 .get()
                 .build()
-            with(json) {
-                authClient.newCall(request)
-                    .awaitSuccess()
-                    .parseAs<MALUser>()
-                    .name
-            }
+            authClient.newCall(request)
+                .awaitSuccess()
+                .parseAs<MALUser>()
+                .name
         }
     }
 
@@ -75,15 +71,13 @@ class MyAnimeListApi(private val client: OkHttpClient, interceptor: MyAnimeListI
                 .appendQueryParameter("q", query.take(64))
                 .appendQueryParameter("nsfw", "true")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .awaitSuccess()
-                    .parseAs<MALSearchResult>()
-                    .data
-                    .map { async { getMangaDetails(it.node.id) } }
-                    .awaitAll()
-                    .filter { !it.publishing_type.contains("novel") }
-            }
+            authClient.newCall(GET(url.toString()))
+                .awaitSuccess()
+                .parseAs<MALSearchResult>()
+                .data
+                .map { async { getMangaDetails(it.node.id) } }
+                .awaitAll()
+                .filter { !it.publishing_type.contains("novel") }
         }
     }
 
@@ -93,24 +87,22 @@ class MyAnimeListApi(private val client: OkHttpClient, interceptor: MyAnimeListI
                 .appendPath(id.toString())
                 .appendQueryParameter("fields", "id,title,synopsis,num_chapters,main_picture,status,media_type,start_date")
                 .build()
-            with(json) {
-                authClient.newCall(GET(url.toString()))
-                    .awaitSuccess()
-                    .parseAs<MALManga>()
-                    .let {
-                        TrackSearch.create(TrackManager.MYANIMELIST).apply {
-                            media_id = it.id
-                            title = it.title
-                            summary = it.synopsis
-                            total_chapters = it.numChapters
-                            cover_url = it.covers.large
-                            tracking_url = "https://myanimelist.net/manga/$media_id"
-                            publishing_status = it.status.replace("_", " ")
-                            publishing_type = it.mediaType.replace("_", " ")
-                            start_date = it.startDate ?: ""
-                        }
+            authClient.newCall(GET(url.toString()))
+                .awaitSuccess()
+                .parseAs<MALManga>()
+                .let {
+                    TrackSearch.create(TrackManager.MYANIMELIST).apply {
+                        media_id = it.id
+                        title = it.title
+                        summary = it.synopsis
+                        total_chapters = it.numChapters
+                        cover_url = it.covers.large
+                        tracking_url = "https://myanimelist.net/manga/$media_id"
+                        publishing_status = it.status.replace("_", " ")
+                        publishing_type = it.mediaType.replace("_", " ")
+                        start_date = it.startDate ?: ""
                     }
-            }
+                }
         }
     }
 
@@ -132,12 +124,10 @@ class MyAnimeListApi(private val client: OkHttpClient, interceptor: MyAnimeListI
                 .url(mangaUrl(track.media_id).toString())
                 .put(formBodyBuilder.build())
                 .build()
-            with(json) {
-                authClient.newCall(request)
-                    .awaitSuccess()
-                    .parseAs<MALListItemStatus>()
-                    .let { parseMangaItem(it, track) }
-            }
+            authClient.newCall(request)
+                .awaitSuccess()
+                .parseAs<MALListItemStatus>()
+                .let { parseMangaItem(it, track) }
         }
     }
 
@@ -147,15 +137,13 @@ class MyAnimeListApi(private val client: OkHttpClient, interceptor: MyAnimeListI
                 .appendPath(track.media_id.toString())
                 .appendQueryParameter("fields", "num_chapters,my_list_status{start_date,finish_date}")
                 .build()
-            with(json) {
-                authClient.newCall(GET(uri.toString()))
-                    .awaitSuccess()
-                    .parseAs<MALListItem>()
-                    .let { item ->
-                        track.total_chapters = item.numChapters
-                        item.myListStatus?.let { parseMangaItem(it, track) }
-                    }
-            }
+            authClient.newCall(GET(uri.toString()))
+                .awaitSuccess()
+                .parseAs<MALListItem>()
+                .let { item ->
+                    track.total_chapters = item.numChapters
+                    item.myListStatus?.let { parseMangaItem(it, track) }
+                }
         }
     }
 
@@ -190,11 +178,9 @@ class MyAnimeListApi(private val client: OkHttpClient, interceptor: MyAnimeListI
                 .url(urlBuilder.build().toString())
                 .get()
                 .build()
-            with(json) {
-                authClient.newCall(request)
-                    .awaitSuccess()
-                    .parseAs()
-            }
+            authClient.newCall(request)
+                .awaitSuccess()
+                .parseAs()
         }
     }
 

@@ -26,21 +26,19 @@ class KomgaApi(private val client: OkHttpClient) {
         withIOContext {
             try {
                 val track =
-                    with(json) {
-                        if (url.contains(READLIST_API)) {
-                            client.newCall(GET(url))
-                                .awaitSuccess()
-                                .parseAs<ReadListDto>()
-                                .toTrack()
-                        } else {
-                            client.newCall(GET(url))
-                                .awaitSuccess()
-                                .parseAs<SeriesDto>()
-                                .toTrack()
-                        }
+                    if (url.contains(READLIST_API)) {
+                        client.newCall(GET(url))
+                            .awaitSuccess()
+                            .parseAs<ReadListDto>()
+                            .toTrack()
+                    } else {
+                        client.newCall(GET(url))
+                            .awaitSuccess()
+                            .parseAs<SeriesDto>()
+                            .toTrack()
                     }
 
-                val progress = with(json) {
+                val progress =
                     client
                         .newCall(
                             GET(
@@ -59,7 +57,6 @@ class KomgaApi(private val client: OkHttpClient) {
                                 it.parseAs<ReadProgressDto>().toV2()
                             }
                         }
-                }
                 track.apply {
                     cover_url = "$url/thumbnail"
                     tracking_url = url

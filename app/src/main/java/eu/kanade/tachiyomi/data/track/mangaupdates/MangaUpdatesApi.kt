@@ -37,15 +37,13 @@ class MangaUpdatesApi(
 
     suspend fun getSeriesListItem(track: Track): Pair<MUListItem, MURating?> {
         val listItem =
-            with(json) {
-                authClient.newCall(
-                    GET(
-                        url = "$BASE_URL/v1/lists/series/${track.media_id}",
-                    ),
-                )
-                    .awaitSuccess()
-                    .parseAs<MUListItem>()
-            }
+            authClient.newCall(
+                GET(
+                    url = "$BASE_URL/v1/lists/series/${track.media_id}",
+                ),
+            )
+                .awaitSuccess()
+                .parseAs<MUListItem>()
 
         val rating = getSeriesRating(track)
 
@@ -104,15 +102,13 @@ class MangaUpdatesApi(
 
     private suspend fun getSeriesRating(track: Track): MURating? {
         return try {
-            with(json) {
-                authClient.newCall(
-                    GET(
-                        url = "$BASE_URL/v1/series/${track.media_id}/rating",
-                    ),
-                )
-                    .awaitSuccess()
-                    .parseAs<MURating>()
-            }
+            authClient.newCall(
+                GET(
+                    url = "$BASE_URL/v1/series/${track.media_id}/rating",
+                ),
+            )
+                .awaitSuccess()
+                .parseAs<MURating>()
         } catch (e: Exception) {
             null
         }
@@ -151,18 +147,16 @@ class MangaUpdatesApi(
                 },
             )
         }
-        return with(json) {
-            client.newCall(
-                POST(
-                    url = "$BASE_URL/v1/series/search",
-                    body = body.toString().toRequestBody(CONTENT_TYPE),
-                ),
-            )
-                .awaitSuccess()
-                .parseAs<MUSearchResult>()
-                .results
-                .map { it.record }
-        }
+        return client.newCall(
+            POST(
+                url = "$BASE_URL/v1/series/search",
+                body = body.toString().toRequestBody(CONTENT_TYPE),
+            ),
+        )
+            .awaitSuccess()
+            .parseAs<MUSearchResult>()
+            .results
+            .map { it.record }
     }
 
     suspend fun authenticate(username: String, password: String): MUContext? {
@@ -170,17 +164,15 @@ class MangaUpdatesApi(
             put("username", username)
             put("password", password)
         }
-        return with(json) {
-            client.newCall(
-                PUT(
-                    url = "$BASE_URL/v1/account/login",
-                    body = body.toString().toRequestBody(CONTENT_TYPE),
-                ),
-            )
-                .awaitSuccess()
-                .parseAs<MULoginResponse>()
-                .context
-        }
+        return client.newCall(
+            PUT(
+                url = "$BASE_URL/v1/account/login",
+                body = body.toString().toRequestBody(CONTENT_TYPE),
+            ),
+        )
+            .awaitSuccess()
+            .parseAs<MULoginResponse>()
+            .context
     }
 
     companion object {

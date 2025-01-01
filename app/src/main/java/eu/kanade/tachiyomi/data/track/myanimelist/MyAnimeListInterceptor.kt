@@ -66,7 +66,7 @@ class MyAnimeListInterceptor(private val myanimelist: MyAnimeList) : Interceptor
 
         return runCatching {
             if (response.isSuccessful) {
-                with(json) { response.parseAs<MALOAuth>() }
+                response.parseAs<MALOAuth>()
             } else {
                 response.close()
                 null

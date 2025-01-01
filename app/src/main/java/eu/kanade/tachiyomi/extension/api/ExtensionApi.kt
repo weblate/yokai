@@ -14,7 +14,6 @@ import eu.kanade.tachiyomi.util.system.withIOContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
@@ -24,7 +23,6 @@ import yokai.domain.extension.repo.model.ExtensionRepo
 
 internal class ExtensionApi {
 
-    private val json: Json by injectLazy()
     private val networkService: NetworkHelper by injectLazy()
     private val getExtensionRepo: GetExtensionRepo by injectLazy()
     private val updateExtensionRepo: UpdateExtensionRepo by injectLazy()
@@ -47,11 +45,9 @@ internal class ExtensionApi {
                 .newCall(GET("$repoBaseUrl/index.min.json"))
                 .awaitSuccess()
 
-            with(json) {
-                response
-                    .parseAs<List<ExtensionJsonObject>>()
-                    .toExtensions(repoBaseUrl)
-            }
+            response
+                .parseAs<List<ExtensionJsonObject>>()
+                .toExtensions(repoBaseUrl)
         } catch (e: Throwable) {
             Logger.e(e) { "Failed to get extensions from $repoBaseUrl" }
             emptyList()

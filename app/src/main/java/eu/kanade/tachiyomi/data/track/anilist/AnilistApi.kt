@@ -49,15 +49,13 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
                     put("completedAt", createDate(track.finished_reading_date))
                 }
             }
-            with(json) {
-                authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
-                    .awaitSuccess()
-                    .parseAs<ALAddMangaResult>()
-                    .let {
-                        track.library_id = it.data.entry.id
-                        track
-                    }
-            }
+            authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
+                .awaitSuccess()
+                .parseAs<ALAddMangaResult>()
+                .let {
+                    track.library_id = it.data.entry.id
+                    track
+                }
         }
     }
 
@@ -74,11 +72,9 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
                     put("completedAt", createDate(track.finished_reading_date))
                 }
             }
-            with(json) {
-                authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
-                    .awaitSuccess()
-                track
-            }
+            authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
+                .awaitSuccess()
+            track
         }
     }
 
@@ -90,13 +86,11 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
                     put("query", search)
                 }
             }
-            with(json) {
-                authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
-                    .awaitSuccess()
-                    .parseAs<ALSearchResult>()
-                    .data.page.media
-                    .map { it.toALManga().toTrack() }
-            }
+            authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
+                .awaitSuccess()
+                .parseAs<ALSearchResult>()
+                .data.page.media
+                .map { it.toALManga().toTrack() }
         }
     }
 
@@ -109,15 +103,13 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
                     put("manga_id", track.media_id)
                 }
             }
-            with(json) {
-                authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
-                    .awaitSuccess()
-                    .parseAs<ALUserListMangaQueryResult>()
-                    .data.page.mediaList
-                    .map { it.toALUserManga() }
-                    .firstOrNull()
-                    ?.toTrack()
-            }
+            authClient.newCall(POST(API_URL, body = payload.toString().toRequestBody(jsonMime)))
+                .awaitSuccess()
+                .parseAs<ALUserListMangaQueryResult>()
+                .data.page.mediaList
+                .map { it.toALUserManga() }
+                .firstOrNull()
+                ?.toTrack()
         }
     }
 

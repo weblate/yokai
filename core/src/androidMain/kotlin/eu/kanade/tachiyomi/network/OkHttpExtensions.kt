@@ -3,7 +3,6 @@ package eu.kanade.tachiyomi.network
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resumeWithException
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
@@ -18,6 +17,8 @@ import okhttp3.Response
 import rx.Observable
 import rx.Producer
 import rx.Subscription
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 val jsonMime = "application/json; charset=utf-8".toMediaType()
 
@@ -68,7 +69,6 @@ fun Call.asObservableSuccess(): Observable<Response> {
 }
 
 // Based on https://github.com/gildor/kotlin-coroutines-okhttp
-@OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun Call.await(callStack: Array<StackTraceElement>): Response {
     return suspendCancellableCoroutine { continuation ->
         val callback =
@@ -131,13 +131,11 @@ fun OkHttpClient.newCachelessCallWithProgress(request: Request, listener: Progre
     return progressClient.newCall(request)
 }
 
-context(Json)
 inline fun <reified T> Response.parseAs(): T {
-    return decodeFromJsonResponse(serializer(), this)
+    return Injekt.get<Json>().decodeFromJsonResponse(serializer(), this)
 }
 
-context(Json)
-fun <T> decodeFromJsonResponse(
+fun <T> Json.decodeFromJsonResponse(
     deserializer: DeserializationStrategy<T>,
     response: Response,
 ): T {

@@ -44,7 +44,7 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
         try {
             client.newCall(request).execute().use {
                 when (it.code) {
-                    200 -> return with(json) { it.parseAs<AuthenticationDto>().token }
+                    200 -> return it.parseAs<AuthenticationDto>().token
                     401 -> {
                         Logger.w { "Unauthorized / api key not valid: Cleaned api URL: $apiUrl, Api key is empty: ${apiKey.isEmpty()}" }
                         throw IOException("Unauthorized / api key not valid")
@@ -89,11 +89,10 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
     private fun getTotalChapters(url: String): Long {
         val requestUrl = getApiVolumesUrl(url)
         try {
-            val listVolumeDto = with(json) {
+            val listVolumeDto =
                 authClient.newCall(GET(requestUrl))
                     .execute()
                     .parseAs<List<VolumeDto>>()
-            }
             var volumeNumber = 0L
             var maxChapterNumber = 0L
             for (volume in listVolumeDto) {
@@ -117,9 +116,7 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
         try {
             authClient.newCall(GET(requestUrl)).execute().use {
                 if (it.code == 200) {
-                    return with(json) {
-                        it.parseAs<ChapterDto>().number!!.replace(",", ".").toFloat()
-                    }
+                    return it.parseAs<ChapterDto>().number!!.replace(",", ".").toFloat()
                 }
                 if (it.code == 204) {
                     return 0F
@@ -134,11 +131,10 @@ class KavitaApi(private val client: OkHttpClient, interceptor: KavitaInterceptor
 
     suspend fun getTrackSearch(url: String): TrackSearch = withIOContext {
         try {
-            val serieDto: SeriesDto = with(json) {
+            val serieDto: SeriesDto =
                 authClient.newCall(GET(url))
                     .awaitSuccess()
                     .parseAs()
-            }
 
             val track = serieDto.toTrack()
             track.apply {

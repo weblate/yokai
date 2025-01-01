@@ -753,11 +753,6 @@
     <string name="by_chapter_number">حسب أرقام الفصول</string>
     <string name="by_source_order">حسب ترتيب المصدر</string>
     <string name="not_bookmarked">لم يعلَّم</string>
-    <string name="external_storage_download_notice">يتطلب TachiyomiJ2K الوصول إلى جميع الملفات لينزِّل الفصول. اضغط هنا ثم مكِّن «السماح بالوصول لإدارة جميع الملفات.»</string>
-    <string name="external_storage_permission_notice">يحتاج TachiyomiJ2K للوصول إلى كلِّ الملفَّات في أندرويد ١١، فبذلك ينزِّل الفصول ويحتاط ويقرأ السلاسل المنزَّلة.
-        \n
-        \nمكِّن «اسمح بإدارة كافة الملفات.» عندما تراها في الشاشة التالية</string>
-    <string name="all_files_permission_required">إذن الوصول إلى الملفات مطلوب</string>
     <string name="warning">تحذير</string>
     <string name="search_">بحث %1$s</string>
     <string name="orientation">الاتجاه</string>
@@ -904,7 +899,6 @@
     <string name="violet">بنفسجي</string>
     <string name="long_strip_side_padding_5">٥٪</string>
     <string name="user_agent_string">سلسلة وكيل المستخدم المبدئية</string>
-    <string name="loader_rar5_error">تنسيق RARv5 ليس مدعومًا</string>
     <string name="language_requires_app_restart">تتطلَّب بعض اللغات إعادة التشغيل لتظهر صحيحةً</string>
     <string name="downloaded_chapters">الفصول المنزَّلة</string>
     <string name="auto_download_while_reading">التحميل تلقائيا أثناء القراءة</string>

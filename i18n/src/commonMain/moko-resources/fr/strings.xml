@@ -740,10 +740,6 @@
     <string name="pad_cutout_areas">Surfaces coupées du bloc</string>
     <string name="category_hopper_long_press">Action d\'un appui long sur le filtre par Catégorie</string>
     <string name="cancel_all_for_series">Tout annuler pour cette série</string>
-    <string name="external_storage_download_notice">Pour télécharger des chapitres, TachiyomiJ2K nécessite l\'accès à tous les fichiers. Appuyez ici, puis activez « Autoriser l\'accès pour gérer tous les fichiers.»</string>
-    <string name="external_storage_permission_notice">Sous Android 11, TachiyomiJ2K nécessite l\'accès à tous les fichiers pour pouvoir télécharger des chapitres, créer des sauvegardes automatiques et lire des manga locaux.
-\n
-\nSur l\'écran suivant, activez « Autoriser l\'accès pour gérer tous les fichiers.»</string>
     <string name="include_">Inclure : %s</string>
     <string name="force_download_cache_refresh_summary">Cela forcera le recalcul du cache de téléchargement. Utile si vous avez modifié des fichiers téléchargés en dehors de l\'application et que vous souhaitez que l\'application les récupère</string>
     <string name="force_download_cache_refresh">Rafraichir le cache de téléchargement</string>
@@ -767,7 +763,6 @@
     <string name="pure_black_dark_mode">Mode sombre noir pur</string>
     <string name="side_nav_icon_alignment">Alignement de l\'icône de navigation latérale</string>
     <string name="chocolate_strawberries">Fraises au chocolat</string>
-    <string name="all_files_permission_required">Autorisations de fichiers requises</string>
     <string name="set_as_default">Sélectionner par défaut</string>
     <string name="by_update_date">Par date de téléversement</string>
     <string name="not_bookmarked">Non mis en favoris</string>
@@ -939,7 +934,6 @@
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Agents utilisateurs par défaut</string>
     <string name="language_requires_app_restart">Certains langages peuvent nécessiter un redémarrage de l\'application pour s\'afficher correctement</string>
-    <string name="loader_rar5_error">Le format RARv5 n\'est pas supporté</string>
     <string name="auto_download_while_reading">Téléchargement anticipé pendant la lecture</string>
     <string name="downloaded_chapters">Chapitres téléchargés</string>
     <string name="stat">Stat</string>

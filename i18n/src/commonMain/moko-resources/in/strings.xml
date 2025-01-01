@@ -706,7 +706,6 @@
     <string name="turn_on_">Aktifkan %s</string>
     <string name="no_alternatives_found">Tidak ada Alternatif Ditemukan</string>
     <string name="no_chapters_found_for_migration">Tidak ada bab yang ditemukan, manga ini tidak dapat digunakan untuk migrasi</string>
-    <string name="all_files_permission_required">Perizinan berkas diperlukan</string>
     <string name="about_dont_kill_my_app">Beberapa pabrikan mempunyai batasan aplikasi tambahan yang mematikan layanan latar belakang. Website ini memiliki info lebih lanjut untuk memperbaikinya.</string>
     <string name="force_download_cache_refresh_summary">Hal ini akan memaksa cache unduhan untuk mengkalkulasi ulang. Berguna jika Anda memodifikasi unduhan di luar aplikasi ini dan ingin aplikasi ini untuk membacanya</string>
     <string name="some_extensions_may_prompt">Beberapa ekstensi masih mengingatkan untuk dipasang terlebih dulu.</string>
@@ -757,10 +756,6 @@
     <string name="show_number_of_items">Tampilkan jumlah item</string>
     <string name="update_completed">Pembaruan selesai</string>
     <string name="not_bookmarked">Tak ditandai</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K membutuhkan akses semua berkas untuk mengunduh bab. Ketuk di sini, lalu izinkan \"Izinkan akses untuk mengatur semua berkas.\"</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K membutuhkan akses ke semua berkas di Android 11 untuk mengunduh bab, membuat cadangan otomatis, dan memuat manga lokal.
-\n
-\nPada layar selanjutnya, izinkan \"Izinkan akses untuk mengatur semua berkas\"</string>
     <string name="restrictions_">Pembatasan: %1$s</string>
     <string name="remove_x_from_service_and_add_y">Hapus %1$s dari %2$s dan tambahkan %3$s</string>
     <string name="recently_installed">Dipasang baru-baru ini</string>
@@ -905,7 +900,6 @@
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">String agen pengguna default</string>
     <string name="language_requires_app_restart">Beberapa bahasa mungkin memerlukan peluncuran ulang aplikasi untuk ditampilkan dengan benar</string>
-    <string name="loader_rar5_error">Format RARv5 tidak didukung</string>
     <string name="all_read_manga">Semua manga yang dibaca</string>
     <string name="clear_db_exclude_read">Simpan manga dengan membaca chapter</string>
     <string name="auto_download_while_reading">Unduh otomatis ketika sedang membaca</string>
@@ -959,4 +953,7 @@
     <string name="library_entries">Entri pustaka</string>
     <string name="pref_debug_info">Info debug</string>
     <string name="label_background_activity">Aktivitas dibelakang layar</string>
+    <string name="onboarding_heading">Selamat datang!</string>
+    <string name="action_menu_overflow_description">Opsi lebih lanjut</string>
+    <string name="refresh">Segarkan</string>
 </resources>

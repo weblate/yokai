@@ -760,11 +760,6 @@
     <string name="global_updates">Actualizaciones globales</string>
     <string name="open_random_series">Abrir una serie aleatoria</string>
     <string name="show_number_of_items">Mostrar el número de elementos</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K requiere acceso a todos los archivos para descargar capítulos. Toque aquí y, acto seguido, active \"Acceso a todos los archivos.\"</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K requiere acceso a todos los archivos en Android 11 para descargar los capítulos, crear las copias de seguridad automáticas y leer las series locales.
-\n
-\nEn la siguiente pantalla, activa \"Permitir el acceso para gestionar todos los archivos\"</string>
-    <string name="all_files_permission_required">Se necesita el permiso de archivos</string>
     <string name="warning">Advertencia</string>
     <string name="orientation">Orientación</string>
     <string name="default_orientation">Orientación predeterminada</string>
@@ -935,7 +930,6 @@
     <string name="violet">Violeta</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Nombre del navegador a usar («user agent»)</string>
-    <string name="loader_rar5_error">La app no soporta el formato RARv5</string>
     <string name="language_requires_app_restart">Algunos idiomas pueden requerir un reinicio de la aplicación para mostrarse correctamente</string>
     <string name="clear_db_exclude_read">Guardar las entradas con los capítulos leídos</string>
     <string name="all_read_manga">Todas las series leídas</string>

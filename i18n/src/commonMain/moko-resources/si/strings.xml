@@ -4,7 +4,6 @@
     <string name="chapter_">පරිච්ඡේදය %1$s</string>
     <string name="chapter_x_of_y">පරිච්ඡේද %2$d හි %1$d වන පරිච්ඡේදය</string>
     <string name="title">නම</string>
-    <string name="all_files_permission_required">ෆයිල් සඳහා අවසරය අවශ්‍යයි</string>
     <string name="manhwa">මන්හ්වා (කොරියන්)</string>
     <string name="manhua">මන්හුවා (චීන)</string>
     <string name="comic">කොමික්</string>
@@ -15,11 +14,7 @@
     <string name="cancelled">නවතා ඇත</string>
     <string name="unlock_library">ප්‍රවේශ වීමට අගුලු හරින්න</string>
     <string name="unlock">අන්ලොක්</string>
-    <string name="external_storage_permission_notice">තචියොමිJ2K සියලුම ෆයිල් සඳහා ප්‍රවේශ වීමට ඉඩ ඉල්ලයි. මෙය ස්වයංක්‍රීය බැකප් සෑදීමටත්, පරිච්ඡේද බාගැනීම් සඳහාත්, දුරකථනයේ ඇති මංගා කියවීම සඳහාත් වේ.
-\n
-\nඊළග තීරයේ දැක්වෙන \"allow access to manage all files\" සක්‍රීය කරන්න</string>
     <string name="manga">මංගා</string>
-    <string name="external_storage_download_notice">තචියොමිJ2K සියලුම ෆයිල් සඳහා ප්‍රවේශ වීමට ඉඩ ඉල්ලයි. මෙය පරිච්ඡේද බාගැනීම් සඳහා වේ. මෙතන ඔබා, \"Allow access to manage all files.\" සක්‍රීය කරන්න</string>
     <string name="not_started">කියවීමට පටන් අරන් නෑ</string>
     <string name="artist">චිත්‍ර ශිල්පියා</string>
     <string name="in_progress">කියවමින් පවතී</string>

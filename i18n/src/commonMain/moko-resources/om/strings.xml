@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="all_files_permission_required">Hayyama faayilii barbaachisa</string>
     <string name="manga">Mangaa</string>
     <string name="not_started">Hin jalqabne</string>
     <string name="in_progress">Adeemsa irra jira</string>
@@ -37,11 +36,7 @@
     <string name="by_update_date">Guyyaa olkaa\'ameen</string>
     <string name="category">Ramaddii</string>
     <string name="categories">Ramaddiiwwan</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K boqonnaawwan buusuuf, ofumaan dilbeessa uumuu fi mangaa naannoo dubbisuuf, faayiloota Android 11 keessa jiran hunda argachuu barbaachisa.
-\n
-\n Foddaa itti aanu irratti, \"Allow access to manage all files.\" Kan jedhuuf eeyyami .</string>
     <string name="comic">Baacoo</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K boqonnaawwan buusuuf faayiloota hunda argachuu barbaada. As tuqi, sana booda \"Allow access to manage all files\" kan jedhuuf eeyyami.</string>
     <string name="author">Barreessaa</string>
     <string name="new_chapters">Boqonnaawwan haaraa</string>
     <string name="publishing_finished">Maxxansi xumurame</string>

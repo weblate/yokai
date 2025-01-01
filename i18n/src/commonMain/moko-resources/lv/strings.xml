@@ -166,8 +166,6 @@
     <string name="title">Nosaukums</string>
     <string name="not_started">Nav sākts</string>
     <string name="comic">Komikss</string>
-    <string name="manhua"/>
-    <string name="manhwa"/>
     <string name="invert_tapping">Invertētas skāriena zonas</string>
     <string name="none">Neviens</string>
     <string name="tracked">Izsekots</string>
@@ -508,7 +506,6 @@
     <string name="updates_last_update_info">Bibliotēka pēdējo reizi atjaunināta: %s</string>
     <string name="download_ahead">Lejupielādēt uz priekšu</string>
     <string name="appwidget_unavailable_locked">Logrīks nav pieejams, ja ir iespējota lietotņu bloķēšana</string>
-    <string name="loader_rar5_error">RARv5 formāts netiek atbalstīts</string>
     <string name="popular">Populārs</string>
     <string name="appwidget_updates_description">Skatiet savus nesen atjauninātos bibliotēkas ierakstus</string>
     <string name="error_user_agent_string_invalid">Nederīga lietotāja agent virkne</string>

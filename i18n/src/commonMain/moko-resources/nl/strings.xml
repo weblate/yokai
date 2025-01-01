@@ -706,9 +706,6 @@
     <string name="mark_range_as_read">Markeer een reeks hoofstukken als gelezen</string>
     <string name="cancel_all_for_series">Alles annuleren voor deze serie</string>
     <string name="app_shortcuts">App-snelkoppelingen</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K heeft toegang nodig tot alle bestanden in Android 11 om hoofdstukken te downloaden, automatische backups aan te maken, en lokale manga te lezen.
-\n
-\nOp het volgende scherm, schakel \"Toegang verlenen om alle bestanden te beheren\" in.</string>
     <string name="orientation">Oriëntatie</string>
     <string name="default_orientation">Standaardoriëntatie</string>
     <string name="include_">Inbegrepen: %s</string>
@@ -742,8 +739,6 @@
     <string name="by_chapter_number">Op hoofdstuknummer</string>
     <string name="by_source_order">Op volgorde van de bron</string>
     <string name="not_bookmarked">Geen bladwijzer</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K heeft toegang nodig tot alle bestanden om hoofdstukken te downloaden. Tik hier, en zet dan \"Toegang verlenen om alle bestanden te beheren.\" aan.</string>
-    <string name="all_files_permission_required">Bestandsrechten vereist</string>
     <string name="restore_miui_warning">Backup/herstellen werkt waarschijnlijk niet goed als de MIUI Optimalisatie is uitgeschakeld.</string>
     <string name="over_wifi_only">Alleen via Wi-Fi</string>
     <string name="tako">Tako</string>
@@ -883,7 +878,6 @@
     <string name="lavender">Lavender</string>
     <string name="language_requires_app_restart">Voor sommige talen moet de app opnieuw worden gestart om correct weer te geven</string>
     <string name="download_ahead">Download vooruit</string>
-    <string name="loader_rar5_error">RARv5-indeling wordt niet ondersteund</string>
     <string name="tap_zones">Tik op zones</string>
     <string name="violet">Violet</string>
     <string name="user_agent_string">Standaard user agent string</string>

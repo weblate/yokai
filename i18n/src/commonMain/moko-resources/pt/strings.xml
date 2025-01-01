@@ -787,11 +787,6 @@
     <string name="by_chapter_number">Por número do capítulo</string>
     <string name="by_source_order">Pela ordem da fonte</string>
     <string name="not_bookmarked">Não foi marcado</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K requer o acesso total aos ficheiros para descarregar os capítulos. Clique aqui, então ative \"Permitir o acesso para gerir todos os ficheiros\"</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K requer acesso a todos os ficheiros no Android 11 para transferir capítulos, criar backups automáticos, e ler mangas locais.
-\n
-\nNo próximo ecrã, ative \"Permitir acesso de gestão de todos os ficheiros.\"</string>
-    <string name="all_files_permission_required">Permissões de ficheiro necessárias</string>
     <string name="force_download_cache_refresh_summary">Isto forçará a cache transferida a recalcular. Útil se modificou transferências fora desta app e quer que a app as apanhe</string>
     <string name="use_side_navigation">Usar navegação lateral</string>
     <string name="sapphire_dusk">Safira sombreado</string>
@@ -916,7 +911,6 @@
     <string name="split_tall_images_summary">Melhora o desempenho do leitor</string>
     <string name="tap_zones">Zonas de toque</string>
     <string name="long_strip_side_padding_5">5%</string>
-    <string name="loader_rar5_error">O formato RARv5 não é suportado</string>
     <string name="downloaded_chapters">Capítulos transferidos</string>
     <string name="auto_download_while_reading">Transferência automática durante leitura</string>
     <string name="download_ahead_info">Apenas funciona em entradas na biblioteca e se o capítulo atual, mais o próximo, já estiverem transferidos</string>

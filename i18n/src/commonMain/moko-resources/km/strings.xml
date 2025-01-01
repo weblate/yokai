@@ -118,10 +118,6 @@
     <string name="share">ចែករំលែក</string>
     <string name="unpin">ឈប់ខ្ទាស់</string>
     <string name="view_chapters">មើលភាគ</string>
-    <string name="all_files_permission_required">ត្រូវការការអនុញ្ញាត</string>
-    <string name="external_storage_permission_notice">តាឈិយ៉ូមិJ2K ត្រូវការaccessរាល់ហ្វល់ទាំងអស់នៅក្នុងអ៊េនដ្រយដ៏១១ដើម្បីទាញយកភាគ បង្កើតbackupsដោយស្វ័យប្រវត្ត និងអានម៊េងហ្គាដែលមានស្រាប់នៅក្នុងទូរសព្ទ។
-\n
-\nនៅអេក្រង់បន្ទាប់​ បើក \"អនុញ្ញាតឲ្យaccessដើម្បីគ្រប់គ្រងរាល់ហ្វាល់ទាំងអស់\"</string>
     <string name="manhwa">ម៉ាន់វ៉ា</string>
     <string name="manhua">ម៉ាន់ហួរ</string>
     <string name="comic">កូមិច</string>
@@ -130,7 +126,6 @@
     <string name="artist">វិចិត្រករ</string>
     <string name="not_started">មិនទាន់ចាប់ផ្ដើម</string>
     <string name="read">អាន</string>
-    <string name="external_storage_download_notice">តាឈិយ៉ូមិJ2Kត្រូវការaccessរាល់ហ្វាល់ទាំងអស់ដើម្បីទាញយកភាគ ចុចត្រង់នេះបន្ទាប់មក \"អនុញ្ញាតឲ្យaccessដើម្បីគ្រប់គ្រងរាល់ហ្វាល់ទាំងអស់\"</string>
     <string name="in_progress">កំពុងដំណើរការ</string>
     <string name="description">សង្ខេបរឿង</string>
     <string name="ascending">ឡើង</string>
@@ -175,7 +170,6 @@
     <string name="local_invalid_format">ទម្រង់ភាគមិនត្រឹមត្រួវ</string>
     <string name="updating_library">កំពុងតែធ្វើបច្ចុប្បន្នភាពបណ្ណាល័យ</string>
     <string name="selected_">បានជ្រើសរើស: %1$d</string>
-    <string name="loader_rar5_error">ទម្រង់RARv5មិនត្រូវបានទទួលយកទេ</string>
     <string name="no_chapters_to_delete">គ្មានភាគដែលឲ្យលុបបានទេ</string>
     <string name="category">ថ្នាក់</string>
     <string name="_already_in_queue">%1$s មាននៅក្នុងជួរ</string>

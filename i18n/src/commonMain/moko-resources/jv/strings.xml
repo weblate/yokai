@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="all_files_permission_required">Ijin berkas dibutuhake</string>
     <string name="manga">Manga</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K mbutuhake akses menyang kabeh file ing Android 11 kanggo ndownload bab, nggawe serep otomatis, lan maca manga lokal.
-\n
-\n Ing layar sabanjure, aktifake \"Allow akses kanggo ngatur kabeh file.\"</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K mbutuhake akses menyang kabeh file kanggo ngundhuh bab. Tutul ing kene, banjur aktifake \"Allow akses kanggo ngatur kabeh file.\"</string>
     <string name="manhwa">Manhwa</string>
     <string name="title">Judhul</string>
     <string name="chapters">Bab</string>

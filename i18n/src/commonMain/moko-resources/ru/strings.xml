@@ -736,9 +736,6 @@
     <string name="mark_range_as_read">Отметить определённое количество глав, как «Прочитано»</string>
     <string name="cancel_all_for_series">Отменить всё для этой серии</string>
     <string name="app_shortcuts">Ярлыки приложения</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K требует доступ ко всем файлам системы Android 11 для загрузки глав, создания автоматических резервных копий и чтения личных серий.
-\n
-\nНа следующем экране включите «Разрешить доступ к управлению всеми файлами.»</string>
     <string name="include_">Включать: %s</string>
     <string name="exclude_">Исключать: %s</string>
     <string name="force_download_cache_refresh_summary">Это заставит пересчитать кэш загрузок. Полезно, если вы изменили загрузки вне этого приложения и хотите, чтобы приложение их подхватило</string>
@@ -762,8 +759,6 @@
     <string name="global_updates">Глобальные обновления</string>
     <string name="open_random_series">Открыть случайную серию</string>
     <string name="show_number_of_items">Показать количество серий</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K требует доступ ко всем файлам для загрузки глав. Нажмите здесь, затем включите «Разрешить доступ к управлению всеми файлами.»</string>
-    <string name="all_files_permission_required">Требуются права доступа к файлам</string>
     <string name="orientation">Ориентация</string>
     <string name="default_orientation">Ориентация по умолчанию</string>
     <string name="restore_miui_warning">Резервная копия/Восстановление может не работать должным образом, если отключена «Оптимизация MIUI».</string>
@@ -935,7 +930,6 @@
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">User agent по умолчанию</string>
     <string name="language_requires_app_restart">Некоторым языкам требуется перезапуск приложения для корректного отображения</string>
-    <string name="loader_rar5_error">Формат RARv5 не поддерживается</string>
     <string name="auto_download_while_reading">При чтении</string>
     <string name="downloaded_chapters">Загруженные главы</string>
     <string name="stat">Статистика</string>

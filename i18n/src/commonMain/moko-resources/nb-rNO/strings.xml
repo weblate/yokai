@@ -445,7 +445,6 @@
     <string name="add_x_to">Legg til %1$s i …</string>
     <string name="in_progress">Underveis</string>
     <string name="not_started">Ikke startet</string>
-    <string name="all_files_permission_required">Filtilganger kreves</string>
     <string name="name">Navn</string>
     <string name="download_unread">Ulest</string>
     <string name="disabled">Avskrudd</string>
@@ -717,10 +716,6 @@
     <string name="open_random_series">Åpne en tilfeldig serie</string>
     <string name="manhua">Manhua</string>
     <string name="manhwa">Manhwa</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K krever tilgang til alle filer for å laste ned kapitler. Trykk her og skru på «Tillat tilgang til håndtering av alle filer.»</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K krever tilgang til alle filer i Android 11 for å laste ned kapitler, opprette automatiske sikkerhetskopier, og lese lokal manga.
-\n
-\nPå neste skjerm skrur du på «Innvilg tilgang til håndtering av alle filer.»</string>
     <string name="sapphire_dusk">Safirskumring</string>
     <string name="ask_on_chapters_page">Slett under global oppdatering, spør på kapittelsiden</string>
     <string name="clean_orphaned_downloads">Fjern foreldreløse</string>
@@ -871,7 +866,6 @@
     <string name="auto_download_while_reading">Last ned automatisk mens du leser</string>
     <string name="download_notifier_split_failed">Kunne ikke dele det nedlastede bildet</string>
     <string name="download_notifier_split_page_not_found">Side %d ble ikke funnet under deling</string>
-    <string name="loader_rar5_error">RARv5-formatet støttes ikke</string>
     <string name="download_ahead">Last ned i forkant</string>
     <string name="download_ahead_info">Fungerer kun på oppføringer i biblioteket, og hvis det nåværende kapittelet samt det neste allerede er lastet ned</string>
     <string name="split_tall_images">Del opp høye bilder</string>

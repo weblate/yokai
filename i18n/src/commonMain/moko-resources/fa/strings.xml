@@ -303,7 +303,6 @@
     <string name="not_started">آغاز نشده</string>
     <string name="comic">کامیک</string>
     <string name="manhwa">مانهوای</string>
-    <string name="app_name" translatable="false"/>
     <string name="locale">محلی</string>
     <string name="automatic_backups">پشتیبان گیری خودکار</string>
     <string name="invalid_backup_file">فایل پشتیبان نامعتبر است</string>
@@ -444,10 +443,6 @@
     <string name="clear_history">پاک کردن سابقه</string>
     <string name="clear_history_completed">سابقه پاک شد</string>
     <string name="clear_history_confirmation">آیا مطمئن هستید؟ تمام سابقه از دست خواهد رفت.</string>
-    <string name="all_files_permission_required">اجازه دسترسی به فایل</string>
-    <string name="external_storage_permission_notice">تاچیومی J2K نیازمند دسترسی به همه فایل ها در اندوید 11 برای دانلود قسمت ها، ایجاد پشتیبان گیری خودکار، و خواندن مانگاهای محلی( مانگا های موجود در دستگاه شما) است.
-\n
-\nدر صفحه بعدی، اجازه \"مجاز بودن دسترسی به مدیریت همه پرونده‌ها\" را بدهید.</string>
     <string name="pref_manage_notifications">مدیریت اعلان‌ها</string>
     <string name="channel_skipped">رد شده</string>
     <string name="getting_started_guide">راهنمای شروع</string>
@@ -501,7 +496,6 @@
     <string name="split_tall_images">نصف کردن خودکار عکس های بلند</string>
     <string name="tap_zones">مناطق قابل لمس</string>
     <string name="category_cannot_be_blank">نام دسته نمی تواند خالی باشد</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K برای دانلود فصل ها نیاز به دسترسی به همه فایل ها دارد. روی اینجا ضربه بزنید، سپس «Allow access to management all files» را فعال کنید.</string>
     <string name="updating_">در حال بروز رسانی %1$s</string>
     <string name="update_completed">به روز رسانی تکمیل شد</string>
     <string name="search_tips_show_periodically">نکات جستجو به صورت دوره ای نمایش داده می شود. برای جستجوی، پیشنهاد را به مدت طولانی فشار دهید.</string>

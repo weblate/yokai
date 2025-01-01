@@ -67,11 +67,6 @@
     <string name="right_and_left_nav">Tuo ug Wala</string>
     <string name="pref_inverted_colors">Baliktad</string>
     <string name="edge_nav">Edge</string>
-    <string name="all_files_permission_required">Gikinahanglan ang mga permiso sa file</string>
-    <string name="external_storage_permission_notice">Ang TachiyomiJ2K nanginahanglan pag-access sa tanan nga mga file sa Android 11 aron ma-download ang mga kapitulo, paghimo og awtomatikong pag-backup, ug pagbasa sa lokal nga manga.
-\n
-\nSa sunod nga screen, i-enable ang \"Allow access to manage all files.\"</string>
-    <string name="external_storage_download_notice">Ang TachiyomiJ2K nanginahanglan og access sa tanan nga mga file aron ma-download ang mga kapitulo. I-tap dinhi, dayon i-enable ang \"Allow access to manage all files.\"</string>
     <string name="manhwa">Manhwa</string>
     <string name="right_to_left_viewer">Tuo ngadto sa wala</string>
     <string name="vertical_viewer">Bertikal</string>

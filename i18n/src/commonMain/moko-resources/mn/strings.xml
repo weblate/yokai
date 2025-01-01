@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="all_files_permission_required">Файлийн зөвшөөрөл шаардлагатай</string>
     <string name="comic">Комик</string>
-    <string name="external_storage_permission_notice">\"TachiyomiJ2K\" нь Андройд 11-ийн бүх файлыг хэрэглэх зөвшөөрөл авч байж утсан дээрээс тань манга уншиж, манга татах боломжтой.
-\n
-\nДараа гарч ирэх хэсэгт, бүх файлийг удирдахыг зөвшөөрнө үү.</string>
     <string name="not_started">Эхлээгүй</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K бүх файлуудыг ашиглах зөвшөөрөлтэй байж манга татах боломжтой. Энд дараад, бүх файлыг удирдах зөвшөөрөл олгоно уу.</string>
     <string name="manhwa">Манхуа</string>
     <string name="manhua">Манхуа</string>
     <string name="unlock_library">Ашиглахын тулд онгойлгоно уу</string>
@@ -45,7 +40,6 @@
     <string name="chapters_removed">Бүлгийг устгалаа.</string>
     <string name="chapter_not_found">Бүлэг олдсонгүй</string>
     <string name="no_chapters_error">Ямар ч бүлэг олдсонгүй</string>
-    <string name="loader_rar5_error">\"RARv5\" формат дэмжихгүй</string>
     <string name="local_invalid_format">Бүлгийн бичиглэл буруу</string>
     <string name="order_by">Эрэмбэлэх</string>
     <string name="no_pages_found">Хуудас олдсонгүй</string>

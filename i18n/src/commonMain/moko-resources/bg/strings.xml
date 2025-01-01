@@ -543,11 +543,7 @@
     <string name="theme_buttons_based_on_cover">Бутони за тема, базирани на корицата</string>
     <string name="over_any_network">През всяка мрежа</string>
     <string name="dont_auto_update">Не актуализирайте автоматично</string>
-    <string name="all_files_permission_required">Необходими са разрешения за файлове</string>
     <string name="category_deleted">Изтрита категория</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K изисква достъп до всички файлове в Android 11, за да изтегля глави, да създава автоматични резервни копия и да чете локална манга.
-        \n
-        \nНа следващия екран разрешете \"Разрешаване на достъп за управление на всички файлове.\"</string>
     <string name="add_categories">Добавете категории</string>
     <string name="no_matches_for_filters">Няма намерени съвпадения за текущите ви филтри</string>
     <string name="show_all_categories">Покажи всички категории</string>
@@ -667,7 +663,6 @@
     <string name="auto_updates">Автоматични актуализации</string>
     <string name="auto_update_app">Приложение за автоматично актуализиране</string>
     <string name="over_wifi_only">Само през Wi-Fi</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K изисква достъп до всички файлове, за да изтегли главите. Докоснете тук, след което разрешете \"Разрешаване на достъп за управление на всички файлове.\"</string>
     <string name="could_not_install_update">Не можа да се инсталира актуализация</string>
     <string name="update_completed">Завършена актуализация</string>
     <string name="your_library">Вашата библиотека</string>
@@ -888,7 +883,6 @@
     <string name="notification_update_skipped">%1$d пропуснати обновление/я</string>
     <string name="skipped_reason_not_started">Пропусната, понеже не е започната</string>
     <string name="pref_clear_webview_data">Изчисти данните на WebView</string>
-    <string name="loader_rar5_error">Форматът RARv5 не се поддържа</string>
     <string name="backup_restore_invalid_uri">Грешка: празен URI</string>
     <string name="split_tall_images_summary">Подобрява производителността на четеца</string>
     <string name="webview_data_deleted">Данните на WebView изчистени</string>

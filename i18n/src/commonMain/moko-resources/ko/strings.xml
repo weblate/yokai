@@ -469,12 +469,6 @@
     <string name="not_started">읽지 않은 작품</string>
     <string name="in_progress">진행 중</string>
     <string name="new_chapters">새 장</string>
-    <string name="all_files_permission_required">안드로이드의 파일 사용권한이 필요합니다</string>
-    <string name="external_storage_permission_notice">안드로이드 정책 변화에 따라 앱은 사용자에게 파일 접근권한을 요청합니다.
-\nTachiyomiJ2K는 안드로이드11의 모든 파일에 접근하여, 챕터를 다운로드하고, 자동백업을 만들며, 휴대전화 저장소에 저장된 오프라인 만화를 읽을 수 있습니다.
-\n
-\n이에, 다음 화면에서 TachiyomiJ2K에 대한 \"모든 파일에 대한 접근권한\"을 허용해 주십시오.</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K는 챕터를 다운로드하기 위해 모든 파일에 액세스해야 합니다. 여기를 탭한 다음에 “모든 파일을 관리하기 위한 액세스 허용\"을 활성화해주십시오.</string>
     <string name="manhwa">한국만화</string>
     <string name="manhua">중국만화</string>
     <string name="unlock">잠금 해제</string>
@@ -617,7 +611,6 @@
     <string name="search_tips_show_periodically">검색 팁이 주기적으로 표시됩니다. 추천 검색어를 길게 눌러 검색하세요.</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">기본 사용자 에이전트 문자열</string>
-    <string name="loader_rar5_error">RARv5 포맷은 지원되지 않습니다</string>
     <string name="double_pages">이중 페이지</string>
     <string name="page_preload_amount">페이지 미리 로드 크기</string>
     <string name="uniform_covers">유니폼 커버</string>

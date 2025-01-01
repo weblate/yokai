@@ -706,10 +706,6 @@
     <string name="app_shortcuts">Pintasan apl</string>
     <string name="mark_range_as_unread">Tandakan julat bab sebagai belum dibaca</string>
     <string name="mark_range_as_read">Tandakan julat bab sebagai dibaca</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K memerlukan akses kepada semua fail di Android 11 untuk memuat turun bab, membuat sandaran automatik, dan membaca manga lokal.
-\n
-\nPada skrin berikutnya, hidupkan \"benarkan akses mengurus semua fail.\"</string>
-    <string name="all_files_permission_required">Kebenaran fail diperlukan</string>
     <string name="source_unsupported">Sumber tidak disokong</string>
     <string name="hide_notification_content">Sembunyikan kandungan pemberitahuan</string>
     <string name="about_dont_kill_my_app">Sesetengah pengeluar ada sekatan tambahan pada aplikasi yang akan menghentikan perkidmatan latar belakang. Laman web ini ada maklumat cara membaikinya.</string>
@@ -805,7 +801,6 @@
     <string name="tap_zones">Zon ketik</string>
     <string name="by_source_order">Mengikut urutan sumber</string>
     <string name="language_badge">Lambang bahasa</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K memerlukan akses kepada semua fail untuk memuat turun bab. Tap sini, kemudian hidupkan \"benarkan akses untuk mengurus semua fail.\"</string>
     <string name="show_outline_around_covers">Papar garisan luar sekeliling muka hadapan</string>
     <string name="new_beta_version_available">Versi beta baharu tersedia!</string>
     <string name="scanlators">scanlator</string>
@@ -816,7 +811,6 @@
     <string name="update_completed">kemas kini siap</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Untaian ejen pengguna lalai</string>
-    <string name="loader_rar5_error">Format RARv5 tidak disokong</string>
     <string name="not_bookmarked">Tidak ditanda buku</string>
     <string name="show_">Papar %1$s</string>
     <string name="add_tag">Tambah label</string>

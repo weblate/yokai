@@ -1,56 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <plurals name="extension_updates_available">
         <item quantity="one">Laajennospäivitys saatavilla</item>
         <item quantity="other">%d laajennospäivitystä saatavilla</item>
     </plurals>
-
     <plurals name="category_plural">
         <item quantity="one">%d kategoria</item>
         <item quantity="other">%d kategoriaa</item>
     </plurals>
-
-    <plurals name="pages_left">
-        <item quantity="one">%1$d sivu jäljellä</item>
-        <item quantity="other">%1$d sivua jäljellä</item>
-    </plurals>
-
     <plurals name="remove_n_chapters">
         <item quantity="one">Poistetaanko %1$d ladattu luku\?</item>
         <item quantity="other">Poistetaanko %1$d ladattua lukua\?</item>
     </plurals>
-
     <plurals name="for_n_titles">
         <item quantity="one">Nimikkeelle %d</item>
         <item quantity="other">Nimikkeille %d</item>
     </plurals>
-
     <plurals name="restore_completed_message">
         <item quantity="one">Valmistui %1$s virheitä löytyi %2$s</item>
         <item quantity="other">Valmistui %1$s virheitä löytyi %2$s</item>
     </plurals>
-
     <plurals name="cache_cleared">
         <item quantity="one">Välimuisti tyhjennetty. %d tiedosto on poistettu</item>
         <item quantity="other">Välimuisti tyhjennetty. %d tiedostoa on poistettu</item>
     </plurals>
-
     <plurals name="manga_migrated">
         <item quantity="one">%d manga siirretty</item>
         <item quantity="other">%d mangaa siirretty</item>
     </plurals>
-
     <plurals name="copy_manga">
         <item quantity="one">Kopioi %1$d%2$s manga\?</item>
         <item quantity="other">Kopioi %1$d%2$s mangasta\?</item>
     </plurals>
-
     <plurals name="migrate_manga">
         <item quantity="one">Siirrä %1$d%2$s manga\?</item>
         <item quantity="other">Siirrä %1$d%2$s mangaa\?</item>
     </plurals>
-
     <plurals name="deleted_chapters">
         <item quantity="one">Luku on poistettu lähteestä:
 \n%2$s
@@ -60,37 +45,30 @@
 \n
 \nPoistetaanko niiden lataukset\?</item>
     </plurals>
-
     <plurals name="notification_and_n_more">
         <item quantity="one">ja %1$d lisää luku</item>
         <item quantity="other">ja %1$d lisää lukua</item>
     </plurals>
-
     <plurals name="chapters_plural">
         <item quantity="one">%1$s luku</item>
         <item quantity="other">%1$s lukua</item>
     </plurals>
-
     <plurals name="cleanup_done">
         <item quantity="one">Siivous tehty. Poistettu %d kansio</item>
         <item quantity="other">Siivous tehty. Poistettu %d kansiota</item>
     </plurals>
-
     <plurals name="after_minutes">
         <item quantity="one">%1$s minuutin jälkeen</item>
         <item quantity="other">%1$s minuutin jälkeen</item>
     </plurals>
-
     <plurals name="pages_plural">
         <item quantity="one">%1$d sivu</item>
         <item quantity="other">%1$d sivua</item>
     </plurals>
-
     <plurals name="next_unread_chapters">
         <item quantity="one">Seuraava lukematon luku</item>
         <item quantity="other">Seuraavat %d lukematonta lukua</item>
     </plurals>
-
     <plurals name="missing_chapters_warning">
         <item quantity="one">1 puuttuva luku</item>
         <item quantity="other">%d puuttuvaa lukua</item>

@@ -729,11 +729,6 @@
     <string name="global_updates">Agiornamentos globales</string>
     <string name="open_random_series">Aberi una sèrie a casu</string>
     <string name="show_number_of_items">Ammustra su nùmeru de elementos</string>
-    <string name="external_storage_download_notice">Pro iscarrigare capìtulos TachiyomiJ2K tenet bisòngiu de s\'atzessu a totu sos documentos. Incarca inoghe, e a pustis abìlita \"Permite s\'atzessu pro amministrare totu sos documentos.\"</string>
-    <string name="external_storage_permission_notice">Pro iscarrigare capìtulos, creare còpias de seguresa e lèghere manga in locale TachiyomiJ2K tenet bisòngiu de s\'atzessu a sos documentos de Android 11.
-\n
-\nIn s\'ischermada imbeniente abìlita \"Permite s\'atzessu pro amministrare totu sos documentos.\"</string>
-    <string name="all_files_permission_required">Permissos de iscritura pedidos</string>
     <string name="orientation">Orientamentu</string>
     <string name="default_orientation">Orientamentu predefinidu</string>
     <string name="restore_miui_warning">Sa còpia de seguresa e su riprìstinu diant pòdere non funtzionare comente si tocat si s\'otimizatzione MIUI est disabilitada.</string>
@@ -905,7 +900,6 @@
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Istringa de agente de utente predefinida</string>
     <string name="language_requires_app_restart">Unas cantas limbas diant pòdere bisongiare chi torres a allùghere s\'aplicatzione pro las ammustrare comente si tocat</string>
-    <string name="loader_rar5_error">Su formadu RARv5 no est suportadu</string>
     <string name="clear_db_exclude_read">Mantene sos manga cun capìtulos lèghidos</string>
     <string name="all_read_manga">Totu sos manga lèghidos</string>
     <string name="auto_download_while_reading">Iscàrriga in automàticu durante sa letura</string>

@@ -2,7 +2,6 @@
 <resources>
     <string name="name">Ad</string>
     <string name="more">Daha çox</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K bölümləri yükləmək üçün bütün fayllara giriş tələb edir. Bura klikləyin, sonra \"Bütün faylları idarə etmək üçün girişə icazə verin\" funksiyasını aktivləşdirin.</string>
     <string name="manga">Manga</string>
     <string name="comic">Komiks</string>
     <string name="in_progress">Davam edir</string>
@@ -40,17 +39,12 @@
     <string name="order_by">Sırala</string>
     <string name="no_chapters_error">Bölümlər tapılmadı</string>
     <string name="no_pages_found">Səhifələr tapılmadı</string>
-    <string name="all_files_permission_required">Fayl icazələri tələb olunur</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K bölümləri yükləmək, avtomatik ehtiyat nüsxələri yaratmaq və lokal manqa oxumaq üçün Android 11-də bütün fayllara giriş icazəsi olmalıdır.
-        \n
-        \nNövbəti ekranda \"Bütün faylları idarə etmək üçün girişə icazə verin\" seçimini aktivləşdirin.</string>
     <string name="manhwa">Manhwa</string>
     <string name="manhua">Manhua</string>
     <string name="lock_when_idle">Boş olduqda kilidlə</string>
     <string name="chapters">Bölümlər</string>
     <string name="marked_as_read">Oxundu olaraq işarələndi</string>
     <string name="chapters_removed">Bölümlər silindi.</string>
-    <string name="loader_rar5_error">RARv5 formatı dəstəklənmir</string>
     <string name="remove_all_downloads">Bütün endirilənlər silinsin\?</string>
     <string name="no_chapters_to_delete">Silmək üçün bölüm yoxdur</string>
     <string name="by_source_order">Mənbə sırasıyla</string>

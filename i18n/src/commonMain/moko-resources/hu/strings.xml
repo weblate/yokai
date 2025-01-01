@@ -504,13 +504,10 @@
     <string name="started">Elkezdett</string>
     <string name="restore_missing_trackers">Nem bejelentkezett trackerek:</string>
     <string name="artist">Művész</string>
-    <string name="all_files_permission_required">Fájl engedély szükséges</string>
-    <string name="external_storage_download_notice">A TachiyomiJ2K a fejezetek letöltéséhez hozzáférést igényel az összes fájlhoz. Koppintson ide, majd engedélyezze a \"Hozzáférés engedélyezése az összes fájl kezeléséhez\"</string>
     <string name="move_x_to">Az %1$s áthelyezése ide…</string>
     <string name="add_x_to">%1$s hozzáadása a…</string>
     <string name="unlock_library">Feloldás a könyvtárhoz való hozzáféréshez</string>
     <string name="unlock">Felold</string>
-    <string name="external_storage_permission_notice">A TachiyomiJ2K a fejezetek letöltéséhez, automatikus biztossági mentés létrehozásához és a hely manga olvasásához hozzáférést igényel az összes fájlhoz. A következő képernyőn engedélyeze \"Hozzáférés engedélyezése az összes fájl kezeléséhez\"</string>
     <string name="language_badge">Nyelv jelvények</string>
     <string name="not_started">Nincs elkezdve</string>
     <string name="no_matches_for_filters">Nincs találat a jelenlegi filterre</string>
@@ -535,7 +532,6 @@
     <string name="series_type">Sorozat típus</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Alap hálózati kliens szöveg</string>
-    <string name="loader_rar5_error">RARv5 formátum nem támogatót</string>
     <string name="downloaded_chapters">Letölzozz fejezetek</string>
     <string name="hide_start_reading_button">Kezdése gomb elrejtése</string>
     <string name="more_library_settings">Több könyvtár beállítás</string>

@@ -716,11 +716,6 @@
     <string name="source_unsupported">Źródło nie jest wspierane</string>
     <string name="restore_miui_warning">Funkcje kopii zapasowej mogą nie działać, jeśli optymalizacja nakładki MIUI jest wyłączona.</string>
     <string name="hide_notification_content">Ukryj zawartość powiadomienia</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K wymaga dostępu do wszystkich plików w celu pobrania rozdziałów. Dotknij tutaj, a następnie włącz \"Zezwól na dostęp do wszystkich plików.\"</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K wymaga dostępu do wszystkich plików w Android 11 w celu pobierania rozdziałów, tworzenia automatycznych backupów oraz czytania lokalnie zapisanych mang.
-\n
-\nNa następnym ekranie włącz opcję \"Zezwól na dostęp do wszystkich plików.\"</string>
-    <string name="all_files_permission_required">Wymagany jest dostęp do plików</string>
     <string name="preview">Podgląd</string>
     <string name="recently_installed">Ostatnio zainstalowane</string>
     <string name="recently_updated">Ostatnio zaktualizowane</string>
@@ -929,7 +924,6 @@
     <string name="open_in_app">Otwórz w aplikacji</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Domyślny user agent string</string>
-    <string name="loader_rar5_error">Format RARv5 jest nieobsługiwany</string>
     <string name="battery_not_low">Poziom baterii nie jest niski</string>
     <string name="warning_enroll_into_beta">Wersje beta mogą być niestabilne i mogą wymagać wyczyszczenia danych aplikacji.</string>
     <string name="violet">Fiołkowy</string>

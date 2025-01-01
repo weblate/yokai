@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="onboarding_heading">Bem Vindo(a)!</string>
     <string name="onboarding_description">Vamos definir algumas coisas primeiro. Você sempre pode fazer alterações nas configurações depois também.</string>
     <string name="onboarding_finish">Começar</string>
@@ -17,11 +16,9 @@
     <string name="onboarding_permission_ignore_battery_opts">Uso de bateria em plano de fundo</string>
     <string name="onboarding_permission_ignore_battery_opts_description">Evite interrupções para tarefas longas como atualizações da biblioteca, downloads e restauração de backups.</string>
     <string name="onboarding_permission_action_grant">Conceder</string>
-
     <string name="no_location_set">Local de armazenamento não definido</string>
     <string name="invalid_location">Local inválido: %s</string>
     <string name="invalid_location_generic">Local inválido</string>
-
     <!--Models-->
     <!-- Manga Type -->
     <string name="manga">Mangás</string>
@@ -366,13 +363,11 @@
     <string name="check_for_updates">Procurar por atualizações</string>
     <string name="secure_screen">Tela segura</string>
     <string name="security">Segurança</string>
-
     <!-- Storage -->
     <string name="data_and_storage">Dados e armazenamento</string>
     <string name="storage_location">Local de armazenamento</string>
     <string name="storage_usage">Uso de armazenamento</string>
     <string name="available_disk_space_info">Disponível: %1$s / Total: %2$s</string>
-
     <!-- Backup -->
     <string name="backup">Backup</string>
     <string name="create_backup">Criar backup</string>
@@ -428,7 +423,6 @@
     <string name="use_last_saved_migration_preferences">Usar as últimas preferências de pré-migração 
     salvas e fontes para migrar em massa</string>
     <string name="you_can_migrate_in_library">Você também pode migrar selecionando o mangá na sua biblioteca</string>
-    
     <!-- Extension repos -->
     <string name="source_repos">Repositórios de extensões</string>
     <string name="label_add_repo">Adicionar novo Repositório</string>
@@ -441,7 +435,6 @@
     <string name="action_replace_repo">Substituir</string>
     <string name="action_replace_repo_title">Assinatura já existente</string>
     <string name="action_replace_repo_message">O repositório %1$s tem a mesma assinatura que %2$s.\nSe isso é esperado, %2$s será substituído, caso contrário entre em contato com o dono do repositório.</string>
-
     <!-- About section -->
     <string name="version">Versão</string>
     <string name="build_time">Data de compilação</string>
@@ -797,9 +790,6 @@
     <string name="mark_range_as_read">Marcar um intervalo de capítulos como lido</string>
     <string name="cancel_all_for_series">Cancelar todos para esta série</string>
     <string name="app_shortcuts">Atalhos do app</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K requer acesso total ao armazenamento do Android 11 para baixar capítulos, criar backups automáticos e ler mangás locais.
-\n
-\nNa próxima tela ative \"Permitir acesso de gerenciamento de todos arquivos.\"</string>
     <string name="dark_theme">Tema escuro</string>
     <string name="light_theme">Tema claro</string>
     <string name="no_match_found">Não foi encontrado resultado similar</string>
@@ -808,8 +798,6 @@
     <string name="global_updates">Atualizações globais</string>
     <string name="open_random_series">Abrir uma série aleatória</string>
     <string name="show_number_of_items">Mostrar o número de itens</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K requer o acesso a todos os arquivos para baixar os capítulos. Toque aqui, então habilite \"Permitir o acesso para gerenciar todos os arquivos\"</string>
-    <string name="all_files_permission_required">Permissão para acessar arquivos</string>
     <string name="restore_miui_warning">Backup/restauração pode não funcionar adequadamente se a Otimização MIUI estiver desabilitada.</string>
     <string name="set_as_default">Definir como padrão</string>
     <string name="add_tag">Adicionar tag</string>
@@ -996,7 +984,6 @@
     <string name="violet">Violeta</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">User Agent padrão</string>
-    <string name="loader_rar5_error">O formato RARv5 não é suportado</string>
     <string name="auto_download_while_reading">Download automático durante a leitura</string>
     <string name="downloaded_chapters">Capítulos disponíveis offline</string>
     <string name="stat">Status</string>
@@ -1054,7 +1041,7 @@
     <string name="apply">Aplicar</string>
     <string name="pref_debug_info">Informações de depuração</string>
     <string name="label_background_activity">Atividade em segundo plano</string>
-        <string name="action_revoke_all_extensions">Revogar todas as extensões confiáveis</string>
+    <string name="action_revoke_all_extensions">Revogar todas as extensões confiáveis</string>
     <string name="backup_private_pref">Incluir configurações sensíveis (por exemplo, tokens de login de rastreadores)</string>
     <string name="file_picker_uri_permission_unsupported">Falha ao adquirir acesso persistente à pasta. O aplicativo pode se comportar de forma inesperada.</string>
     <string name="internal_error">Erro interno: %s</string>

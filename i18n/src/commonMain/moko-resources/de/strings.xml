@@ -762,11 +762,6 @@
     <string name="global_updates">Globale Aktualisierungen</string>
     <string name="open_random_series">Eine beliebige Serie öffnen</string>
     <string name="show_number_of_items">Anzahl der Elemente anzeigen</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K benötigt zum Herunterladen von Kapiteln Zugriff auf alle Dateien. Tippen Sie hier und aktivieren Sie dann „Zugriff auf die Verwaltung aller Dateien zulassen.“</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K benötigt Zugriff auf alle Dateien in Android 11 um Kapitel herunterzuladen, automatische Backups zu erstellen und lokale Manga zu lesen.
-\n
-\nAktivieren Sie im nächsten Bildschirm „Zugriff auf die Verwaltung aller Dateien zulassen.“</string>
-    <string name="all_files_permission_required">Dateiberechtigungen erforderlich</string>
     <string name="hide_notification_content">Benachrichtigungsinhalt verbergen</string>
     <string name="source_unsupported">Quelle wird nicht unterstützt</string>
     <string name="orientation">Ausrichtung</string>
@@ -940,7 +935,6 @@
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Standard-User-Agent-Text</string>
     <string name="language_requires_app_restart">Manche Sprachen benötigen möglicherweise einen Neustart der App zur korrekten Anzeige</string>
-    <string name="loader_rar5_error">Das RARv5-Format wird nicht unterstützt</string>
     <string name="all_read_manga">Alle gelesenen Manga</string>
     <string name="clear_db_exclude_read">Manga mit gelesenen Kapiteln behalten</string>
     <string name="auto_download_while_reading">Automatisch während dem Lesen herunterladen</string>

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="external_storage_permission_notice">TachiyomiJ2K-k Android 11-kako fitxategi guztietara sarrera behar du kapituluak jaitsi, segurtasun kopia automatikoak sortu, eta manga era lokalean irakurtzeko.
-\n
-\nHurrengo pantailan, aukeratu \"Baimendu fitxategi guztietarako sarrera.\"</string>
     <string name="adding_category_to_queue">%1$s eguneratze-zerrendara gehitzen</string>
     <string name="category_deleted">Kategoria ezabatua</string>
     <string name="create_new_category">Kategoria berria sortu</string>
@@ -67,8 +64,6 @@
     <string name="tag">Etiketa</string>
     <string name="unlock">Desblokeatu</string>
     <string name="unlock_library">Desblokeatu liburutegira sartzeko</string>
-    <string name="all_files_permission_required">Fitxategi baimenak behar dira</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K-k fitxategi guztietara sartzeko baimena behar du kapituluak jaisteko. Egin klik hemen, eta aukeratu \"Baimendu fitxategiak kudeatzeko sarrera.\"</string>
     <string name="manga">Manga</string>
     <string name="manhwa">Manhwa</string>
     <string name="manhua">Manhua</string>

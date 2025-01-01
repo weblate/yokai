@@ -228,12 +228,7 @@
     <string name="chapter_">Capítulo %1$s</string>
     <string name="all_chapters_read">Todos os capítulos lidos</string>
     <string name="scanlators">Scanlators</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K require acceso a tódolos arquivos de Android 11 para descargar capítulos, facer copias de seguridade automáticas e ler manga en local.
-\n
-\nNa seguinte pantalla, marca \"Permitir acceso á xestión de tódolos arquivos.\"</string>
-    <string name="all_files_permission_required">Requírense permisos de arquivo</string>
     <string name="not_bookmarked">Non gardado nos marcadores</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K require acceso a tódolos arquivos para descargar capítulos, Preme eiquí, e despóis marca \"Permitir acceso á xestión de tódolos arquivos.\"</string>
     <string name="author">Autor</string>
     <string name="move_x_to">Move %1$s a…</string>
     <string name="select_inverse">Selección inversa</string>
@@ -288,7 +283,6 @@
     <string name="clear_database_completed">Borráronse as entradas</string>
     <string name="download_new_chapters">Baixar capítulos novos</string>
     <string name="select_cover_image">Elexir a imaxe de portada</string>
-    <string name="loader_rar5_error">O formato RARv5 non está soportado</string>
     <string name="skipped_reason_not_caught_up">Oimitiuse porque hai capítulos sin ler</string>
     <string name="refresh_tracking">Actualizar o seguemento</string>
     <string name="channel_errors">Erros</string>

@@ -289,7 +289,6 @@
     <string name="order_by">Rūšiuoti pagal</string>
     <string name="no_chapters_error">Skyrių nerasta</string>
     <string name="no_pages_found">Puslapių nerasta</string>
-    <string name="loader_rar5_error">RARv5 formatas nepalaikomas</string>
     <string name="always_show_chapter_transition">Visada rodyti skyrių perėjimus</string>
     <string name="pref_long_strip_side_padding">Šoninis spaudinėjimas</string>
     <string name="long_strip_side_padding_0">Nėra</string>

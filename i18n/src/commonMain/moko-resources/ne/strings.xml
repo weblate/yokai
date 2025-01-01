@@ -75,7 +75,6 @@
     <string name="local_invalid_format">अवैध अध्याय ढाँचा</string>
     <string name="order_by">द्वारा अर्डर गर्नुहोस्</string>
     <string name="no_chapters_error">अध्यायहरू भेटिएन</string>
-    <string name="loader_rar5_error">RARv5 समर्थित छैन</string>
     <string name="by_chapter_number">अध्याय संख्या द्वारा</string>
     <string name="by_update_date">अपलोड मिति द्वारा</string>
     <string name="categories">वर्गहरू</string>
@@ -420,8 +419,6 @@
     <string name="unknown_error">अज्ञात त्रुटि</string>
     <string name="unpin">अनपिन</string>
     <string name="view_chapters">अध्यायहरू हेर्नुहोस्</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K लाई अध्यायहरू डाउनलोड गर्न सबै फाइलहरू माथि पहुँच चाहिन्छ। यहाँ ट्याप गर्नुहोस्, त्यसपछि \"Allow access to manage all files.\" सक्षम गर्नुहोस्।</string>
-    <string name="all_files_permission_required">फाइल अनुमति आवश्यक छ</string>
     <string name="manga">माङ्गा</string>
     <string name="manhwa">मानह्वा</string>
     <string name="manhua">मानहुवा</string>
@@ -448,9 +445,6 @@
     <string name="lock_with_biometrics">अनलक गर्न आवश्यक छ</string>
     <string name="remove_all_downloads">सबै डाउनलोडहरू हटाउने हो\?</string>
     <string name="backup_in_progress">ब्याकअप पहिले नै प्रगतिमा छ</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K लाई अध्यायहरू डाउनलोड गर्न, स्वचालित ब्याकअपहरू सिर्जना गर्न र लोकल श्रृङ्खला पढ्नको लागि Android 11 मा सबै फाइलहरू माथि पहुँच चाहिन्छ।
-\n
-\nअर्को स्क्रिनमा, \"Allow access to manage all files.\" सक्षम गर्नुहोस्।</string>
     <string name="tracker">ट्र्याकर</string>
     <string name="titles_in_library">पुस्तकालयमा शीर्षकहरू</string>
     <string name="tracked_titles">ट्र्याक गरिएका शीर्षकहरू</string>

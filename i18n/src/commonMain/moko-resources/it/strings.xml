@@ -749,11 +749,6 @@
     <string name="hide_unread_badges">Nascondi badge non letti</string>
     <string name="open_random_series">Apri una serie casuale</string>
     <string name="show_number_of_items">Mostra il numero di oggetti</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K richiede accesso a tutti i file per scaricare i capitoli. Fai tap qui, poi fornisci l\'autorizzazione per \"Accesso a tutti i file.\"</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K richiede accesso ai file per scaricare capitoli, creare backup automatici e leggere serie in locale.
-\n
-\nAlla prossima schermata, fornisci l\'autorizzazione per \"Accesso a tutti i file.\"</string>
-    <string name="all_files_permission_required">Permessi per la gestione dei file richiesti</string>
     <string name="turn_off_">Disattiva %s</string>
     <string name="turn_on_">Attiva %s</string>
     <string name="selection">Selezione</string>
@@ -938,7 +933,6 @@
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Stringa user agent predefinita del browser</string>
     <string name="language_requires_app_restart">Alcune lingue potrebbero richiedere un riavvio dell\'app per esserve visualizzate in maniera corretta</string>
-    <string name="loader_rar5_error">Il formato RARv5 non è supportato</string>
     <string name="clear_db_exclude_read">Tieni le voci con capitoli letti</string>
     <string name="all_read_manga">Tutte le serie lette</string>
     <string name="downloaded_chapters">Capitoli scaricati</string>

@@ -536,7 +536,6 @@
     <string name="by_chapter_number">Podle čísla kapitoly</string>
     <string name="by_source_order">Podle pořadí zdroje</string>
     <string name="not_bookmarked">Nezaloženo</string>
-    <string name="all_files_permission_required">Je vyžadováno oprávnění k souborům</string>
     <string name="set_as_default">Nastavit jako výchozí</string>
     <string name="custom_manga_info">Vlastní info o manze</string>
     <string name="source_not_installed">Zdroj není nainstalován</string>
@@ -618,9 +617,6 @@
     <string name="download_queue_size_warning">Varování: hromadné stahování může vést k tomu, že zdroje zpomalí a/nebo zablokují Tachiyomi. Klepnutím se dozvíte více.</string>
     <string name="every_3_days">Každé 3 dny</string>
     <string name="reduces_banding_impacts_performance">Snižuje pruhování barev, ale může mít vliv na výkon</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K požaduje přístup ke všem souborům v Android 11, aby mohlo stahovat kapitoly, vytvářet zálohy a načíst lokálně uloženou mangu.
-\n
-\nNa obrazovce povolte \"Povolit aplikaci přístup ke všem souborům.\"</string>
     <string name="extension_updates_pending">Rozšíření čekající na aktualizaci</string>
     <string name="reading_">Čtení %1$s</string>
     <string name="grouped">Ve skupině</string>
@@ -634,7 +630,6 @@
     <string name="crop_borders_paged">Oříznout okraje (Strankované)</string>
     <string name="split_double_pages">Rozdělit dvojité strany</string>
     <string name="pad_cutout_areas">Vyplnit vystřihnuté oblasti</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K potřebuje přístup k celému úložišti, aby mohlo stahovat kapitoly. Klikněte sem, poté povolte \"Povolit aplikaci přístup k souborům.\"</string>
     <string name="show_read_chapters_all">Zobrazovat přečtené kapitoly v Ve skupině a Všechny</string>
     <string name="share_combined_pages">Sdílet kombinované strany</string>
     <string name="smart_by_page">Chytře (podle strany)</string>
@@ -905,7 +900,6 @@
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Výchozí řetězec uživatelského agenta</string>
     <string name="language_requires_app_restart">Některé jazyky mohou pro správné zobrazení vyžadovat opětovné spuštění aplikace</string>
-    <string name="loader_rar5_error">Formát RARv5 není podporován</string>
     <string name="all_read_manga">Všechna přečtená manga</string>
     <string name="clear_db_exclude_read">Ponechejte mangu s přečtenými kapitolami</string>
     <string name="auto_download_while_reading">Automatické stahování při čtení</string>

@@ -398,7 +398,6 @@
     <string name="label_global_search">Пур ҫӗрте шыра</string>
     <string name="remove_all_downloads">Пур тиеве катертмелле-и\?</string>
     <string name="cancel_all_for_series">Ҫак серилӗх валли пурне те пӑрахӑҫла</string>
-    <string name="all_files_permission_required">Файлсене курма ирӗк памалла</string>
     <string name="by_chapter_number">Сыпӑк шучӗпе</string>
     <string name="by_update_date">Тиесе илни вӑхӑчӗпе</string>
     <string name="set_as_default">Яланхилле</string>

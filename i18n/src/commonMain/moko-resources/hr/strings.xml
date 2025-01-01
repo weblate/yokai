@@ -706,10 +706,6 @@
     <string name="mark_range_as_read">Označi raspon poglavlja kao pročitana</string>
     <string name="app_shortcuts">Prečaci programa</string>
     <string name="cancel_all_for_series">Prekini sve za ovu seriju</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K zahtijeva pristup svim datotekama u Androidu 11 za preuzimanje poglavlja, za stvaranje automatskih sigurnosnih kopija i za čitanje lokalnih serija.
-\n
-\nU sljedećem ekranu aktiviraj „Dopusti pristup za upravljanje svim datotekama”.</string>
-    <string name="all_files_permission_required">Potrebne su dozvole za datoteke</string>
     <string name="global_updates">Globalna aktualiziranja</string>
     <string name="open_random_series">Otvaranje slučajne serije</string>
     <string name="show_number_of_items">Prikaži broj elemenata</string>
@@ -719,7 +715,6 @@
     <string name="by_source_order">Po imenu izvora</string>
     <string name="by_chapter_number">Po broju poglavlja</string>
     <string name="not_bookmarked">Nije zabilježeno</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K zahtijeva pristup svim datotekama za preuzimanje poglavlja. Dodirni ovdje, zatim uključi „Dopusti pristup za upravljanje svim datotekama”.</string>
     <string name="about_dont_kill_my_app">Neki proizvođači imaju dodatna programska ograničenja koja onemogućuju pozadinske usluge. Ova web-stranica sadrži daljnje informacije o tome kako to popraviti.</string>
     <string name="force_download_cache_refresh_summary">Ovo će prisiliti ponovno izračunavanje predmemorije preuzimanja. Korisno, ako su preuzimanja promijenjena izvan ovog programa i ako želiš da ih program preuzme</string>
     <string name="warning">Upozorenje</string>
@@ -904,7 +899,6 @@
     <string name="open_in_app">Otvori u programu</string>
     <string name="long_strip_side_padding_5">5 %</string>
     <string name="language_requires_app_restart">Neki jezici mogu zahtijevati ponovno pokretanje aplikacije za ispravan prikaz</string>
-    <string name="loader_rar5_error">RARv5 format nije podržan</string>
     <string name="all_read_manga">Sve pročitane serije</string>
     <string name="user_agent_string">Standardni izraz korisničkog agenta</string>
     <string name="clear_db_exclude_read">Čuvaj unose s pročitanim poglavljima</string>

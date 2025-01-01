@@ -453,10 +453,6 @@
     <string name="all_chapters_read">以下章節已讀</string>
     <string name="last_read_chapter_">最後閱讀的章節%1$s</string>
     <string name="new_chapters">新章節</string>
-    <string name="external_storage_permission_notice">為了讓您順利下載漫畫章節、自動進行資料備份，以及閱讀儲存在本機的漫畫，TachiyomiJ2K 需要您授予其在 Android 11 環境下的「全檔案存取」權限。
-\n
-\n接下來，在出現的畫面中，請啟動「允許存取並管理所有檔案」選項。</string>
-    <string name="external_storage_download_notice">Tachiyomi 需要有儲存空間存取權限才能下載漫畫。請允許\"管理儲存空間\"</string>
     <string name="getting_started_guide">入門指南</string>
     <string name="help_translate">協助翻譯</string>
     <string name="search_extensions">搜尋擴充套件…</string>
@@ -574,7 +570,6 @@
     <string name="all_sources">所有來源</string>
     <string name="source_hidden">隱藏來源</string>
     <string name="press_and_hold_to_also_reset">按住不放也可以重設章節歷史</string>
-    <string name="all_files_permission_required">需要檔案權限</string>
     <string name="always_show_current_category">永遠顯示目前分類</string>
     <string name="group_library_by">書櫃分組…</string>
     <string name="source_not_installed">來源未安裝</string>
@@ -674,7 +669,6 @@
     <string name="include_in_global_update">包含在全域性更新中</string>
     <string name="global_updates">全域性更新</string>
     <string name="certain_buttons_can_be_found">如果在這裡禁用某些按鈕，可以在其他地方找到</string>
-    <string name="loader_rar5_error">不支援 RARv5 格式</string>
     <string name="download_ahead">預先下載</string>
     <string name="auto_download_while_reading">閱讀時自動下載</string>
     <string name="downloaded_chapters">已下載章數</string>
@@ -963,4 +957,22 @@
     <string name="pref_debug_info">偵錯資訊</string>
     <string name="label_background_activity">背景活動</string>
     <string name="share_cover">分享封面</string>
+    <string name="action_menu_overflow_description">更多選擇</string>
+    <string name="action_bar_up_description">返回</string>
+    <string name="onboarding_heading">歡迎！</string>
+    <string name="onboarding_description">先選擇一些預設值，您可以隨時在稍後的設定中更改這些東西</string>
+    <string name="onboarding_finish">開始使用</string>
+    <string name="open_random_series_global">打開隨機作品</string>
+    <string name="recents_long_tap_default">顯示下載佇列</string>
+    <string name="recents_long_tap_last_read">打開最後閱讀的章節</string>
+    <string name="browse_long_tap_search">打開全局搜尋</string>
+    <string name="crop_borders_long_strip">邊緣裁剪(長圖)</string>
+    <string name="invalid_location_generic">無效位置</string>
+    <string name="selected">已選中</string>
+    <string name="long_strip">長圖</string>
+    <string name="crash_screen_restart_application">重啟應用程式</string>
+    <string name="refresh">刷新</string>
+    <string name="ext_installer_packageinstaller">預設</string>
+    <string name="not_selected">未選中</string>
+    <string name="label_recent_updates">更新</string>
 </resources>

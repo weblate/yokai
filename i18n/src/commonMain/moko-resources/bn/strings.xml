@@ -576,11 +576,6 @@
     <string name="add_edit_categories">বিভাগ যোগ করুন/সম্পাদনা করুন</string>
     <string name="move_x_to">%1$s কে এতে সরান…</string>
     <string name="add_x_to">এতে %1$s যোগ করুন…</string>
-    <string name="all_files_permission_required">ফাইল অনুমতি প্রয়োজন</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K-এর জন্য অধ্যায়গুলি ডাউনলোড করতে, স্বয়ংক্রিয় ব্যাকআপ তৈরি করতে এবং স্থানীয় মাঙ্গা পড়তে Android 11-এর সমস্ত ফাইল অ্যাক্সেস করতে হবে।
-\n
-\nপরবর্তী স্ক্রিনে, \"সমস্ত ফাইল পরিচালনা করতে অ্যাক্সেসের অনুমতি দিন\" সক্ষম করুন।\"</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K-এর অধ্যায়গুলি ডাউনলোড করার জন্য সমস্ত ফাইলে অ্যাক্সেস প্রয়োজন। এখানে আলতো চাপুন, তারপর \"সমস্ত ফাইল পরিচালনা করতে অ্যাক্সেসের অনুমতি দিন\" সক্ষম করুন৷\"</string>
     <string name="ext_installer_shizuku_unavailable_dialog">এক্সটেনশন ইনস্টলার হিসাবে Shizuku ব্যবহার করতে Shizuku ইনস্টল করুন এবং শুরু করুন।</string>
     <string name="ext_installer_shizuku_stopped">শিজুকু চলছে না</string>
     <string name="move_dynamic_to_bottom">সঙ্কুচিত ডায়নামিক বিভাগগুলিকে নীচে নিয়ে যাও</string>
@@ -887,7 +882,6 @@
     <string name="show_">%1$s দেখান</string>
     <string name="pref_library_update_manga_restriction">শিরোনামসমুহ হালনাগাদ এড়িয়ে যান</string>
     <string name="pref_update_only_completely_read">অপঠিত অধ্যায়সহ</string>
-    <string name="loader_rar5_error">RARv5 ধরন সমর্থিত নয়</string>
     <string name="skipped_reason_not_caught_up">অপঠিত অধ্যায় থাকায় এড়িয়ে যাওয়া হয়েছে</string>
     <string name="faq_and_guides">FAQ এবং নির্দেশনা</string>
     <string name="move_series_to_top">সিরিজ কে উপরে তুলুন</string>

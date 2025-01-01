@@ -729,11 +729,6 @@
     <string name="could_not_install_extension">Uzantı yüklenemedi</string>
     <string name="global_updates">Genel güncellemeler</string>
     <string name="show_number_of_items">Öge sayısını göster</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K\'in, bölümleri indirmek için tüm dosyalara erişmesi gerekir. Buraya dokunun, ardından \"Tüm dosyaları yönetmek için erişime izin ver\"i etkinleştirin</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K\'in, bölümleri indirmek, otomatik yedeklemeler oluşturmak ve yerel mangaları okumak için Android 11\'deki tüm dosyalara erişimesi gerekir.
-\n
-\nBir sonraki ekranda, \"Tüm dosyaları yönetmek için erişime izin ver\" seçeneğini etkinleştirin</string>
-    <string name="all_files_permission_required">Dosya izinleri gerekli</string>
     <string name="default_orientation">Varsayılan yön</string>
     <string name="orientation">Yön</string>
     <string name="restore_miui_warning">Yedekleme/geri yükleme, MIUI optimizasyonu devre dışıysa düzgün çalışmayabilir.</string>
@@ -905,7 +900,6 @@
     <string name="long_strip_side_padding_5">%5</string>
     <string name="language_requires_app_restart">Bazı dillerin doğru görüntülenmesi için uygulamanın yeniden başlatılması gerekebilir</string>
     <string name="user_agent_string">Öntanımlı kullanıcı aracısı dizgesi</string>
-    <string name="loader_rar5_error">RARv5 biçimi desteklenmiyor</string>
     <string name="all_read_manga">Tüm okunan manga</string>
     <string name="clear_db_exclude_read">Okunan bölümleri olan mangaları tut</string>
     <string name="stat">Durum</string>

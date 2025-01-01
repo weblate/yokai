@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="all_files_permission_required">ファイルアクセス権限が必要</string>
-    <string name="external_storage_permission_notice">章のダウンロード、自動バックアップの作成及びローカルマンガシリーズの閲覧を行うには、TachiyomiJ2KはAndroid 11での全ファイルへのアクセス権が必要です。
-\n
-\n次の画面で「全てのファイルの管理を許可」を有効にしてください。</string>
-    <string name="external_storage_download_notice">章をダウンロードするには、TachiyomiJ2Kは全ファイルへのアクセス権が必要です。こちらをタップして「全てのファイルの管理を許可」を有効にしてください。</string>
     <string name="onboarding_heading">ようこそ！</string>
     <string name="onboarding_description">いくつかのデフォルトを選択しましょう。これらの設定は後から変更できます。</string>
     <string name="onboarding_finish">始める</string>
@@ -74,7 +69,6 @@
     <string name="order_by">並び順</string>
     <string name="no_chapters_error">章が見つかりません</string>
     <string name="no_pages_found">ページが見つかりません</string>
-    <string name="loader_rar5_error">フォーマットRARv5は未対応です</string>
     <string name="remove_all_downloads">全てのダウンロードを削除しますか？</string>
     <string name="no_chapters_to_delete">削除する章がありません</string>
     <string name="by_source_order">ソースでの順位に基づく</string>

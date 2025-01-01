@@ -637,11 +637,6 @@
     <string name="appearance">Aspect</string>
     <string name="tracking_info">Sincronizare unidirecțională pentru actualizarea progresului capitolului în cadrul serviciilor de urmărire. Configurați urmărirea pentru intrările manga individuale din butonul de urmărire al acestora.</string>
     <string name="no_chapters_to_delete">Niciun capitol de șters</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K are nevoie de acces la toate fișierele pentru a descărca capitole. Atingeți aici, apoi activați \"Permiteți accesul pentru a gestiona toate fișierele\".</string>
-    <string name="all_files_permission_required">Permisiuni necesare pentru a accesa fișierele</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K necesită acces la toate fișierele din Android 11 pentru a descărca capitole, pentru a crea copii de rezervă automate și pentru a citi manga locală.
-\n
-\nÎn ecranul următor, activați \"Allow access to manage all files\" (Permiteți accesul pentru a gestiona toate fișierele).</string>
     <string name="remove_all_downloads">Înlăturați toate descărcările\?</string>
     <string name="publishing_finished">Editare finalizată</string>
     <string name="cancelled">Anulat</string>
@@ -902,7 +897,6 @@
     <string name="select_uninstalled_sources">Selectați sursele dezinstalate</string>
     <string name="helpful_translation_links">Link-uri utile de traducere</string>
     <string name="download_notifier_split_failed">Nu s-a putut diviza imaginea descărcată</string>
-    <string name="loader_rar5_error">Formatul RARv5 nu este acceptat</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="language_requires_app_restart">Unele limbi pot necesita o relansare a aplicației pentru a fi afișate corect</string>
     <string name="clear_db_exclude_read">Păstrează manga cu capitole citite</string>

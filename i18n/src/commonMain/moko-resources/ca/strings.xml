@@ -452,7 +452,6 @@
     <string name="category">Categoria</string>
     <string name="move_x_to">Mou %1$s a…</string>
     <string name="add_x_to">Afegeix %1$s a…</string>
-    <string name="all_files_permission_required">Calen permisos de fitxers</string>
     <string name="category_deleted">Categoria suprimida</string>
     <string name="jump_to_category">Vés a la categoria</string>
     <string name="manage_category">Gestiona la categoria</string>
@@ -568,20 +567,15 @@
     <string name="no_description">Sense descripció</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Cadena d’agent d’usuari per defecte</string>
-    <string name="loader_rar5_error">El format RARv5 no està suportat</string>
     <string name="downloaded_chapters">Capítols baixats</string>
     <string name="auto_download_while_reading">Baixa automàticament mentre es llegeix</string>
     <string name="download_ahead">Baixa per avançat</string>
     <string name="download_ahead_info">Només funciona en elements de la biblioteca i si el capítol actual i el següent ja estan baixats</string>
-    <string name="external_storage_download_notice">El TachiyomiJ2K requereix l’accés a tots els fitxers per a poder baixar capítols. Premeu aquí i activeu «Permet l’accés a tots els fitxers».</string>
     <string name="could_not_install_update">No s’ha pogut instal·lar l’actualització</string>
     <string name="release_page">Pàgina del llançament</string>
     <string name="your_library">La vostra biblioteca</string>
     <string name="new_beta_version_available">Nova versió beta disponible!</string>
     <string name="update_completed">Actualització completada</string>
-    <string name="external_storage_permission_notice">El TachiyomiJ2K requereix l’accés a tots els fitxers en Android 11 per a poder baixar capítols, crear còpies de seguretat automàtiques i llegir mangues locals.
-\n
-\nA la següent pantalla, activeu «Permet l’accés a tots els fitxers».</string>
     <string name="skipped_reason_not_always_update">S’ha omès perquè no cal actualitzar la sèrie</string>
     <string name="error_user_agent_string_invalid">La cadena d’agent d’usuari no és vàlida</string>
     <string name="read_duration">Temps de lectura</string>

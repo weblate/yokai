@@ -741,11 +741,6 @@
     <string name="by_chapter_number">Κατά αριθμό κεφαλαίου</string>
     <string name="by_source_order">Κατά σειρά πηγής</string>
     <string name="not_bookmarked">Χωρίς σελιδοδείκτη</string>
-    <string name="external_storage_download_notice">Το TachiyomiJ2K απαιτεί πρόσβαση σε όλα τα αρχεία για να κατεβάσετε κεφάλαια. Πατήστε εδώ και στη συνέχεια, ενεργοποιήστε την επιλογή \"Να επιτρέπεται η πρόσβαση στη διαχείριση όλων των αρχείων.\"</string>
-    <string name="external_storage_permission_notice">Το TachiyomiJ2K απαιτεί πρόσβαση σε όλα τα αρχεία στο Android 11 για να κατεβάζει κεφάλαια, να δημιουργεί αυτόματα αντίγραφα ασφαλείας και να διαβάζει τις τοπικά αποθηκευμένες σειρές.
-\n
-\nΣτην επόμενη οθόνη, ενεργοποιήστε την επιλογή \"Να επιτρέπεται η πρόσβαση στη διαχείριση όλων των αρχείων.\"</string>
-    <string name="all_files_permission_required">Απαιτείται άδεια πρόσβασης αρχείων</string>
     <string name="tako">Tako</string>
     <string name="a_calmer_you">A Calmer You (Δυναμικό)</string>
     <string name="warning">Προειδοποίηση</string>
@@ -905,7 +900,6 @@
     <string name="violet">Βιολετί</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Προεπιλεγμένη συμβολοσειρά πράκτορα χρήστη</string>
-    <string name="loader_rar5_error">Η μορφή RARv5 δεν υποστηρίζεται</string>
     <string name="language_requires_app_restart">Ορισμένες γλώσσες ενδέχεται να απαιτούν επανεκκίνηση της εφαρμογής για να εμφανιστούν σωστά</string>
     <string name="clear_db_exclude_read">Διατήρηση σειρών με αναγνωσμένα κεφάλαια</string>
     <string name="all_read_manga">Όλες οι σειρές που διαβάστηκαν</string>

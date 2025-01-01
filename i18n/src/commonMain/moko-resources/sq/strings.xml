@@ -266,7 +266,6 @@
     <string name="save_chapters_as_cbz">Ruaje si arkiv CBZ</string>
     <string name="latest_chapter">Kapitulli i fundit</string>
     <string name="left">Majtas</string>
-    <string name="loader_rar5_error">Formati RARv5 nuk mbështetet</string>
     <string name="migrate">Migroni</string>
     <string name="more">Më tepër</string>
     <string name="error_user_agent_string_invalid">Varg i pavlefshëm i agjentit të përdoruesit</string>

@@ -601,7 +601,6 @@
     <string name="only_enable_pinned_for_migration">Omogućite samo zakačene izvore za migraciju</string>
     <string name="notify_extension_updated">Dodatak za obaveštenje je ažuriran</string>
     <string name="manage_whats_downloading">Upravljate onime što se preuzima</string>
-    <string name="all_files_permission_required">Potrebna je dozvola za datoteku</string>
     <string name="comic">Strip</string>
     <string name="not_started">Nepočeto</string>
     <string name="in_progress">U toku</string>
@@ -671,10 +670,6 @@
     <string name="marked_as_read">Oznaceno kao pročitano</string>
     <string name="new_chapters">Nova poglavlja</string>
     <string name="category">Kategorija</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K je potreban pristup svim datotekama u Andorid 11 za preuzimanje poglavlja, pravljenje automatskih rezervin kopija, i čitanje lokalnih mangi.
-\n
-\nNa sledećem ekranu, dozvolu \"Dozvoli pristum za upravljanje svih datoteka.\"</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K traži pristum svim datotekama povodom preuzimanja ppglavlja.Pritisni ovde,a onda dozvoli \"Dozvolite pristum za upravljanje svim datotekama.\"</string>
     <string name="by_source_order">Po redosledu izvora</string>
     <string name="category_with_name_exists">Kategorija sa tim imenom već postoji!</string>
     <string name="could_not_install_update">Nije moguće instalirati ažuriranje</string>
@@ -903,7 +898,6 @@
     <string name="skip_dupe_chapters">Прескочи дупликатска поглавља</string>
     <string name="allow_deleting_bookmarked_chapters">Дозволи брисање забележених поглавља</string>
     <string name="trackers">Трекери</string>
-    <string name="loader_rar5_error">RARv5 формат није подржан</string>
     <string name="download_notifier_split_failed">Није могуће разделити преузету слику</string>
     <string name="complete_list">Завршена листа</string>
     <string name="on_hold_list">Наслови на чекању</string>

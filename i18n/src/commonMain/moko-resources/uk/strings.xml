@@ -624,12 +624,7 @@
     <string name="warning">Попередження</string>
     <string name="download_queue_size_warning">Попередження: великий об\'єм завантажень може призвести до сповільнення роботи джерел та/або блокуванню Tachiyomi.</string>
     <string name="every_3_days">Що 3 дні</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K потребує доступу до всіх файлів в Android 11, щоб завантажувати розділи, створювати автоматичні резервні копії та читати локальну манґу.
-\n
-\nНа наступному екрані ввімкніть \"Дозволити доступ для керування всіма файлами.\"</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K потребує доступу до всіх файлів для завантаження розділів. Натисніть тут, а потім увімкніть \"Дозволити доступ для керування всіма файлами.\"</string>
     <string name="new_category">Нова категорія</string>
-    <string name="all_files_permission_required">Потрібен дозвіл доступу до файлів</string>
     <string name="not_bookmarked">Не в закладинках</string>
     <string name="search_tips_show_periodically">Підказки щодо пошуку періодично з’являтимуться. Довго натисніть на пропозицію, щоб шукати це.</string>
     <string name="no_recent_read_updated_manga">Немає нещодавно прочитаної чи оновленої манґи</string>
@@ -904,7 +899,6 @@
     <string name="violet">Фіолетовий</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Типовий user agent</string>
-    <string name="loader_rar5_error">Формат RARv5 не підтримується</string>
     <string name="downloaded_chapters">Завантажені розділи</string>
     <string name="auto_download_while_reading">Автоматичне завантаження під час читання</string>
     <string name="stats">Статистика</string>

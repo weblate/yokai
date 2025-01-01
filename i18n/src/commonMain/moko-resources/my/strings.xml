@@ -153,7 +153,6 @@
     <string name="select_inverse">ပြောင်းပြန်ရွေးချယ်ရန်</string>
     <string name="backup_and_restore">အရံ</string>
     <string name="downloaded_chapters">ဒေါင်းလုဒ်အမှတ်အသားများ</string>
-    <string name="all_files_permission_required">ဖိုင်ခွင့်ပြုချက်လိုအပ်သည်</string>
     <string name="newly_added">အသစ်ထည့်ထားသော</string>
     <string name="no_chapters_to_delete">ဖျက်စရာအပိုင်းမရှိပါ</string>
     <string name="remove_all_downloads">ဒေါင်းထားတာတွေအားလုံးကို ဖျက်မှာလား\?</string>
@@ -173,9 +172,6 @@
     <string name="display_as">… အဖြစ် ပြမည်</string>
     <string name="hide_category_hopper">အမျိုးအစားခုန်ကျော်သည့် ခလုတ်ကို ဖျောက်မည်</string>
     <string name="more_library_settings">နောက်ထပ် Library ဆက်တင်များ</string>
-    <string name="external_storage_permission_notice">Android 11 တွင် အပိုင်းများဒေါင်းလုဒ်လုပ်ရန်၊ အလိုအလျောက် backup လုပ်ရန်နှင့် စက်တွင်း Manga များဖတ်ရန် TachiyomiJ2K အား စက်တွင်းဖိုင်အားလုံးရယူခွင့်ပေးဖို့ လိုအပ်ပါသည်။
-\n
-\nနောက်စခရင်သို့ ရောက်ရှိပါက \"ဖိုင်အားလုံးစီမံပိုင်ခွင့်\" ကို ဖွင့်ပေးပါ။</string>
     <string name="date_fetched">အင်တာနက်သုံး၍ အပ်ဒိတ်လုပ်ခဲ့သော ရက်စွဲအရ</string>
     <string name="grid_size">လေးထောင့်ကွက်ဆိုဒ်</string>
     <string name="new_chapters_found">အပိုင်းအသစ်များထွက်ရှိထားပါသည်</string>
@@ -187,8 +183,6 @@
     <string name="getting_started_guide">စတင်ခြင်းလမ်းညွှန်</string>
     <string name="local_invalid_format">မမှန်ကန်သော အပိုင်းပုံစံဖြစ်နေသည်</string>
     <string name="show_categories_while_filtering">Filter လုပ်နေစဥ်တွင် ဗလာဖြစ်နေသည့်အမျိုးအစားများပါ ပြပေးပါ</string>
-    <string name="external_storage_download_notice">အပိုင်းများဒေါင်းလုဒ်ဆွဲဖို့အတွက် TachiyomiJ2K အား ဖိုင်အားလုံးရယူခွင့်ပေးဖို့ လိုအပ်ပါသည်။ ဤနေရာကိုနှိပ်ပြီး \"ဖိုင်အားလုံးစီမံပိုင်ခွင့်\" ကို ဖွင့်ပေးပါ။</string>
-    <string name="loader_rar5_error">RARv5 format ကို အထောက်အပံ့မပေးထားပါ</string>
     <string name="no_matches_for_filters_short">သင့် filter နှင့် ကိုက်ညီသောရလဒ်မတွေ့ရှိပါ</string>
     <string name="new_beta_version_available">Beta ဗားရှင်းအသစ် ထွက်နေပါပြီ!</string>
     <string name="could_not_install_update">အပ်ဒိတ်ကို သွင်းလို့မရခဲ့ပါ</string>

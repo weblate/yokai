@@ -729,11 +729,6 @@
     <string name="global_updates">Globala uppdateringar</string>
     <string name="open_random_series">Öppna en slumpmässig serie</string>
     <string name="show_number_of_items">Visa antal artiklar</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K kräver åtkomst till alla filer för att ladda ner kapitel. Tryck här och aktivera sedan \"Tillåt åtkomst för att hantera alla filer.\"</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K kräver tillgång till alla filer i Android 11 för att kunna ladda ner kapitel, skapa automatiska säkerhetskopior, och läsa lokala serier.
-\n
-\nPå nästa skärm aktiverar du \"Tillåt åtkomst för att hantera alla filer\".</string>
-    <string name="all_files_permission_required">Filbehörigheter krävs</string>
     <string name="orientation">Orientering</string>
     <string name="default_orientation">Standardorientering</string>
     <string name="restore_miui_warning">Säkerhetskopiering/återställning kanske inte fungerar korrekt om MIUI-optimering är inaktiverat.</string>
@@ -904,7 +899,6 @@
     <string name="violet">Violett</string>
     <string name="long_strip_side_padding_5">5%</string>
     <string name="user_agent_string">Standardsträng för användaragent</string>
-    <string name="loader_rar5_error">RARv5 formatet stöds inte</string>
     <string name="downloaded_chapters">Nedladdade kapitel</string>
     <string name="auto_download_while_reading">Automatisk nedladdning under läsning</string>
     <string name="stat">Statistik</string>

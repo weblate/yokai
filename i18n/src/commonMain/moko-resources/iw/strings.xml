@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="all_files_permission_required">נדרשת הרשאת גישה לקבצים</string>
-    <string name="external_storage_permission_notice">טאצ\'יומי J2K דורש גישה לכל הקבצים של אנדרואיד 11 כדי להוריד פרקים, צור גיבויים אוטומטיים, וקרא מנגה מקומית.
-\n
-\nבמסך הבא, אפשר \"תן גישה לכל הקבצים.\"</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K דורש גישה לכל הקבצים כדי להוריד פרקים. הקש כאן ולאחר מכן הפעל את \"אפשר גישה לניהול כל הקבצים.\"</string>
     <string name="never">לעולם לא</string>
     <string name="newest">החדש ביותר</string>
     <string name="next">הבא</string>
@@ -426,7 +421,6 @@
     <string name="source_migration_guide">מדריך נדידת מקורות</string>
     <string name="exclude_">החרגה: %s</string>
     <string name="notification_update_error">%1$d עדכונים נכשלו</string>
-    <string name="loader_rar5_error">הפורמט RARv5 לא נתמך</string>
     <string name="adding_category_to_queue">מוסיף %1$s לעדכון</string>
     <string name="_already_in_queue">%1$s כבר נמצא בתור העדכון</string>
     <string name="new_category">קטגוריה חדשה</string>

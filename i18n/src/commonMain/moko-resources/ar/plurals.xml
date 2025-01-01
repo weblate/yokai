@@ -8,7 +8,6 @@
         <item quantity="many">يتوفَّر %d تحديثًا للإضافات</item>
         <item quantity="other">يتوفَّر %d تحديث للإضافات</item>
     </plurals>
-
     <plurals name="category_plural">
         <item quantity="zero">لا توجد فئات</item>
         <item quantity="one">فئة</item>
@@ -17,16 +16,6 @@
         <item quantity="many">%d فئةً</item>
         <item quantity="other">%d فئة</item>
     </plurals>
-
-    <plurals name="pages_left">
-        <item quantity="zero">انتهت الصفحات</item>
-        <item quantity="one">تبقَّت صفحة</item>
-        <item quantity="two">تبقَّت صفحتان</item>
-        <item quantity="few">تبقَّت %1$d صفحات</item>
-        <item quantity="many">تبقَّت %1$d صفحةً</item>
-        <item quantity="other">تبقَّت %1$d صفحة</item>
-    </plurals>
-
     <plurals name="deleted_chapters">
         <item quantity="zero">لم يُزل أيُّ فصل من المصدر:
             \n%2$s
@@ -47,7 +36,6 @@
             \n%2$s
             \nأأحذف تنزيلاتهم؟</item>
     </plurals>
-
     <plurals name="remove_n_chapters">
         <item quantity="zero">ألا أزيل أيَّ فصل؟</item>
         <item quantity="one">أأزيل فصلًا منزَّلًا؟</item>
@@ -56,7 +44,6 @@
         <item quantity="many">أأزيل %1$d فصلًا منزَّلًا؟</item>
         <item quantity="other">أأزيل %1$d فصل منزَّل؟</item>
     </plurals>
-
     <plurals name="after_minutes">
         <item quantity="zero">بعد %1$s دقيقة</item>
         <item quantity="one">بعد %1$s دقيقة</item>
@@ -65,7 +52,6 @@
         <item quantity="many">بعد %1$s دقائق</item>
         <item quantity="other">بعد %1$s دقائق</item>
     </plurals>
-
     <plurals name="cleanup_done">
         <item quantity="zero">تم التنظيف. تمت إزالة %d مجلد</item>
         <item quantity="one">تم التنظيف. تمت إزالة %d مجلد</item>
@@ -74,7 +60,6 @@
         <item quantity="many">تم التنظيف. تمت إزالة %d مجلدات</item>
         <item quantity="other">تم التنظيف. تمت إزالة %d مجلدات</item>
     </plurals>
-
     <plurals name="for_n_titles">
         <item quantity="zero">لصفر عنوان</item>
         <item quantity="one">لعنوان</item>
@@ -83,7 +68,6 @@
         <item quantity="many">ل‍ %d عنوانًا</item>
         <item quantity="other">ل‍ %d عنوان</item>
     </plurals>
-
     <plurals name="notification_and_n_more">
         <item quantity="zero">ولا أيِّ فصل</item>
         <item quantity="one">وفصل</item>
@@ -92,7 +76,6 @@
         <item quantity="many">و %1$d فصلًا</item>
         <item quantity="other">و %1$d فصل</item>
     </plurals>
-
     <plurals name="restore_completed_message">
         <item quantity="zero">تمَّ في %1$s وبدون أخطاء</item>
         <item quantity="one">تمَّ في %1$s وفيه خطأ</item>
@@ -101,7 +84,6 @@
         <item quantity="many">تمَّ في %1$s وفيه %2$s خطأً</item>
         <item quantity="other">تمَّ في %1$s وفيه %2$s خطأ</item>
     </plurals>
-
     <plurals name="chapters_plural">
         <item quantity="zero">لا يوجد أيُّ فصل</item>
         <item quantity="one">فصل واحد</item>
@@ -110,7 +92,6 @@
         <item quantity="many">%1$s فصلًا</item>
         <item quantity="other">%1$s فصل</item>
     </plurals>
-
     <plurals name="manga_migrated">
         <item quantity="zero">لم تُرحَّل أيُّ سلسلة</item>
         <item quantity="one">رُحِّلت السلسلة</item>
@@ -119,7 +100,6 @@
         <item quantity="many">رُحِّلت %d سلسلةً</item>
         <item quantity="other">رُحِّلت %d سلسلةٍ</item>
     </plurals>
-
     <plurals name="copy_manga">
         <item quantity="zero">ألا أنسخ أيَّ سلسلة؟</item>
         <item quantity="one">أأنسخ السلسلة؟</item>
@@ -128,7 +108,6 @@
         <item quantity="many">أأنسخ %1$d (بتخطي %2$s) سلسلةً؟</item>
         <item quantity="other">أأنسخ %1$d (بتخطي %2$s) سلسلةٍ؟</item>
     </plurals>
-
     <plurals name="migrate_manga">
         <item quantity="zero">ألا أرحِّل أيَّ سلسلة؟</item>
         <item quantity="one">أأرحِّل السلسلة؟</item>
@@ -137,7 +116,6 @@
         <item quantity="many">أأرحِّل %1$d (بتخطِّي %2$s) سلسلةً؟</item>
         <item quantity="other">أأرحِّل %1$d (بتخطِّي %2$s) سلسلةٍ؟</item>
     </plurals>
-
     <plurals name="pages_plural">
         <item quantity="zero">لا توجد صفحات</item>
         <item quantity="one">صفحة</item>
@@ -146,7 +124,6 @@
         <item quantity="many">%1$d صفحةً</item>
         <item quantity="other">%1$d صفحة</item>
     </plurals>
-
     <plurals name="_updates_pending">
         <item quantity="zero">لا يوجد تحديث معلَّق</item>
         <item quantity="one">يوجد تحديث معلَّق</item>
@@ -155,7 +132,6 @@
         <item quantity="many">يوجد %d تحديثًا معلَّقًا</item>
         <item quantity="other">يوجد %d تحديث معلَّق</item>
     </plurals>
-
     <plurals name="extensions_updated_plural">
         <item quantity="zero">لم تُحدَّث أيُّ إضافة</item>
         <item quantity="one">حُدِّثت إضافة</item>
@@ -164,7 +140,6 @@
         <item quantity="many">حُدِّثت %d إضافةً</item>
         <item quantity="other">حُدِّثت %d إضافة</item>
     </plurals>
-
     <plurals name="missing_chapters_warning">
         <item quantity="zero">لا يُتخطَّى أيُّ فصل</item>
         <item quantity="one">يُتخطَّى فصل، وذلك إما لأن المصدر مفقود أو لأنه مصفًّى</item>
@@ -173,7 +148,6 @@
         <item quantity="many">يُتخطَّى %d فصلًا، وذلك إما لأن المصدر مفقود أو لأنهم مصفَّون</item>
         <item quantity="other">يُتخطَّى %d فصل، وذلك إما لأن المصدر مفقود أو لأنهم مصفَّون</item>
     </plurals>
-
     <plurals name="cache_cleared">
         <item quantity="zero">تم تنظيف الملفات المؤقتة. تم حذف %d من الملفات</item>
         <item quantity="one">تم تنظيف الملفات المؤقتة. تم حذف %d من الملفات</item>
@@ -182,7 +156,6 @@
         <item quantity="many">تم تنظيف الملفات المؤقتة. تم حذف %d من الملفات</item>
         <item quantity="other">تم تنظيف الملفات المؤقتة. تم حذف %d من الملفات</item>
     </plurals>
-
     <plurals name="next_unread_chapters">
         <item quantity="zero">لا يوجد فصل تالٍ لم يُقرأ</item>
         <item quantity="one">الفصل غير المقروء التالي</item>
@@ -191,7 +164,6 @@
         <item quantity="many">%d فصلًا تاليًا لم يُقرؤوا</item>
         <item quantity="other">%d فصل تالٍ لم يُقرؤوا</item>
     </plurals>
-
     <plurals name="_series_types">
         <item quantity="zero">%d انواع المسلسلات</item>
         <item quantity="one">%d انواع المسلسلات</item>
@@ -200,7 +172,6 @@
         <item quantity="many">%d عدة انواع من المسلسلات</item>
         <item quantity="other">%d انواع من المسلسلات</item>
     </plurals>
-
     <plurals name="_sources">
         <item quantity="zero">%d مصدر</item>
         <item quantity="one">%d مصدر</item>
@@ -209,7 +180,6 @@
         <item quantity="many">%d مصادر</item>
         <item quantity="other">%d مصادر</item>
     </plurals>
-
     <plurals name="_languages">
         <item quantity="zero">%d لغة</item>
         <item quantity="one">%d لغة</item>
@@ -218,7 +188,6 @@
         <item quantity="many">%d لغات</item>
         <item quantity="other">%d لغات</item>
     </plurals>
-
     <plurals name="_statuses">
         <item quantity="zero">%d وضع</item>
         <item quantity="one">%d وضع</item>

@@ -288,7 +288,6 @@
     <string name="cancel_all_for_series">Zrušiť všetko pre túto sériu</string>
     <string name="secure_screen">Zabezpečená obrazovka</string>
     <string name="decode_image_error">Obrázok sa nepodarilo načítať</string>
-    <string name="all_files_permission_required">Požadované povolenia súborov</string>
     <string name="by_update_date">Podľa dátumu nahratia</string>
     <string name="warning">Upozornenie</string>
     <string name="tracked">Sledované</string>
@@ -315,10 +314,6 @@
     <string name="always">Vždy</string>
     <string name="manhwa">Manhwa</string>
     <string name="comic">Komix</string>
-    <string name="external_storage_permission_notice">TachiyomiJ2K vyžaduje prístup ku všetkým súborom v Android 11 na sťahovanie mangy, vytváranie automatických záloh a čítania stiahnutej mangy.
-\n
-\nNa nasledujucej obrazovke, povoľte \"Povoliť prístup ku spravovaniu všetkych súborov.\"</string>
-    <string name="external_storage_download_notice">TachiyomiJ2K vyžaduje prístup ku všetkým súborom pre stiahnutie časti. Kliknite sem, a potom potvrďte \"Povoliť prístup na spravovanie všetkých súborov\"</string>
     <string name="ascending">Vzostupne</string>
     <string name="descending">Zostupne</string>
     <string name="select_inverse">Vyberte inverzne</string>
@@ -368,7 +363,6 @@
     <string name="battery_optimization_disabled">Optimalizácia batérie je už vypnutá</string>
     <string name="long_strip_side_padding_10">10%</string>
     <string name="l_nav">V tvare písmena L</string>
-    <string name="loader_rar5_error">Formát RARv5 nie je podporovaný</string>
     <string name="no_chapters_to_delete">Žiadne kapitoly na odstránenie</string>
     <string name="show_categories_while_filtering">Zobrazenie prázdnych kategórií pri filtrovaní</string>
     <string name="no_matches_for_filters_short">Žiadne zhody pre vaše filtre</string>

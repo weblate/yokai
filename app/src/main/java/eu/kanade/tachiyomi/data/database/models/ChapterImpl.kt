@@ -4,11 +4,11 @@ import eu.kanade.tachiyomi.source.model.SChapter
 
 fun SChapter.toChapter(): ChapterImpl {
     return ChapterImpl().apply {
-        name = this@SChapter.name
-        url = this@SChapter.url
-        date_upload = this@SChapter.date_upload
-        chapter_number = this@SChapter.chapter_number
-        scanlator = this@SChapter.scanlator
+        name = this@toChapter.name
+        url = this@toChapter.url
+        date_upload = this@toChapter.date_upload
+        chapter_number = this@toChapter.chapter_number
+        scanlator = this@toChapter.scanlator
     }
 }
 

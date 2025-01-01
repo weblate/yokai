@@ -1,6 +1,5 @@
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsPlugin
 import com.google.gms.googleservices.GoogleServicesPlugin
-import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -22,12 +21,8 @@ if (gradle.startParameter.taskRequests.toString().contains("standard", true)) {
 }
 
 fun runCommand(command: String): String {
-    val byteOut = ByteArrayOutputStream()
-    project.exec {
-        commandLine = command.split(" ")
-        standardOutput = byteOut
-    }
-    return String(byteOut.toByteArray()).trim()
+    val result = providers.exec { commandLine(command.split(" ")) }
+    return result.standardOutput.asText.get().trim()
 }
 
 val _versionName = "1.9.8"

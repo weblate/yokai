@@ -21,7 +21,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(projects.core)
+                implementation(projects.core.main)
                 api(androidx.preference)
 
                 // Workaround for https://youtrack.jetbrains.com/issue/KT-57605

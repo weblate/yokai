@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
+    implementation(projects.core.main)
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.i18n)

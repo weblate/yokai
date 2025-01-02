@@ -7,8 +7,9 @@ import me.zhanghai.android.libarchive.Archive
 import me.zhanghai.android.libarchive.ArchiveEntry
 import me.zhanghai.android.libarchive.ArchiveException
 
-class ArchiveInputStream(buffer: Long, size: Long) : InputStream() {
+internal class ArchiveInputStream(buffer: Long, size: Long) : InputStream() {
     private val lock = Any()
+
     @Volatile
     private var isClosed = false
 

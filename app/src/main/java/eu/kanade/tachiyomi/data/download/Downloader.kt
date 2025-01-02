@@ -604,8 +604,9 @@ class Downloader(
         dirname: String,
         tmpDir: UniFile,
     ) {
-        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")!!
-        ZipWriter(context, zip).use { writer ->
+        val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")
+        if (zip?.isFile != true) throw Exception("Failed to create CBZ file for downloaded chapter")
+        ZipWriter(context, zip!!).use { writer ->
             tmpDir.listFiles()?.forEach { file ->
                 writer.write(file)
             }

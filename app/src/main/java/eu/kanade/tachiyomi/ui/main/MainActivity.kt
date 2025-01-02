@@ -1001,7 +1001,8 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     private fun checkForAppUpdates() {
-        if (isUpdaterEnabled) {
+        // FIXME: Show Compose version of NewUpdateDialog for AboutController
+        if (isUpdaterEnabled && router.backstack.lastOrNull()?.controller !is AboutController) {
             lifecycleScope.launchIO {
                 try {
                     val result = updateChecker.checkForUpdate(this@MainActivity)
@@ -1014,12 +1015,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                         withContext(Dispatchers.Main) {
                             showNotificationPermissionPrompt()
                             AppUpdateNotifier.releasePageUrl = result.release.releaseLink
-                            if (
-                                // FIXME: Show Compose version of NewUpdateDialog for AboutController
-                                router.backstack.lastOrNull()?.controller !is AboutController
-                            ) {
-                                AboutController.NewUpdateDialogController(body, url, isBeta).showDialog(router)
-                            }
+                            AboutController.NewUpdateDialogController(body, url, isBeta).showDialog(router)
                         }
                     }
                 } catch (error: Exception) {

@@ -1014,7 +1014,12 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                         withContext(Dispatchers.Main) {
                             showNotificationPermissionPrompt()
                             AppUpdateNotifier.releasePageUrl = result.release.releaseLink
-                            AboutController.NewUpdateDialogController(body, url, isBeta).showDialog(router)
+                            if (
+                                // FIXME: Show Compose version of NewUpdateDialog for AboutController
+                                router.backstack.lastOrNull()?.controller !is AboutController
+                            ) {
+                                AboutController.NewUpdateDialogController(body, url, isBeta).showDialog(router)
+                            }
                         }
                     }
                 } catch (error: Exception) {
@@ -1037,6 +1042,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
 
     @SuppressLint("MissingSuperCall")
     override fun onNewIntent(intent: Intent) {
+        splashState.ready = true
         if (!handleIntentAction(intent)) {
             super.onNewIntent(intent)
         }
@@ -1092,7 +1098,11 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             SHORTCUT_UPDATE_NOTES -> {
                 val extras = intent.extras ?: return false
                 if (router.backstack.isEmpty()) nav.selectedItemId = R.id.nav_library
-                if (router.backstack.lastOrNull()?.controller !is AboutController.NewUpdateDialogController) {
+                if (
+                    router.backstack.lastOrNull()?.controller !is AboutController.NewUpdateDialogController &&
+                    // FIXME: Show Compose version of NewUpdateDialog for AboutController
+                    router.backstack.lastOrNull()?.controller !is AboutController
+                ) {
                     AboutController.NewUpdateDialogController(extras).showDialog(router)
                 }
             }
@@ -1122,7 +1132,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
             else -> return false
         }
 
-        splashState.ready = true
         return true
     }
 

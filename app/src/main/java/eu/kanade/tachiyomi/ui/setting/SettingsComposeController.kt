@@ -1,11 +1,7 @@
 package eu.kanade.tachiyomi.ui.setting
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
-import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
-import eu.kanade.tachiyomi.util.compose.LocalBackPress
-import yokai.domain.ComposableAlertDialog
 import yokai.presentation.settings.ComposableSettings
 
 abstract class SettingsComposeController: BaseComposeController(), SettingsControllerInterface {
@@ -18,11 +14,6 @@ abstract class SettingsComposeController: BaseComposeController(), SettingsContr
 
     @Composable
     override fun ScreenContent() {
-        CompositionLocalProvider(
-            LocalAlertDialog provides ComposableAlertDialog(null),
-            LocalBackPress provides router::handleBack,
-        ) {
-            getComposableSettings().Content()
-        }
+        getComposableSettings().Content()
     }
 }

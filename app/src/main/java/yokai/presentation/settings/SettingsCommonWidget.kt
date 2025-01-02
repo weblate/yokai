@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import eu.kanade.tachiyomi.core.storage.preference.collectAsState
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
-import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import eu.kanade.tachiyomi.util.compose.LocalDialogHostState
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
@@ -44,7 +44,7 @@ fun SettingsScaffold(
     val preferences: PreferencesHelper by injectLazy()
     val useLargeAppBar by preferences.useLargeToolbar().collectAsState()
     val onBackPress = LocalBackPress.currentOrThrow
-    val alertDialog = LocalAlertDialog.currentOrThrow
+    val alertDialog = LocalDialogHostState.currentOrThrow
 
     YokaiScaffold(
         onNavigationIconClicked = onBackPress,
@@ -54,7 +54,7 @@ fun SettingsScaffold(
         scrollBehavior = appBarScrollBehavior,
         snackbarHost = snackbarHost,
     ) { innerPadding ->
-        alertDialog.content?.let { it() }
+        alertDialog.value?.invoke()
 
         content(innerPadding)
     }

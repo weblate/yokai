@@ -19,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,13 +27,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
 import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import eu.kanade.tachiyomi.util.compose.LocalDialogHostState
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.isTablet
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.coroutines.flow.collectLatest
-import yokai.domain.ComposableAlertDialog
+import kotlinx.coroutines.launch
+import yokai.domain.DialogHostState
 import yokai.domain.extension.repo.model.ExtensionRepo
 import yokai.i18n.MR
 import yokai.presentation.AppBarType
@@ -51,10 +53,12 @@ fun ExtensionRepoScreen(
 ) {
     val onBackPress = LocalBackPress.currentOrThrow
     val context = LocalContext.current
+    val alertDialog = LocalDialogHostState.currentOrThrow
+    val scope = rememberCoroutineScope()
+
     val repoState by viewModel.repoState.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
-    val alertDialog = LocalAlertDialog.currentOrThrow
 
     YokaiScaffold(
         onNavigationIconClicked = onBackPress,
@@ -79,7 +83,7 @@ fun ExtensionRepoScreen(
 
         val repos = (repoState as ExtensionRepoState.Success).repos
 
-        alertDialog.content?.let { it() }
+        alertDialog.value?.invoke()
 
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
@@ -113,7 +117,7 @@ fun ExtensionRepoScreen(
                     ExtensionRepoItem(
                         extensionRepo = repo,
                         onDeleteClick = { repoToDelete ->
-                            alertDialog.content = { ExtensionRepoDeletePrompt(repoToDelete, alertDialog, viewModel) }
+                            scope.launch { alertDialog.awaitExtensionRepoDeletePrompt(repoToDelete, viewModel) }
                         },
                     )
                 }
@@ -127,46 +131,45 @@ fun ExtensionRepoScreen(
     
     LaunchedEffect(Unit) {
         viewModel.event.collectLatest { event ->
-            if (event is ExtensionRepoEvent.LocalizedMessage)
-                context.toast(event.stringRes)
-            if (event is ExtensionRepoEvent.Success)
-                inputText = ""
-            if (event is ExtensionRepoEvent.ShowDialog)
-                alertDialog.content = {
-                    if (event.dialog is RepoDialog.Conflict) {
-                        ExtensionRepoReplacePrompt(
-                            oldRepo = event.dialog.oldRepo,
-                            newRepo = event.dialog.newRepo,
-                            onDismissRequest = { alertDialog.content = null },
-                            onMigrate = { viewModel.replaceRepo(event.dialog.newRepo) },
-                        )
+            when (event) {
+                is ExtensionRepoEvent.NoOp -> {}
+                is ExtensionRepoEvent.LocalizedMessage -> context.toast(event.stringRes)
+                is ExtensionRepoEvent.Success -> inputText = ""
+                is ExtensionRepoEvent.ShowDialog -> {
+                    when(event.dialog) {
+                        is RepoDialog.Conflict -> {
+                            alertDialog.awaitExtensionRepoReplacePrompt(
+                                oldRepo = event.dialog.oldRepo,
+                                newRepo = event.dialog.newRepo,
+                                onMigrate = { viewModel.replaceRepo(event.dialog.newRepo) },
+                            )
+                        }
                     }
                 }
+            }
         }
     }
 }
 
-@Composable
-fun ExtensionRepoReplacePrompt(
+suspend fun DialogHostState.awaitExtensionRepoReplacePrompt(
     oldRepo: ExtensionRepo,
     newRepo: ExtensionRepo,
-    onDismissRequest: () -> Unit,
     onMigrate: () -> Unit,
-) {
+): Unit = dialog { cont ->
     AlertDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { cont.cancel() },
         confirmButton = {
             TextButton(
                 onClick = {
                     onMigrate()
-                    onDismissRequest()
+                    cont.cancel()
                 },
             ) {
                 Text(text = stringResource(MR.strings.action_replace_repo))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissRequest) {
+            TextButton(onClick = { cont.cancel() }) {
                 Text(text = stringResource(AR.string.cancel))
             }
         },
@@ -179,8 +182,10 @@ fun ExtensionRepoReplacePrompt(
     )
 }
 
-@Composable
-fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlertDialog, viewModel: ExtensionRepoViewModel) {
+suspend fun DialogHostState.awaitExtensionRepoDeletePrompt(
+    repoToDelete: String,
+    viewModel: ExtensionRepoViewModel,
+): Unit = dialog { cont ->
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         title = {
@@ -199,12 +204,12 @@ fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlert
                 fontSize = 14.sp,
             )
         },
-        onDismissRequest = { alertDialog.content = null },
+        onDismissRequest = { cont.cancel() },
         confirmButton = {
             TextButton(
                 onClick = {
                     viewModel.deleteRepo(repoToDelete)
-                    alertDialog.content = null
+                    cont.cancel()
                 }
             ) {
                 Text(
@@ -215,7 +220,7 @@ fun ExtensionRepoDeletePrompt(repoToDelete: String, alertDialog: ComposableAlert
             }
         },
         dismissButton = {
-            TextButton(onClick = { alertDialog.content = null }) {
+            TextButton(onClick = { cont.cancel() }) {
                 Text(
                     text = stringResource(MR.strings.cancel),
                     color = MaterialTheme.colorScheme.primary,

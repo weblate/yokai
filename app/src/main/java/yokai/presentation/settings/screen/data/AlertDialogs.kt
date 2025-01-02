@@ -8,10 +8,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.hippo.unifile.UniFile
@@ -22,17 +20,16 @@ import eu.kanade.tachiyomi.data.backup.create.BackupOptions
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.util.system.toast
+import yokai.domain.DialogHostState
 import yokai.i18n.MR
 import yokai.presentation.component.LabeledCheckbox
 import android.R as AR
 
-@Composable
-fun RestoreBackup(
+suspend fun DialogHostState.awaitRestoreBackup(
     context: Context,
     uri: Uri,
     pair: Pair<Results?, Exception?>,
-    onDismissRequest: () -> Unit,
-) {
+): Unit = dialog { cont ->
     val (results, e) = pair
     if (results != null) {
         var message = stringResource(MR.strings.restore_content_full)
@@ -52,20 +49,20 @@ fun RestoreBackup(
         }
 
         AlertDialog(
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = { cont.cancel() },
             confirmButton = {
                 TextButton(
                     onClick = {
                         context.toast(MR.strings.restoring_backup)
                         BackupRestoreJob.start(context, uri)
-                        onDismissRequest()
+                        cont.cancel()
                     },
                 ) {
                     Text(text = stringResource(MR.strings.restore))
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismissRequest) {
+                TextButton(onClick = { cont.cancel() }) {
                     Text(text = stringResource(AR.string.cancel))
                 }
             },
@@ -74,9 +71,9 @@ fun RestoreBackup(
         )
     } else {
         AlertDialog(
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = { cont.cancel() },
             confirmButton = {
-                TextButton(onClick = onDismissRequest) {
+                TextButton(onClick = { cont.cancel() }) {
                     Text(text = stringResource(AR.string.cancel))
                 }
             },
@@ -86,29 +83,27 @@ fun RestoreBackup(
     }
 }
 
-@Composable
-fun CreateBackup(
+suspend fun DialogHostState.awaitCreateBackup(
     context: Context,
     uri: Uri,
-    onDismissRequest: () -> Unit,
-) {
-    var options by remember { mutableStateOf(BackupOptions()) }
+): Unit = dialog { cont ->
+    var options by mutableStateOf(BackupOptions())
 
     AlertDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { cont.cancel() },
         confirmButton = {
             TextButton(onClick = {
                 val actualUri =
                     UniFile.fromUri(context, uri)?.createFile(Backup.getBackupFilename())?.uri ?: return@TextButton
                 context.toast(MR.strings.creating_backup)
                 BackupCreatorJob.startNow(context, actualUri, options)
-                onDismissRequest()
+                cont.cancel()
             }) {
                 Text(stringResource(MR.strings.create))
             }
         },
         dismissButton = {
-            TextButton(onClick = { onDismissRequest() }) {
+            TextButton(onClick = { cont.cancel() }) {
                 Text(stringResource(MR.strings.cancel))
             }
         },

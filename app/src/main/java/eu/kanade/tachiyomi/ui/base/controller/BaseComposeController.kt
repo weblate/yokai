@@ -5,8 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import eu.kanade.tachiyomi.util.compose.LocalBackPress
+import eu.kanade.tachiyomi.util.compose.LocalDialogHostState
+import yokai.domain.DialogHostState
 import yokai.presentation.theme.YokaiTheme
 
 abstract class BaseComposeController(bundle: Bundle? = null) :
@@ -25,8 +30,14 @@ abstract class BaseComposeController(bundle: Bundle? = null) :
             )
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
+                val dialogHostState = remember { DialogHostState() }
                 YokaiTheme {
-                    ScreenContent()
+                    CompositionLocalProvider(
+                        LocalDialogHostState provides dialogHostState,
+                        LocalBackPress provides router::handleBack,
+                    ) {
+                        ScreenContent()
+                    }
                 }
             }
         }

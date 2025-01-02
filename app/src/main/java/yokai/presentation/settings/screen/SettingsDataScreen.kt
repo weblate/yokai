@@ -33,11 +33,10 @@ import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
 import eu.kanade.tachiyomi.data.cache.ChapterCache
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.extension.ExtensionManager
-import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
+import eu.kanade.tachiyomi.util.compose.LocalDialogHostState
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.relativeTimeSpanString
 import eu.kanade.tachiyomi.util.system.DeviceUtil
-import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.launchNonCancellableIO
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
@@ -57,9 +56,9 @@ import yokai.presentation.component.preference.storageLocationText
 import yokai.presentation.component.preference.widget.BasePreferenceWidget
 import yokai.presentation.component.preference.widget.PrefsHorizontalPadding
 import yokai.presentation.settings.ComposableSettings
-import yokai.presentation.settings.screen.data.CreateBackup
-import yokai.presentation.settings.screen.data.RestoreBackup
 import yokai.presentation.settings.screen.data.StorageInfo
+import yokai.presentation.settings.screen.data.awaitCreateBackup
+import yokai.presentation.settings.screen.data.awaitRestoreBackup
 import yokai.presentation.settings.screen.data.storageLocationPicker
 import yokai.util.lang.getString
 
@@ -101,7 +100,7 @@ object SettingsDataScreen : ComposableSettings {
     private fun getBackupAndRestoreGroup(backupPreferences: BackupPreferences): Preference.PreferenceGroup {
         val scope = rememberCoroutineScope()
         val context = LocalContext.current
-        val alertDialog = LocalAlertDialog.currentOrThrow
+        val alertDialog = LocalDialogHostState.currentOrThrow
         val extensionManager = remember { Injekt.get<ExtensionManager>() }
         val storageManager = remember { Injekt.get<StorageManager>() }
 
@@ -122,14 +121,11 @@ object SettingsDataScreen : ComposableSettings {
                 Pair(null, e)
             }
 
-            alertDialog.content = {
-                RestoreBackup(
+            scope.launch {
+                alertDialog.awaitRestoreBackup(
                     context = context,
                     uri = it,
                     pair = results,
-                    onDismissRequest = {
-                        alertDialog.content = null
-                    }
                 )
             }
         }
@@ -166,11 +162,10 @@ object SettingsDataScreen : ComposableSettings {
                                                 return@SegmentedButton
                                             }
 
-                                            alertDialog.content = {
-                                                CreateBackup(
+                                            scope.launch {
+                                                alertDialog.awaitCreateBackup(
                                                     context = context,
                                                     uri = dir.uri,
-                                                    onDismissRequest = { alertDialog.content = null },
                                                 )
                                             }
                                         } else {

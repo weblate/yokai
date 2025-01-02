@@ -1,28 +1,24 @@
 package eu.kanade.tachiyomi.ui.more
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import eu.kanade.tachiyomi.ui.base.controller.DialogController
-import eu.kanade.tachiyomi.util.compose.LocalAlertDialog
-import eu.kanade.tachiyomi.util.compose.LocalBackPress
-import eu.kanade.tachiyomi.util.compose.LocalRouter
 import eu.kanade.tachiyomi.util.system.materialAlertDialog
 import eu.kanade.tachiyomi.util.view.setNegativeButton
 import eu.kanade.tachiyomi.util.view.setPositiveButton
 import eu.kanade.tachiyomi.util.view.setTitle
 import io.noties.markwon.Markwon
-import yokai.domain.ComposableAlertDialog
 import yokai.i18n.MR
 import yokai.presentation.settings.screen.about.AboutScreen
 import android.R as AR
@@ -34,17 +30,12 @@ class AboutController : BaseComposeController() {
         Navigator(
             screen = AboutScreen(),
             content = {
-                CompositionLocalProvider(
-                    LocalAlertDialog provides ComposableAlertDialog(null),
-                    LocalBackPress provides router::handleBack,
-                    LocalRouter provides router,
-                ) {
-                    CrossfadeTransition(navigator = it)
-                }
+                CrossfadeTransition(navigator = it)
             },
         )
     }
 
+    @Deprecated("Use [DialogHostState.showNewUpdateDialog] instead", ReplaceWith("DialogHostState.showNewUpdateDialog()"))
     class NewUpdateDialogController(bundle: Bundle? = null) : DialogController(bundle) {
 
         constructor(body: String, url: String, isBeta: Boolean?) : this(
@@ -56,9 +47,7 @@ class AboutController : BaseComposeController() {
         )
 
         override fun onCreateDialog(savedViewState: Bundle?): Dialog {
-            val releaseBody = (args.getString(BODY_KEY) ?: "")
-                .replace("""---(\R|.)*Checksums(\R|.)*""".toRegex(), "")
-            val info = Markwon.create(activity!!).toMarkdown(releaseBody)
+            val info = activity!!.parseReleaseNotes(args.getString(BODY_KEY) ?: "")
 
             val isOnA12 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
             val isBeta = args.getBoolean(IS_BETA, false)
@@ -95,4 +84,9 @@ class AboutController : BaseComposeController() {
             const val IS_BETA = "NewUpdateDialogController.is_beta"
         }
     }
+}
+
+fun Context.parseReleaseNotes(releaseNotes: String): Spanned {
+    val releaseBody = releaseNotes.replace("""---(\R|.)*Checksums(\R|.)*""".toRegex(), "")
+    return Markwon.create(this).toMarkdown(releaseBody)
 }

@@ -10,14 +10,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.material.textview.MaterialTextView
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.data.updater.AppDownloadInstallJob
 import eu.kanade.tachiyomi.ui.more.parseReleaseNotes
 import java.io.Serializable
+import kotlin.coroutines.resume
 import yokai.domain.DialogHostState
 import yokai.i18n.MR
+import android.R as AR
 
 data class NewUpdateData(
     val body: String,
@@ -86,6 +89,20 @@ private fun MarkdownText(text: String) {
         },
         update = {
             it.text = context.parseReleaseNotes(text)
+        },
+    )
+}
+
+suspend fun DialogHostState.awaitNotificationPermissionDeniedDialog(): Unit = dialog { cont ->
+    // cont.resume(Unit) so that new update dialog will be shown next
+    AlertDialog(
+        onDismissRequest = { if (cont.isActive) cont.resume(Unit) },
+        title = { Text(text = stringResource(MR.strings.warning)) },
+        text = { Text(text = stringResource(MR.strings.allow_notifications_recommended)) },
+        confirmButton = {
+            TextButton(onClick = { if (cont.isActive) cont.resume(Unit) }) {
+                Text(text = stringResource(AR.string.ok))
+            }
         },
     )
 }

@@ -4,6 +4,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -25,8 +27,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import cafe.adriel.voyager.navigator.LocalNavigator
 import co.touchlab.kermit.Logger
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.core.storage.preference.asDateFormat
@@ -39,7 +44,9 @@ import eu.kanade.tachiyomi.util.CrashLogUtil
 import eu.kanade.tachiyomi.util.compose.LocalDialogHostState
 import eu.kanade.tachiyomi.util.compose.currentOrThrow
 import eu.kanade.tachiyomi.util.lang.toTimestampString
+import eu.kanade.tachiyomi.util.showNotificationPermissionPrompt
 import eu.kanade.tachiyomi.util.system.isOnline
+import eu.kanade.tachiyomi.util.system.launchIO
 import eu.kanade.tachiyomi.util.system.localeContext
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.withUIContext
@@ -49,7 +56,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 import kotlinx.coroutines.launch
-import uy.kohesive.injekt.injectLazy
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import yokai.domain.DialogHostState
 import yokai.i18n.MR
 import yokai.presentation.component.preference.widget.TextPreferenceWidget
@@ -70,11 +78,34 @@ class AboutScreen : Screen() {
         val dialogHostState = LocalDialogHostState.currentOrThrow
         val uriHandler = LocalUriHandler.current
 
+        val preferences = remember { Injekt.get<PreferencesHelper>() }
+
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val listState = rememberLazyListState()
 
-        val preferences: PreferencesHelper by injectLazy()
+        val requestNotificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (!isGranted) {
+                scope.launch { dialogHostState.awaitNotificationPermissionDeniedDialog() }
+            }
+        }
+        LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+            // FIXME: Move this to MainActivity once the app is fully migrated to Compose
+            scope.launchIO {
+                context.checkVersion(
+                    dialogState = dialogHostState,
+                    isUserPrompt = false,
+                    notificationPrompt = {
+                        context.showNotificationPermissionPrompt(
+                            requestNotificationPermission,
+                            false,
+                            preferences,
+                        )
+                    }
+                )
+            }
+        }
+
         val dateFormat by lazy { preferences.dateFormatRaw().get().asDateFormat() }
 
         SettingsScaffold(
@@ -108,7 +139,7 @@ class AboutScreen : Screen() {
                                 onPreferenceClick = {
                                     if (context.isOnline()) {
                                         scope.launch {
-                                            context.checkVersion(dialogHostState)
+                                            context.checkVersion(dialogHostState, true)
                                         }
                                     } else {
                                         context.toast(MR.strings.no_network_connection)
@@ -192,16 +223,25 @@ class AboutScreen : Screen() {
         else -> "Release ${BuildConfig.VERSION_NAME}"
     }
 
-    private suspend fun Context.checkVersion(dialogState: DialogHostState) {
+    private fun Context.toastIfNotUserPrompt(message: StringResource, isUserPrompt: Boolean) {
+        toastIfNotUserPrompt(getString(message), isUserPrompt)
+    }
+
+    private fun Context.toastIfNotUserPrompt(message: String?, isUserPrompt: Boolean) {
+        if (!isUserPrompt) return
+        toast(message)
+    }
+
+    private suspend fun Context.checkVersion(dialogState: DialogHostState, isUserPrompt: Boolean, notificationPrompt: () -> Unit = {}) {
         val updateChecker = AppUpdateChecker()
 
-        withUIContext { toast(MR.strings.searching_for_updates) }
+        withUIContext { toastIfNotUserPrompt(MR.strings.searching_for_updates, isUserPrompt) }
 
         val result = try {
-            updateChecker.checkForUpdate(this, true)
+            updateChecker.checkForUpdate(this, isUserPrompt)
         } catch (error: Exception) {
             withUIContext {
-                toast(error.message)
+                toastIfNotUserPrompt(error.message, isUserPrompt)
                 Logger.e(error) { "Couldn't check new update" }
             }
         }
@@ -215,14 +255,13 @@ class AboutScreen : Screen() {
 
                 // Create confirmation window
                 withUIContext {
+                    if (!isUserPrompt) { notificationPrompt() }
                     AppUpdateNotifier.releasePageUrl = result.release.releaseLink
                     dialogState.awaitNewUpdateDialog(data)
                 }
             }
             is AppUpdateResult.NoNewUpdate -> {
-                withUIContext {
-                    toast(MR.strings.no_new_updates_available)
-                }
+                withUIContext { toastIfNotUserPrompt(MR.strings.no_new_updates_available, isUserPrompt) }
             }
         }
     }

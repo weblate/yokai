@@ -21,23 +21,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.getSystemService
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import eu.kanade.tachiyomi.R
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.util.system.isShizukuInstalled
 import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import yokai.presentation.component.Gap
 import yokai.presentation.theme.Size
 
@@ -53,35 +48,26 @@ internal class PermissionStep : OnboardingStep {
     @Composable
     override fun Content() {
         val context = LocalContext.current
-        val lifecycleOwner = LocalLifecycleOwner.current
 
-        DisposableEffect(lifecycleOwner.lifecycle) {
-            val observer = object : DefaultLifecycleObserver {
-                override fun onResume(owner: LifecycleOwner) {
-                    installGranted =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            context.packageManager.canRequestPackageInstalls()
-                        } else {
-                            @Suppress("DEPRECATION")
-                            Settings.Secure.getInt(
-                                context.contentResolver,
-                                Settings.Secure.INSTALL_NON_MARKET_APPS
-                            ) != 0
-                        } || context.isShizukuInstalled
-                    notificationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
-                            PackageManager.PERMISSION_GRANTED
-                    } else {
-                        true
-                    }
-                    batteryGranted = context.getSystemService<PowerManager>()!!
-                        .isIgnoringBatteryOptimizations(context.packageName)
-                }
+        LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+            installGranted =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.packageManager.canRequestPackageInstalls()
+                } else {
+                    @Suppress("DEPRECATION")
+                    Settings.Secure.getInt(
+                        context.contentResolver,
+                        Settings.Secure.INSTALL_NON_MARKET_APPS
+                    ) != 0
+                } || context.isShizukuInstalled
+            notificationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED
+            } else {
+                true
             }
-            lifecycleOwner.lifecycle.addObserver(observer)
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
+            batteryGranted = context.getSystemService<PowerManager>()!!
+                .isIgnoringBatteryOptimizations(context.packageName)
         }
 
         Column(

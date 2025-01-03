@@ -117,6 +117,7 @@ import eu.kanade.tachiyomi.util.system.prepareSideNavContext
 import eu.kanade.tachiyomi.util.system.rootWindowInsetsCompat
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.tryTakePersistableUriPermission
+import eu.kanade.tachiyomi.util.system.withUIContext
 import eu.kanade.tachiyomi.util.view.BackHandlerControllerInterface
 import eu.kanade.tachiyomi.util.view.backgroundColor
 import eu.kanade.tachiyomi.util.view.blurBehindWindow
@@ -136,12 +137,10 @@ import kotlin.collections.set
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToLong
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.withContext
 import uy.kohesive.injekt.injectLazy
 import yokai.core.migration.Migrator
 import yokai.domain.base.BasePreferences
@@ -198,6 +197,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         dimenW to dimenH
     }
 
+    @Deprecated("Create contract directly from Composable")
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
@@ -1001,7 +1001,6 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     private fun checkForAppUpdates() {
-        // FIXME: Show Compose version of NewUpdateDialog for AboutController
         if (isUpdaterEnabled && router.backstack.lastOrNull()?.controller !is AboutController) {
             lifecycleScope.launchIO {
                 try {
@@ -1012,7 +1011,7 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
                         val isBeta = result.release.preRelease == true
 
                         // Create confirmation window
-                        withContext(Dispatchers.Main) {
+                        withUIContext {
                             showNotificationPermissionPrompt()
                             AppUpdateNotifier.releasePageUrl = result.release.releaseLink
                             AboutController.NewUpdateDialogController(body, url, isBeta).showDialog(router)

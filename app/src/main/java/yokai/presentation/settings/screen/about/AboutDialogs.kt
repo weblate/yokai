@@ -1,10 +1,14 @@
 package yokai.presentation.settings.screen.about
 
 import android.os.Build
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.material.textview.MaterialTextView
@@ -65,7 +69,11 @@ suspend fun DialogHostState.awaitNewUpdateDialog(
                 Text(text = stringResource(MR.strings.ignore))
             }
         },
-        text = { MarkdownText(data.body) }
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                MarkdownText(data.body)
+            }
+        }
     )
 }
 

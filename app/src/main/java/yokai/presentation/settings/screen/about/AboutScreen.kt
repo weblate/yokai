@@ -181,10 +181,24 @@ class AboutScreen : Screen() {
                             HorizontalDivider()
 
                             TextPreferenceWidget(
-                                title = stringResource(MR.strings.open_source_licenses),
-                                onPreferenceClick = { navigator.push(AboutLicenseScreen()) }
+                                title = stringResource(MR.strings.help_translate),
+                                onPreferenceClick = { uriHandler.openUri("https://hosted.weblate.org/engage/yokai/") },
                             )
                         }
+                    }
+
+                    item {
+                        TextPreferenceWidget(
+                            title = stringResource(MR.strings.helpful_translation_links),
+                            onPreferenceClick = { uriHandler.openUri("https://mihon.app/docs/contribute#helpful-links") },
+                        )
+                    }
+
+                    item {
+                        TextPreferenceWidget(
+                            title = stringResource(MR.strings.open_source_licenses),
+                            onPreferenceClick = { navigator.push(AboutLicenseScreen()) },
+                        )
                     }
 
                     item {

@@ -270,6 +270,9 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                             }
                             getFirstLetter(title)
                         }
+                        LibrarySort.Random -> {
+                            context.getString(MR.strings.random)
+                        }
                     }
                 if (!isSingleCategory) {
                     vibrateOnCategoryChange(item.header?.category?.name.orEmpty())

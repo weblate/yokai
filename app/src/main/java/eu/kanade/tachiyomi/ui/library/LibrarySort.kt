@@ -1,13 +1,10 @@
 package eu.kanade.tachiyomi.ui.library
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.base.MaterialMenuSheet
+import yokai.i18n.MR
 
 enum class LibrarySort(
     val mainValue: Int,
@@ -33,7 +30,11 @@ enum class LibrarySort(
         MR.strings.category,
         R.drawable.ic_label_outline_24dp,
     ),
-
+    Random(
+        8,
+        MR.strings.random,
+        R.drawable.ic_shuffle_24dp,
+    )
     ;
 
     val categoryValue: Char
@@ -50,6 +51,7 @@ enum class LibrarySort(
             LatestChapter -> "LATEST_CHAPTER"
             DateFetched -> "CHAPTER_FETCH_DATE"
             DateAdded -> "DATE_ADDED"
+            Random -> "RANDOM"
             else -> "ALPHABETICAL"
         }
         return "$type,ASCENDING"
@@ -85,6 +87,7 @@ enum class LibrarySort(
                     "LATEST_CHAPTER" -> LatestChapter
                     "CHAPTER_FETCH_DATE" -> DateFetched
                     "DATE_ADDED" -> DateAdded
+                    "RANDOM" -> Random
                     else -> Title
                 }
             } catch (e: Exception) {

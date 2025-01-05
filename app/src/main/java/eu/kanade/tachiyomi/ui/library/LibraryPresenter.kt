@@ -73,6 +73,7 @@ import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
 import yokai.domain.history.interactor.GetHistory
+import yokai.domain.library.LibraryPreferences
 import yokai.domain.manga.interactor.GetLibraryManga
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
@@ -90,6 +91,7 @@ typealias LibraryMutableMap = MutableMap<Category, List<LibraryItem>>
  */
 class LibraryPresenter(
     private val preferences: PreferencesHelper = Injekt.get(),
+    private val libraryPreferences: LibraryPreferences = Injekt.get(),
     private val coverCache: CoverCache = Injekt.get(),
     val sourceManager: SourceManager = Injekt.get(),
     private val downloadCache: DownloadCache = Injekt.get(),
@@ -697,6 +699,9 @@ class LibraryPresenter(
                                 sortAlphabetical(i1, i2)
                             }
                         }
+                        LibrarySort.Random -> {
+                            error("You're not supposed to be here...")
+                        }
                     }
                     if (!category.isAscending()) sort *= -1
                     sort
@@ -738,16 +743,28 @@ class LibraryPresenter(
                 }
             }
 
+            if (LibrarySort.valueOf(category.mangaSort) == LibrarySort.Random) {
+                return@mapValues values
+                    .asSequence()
+                    .shuffled(Random(libraryPreferences.randomSortSeed().get()))
+                    .sortedWith { i1, i2 ->
+                        when {
+                            i1 is LibraryPlaceholderItem -> -1
+                            i2 is LibraryPlaceholderItem -> 1
+                            else -> 0
+                        }
+                    }
+                    .toList()
+            }
+
             values.sortedWith(Comparator(sortFn))
         }.toSortedMap { category, category2 ->
-            // Force default category to always be at the top. This also for some reason fixed a bug where Default
-            // category would disappear whenever a new category is added.
-            if (category.id == 0) {
-                -1
-            } else if (category2.id == 0) {
-                1
-            } else {
-                category.order.compareTo(category2.order)
+            when {
+                // Force default category to always be at the top. This also for some reason fixed a bug where Default
+                // category would disappear whenever a new category is added.
+                category.id == 0 -> -1
+                category2.id == 0 -> 1
+                else -> category.order.compareTo(category2.order)
             }
         }
     }

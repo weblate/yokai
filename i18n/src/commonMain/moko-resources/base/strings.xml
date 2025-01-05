@@ -174,6 +174,7 @@
     <string name="date_fetched">Date fetched</string>
     <string name="latest_chapter">Latest chapter</string>
     <string name="drag_and_drop">Drag &amp; Drop</string>
+    <string name="random">Random</string>
 
     <!-- Library Display -->
     <string name="display_options">Display options</string>

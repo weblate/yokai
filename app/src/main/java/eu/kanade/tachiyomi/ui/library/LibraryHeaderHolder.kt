@@ -32,14 +32,17 @@ import eu.kanade.tachiyomi.util.system.getResourceColor
 import eu.kanade.tachiyomi.util.view.compatToolTipText
 import eu.kanade.tachiyomi.util.view.setText
 import eu.kanade.tachiyomi.util.view.text
+import kotlin.random.Random
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import yokai.domain.library.LibraryPreferences
 import yokai.i18n.MR
 import yokai.util.lang.getString
 
 class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
     BaseFlexibleViewHolder(view, adapter, true) {
 
+    private val libraryPreferences: LibraryPreferences = Injekt.get()
     private val binding = LibraryCategoryHeaderItemBinding.bind(view)
     val progressDrawableStart = CircularProgressDrawable(itemView.context)
     val progressDrawableEnd = CircularProgressDrawable(itemView.context)
@@ -292,6 +295,7 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
         sortMode ?: return defaultDrawableRes
         return when (sortMode) {
             LibrarySort.DragAndDrop -> defaultDrawableRes
+            LibrarySort.Random -> R.drawable.ic_shuffle_24dp
             else -> {
                 if (if (sortMode.hasInvertedSort) !isAscending else isAscending) {
                     R.drawable.ic_arrow_downward_24dp
@@ -306,35 +310,27 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
         sortingMode: Int?,
         isAscending: Boolean,
         @DrawableRes defaultDrawableRes: Int = R.drawable.ic_check_24dp,
-    ): Int {
-        sortingMode ?: return defaultDrawableRes
-        return when (val sortMode = LibrarySort.valueOf(sortingMode)) {
-            LibrarySort.DragAndDrop -> defaultDrawableRes
-            else -> {
-                if (if (sortMode?.hasInvertedSort == true) !isAscending else isAscending) {
-                    R.drawable.ic_arrow_downward_24dp
-                } else {
-                    R.drawable.ic_arrow_upward_24dp
-                }
-            }
-        }
-    }
+    ): Int = getSortRes(sortingMode?.let { LibrarySort.valueOf(it) }, isAscending, defaultDrawableRes)
 
     private fun onCatSortClicked(category: Category, menuId: Int?) {
-        val modType = if (menuId == null) {
+        val (mode, modType) = if (menuId == null) {
             val sortingMode = category.sortingMode() ?: LibrarySort.Title
-            if (category.isAscending()) {
-                sortingMode.categoryValueDescending
-            } else {
-                sortingMode.categoryValue
-            }
+            sortingMode to
+                if (sortingMode != LibrarySort.Random && category.isAscending()) {
+                    sortingMode.categoryValueDescending
+                } else {
+                    sortingMode.categoryValue
+                }
         } else {
             val sortingMode = LibrarySort.valueOf(menuId) ?: LibrarySort.Title
             if (sortingMode != LibrarySort.DragAndDrop && sortingMode == category.sortingMode()) {
                 onCatSortClicked(category, null)
                 return
             }
-            sortingMode.categoryValue
+            sortingMode to sortingMode.categoryValue
+        }
+        if (mode == LibrarySort.Random) {
+            libraryPreferences.randomSortSeed().set(Random.nextInt())
         }
         adapter.libraryListener?.sortCategory(category.id!!, modType)
     }

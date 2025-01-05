@@ -740,7 +740,7 @@ class LibraryPresenter(
 
             values.sortedWith(Comparator(sortFn))
         }.toSortedMap { category, category2 ->
-            // Force default category to already be at the top. This also for some reason fixed a bug where Default
+            // Force default category to always be at the top. This also for some reason fixed a bug where Default
             // category would disappear whenever a new category is added.
             if (category.id == 0) {
                 -1

@@ -13,6 +13,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 ### Fixes
 - Allow users to bypass onboarding's permission step if Shizuku is installed
 - Fix Recents page shows "No recent chapters" instead of a loading screen
+- Fix not fully loaded entries can't be selected on Library page
 
 ### Other
 - Refactor Library to utilize Flow even more
@@ -28,6 +29,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
   - Remove internal API usage to retrieve Kotlin version for kotlin-stdlib
 - Move :core module to :core:main
   - Move archive related code to :core:archive (@AntsyLich)
+- Refactor Library to store LibraryMap instead of flatten list of LibraryItem
+  - LibraryItem abstraction to make it easier to manage
+  - LibraryManga no longer extend MangaImpl
 
 ## [1.9.7]
 

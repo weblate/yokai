@@ -64,23 +64,24 @@ class LibraryGridHolder(
      * @param item the manga item to bind.
      */
     override fun onSetValues(item: LibraryItem) {
+        if (item !is LibraryMangaItem) throw IllegalStateException("Only LibraryMangaItem can use grid holder")
         // Update the title and subtitle of the manga.
         setCards(adapter.showOutline, binding.card, binding.unreadDownloadBadge.root)
         binding.playButton.transitionName = "library chapter $bindingAdapterPosition transition"
-        binding.constraintLayout.isVisible = !item.manga.isBlank()
-        binding.title.text = item.manga.title.highlightText(item.filter, color)
-        binding.behindTitle.text = item.manga.title
-        val mangaColor = item.manga.dominantCoverColors
+        binding.constraintLayout.isVisible = item.manga.manga.id != Long.MIN_VALUE
+        binding.title.text = item.manga.manga.title.highlightText(item.filter, color)
+        binding.behindTitle.text = item.manga.manga.title
+        val mangaColor = item.manga.manga.dominantCoverColors
         binding.coverConstraint.backgroundColor = mangaColor?.first ?: itemView.context.getResourceColor(R.attr.background)
         binding.behindTitle.setTextColor(
             mangaColor?.second ?: itemView.context.getResourceColor(R.attr.colorOnBackground),
         )
-        val authorArtist = if (item.manga.author == item.manga.artist || item.manga.artist.isNullOrBlank()) {
-            item.manga.author?.trim() ?: ""
+        val authorArtist = if (item.manga.manga.author == item.manga.manga.artist || item.manga.manga.artist.isNullOrBlank()) {
+            item.manga.manga.author?.trim() ?: ""
         } else {
             listOfNotNull(
-                item.manga.author?.trim()?.takeIf { it.isNotBlank() },
-                item.manga.artist?.trim()?.takeIf { it.isNotBlank() },
+                item.manga.manga.author?.trim()?.takeIf { it.isNotBlank() },
+                item.manga.manga.artist?.trim()?.takeIf { it.isNotBlank() },
             ).joinToString(", ")
         }
         binding.subtitle.text = authorArtist.highlightText(item.filter, color)
@@ -101,7 +102,7 @@ class LibraryGridHolder(
 
         // Update the cover.
         binding.coverThumbnail.dispose()
-        setCover(item.manga)
+        setCover(item.manga.manga)
     }
 
     override fun toggleActivation() {

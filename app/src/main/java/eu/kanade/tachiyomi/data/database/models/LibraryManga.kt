@@ -1,10 +1,10 @@
 package eu.kanade.tachiyomi.data.database.models
 
-import eu.kanade.tachiyomi.ui.library.LibraryItem
+import eu.kanade.tachiyomi.domain.manga.models.Manga
 import kotlin.math.roundToInt
-import yokai.data.updateStrategyAdapter
 
 data class LibraryManga(
+    val manga: Manga,
     var unread: Int = 0,
     var read: Int = 0,
     var category: Int = 0,
@@ -13,41 +13,11 @@ data class LibraryManga(
     var latestUpdate: Long = 0,
     var lastRead: Long = 0,
     var lastFetch: Long = 0,
-) : MangaImpl() {
-
-    var realMangaCount = 0
-        get() = if (isBlank()) field else throw IllegalStateException("realMangaCount is only accessible by placeholders")
-        set(value) {
-            if (!isBlank()) throw IllegalStateException("realMangaCount can only be set by placeholders")
-            field = value
-        }
-
+) {
     val hasRead
         get() = read > 0
 
-    @Transient
-    var items: List<LibraryItem>? = null
-        get() = if (isHidden()) field else throw IllegalStateException("items only accessible by placeholders")
-        set(value) {
-            if (!isHidden()) throw IllegalStateException("items can only be set by placeholders")
-            field = value
-        }
-
     companion object {
-        fun createBlank(categoryId: Int): LibraryManga = LibraryManga().apply {
-            title = ""
-            id = Long.MIN_VALUE
-            category = categoryId
-        }
-
-        fun createHide(categoryId: Int, title: String, hiddenItems: List<LibraryItem>): LibraryManga =
-            createBlank(categoryId).apply {
-                this.title = title
-                this.status = -1
-                this.read = hiddenItems.size
-                this.items = hiddenItems
-            }
-
         fun mapper(
             // manga
             id: Long,
@@ -78,34 +48,37 @@ data class LibraryManga(
             latestUpdate: Long,
             lastRead: Long,
             lastFetch: Long,
-        ): LibraryManga = createBlank(categoryId.toInt()).apply {
-            this.id = id
-            this.source = source
-            this.url = url
-            this.artist = artist
-            this.author = author
-            this.description = description
-            this.genre = genre
-            this.title = title
-            this.status = status.toInt()
-            this.thumbnail_url = thumbnailUrl
-            this.favorite = favorite
-            this.last_update = lastUpdate ?: 0L
-            this.initialized = initialized
-            this.viewer_flags = viewerFlags.toInt()
-            this.hide_title = hideTitle
-            this.chapter_flags = chapterFlags.toInt()
-            this.date_added = dateAdded ?: 0L
-            this.filtered_scanlators = filteredScanlators
-            this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
-            this.cover_last_modified = coverLastModified
-            this.read = readCount.roundToInt()
-            this.unread = maxOf((total - readCount).roundToInt(), 0)
-            this.totalChapters = total.toInt()
-            this.bookmarkCount = bookmarkCount.roundToInt()
-            this.latestUpdate = latestUpdate
-            this.lastRead = lastRead
-            this.lastFetch = lastFetch
-        }
+        ): LibraryManga = LibraryManga(
+            manga = Manga.mapper(
+                id = id,
+                source = source,
+                url = url,
+                artist = artist,
+                author = author,
+                description = description,
+                genre = genre,
+                title = title,
+                status = status,
+                thumbnailUrl = thumbnailUrl,
+                favorite = favorite,
+                lastUpdate = lastUpdate,
+                initialized = initialized,
+                viewerFlags = viewerFlags,
+                hideTitle = hideTitle,
+                chapterFlags = chapterFlags,
+                dateAdded = dateAdded,
+                filteredScanlators = filteredScanlators,
+                updateStrategy = updateStrategy,
+                coverLastModified = coverLastModified,
+            ),
+            read = readCount.roundToInt(),
+            unread = maxOf((total - readCount).roundToInt(), 0),
+            totalChapters = total.toInt(),
+            bookmarkCount = bookmarkCount.roundToInt(),
+            category = categoryId.toInt(),
+            latestUpdate = latestUpdate,
+            lastRead = lastRead,
+            lastFetch = lastFetch,
+        )
     }
 }

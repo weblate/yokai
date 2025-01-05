@@ -5,9 +5,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import com.google.android.material.card.MaterialCardView
 import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.util.isLocal
 import eu.kanade.tachiyomi.util.system.getResourceColor
@@ -17,9 +14,7 @@ import eu.kanade.tachiyomi.util.view.setCards
  * Generic class used to hold the displayed data of a manga in the library.
  * @param view the inflated view for this holder.
  * @param adapter the adapter handling this holder.
- * @param listener a listener to react to the single tap and long tap events.
  */
-
 abstract class LibraryHolder(
     view: View,
     val adapter: LibraryCategoryAdapter,
@@ -43,7 +38,7 @@ abstract class LibraryHolder(
      */
     abstract fun onSetValues(item: LibraryItem)
 
-    fun setUnreadBadge(badge: LibraryBadge, item: LibraryItem) {
+    fun setUnreadBadge(badge: LibraryBadge, item: LibraryMangaItem) {
         val showTotal = item.header.category.sortingMode() == LibrarySort.TotalChapters
         badge.setUnreadDownload(
             when {
@@ -54,7 +49,7 @@ abstract class LibraryHolder(
             },
             when {
                 item.downloadCount == -1 -> -1
-                item.manga.isLocal() -> -2
+                item.manga.manga.isLocal() -> -2
                 else -> item.downloadCount
             },
             showTotal,
@@ -63,7 +58,7 @@ abstract class LibraryHolder(
         )
     }
 
-    fun setReadingButton(item: LibraryItem) {
+    fun setReadingButton(item: LibraryMangaItem) {
         itemView.findViewById<View>(R.id.play_layout)?.isVisible =
             item.manga.unread > 0 && !item.hideReadingButton
     }
@@ -80,8 +75,8 @@ abstract class LibraryHolder(
 
     override fun onLongClick(view: View?): Boolean {
         return if (adapter.isLongPressDragEnabled) {
-            val manga = (adapter.getItem(flexibleAdapterPosition) as? LibraryItem)?.manga
-            if (manga != null && !isDraggable && !manga.isBlank() && !manga.isHidden()) {
+            val manga = (adapter.getItem(flexibleAdapterPosition) as? LibraryMangaItem)?.manga
+            if (manga != null && !isDraggable) {
                 adapter.mItemLongClickListener.onItemLongClick(flexibleAdapterPosition)
                 toggleActivation()
                 true

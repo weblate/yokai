@@ -185,14 +185,14 @@ class LibraryUpdateNotifier(private val context: Context) {
                     val manga = it.key
                     val chapters = it.value
                     val chapterNames = chapters.map { chapter ->
-                        chapter.preferredChapterName(context, manga, preferences)
+                        chapter.preferredChapterName(context, manga.manga, preferences)
                     }
                     notifications.add(
                         Pair(
                             context.notification(Notifications.CHANNEL_NEW_CHAPTERS) {
                                 setSmallIcon(R.drawable.ic_yokai)
                                 try {
-                                    val request = ImageRequest.Builder(context).data(manga.cover())
+                                    val request = ImageRequest.Builder(context).data(manga.manga.cover())
                                         .networkCachePolicy(CachePolicy.DISABLED)
                                         .diskCachePolicy(CachePolicy.ENABLED)
                                         .transformations(CircleCropTransformation())
@@ -205,7 +205,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                                 } catch (_: Exception) {
                                 }
                                 setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
-                                setContentTitle(manga.title)
+                                setContentTitle(manga.manga.title)
                                 color = ContextCompat.getColor(context, R.color.secondaryTachiyomi)
                                 val chaptersNames = if (chapterNames.size > MAX_CHAPTERS) {
                                     "${chapterNames.take(MAX_CHAPTERS - 1).joinToString(", ")}, " +
@@ -224,7 +224,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                                 setContentIntent(
                                     NotificationReceiver.openChapterPendingActivity(
                                         context,
-                                        manga,
+                                        manga.manga,
                                         chapters.first(),
                                     ),
                                 )
@@ -233,7 +233,7 @@ class LibraryUpdateNotifier(private val context: Context) {
                                     context.getString(MR.strings.mark_as_read),
                                     NotificationReceiver.markAsReadPendingBroadcast(
                                         context,
-                                        manga,
+                                        manga.manga,
                                         chapters,
                                         Notifications.ID_NEW_CHAPTERS,
                                     ),
@@ -243,13 +243,13 @@ class LibraryUpdateNotifier(private val context: Context) {
                                     context.getString(MR.strings.view_chapters),
                                     NotificationReceiver.openChapterPendingActivity(
                                         context,
-                                        manga,
+                                        manga.manga,
                                         Notifications.ID_NEW_CHAPTERS,
                                     ),
                                 )
                                 setAutoCancel(true)
                             },
-                            manga.id.hashCode(),
+                            manga.manga.id.hashCode(),
                         ),
                     )
                 }
@@ -281,13 +281,13 @@ class LibraryUpdateNotifier(private val context: Context) {
                                     NotificationCompat.BigTextStyle()
                                         .bigText(
                                             updates.keys.joinToString("\n") {
-                                                it.title.chop(45)
+                                                it.manga.title.chop(45)
                                             },
                                         ),
                                 )
                             }
                         } else if (!preferences.hideNotificationContent().get()) {
-                            setContentText(updates.keys.first().title.chop(45))
+                            setContentText(updates.keys.first().manga.title.chop(45))
                         }
                         priority = NotificationCompat.PRIORITY_HIGH
                         setGroup(Notifications.GROUP_NEW_CHAPTERS)

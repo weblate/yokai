@@ -13,15 +13,15 @@ import eu.kanade.tachiyomi.util.lang.removeArticles
 import eu.kanade.tachiyomi.util.system.isLTR
 import eu.kanade.tachiyomi.util.system.timeSpanFromNow
 import eu.kanade.tachiyomi.util.system.withDefContext
+import java.util.*
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.injectLazy
-import yokai.domain.ui.UiPreferences
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import java.util.*
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.history.interactor.GetHistory
+import yokai.domain.ui.UiPreferences
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
 /**
  * Adapter storing a list of manga in a certain category.
@@ -117,8 +117,8 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
      */
     fun indexOf(manga: Manga): Int {
         return currentItems.indexOfFirst {
-            if (it is LibraryItem) {
-                it.manga.id == manga.id
+            if (it is LibraryMangaItem) {
+                it.manga.manga.id == manga.id
             } else {
                 false
             }
@@ -142,7 +142,7 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
      */
     fun allIndexOf(manga: Manga): List<Int> {
         return currentItems.mapIndexedNotNull { index, it ->
-            if (it is LibraryItem && it.manga.id == manga.id) {
+            if (it is LibraryMangaItem && it.manga.manga.id == manga.id) {
                 index
             } else {
                 null
@@ -164,7 +164,7 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
         } else {
             val filteredManga = withDefContext { mangas.filter { it.filter(s) } }
             if (filteredManga.isEmpty() && controller?.presenter?.showAllCategories == false) {
-                val catId = mangas.firstOrNull()?.let { it.header?.catId ?: it.manga.category }
+                val catId = (mangas.firstOrNull() as? LibraryMangaItem)?.let { it.header?.catId ?: it.manga.category }
                 val blankItem = catId?.let { controller.presenter.blankItem(it) }
                 updateDataSet(blankItem ?: emptyList())
             } else {
@@ -202,18 +202,19 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                 vibrateOnCategoryChange(item.category.name)
                 item.category.name
             }
-            is LibraryItem -> {
-                val text = if (item.manga.isBlank()) {
-                    return item.header?.category?.name.orEmpty()
-                } else {
+            is LibraryPlaceholderItem -> {
+                item.header?.category?.name.orEmpty()
+            }
+            is LibraryMangaItem -> {
+                val text =
                     when (getSort(position)) {
                         LibrarySort.DragAndDrop -> {
-                            if (item.header.category.isDynamic && item.manga.id != null) {
+                            if (item.header.category.isDynamic && item.manga.manga.id != null) {
                                 // FIXME: Don't do blocking
-                                val category = runBlocking { getCategories.awaitByMangaId(item.manga.id!!) }.firstOrNull()?.name
+                                val category = runBlocking { getCategories.awaitByMangaId(item.manga.manga.id!!) }.firstOrNull()?.name
                                 category ?: context.getString(MR.strings.default_value)
                             } else {
-                                val title = item.manga.title
+                                val title = item.manga.manga.title
                                 if (preferences.removeArticles().get()) {
                                     title.removeArticles().chop(15)
                                 } else {
@@ -222,14 +223,14 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                             }
                         }
                         LibrarySort.DateFetched -> {
-                            val id = item.manga.id ?: return ""
+                            val id = item.manga.manga.id ?: return ""
                             // FIXME: Don't do blocking
                             val history = runBlocking { getChapter.awaitAll(id, false) }
                             val last = history.maxOfOrNull { it.date_fetch }
                             context.timeSpanFromNow(MR.strings.fetched_, last ?: 0)
                         }
                         LibrarySort.LastRead -> {
-                            val id = item.manga.id ?: return ""
+                            val id = item.manga.manga.id ?: return ""
                             // FIXME: Don't do blocking
                             val history = runBlocking { getHistory.awaitAllByMangaId(id) }
                             val last = history.maxOfOrNull { it.last_read }
@@ -256,21 +257,20 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                             }
                         }
                         LibrarySort.LatestChapter -> {
-                            context.timeSpanFromNow(MR.strings.updated_, item.manga.last_update)
+                            context.timeSpanFromNow(MR.strings.updated_, item.manga.manga.last_update)
                         }
                         LibrarySort.DateAdded -> {
-                            context.timeSpanFromNow(MR.strings.added_, item.manga.date_added)
+                            context.timeSpanFromNow(MR.strings.added_, item.manga.manga.date_added)
                         }
                         LibrarySort.Title -> {
                             val title = if (preferences.removeArticles().get()) {
-                                item.manga.title.removeArticles()
+                                item.manga.manga.title.removeArticles()
                             } else {
-                                item.manga.title
+                                item.manga.manga.title
                             }
                             getFirstLetter(title)
                         }
                     }
-                }
                 if (!isSingleCategory) {
                     vibrateOnCategoryChange(item.header?.category?.name.orEmpty())
                 }

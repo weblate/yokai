@@ -201,7 +201,7 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
 
         val isAscending = category.isAscending()
         val sortingMode = category.sortingMode()
-        val sortDrawable = getSortRes(sortingMode, isAscending, R.drawable.ic_sort_24dp)
+        val sortDrawable = getSortRes(sortingMode, isAscending, category.isDynamic, false)
 
         binding.categorySort.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, sortDrawable, 0)
         binding.categorySort.setText(category.sortRes())
@@ -266,7 +266,7 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
         val cat = category ?: return
         adapter.controller?.activity?.let { activity ->
             val items = LibrarySort.entries.map { it.menuSheetItem(cat.isDynamic) }
-            val sortingMode = cat.sortingMode(true)
+            val sortingMode = cat.sortingMode() ?: if (!cat.isDynamic) LibrarySort.DragAndDrop else null
             val sheet = MaterialMenuSheet(
                 activity,
                 items,
@@ -275,42 +275,48 @@ class LibraryHeaderHolder(val view: View, val adapter: LibraryCategoryAdapter) :
             ) { sheet, item ->
                 onCatSortClicked(cat, item)
                 val nCategory = (adapter.getItem(flexibleAdapterPosition) as? LibraryHeaderItem)?.category
-                val isAscending = nCategory?.isAscending() ?: false
-                val drawableRes = getSortRes(item, isAscending)
-                sheet.setDrawable(item, drawableRes)
+                sheet.updateSortIcon(nCategory, LibrarySort.valueOf(item))
                 false
             }
-            val isAscending = cat.isAscending()
-            val drawableRes = getSortRes(sortingMode, isAscending)
-            sheet.setDrawable(sortingMode?.mainValue ?: -1, drawableRes)
+            sheet.updateSortIcon(cat, sortingMode)
             sheet.show()
         }
+    }
+
+    private fun MaterialMenuSheet.updateSortIcon(category: Category?, sortingMode: LibrarySort?) {
+        val isAscending = category?.isAscending() ?: false
+        val drawableRes = getSortRes(sortingMode, isAscending, category?.isDynamic ?: false, true)
+        this.setDrawable(sortingMode?.mainValue ?: -1, drawableRes)
     }
 
     private fun getSortRes(
         sortMode: LibrarySort?,
         isAscending: Boolean,
-        @DrawableRes defaultDrawableRes: Int = R.drawable.ic_check_24dp,
+        isDynamic: Boolean,
+        onSelection: Boolean,
+        @DrawableRes defaultDrawableRes: Int = R.drawable.ic_sort_24dp,
+        @DrawableRes defaultSelectedDrawableRes: Int = R.drawable.ic_check_24dp,
     ): Int {
-        sortMode ?: return defaultDrawableRes
-        return when (sortMode) {
-            LibrarySort.DragAndDrop -> defaultDrawableRes
-            LibrarySort.Random -> R.drawable.ic_shuffle_24dp
-            else -> {
-                if (if (sortMode.hasInvertedSort) !isAscending else isAscending) {
-                    R.drawable.ic_arrow_downward_24dp
-                } else {
-                    R.drawable.ic_arrow_upward_24dp
-                }
+        sortMode ?: return if (onSelection) defaultSelectedDrawableRes else defaultDrawableRes
+
+        if (sortMode.isDirectional) {
+            return if (if (sortMode.hasInvertedSort) !isAscending else isAscending) {
+                R.drawable.ic_arrow_downward_24dp
+            } else {
+                R.drawable.ic_arrow_upward_24dp
             }
         }
-    }
 
-    private fun getSortRes(
-        sortingMode: Int?,
-        isAscending: Boolean,
-        @DrawableRes defaultDrawableRes: Int = R.drawable.ic_check_24dp,
-    ): Int = getSortRes(sortingMode?.let { LibrarySort.valueOf(it) }, isAscending, defaultDrawableRes)
+        if (onSelection) {
+            return when(sortMode) {
+                LibrarySort.DragAndDrop -> R.drawable.ic_check_24dp
+                LibrarySort.Random -> R.drawable.ic_refresh_24dp
+                else -> defaultSelectedDrawableRes
+            }
+        }
+
+        return sortMode.iconRes(isDynamic)
+    }
 
     private fun onCatSortClicked(category: Category, menuId: Int?) {
         val (mode, modType) = if (menuId == null) {

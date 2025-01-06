@@ -34,7 +34,7 @@ enum class LibrarySort(
         8,
         MR.strings.random,
         R.drawable.ic_shuffle_24dp,
-    )
+    ),
     ;
 
     val categoryValue: Char
@@ -64,6 +64,9 @@ enum class LibrarySort(
 
     val hasInvertedSort: Boolean
         get() = this in listOf(LastRead, DateAdded, LatestChapter, DateFetched)
+
+    val isDirectional: Boolean
+        get() = this !in listOf(DragAndDrop, Random)
 
     fun menuSheetItem(isDynamic: Boolean): MaterialMenuSheet.MenuSheetItem {
         return MaterialMenuSheet.MenuSheetItem(

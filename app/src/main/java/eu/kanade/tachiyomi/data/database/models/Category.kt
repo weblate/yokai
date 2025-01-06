@@ -37,8 +37,7 @@ interface Category : Serializable {
         return ((mangaSort?.minus('a') ?: 0) % 2) != 1
     }
 
-    fun sortingMode(nullAsDND: Boolean = false): LibrarySort? = LibrarySort.valueOf(mangaSort)
-        ?: if (nullAsDND && !isDynamic) LibrarySort.DragAndDrop else null
+    fun sortingMode(): LibrarySort? = LibrarySort.valueOf(mangaSort)
 
     val isDragAndDrop
         get() = (

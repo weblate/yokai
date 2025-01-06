@@ -14,7 +14,7 @@ import androidx.core.net.toUri
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.extension.ExtensionInstallerJob
 import eu.kanade.tachiyomi.extension.ExtensionManager
-import eu.kanade.tachiyomi.extension.ShizukuInstaller
+import eu.kanade.tachiyomi.extension.installer.ShizukuInstaller
 import eu.kanade.tachiyomi.extension.model.InstallStep
 import eu.kanade.tachiyomi.ui.extension.ExtensionIntallInfo
 import eu.kanade.tachiyomi.util.storage.getUriCompat
@@ -22,6 +22,7 @@ import eu.kanade.tachiyomi.util.system.e
 import eu.kanade.tachiyomi.util.system.isPackageInstalled
 import eu.kanade.tachiyomi.util.system.launchUI
 import eu.kanade.tachiyomi.util.system.toast
+import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -47,7 +48,6 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences
-import java.io.File
 
 /**
  * The installer which installs, updates and uninstalls the extensions.

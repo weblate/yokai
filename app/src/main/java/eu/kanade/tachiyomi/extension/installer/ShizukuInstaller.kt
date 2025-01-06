@@ -1,21 +1,16 @@
-package eu.kanade.tachiyomi.extension
+package eu.kanade.tachiyomi.extension.installer
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Process
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import co.touchlab.kermit.Logger
-import eu.kanade.tachiyomi.R
-import yokai.i18n.MR
-import yokai.util.lang.getString
-import dev.icerock.moko.resources.compose.stringResource
-import eu.kanade.tachiyomi.extension.util.ExtensionInstaller.Companion.EXTRA_DOWNLOAD_ID
 import eu.kanade.tachiyomi.util.system.getUriSize
 import eu.kanade.tachiyomi.util.system.isShizukuInstalled
+import java.io.BufferedReader
+import java.io.InputStream
+import java.lang.reflect.Method
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -23,36 +18,20 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuRemoteProcess
-import uy.kohesive.injekt.injectLazy
-import java.io.BufferedReader
-import java.io.InputStream
-import java.lang.reflect.Method
-import java.util.*
-import java.util.concurrent.atomic.AtomicReference
+import yokai.i18n.MR
+import yokai.util.lang.getString
 
-class ShizukuInstaller(private val context: Context, val finishedQueue: (ShizukuInstaller) -> Unit) {
+class ShizukuInstaller(
+    context: Context,
+    finishedQueue: (Installer) -> Unit,
+) : Installer(context, finishedQueue) {
 
-    private val extensionManager: ExtensionManager by injectLazy()
-
-    private var waitingInstall = AtomicReference<Entry>(null)
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    private val cancelReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val downloadId = intent.getLongExtra(EXTRA_DOWNLOAD_ID, -1).takeIf { it >= 0 } ?: return
-            cancelQueue(downloadId)
-        }
-    }
-
-    data class Entry(val downloadId: Long, val pkgName: String, val uri: Uri)
-    private val queue = Collections.synchronizedList(mutableListOf<Entry>())
 
     private val shizukuDeadListener = Shizuku.OnBinderDeadListener {
         Logger.d { "Shizuku was killed prematurely" }
         finishedQueue(this)
     }
-
-    fun isInQueue(pkgName: String) = queue.any { it.pkgName == pkgName }
 
     private val shizukuPermissionListener = object : Shizuku.OnRequestPermissionResultListener {
         override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
@@ -68,7 +47,7 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
         }
     }
 
-    var ready = false
+    override var ready = false
 
     private val newProcess: Method
 
@@ -90,9 +69,8 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
         newProcess.isAccessible = true
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    fun processEntry(entry: Entry) {
-        extensionManager.setInstalling(entry.downloadId, entry.uri.hashCode())
+    override fun processEntry(entry: Entry) {
+        super.processEntry(entry)
         ioScope.launch {
             var sessionId: String? = null
             try {
@@ -130,85 +108,14 @@ class ShizukuInstaller(private val context: Context, val finishedQueue: (Shizuku
         }
     }
 
-    /**
-     * Checks the queue. The provided service will be stopped if the queue is empty.
-     * Will not be run when not ready.
-     *
-     * @see ready
-     */
-    fun checkQueue() {
-        if (!ready) {
-            return
-        }
-        if (queue.isEmpty()) {
-            finishedQueue(this)
-            return
-        }
-        val nextEntry = queue.first()
-        if (waitingInstall.compareAndSet(null, nextEntry)) {
-            queue.removeAt(0)
-            processEntry(nextEntry)
-        }
-    }
-
-    /**
-     * Tells the queue to continue processing the next entry and updates the install step
-     * of the completed entry ([waitingInstall]) to [ExtensionManager].
-     *
-     * @param resultStep new install step for the processed entry.
-     * @see waitingInstall
-     */
-    fun continueQueue(succeeded: Boolean) {
-        val completedEntry = waitingInstall.getAndSet(null)
-        if (completedEntry != null) {
-            extensionManager.setInstallationResult(completedEntry.downloadId, succeeded)
-            checkQueue()
-        }
-    }
-
-    /**
-     * Add an item to install queue.
-     *
-     * @param downloadId Download ID as known by [ExtensionManager]
-     * @param uri Uri of APK to install
-     */
-    fun addToQueue(downloadId: Long, pkgName: String, uri: Uri) {
-        queue.add(Entry(downloadId, pkgName, uri))
-        checkQueue()
-    }
-
-    /**
-     * Cancels queue for the provided download ID if exists.
-     *
-     * @param downloadId Download ID as known by [ExtensionManager]
-     */
-    private fun cancelQueue(downloadId: Long) {
-        val waitingInstall = this.waitingInstall.get()
-        val toCancel = queue.find { it.downloadId == downloadId } ?: waitingInstall ?: return
-        if (cancelEntry(toCancel)) {
-            queue.remove(toCancel)
-            if (waitingInstall == toCancel) {
-                // Currently processing removed entry, continue queue
-                this.waitingInstall.set(null)
-                checkQueue()
-            }
-            queue.forEach { extensionManager.setInstallationResult(it.downloadId, false) }
-//            extensionManager.up(downloadId, InstallStep.Idle)
-        }
-    }
-
     // Don't cancel if entry is already started installing
-    fun cancelEntry(entry: Entry): Boolean = getActiveEntry() != entry
-    fun getActiveEntry(): Entry? = waitingInstall.get()
+    override fun cancelEntry(entry: Entry): Boolean = getActiveEntry() != entry
 
-    fun onDestroy() {
+    override fun onDestroy() {
         Shizuku.removeBinderDeadListener(shizukuDeadListener)
         Shizuku.removeRequestPermissionResultListener(shizukuPermissionListener)
         ioScope.cancel()
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(cancelReceiver)
-        queue.forEach { extensionManager.setInstallationResult(it.pkgName, false) }
-        queue.clear()
-        waitingInstall.set(null)
+        super.onDestroy()
     }
 
     private fun exec(command: String, stdin: InputStream? = null): ShellResult {

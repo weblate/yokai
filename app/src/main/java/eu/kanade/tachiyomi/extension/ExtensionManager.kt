@@ -7,6 +7,7 @@ import android.os.Parcelable
 import co.touchlab.kermit.Logger
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.extension.api.ExtensionApi
+import eu.kanade.tachiyomi.extension.installer.ShizukuInstaller
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.InstallStep
 import eu.kanade.tachiyomi.extension.model.LoadResult
@@ -17,6 +18,9 @@ import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.ui.extension.ExtensionIntallInfo
 import eu.kanade.tachiyomi.util.system.launchNow
 import eu.kanade.tachiyomi.util.system.withIOContext
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -27,8 +31,6 @@ import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.base.BasePreferences
 import yokai.domain.extension.interactor.TrustExtension
-import java.util.*
-import java.util.concurrent.*
 
 /**
  * The manager of extensions installed as another apk which extend the available sources. It handles

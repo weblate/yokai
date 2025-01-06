@@ -24,7 +24,7 @@ import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob.Target
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys
 import eu.kanade.tachiyomi.data.preference.changesIn
-import eu.kanade.tachiyomi.extension.ShizukuInstaller
+import eu.kanade.tachiyomi.extension.installer.ShizukuInstaller
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.network.NetworkPreferences
 import eu.kanade.tachiyomi.network.PREF_DOH_360

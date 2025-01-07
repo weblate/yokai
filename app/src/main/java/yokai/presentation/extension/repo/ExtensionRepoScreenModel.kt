@@ -1,8 +1,8 @@
 package yokai.presentation.extension.repo
 
 import androidx.compose.runtime.Immutable
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.StateScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.util.system.launchIO
@@ -22,8 +22,7 @@ import yokai.domain.extension.repo.interactor.UpdateExtensionRepo
 import yokai.domain.extension.repo.model.ExtensionRepo
 import yokai.i18n.MR
 
-class ExtensionRepoViewModel :
-    ViewModel() {
+class ExtensionRepoScreenModel : StateScreenModel<ExtensionRepoScreenModel.State>(State.Loading) {
 
     private val extensionManager: ExtensionManager by injectLazy()
 
@@ -33,23 +32,20 @@ class ExtensionRepoViewModel :
     private val replaceExtensionRepo: ReplaceExtensionRepo by injectLazy()
     private val updateExtensionRepo: UpdateExtensionRepo by injectLazy()
 
-    private val mutableRepoState: MutableStateFlow<ExtensionRepoState> = MutableStateFlow(ExtensionRepoState.Loading)
-    val repoState: StateFlow<ExtensionRepoState> = mutableRepoState.asStateFlow()
-
     private val internalEvent: MutableStateFlow<ExtensionRepoEvent> = MutableStateFlow(ExtensionRepoEvent.NoOp)
     val event: StateFlow<ExtensionRepoEvent> = internalEvent.asStateFlow()
 
     init {
-        viewModelScope.launchIO {
+        screenModelScope.launchIO {
             getExtensionRepo.subscribeAll().collectLatest { repos ->
-                mutableRepoState.update { ExtensionRepoState.Success(repos = repos.toImmutableList()) }
+                mutableState.update { State.Success(repos = repos.toImmutableList()) }
                 extensionManager.refreshTrust()
             }
         }
     }
 
     fun addRepo(url: String) {
-        viewModelScope.launchIO {
+        screenModelScope.launchIO {
             when (val result = createExtensionRepo.await(url)) {
                 is CreateExtensionRepo.Result.Success -> internalEvent.value = ExtensionRepoEvent.Success
                 is CreateExtensionRepo.Result.Error -> internalEvent.value = ExtensionRepoEvent.InvalidUrl
@@ -63,24 +59,39 @@ class ExtensionRepoViewModel :
     }
 
     fun replaceRepo(newRepo: ExtensionRepo) {
-        viewModelScope.launchIO {
+        screenModelScope.launchIO {
             replaceExtensionRepo.await(newRepo)
         }
     }
 
     fun refreshRepos() {
-        val status = repoState.value
+        val status = state.value
 
-        if (status is ExtensionRepoState.Success) {
-            viewModelScope.launchIO {
+        if (status is State.Success) {
+            screenModelScope.launchIO {
                 updateExtensionRepo.awaitAll()
             }
         }
     }
 
     fun deleteRepo(url: String) {
-        viewModelScope.launchIO {
+        screenModelScope.launchIO {
             deleteExtensionRepo.await(url)
+        }
+    }
+
+    sealed interface State {
+
+        @Immutable
+        data object Loading : State
+
+        @Immutable
+        data class Success(
+            val repos: ImmutableList<ExtensionRepo>,
+        ) : State {
+
+            val isEmpty: Boolean
+                get() = repos.isEmpty()
         }
     }
 }
@@ -98,17 +109,3 @@ sealed class ExtensionRepoEvent {
     data object Success : ExtensionRepoEvent()
 }
 
-sealed class ExtensionRepoState {
-
-    @Immutable
-    data object Loading : ExtensionRepoState()
-
-    @Immutable
-    data class Success(
-        val repos: ImmutableList<ExtensionRepo>,
-    ) : ExtensionRepoState() {
-
-        val isEmpty: Boolean
-            get() = repos.isEmpty()
-    }
-}

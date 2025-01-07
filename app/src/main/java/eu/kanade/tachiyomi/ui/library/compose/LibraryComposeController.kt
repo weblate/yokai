@@ -11,17 +11,40 @@ import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.LibraryControllerBinding
 import eu.kanade.tachiyomi.ui.base.controller.BaseCoroutineController
+import eu.kanade.tachiyomi.ui.main.BottomSheetController
+import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
+import eu.kanade.tachiyomi.ui.main.RootSearchInterface
+import java.util.Locale
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import yokai.domain.ui.UiPreferences
+import yokai.i18n.MR
 import yokai.presentation.library.LibraryContent
 import yokai.presentation.theme.YokaiTheme
+import yokai.util.lang.getString
 
 class LibraryComposeController(
     bundle: Bundle? = null,
     val uiPreferences: UiPreferences = Injekt.get(),
     val preferences: PreferencesHelper = Injekt.get(),
-) : BaseCoroutineController<LibraryControllerBinding, LibraryComposePresenter>(bundle) {
+) : BaseCoroutineController<LibraryControllerBinding, LibraryComposePresenter>(bundle) ,
+    BottomSheetController,
+    RootSearchInterface,
+    FloatingSearchInterface {
+
+    override fun getTitle(): String? {
+        return view?.context?.getString(MR.strings.library)
+    }
+
+    override fun getSearchTitle(): String? {
+        return searchTitle(
+            if (preferences.showLibrarySearchSuggestions().get() && preferences.librarySearchSuggestion().get().isNotBlank()) {
+                "\"${preferences.librarySearchSuggestion().get()}\""
+            } else {
+                view?.context?.getString(MR.strings.your_library)?.lowercase(Locale.ROOT)
+            },
+        )
+    }
 
     override val presenter = LibraryComposePresenter()
 
@@ -45,5 +68,14 @@ class LibraryComposeController(
         LibraryContent(
             columns = 3,
         )
+    }
+
+    override fun showSheet() {
+    }
+
+    override fun hideSheet() {
+    }
+
+    override fun toggleSheet() {
     }
 }

@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.databinding.LibraryControllerBinding
 import eu.kanade.tachiyomi.ui.base.controller.BaseCoroutineController
+import eu.kanade.tachiyomi.ui.library.models.LibraryItem
 import eu.kanade.tachiyomi.ui.main.BottomSheetController
 import eu.kanade.tachiyomi.ui.main.FloatingSearchInterface
 import eu.kanade.tachiyomi.ui.main.RootSearchInterface
@@ -37,9 +38,11 @@ class LibraryComposeController(
     }
 
     override fun getSearchTitle(): String? {
+        val searchSuggestion by lazy { preferences.librarySearchSuggestion().get() }
+
         return searchTitle(
-            if (preferences.showLibrarySearchSuggestions().get() && preferences.librarySearchSuggestion().get().isNotBlank()) {
-                "\"${preferences.librarySearchSuggestion().get()}\""
+            if (preferences.showLibrarySearchSuggestions().get() && searchSuggestion.isNotBlank()) {
+                "\"$searchSuggestion\""
             } else {
                 view?.context?.getString(MR.strings.your_library)?.lowercase(Locale.ROOT)
             },
@@ -52,8 +55,10 @@ class LibraryComposeController(
 
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
+
         binding.composeView.isVisible = true
         binding.swipeRefresh.isGone = true
+        binding.fastScroller.isGone = true
 
         binding.composeView.setContent {
             YokaiTheme {
@@ -66,6 +71,10 @@ class LibraryComposeController(
     fun ScreenContent() {
         val state by presenter.state.collectAsState()
         LibraryContent(
+            items = listOf(
+                LibraryItem.Blank(69),
+                LibraryItem.Blank(420),
+            ),
             columns = 3,
         )
     }

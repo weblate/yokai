@@ -394,6 +394,10 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
                 onClick { LibraryUpdateJob.startNow(context, target = Target.TRACKING) }
             }
+            switchPreference {
+                bindTo(basePreferences.composeLibrary())
+                title = context.getString(MR.strings.pref_use_compose_library).addBetaTag(context)
+            }
         }
 
         preferenceCategory {

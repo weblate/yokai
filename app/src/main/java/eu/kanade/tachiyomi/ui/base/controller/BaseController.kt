@@ -25,6 +25,8 @@ import kotlinx.coroutines.cancel
 abstract class BaseController(bundle: Bundle? = null) :
     Controller(bundle), BackHandlerControllerInterface, BaseControllerPreferenceControllerCommonInterface {
 
+    abstract val shouldHideLegacyAppBar: Boolean
+
     lateinit var viewScope: CoroutineScope
     var isDragging = false
 
@@ -57,6 +59,10 @@ abstract class BaseController(bundle: Bundle? = null) :
     }
 
     open fun onViewCreated(view: View) { }
+
+    internal fun setAppBarVisibility() {
+        if (shouldHideLegacyAppBar) hideLegacyAppBar() else showLegacyAppBar()
+    }
 
     override fun onChangeStarted(handler: ControllerChangeHandler, type: ControllerChangeType) {
         if (type.isEnter && !isControllerVisible) {

@@ -166,6 +166,8 @@
     <string name="tracking_status">Tracking status</string>
     <string name="ungrouped">Ungrouped</string>
 
+    <string name="pref_use_compose_library">Use experimental compose library</string>
+
     <!-- Library Sort -->
     <string name="sort_by">Sort by</string>
     <string name="total_chapters">Total chapters</string>

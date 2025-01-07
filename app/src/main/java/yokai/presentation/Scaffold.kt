@@ -99,6 +99,7 @@ fun YokaiScaffold(
                     scrollBehavior = scrollBehaviorOrDefault,
                     actions = actions,
                 )
+                AppBarType.NONE -> {}
             }
         },
         snackbarHost = snackbarHost,
@@ -115,6 +116,8 @@ fun getTopAppBarColor(title: String): Pair<Color, Color> {
 }
 
 enum class AppBarType {
+    // FIXME: Delete "NONE" later
+    NONE,
     SMALL,
     LARGE,
 }

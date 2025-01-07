@@ -20,11 +20,13 @@ import eu.kanade.tachiyomi.util.view.isControllerVisible
 abstract class BaseLegacyController<VB : ViewBinding>(bundle: Bundle? = null) :
     BaseController(bundle) {
 
+    override val shouldHideLegacyAppBar = false
+
     lateinit var binding: VB
     val isBindingInitialized get() = this::binding.isInitialized
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-        showLegacyAppBar()
+        setAppBarVisibility()
         binding = createBinding(inflater)
         binding.root.backgroundColor = binding.root.context.getResourceColor(R.attr.background)
         return binding.root

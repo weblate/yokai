@@ -2,6 +2,8 @@ package eu.kanade.tachiyomi.ui.library
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.CrossfadeTransition
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.ui.base.controller.BaseComposeController
 import uy.kohesive.injekt.Injekt
@@ -18,6 +20,11 @@ class LibraryComposeController(
 
     @Composable
     override fun ScreenContent() {
-        LibraryScreen()
+        Navigator(
+            screen = LibraryScreen(),
+            content = {
+                CrossfadeTransition(navigator = it)
+            },
+        )
     }
 }

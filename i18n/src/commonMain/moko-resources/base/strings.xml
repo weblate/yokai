@@ -295,7 +295,7 @@
     <string name="clear_history">Clear history</string>
     <string name="recents_long_tap_default">Show download queue</string>
     <string name="recents_long_tap_last_read">Open last read chapter</string>
-    <string name="recents_long_tap">Long tap Recents behaviour</string>
+    <string name="recents_long_tap">Long tap Recents behavior</string>
 
     <!-- Browse -->
     <string name="search_filters">Search filters</string>
@@ -318,7 +318,7 @@
     <string name="check_site_in_web">Check website in WebView</string>
     <string name="browse_long_tap_default">Open extensions / migration menu</string>
     <string name="browse_long_tap_search">Open global search</string>
-    <string name="browse_long_tap">Long tap Browse behaviour</string>
+    <string name="browse_long_tap">Long tap Browse behavior</string>
 
     <!-- Other Screens -->
 

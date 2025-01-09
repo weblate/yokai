@@ -3,6 +3,7 @@ package yokai.presentation.library
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import eu.kanade.tachiyomi.ui.library.models.LibraryItem
 import yokai.presentation.AppBarType
 import yokai.presentation.YokaiScaffold
@@ -10,6 +11,7 @@ import yokai.presentation.library.components.LazyLibraryGrid
 
 @Composable
 fun LibraryContent(
+    modifier: Modifier = Modifier,
     items: List<LibraryItem>,
     columns: Int,
 ) {
@@ -18,6 +20,7 @@ fun LibraryContent(
         appBarType = AppBarType.NONE,
     ) { contentPadding ->
         LazyLibraryGrid(
+            modifier = modifier,
             columns = columns,
             contentPadding = contentPadding,
         ) {

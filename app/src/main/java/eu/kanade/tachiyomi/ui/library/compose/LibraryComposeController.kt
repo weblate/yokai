@@ -6,6 +6,9 @@ import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -69,12 +72,12 @@ class LibraryComposeController(
 
     @Composable
     fun ScreenContent() {
+        val nestedScrollInterop = rememberNestedScrollInteropConnection()
+
         val state by presenter.state.collectAsState()
         LibraryContent(
-            items = listOf(
-                LibraryItem.Blank(69),
-                LibraryItem.Blank(420),
-            ),
+            modifier = Modifier.nestedScroll(nestedScrollInterop),
+            items = (0..50).map { LibraryItem.Blank(it) },
             columns = 3,
         )
     }

@@ -30,6 +30,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -546,22 +547,21 @@ fun enterAlwaysCollapsedScrollBehavior(
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
 ): TopAppBarScrollBehavior {
-    val topHeightPx: Float
-    val totalHeightPx: Float
-    LocalDensity.current.run {
-        topHeightPx = CollapsedContainerHeight.toPx()
-        totalHeightPx = ExpandedContainerHeight.toPx()
-    }
+    return remember(state, canScroll, isAtTop, snapAnimationSpec, flingAnimationSpec) {
+        val (topHeightPx, totalHeightPx) = with(LocalDensity.current) {
+            CollapsedContainerHeight.toPx() to ExpandedContainerHeight.toPx()
+        }
 
-    return EnterAlwaysCollapsedScrollBehavior(
-        state = state,
-        snapAnimationSpec = snapAnimationSpec,
-        flingAnimationSpec = flingAnimationSpec,
-        canScroll = canScroll,
-        isAtTop = isAtTop,
-        topHeightPx = topHeightPx,
-        totalHeightPx = totalHeightPx,
-    )
+        EnterAlwaysCollapsedScrollBehavior(
+            state = state,
+            snapAnimationSpec = snapAnimationSpec,
+            flingAnimationSpec = flingAnimationSpec,
+            canScroll = canScroll,
+            isAtTop = isAtTop,
+            topHeightPx = topHeightPx,
+            totalHeightPx = totalHeightPx,
+        )
+    }
 }
 
 private class EnterAlwaysCollapsedScrollBehavior(

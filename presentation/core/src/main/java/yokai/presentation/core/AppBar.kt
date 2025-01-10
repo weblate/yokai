@@ -547,11 +547,11 @@ fun enterAlwaysCollapsedScrollBehavior(
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
 ): TopAppBarScrollBehavior {
-    return remember(state, canScroll, isAtTop, snapAnimationSpec, flingAnimationSpec) {
-        val (topHeightPx, totalHeightPx) = with(LocalDensity.current) {
-            CollapsedContainerHeight.toPx() to ExpandedContainerHeight.toPx()
-        }
+    val (topHeightPx, totalHeightPx) = with(LocalDensity.current) {
+        CollapsedContainerHeight.toPx() to ExpandedContainerHeight.toPx()
+    }
 
+    return remember(state, canScroll, isAtTop, snapAnimationSpec, flingAnimationSpec, topHeightPx, totalHeightPx) {
         EnterAlwaysCollapsedScrollBehavior(
             state = state,
             snapAnimationSpec = snapAnimationSpec,

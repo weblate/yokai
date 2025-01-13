@@ -806,6 +806,8 @@ class MangaDetailsController :
     }
 
     private fun getHeader(): MangaHeaderHolder? {
+        if (isBindingInitialized) return null
+
         return if (isTablet) {
             binding.tabletRecycler.findViewHolderForAdapterPosition(0) as? MangaHeaderHolder
         } else {

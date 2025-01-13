@@ -179,7 +179,7 @@ open class BrowseSourceController(bundle: Bundle) :
 
         // Initialize adapter, scroll listener and recycler views
         adapter = FlexibleAdapter(null, this)
-        adapter.setHasStableIds(false)
+        adapter?.setHasStableIds(false)
         setupRecycler(view)
 
         binding.fab.isVisible = presenter.sourceFilters.isNotEmpty()

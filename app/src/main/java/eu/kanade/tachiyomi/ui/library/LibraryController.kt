@@ -1375,7 +1375,7 @@ open class LibraryController(
             setActiveCategory()
             return
         }
-        val headerPosition = adapter.indexOf(pos)
+        val headerPosition = mAdapter?.indexOf(pos) ?: return
         if (headerPosition > -1) {
             val activityBinding = activityBinding ?: return
             val index = adapter.headerItems.indexOf(adapter.getItem(headerPosition))
@@ -1686,7 +1686,7 @@ open class LibraryController(
         lastItem = null
         isDragging = false
         binding.swipeRefresh.isEnabled = true
-        if (adapter.selectedItemCount > 0) {
+        if (mAdapter == null || adapter.selectedItemCount > 0) {
             lastItemPosition = null
             return
         }

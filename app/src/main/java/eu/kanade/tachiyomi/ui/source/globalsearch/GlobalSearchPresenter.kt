@@ -185,7 +185,7 @@ open class GlobalSearchPresenter(
                             MangasPage(emptyList(), false)
                         }
                             .mangas.take(10)
-                            .map { networkToLocalManga(it, source.id) }
+                            .mapNotNull { networkToLocalManga(it, source.id) }
                         fetchImage(mangas, source)
                         if (mangas.isNotEmpty() && !loadTime.containsKey(source.id)) {
                             loadTime[source.id] = Date().time
@@ -275,14 +275,18 @@ open class GlobalSearchPresenter(
      * @param sManga the manga from the source.
      * @return a manga from the database.
      */
-    protected open suspend fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga {
+    protected open suspend fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga? {
         var localManga = getManga.awaitByUrlAndSource(sManga.url, sourceId)
         if (localManga == null) {
+            if (!sManga::title.isInitialized) return null
+
             val newManga = Manga.create(sManga.url, sManga.title, sourceId)
             newManga.copyFrom(sManga)
             newManga.id = insertManga.await(newManga)
             localManga = newManga
         } else if (!localManga.favorite) {
+            if (!sManga::title.isInitialized) return localManga
+
             // if the manga isn't a favorite, set its display title from source
             // if it later becomes a favorite, updated title will go to db
             localManga.title = sManga.title

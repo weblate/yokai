@@ -278,18 +278,24 @@ open class GlobalSearchPresenter(
     protected open suspend fun networkToLocalManga(sManga: SManga, sourceId: Long): Manga? {
         var localManga = getManga.awaitByUrlAndSource(sManga.url, sourceId)
         if (localManga == null) {
-            if (!sManga::title.isInitialized) return null
-
-            val newManga = Manga.create(sManga.url, sManga.title, sourceId)
+            val newManga =
+                try {
+                    Manga.create(sManga.url, sManga.title, sourceId)
+                } catch (_: UninitializedPropertyAccessException) {
+                    return null
+                }
             newManga.copyFrom(sManga)
             newManga.id = insertManga.await(newManga)
             localManga = newManga
         } else if (!localManga.favorite) {
-            if (!sManga::title.isInitialized) return localManga
-
             // if the manga isn't a favorite, set its display title from source
             // if it later becomes a favorite, updated title will go to db
-            localManga.title = sManga.title
+            localManga.title =
+                try {
+                    sManga.title
+                } catch (_: UninitializedPropertyAccessException) {
+                    return localManga
+                }
         }
         return localManga
     }

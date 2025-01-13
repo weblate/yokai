@@ -394,9 +394,11 @@ class SettingsAdvancedController : SettingsLegacyController() {
 
                 onClick { LibraryUpdateJob.startNow(context, target = Target.TRACKING) }
             }
-            switchPreference {
-                bindTo(basePreferences.composeLibrary())
-                title = context.getString(MR.strings.pref_use_compose_library).addBetaTag(context)
+            if (BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY) {
+                switchPreference {
+                    bindTo(basePreferences.composeLibrary())
+                    title = context.getString(MR.strings.pref_use_compose_library).addBetaTag(context)
+                }
             }
         }
 
@@ -457,36 +459,37 @@ class SettingsAdvancedController : SettingsLegacyController() {
             }
         }
 
-        preferenceCategory {
-            title = "Danger zone!"
-            isVisible = BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY
+        if (BuildConfig.FLAVOR == "dev" || BuildConfig.DEBUG || BuildConfig.NIGHTLY) {
+            preferenceCategory {
+                title = "Danger zone!"
 
-            preference {
-                title = "Crash the app!"
-                summary = "To test crashes"
-                onClick {
-                    activity!!.materialAlertDialog()
-                        .setTitle(MR.strings.warning)
-                        .setMessage("I told you this would crash the app, why would you want that?")
-                        .setPositiveButton("Crash it anyway") { _, _ -> throw RuntimeException("Fell into the void") }
-                        .setNegativeButton("Nevermind", null)
-                        .show()
+                preference {
+                    title = "Crash the app!"
+                    summary = "To test crashes"
+                    onClick {
+                        activity!!.materialAlertDialog()
+                            .setTitle(MR.strings.warning)
+                            .setMessage("I told you this would crash the app, why would you want that?")
+                            .setPositiveButton("Crash it anyway") { _, _ -> throw RuntimeException("Fell into the void") }
+                            .setNegativeButton("Nevermind", null)
+                            .show()
+                    }
                 }
-            }
 
-            preference {
-                title = "Prune finished workers"
-                summary = "In case worker stuck in FAILED state and you're too impatient to wait"
-                onClick {
-                    activity!!.materialAlertDialog()
-                        .setTitle("Are you sure?")
-                        .setMessage(
-                            "Failed workers should clear out by itself eventually, " +
-                                "this option should only be used if you're being impatient and you know what you're doing."
-                        )
-                        .setPositiveButton("Prune") { _, _ -> context.workManager.pruneWork() }
-                        .setNegativeButton("Cancel", null)
-                        .show()
+                preference {
+                    title = "Prune finished workers"
+                    summary = "In case worker stuck in FAILED state and you're too impatient to wait"
+                    onClick {
+                        activity!!.materialAlertDialog()
+                            .setTitle("Are you sure?")
+                            .setMessage(
+                                "Failed workers should clear out by itself eventually, " +
+                                    "this option should only be used if you're being impatient and you know what you're doing."
+                            )
+                            .setPositiveButton("Prune") { _, _ -> context.workManager.pruneWork() }
+                            .setNegativeButton("Cancel", null)
+                            .show()
+                    }
                 }
             }
         }

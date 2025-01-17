@@ -475,11 +475,12 @@ private class TopAppBarMeasurePolicy(
                 y =
                     when (titleVerticalArrangement) {
                         Arrangement.Bottom -> {
-                            val paddingFromBottom = (constraints.maxHeight - (navigationIconPlaceable.height - titleBaseline)) / 2
+                            val padding = (maxLayoutHeight - navigationIconPlaceable.height) / 2
+                            val paddingFromBottom = padding - (navigationIconPlaceable.height - titleBaseline)
                             val heightWithPadding = paddingFromBottom + navigationIconPlaceable.height
                             val adjustedBottomPadding =
-                                if (heightWithPadding > constraints.maxHeight) {
-                                    paddingFromBottom - (heightWithPadding - constraints.maxHeight)
+                                if (heightWithPadding > maxLayoutHeight) {
+                                    paddingFromBottom - (heightWithPadding - maxLayoutHeight)
                                 } else {
                                     paddingFromBottom
                                 }
@@ -523,12 +524,11 @@ private class TopAppBarMeasurePolicy(
                         Arrangement.Bottom -> {
                             // Calculate the actual padding from the bottom of the title, taking
                             // into account its baseline.
-                            val adjustedTitleHeight = titlePlaceable.height - titleBaseline
                             val paddingFromBottom = if (titleBottomPadding == 0) {
-                                (constraints.maxHeight - adjustedTitleHeight) / 2
+                                (maxLayoutHeight - titlePlaceable.height) / 2
                             } else {
-                                titleBottomPadding - adjustedTitleHeight
-                            }
+                                titleBottomPadding
+                            } - (titlePlaceable.height - titleBaseline)
 
                             // Adjust the bottom padding to a smaller number if there is no room
                             // to fit the title.
@@ -555,12 +555,13 @@ private class TopAppBarMeasurePolicy(
                 y =
                     when (titleVerticalArrangement) {
                         Arrangement.Bottom -> {
-                            val paddingFromBottom = (constraints.maxHeight - (actionIconsPlaceable.height - titleBaseline)) / 2
+                            val padding = (maxLayoutHeight - actionIconsPlaceable.height) / 2
+                            val paddingFromBottom = padding - (actionIconsPlaceable.height - titleBaseline)
                             val heightWithPadding = paddingFromBottom + actionIconsPlaceable.height
                             val adjustedBottomPadding =
-                                if (heightWithPadding > constraints.maxHeight) {
+                                if (heightWithPadding > maxLayoutHeight) {
                                     paddingFromBottom -
-                                        (heightWithPadding - constraints.maxHeight)
+                                        (heightWithPadding - maxLayoutHeight)
                                 } else {
                                     paddingFromBottom
                                 }

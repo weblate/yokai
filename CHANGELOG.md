@@ -35,6 +35,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Refactor Library to store LibraryMap instead of flatten list of LibraryItem
   - LibraryItem abstraction to make it easier to manage
   - LibraryManga no longer extend MangaImpl
+- Update dependency androidx.compose:compose-bom to v2025.01.00
 
 ## [1.9.7]
 

@@ -523,14 +523,14 @@ private class TopAppBarMeasurePolicy(
                         // Apply bottom padding from the title's baseline only when the Arrangement
                         // is "Bottom".
                         Arrangement.Bottom -> {
-                            val padding = if (titleBottomPadding == 0) {
-                                (constraints.maxHeight - titlePlaceable.height) / 2
-                            } else {
-                                titleBottomPadding - (titlePlaceable.height - titleBaseline)
-                            }
                             // Calculate the actual padding from the bottom of the title, taking
                             // into account its baseline.
-                            val paddingFromBottom = padding - (titlePlaceable.height - titleBaseline)
+                            val adjustedTitleHeight = titlePlaceable.height - titleBaseline
+                            val paddingFromBottom = if (titleBottomPadding == 0) {
+                                (constraints.maxHeight - adjustedTitleHeight) / 2
+                            } else {
+                                titleBottomPadding - adjustedTitleHeight
+                            }
 
                             // Adjust the bottom padding to a smaller number if there is no room
                             // to fit the title.

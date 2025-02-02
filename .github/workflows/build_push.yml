@@ -46,7 +46,7 @@ jobs:
         uses: null2264/actions/gradle-setup@a4d662095a2f2af1ed24f1228eb6e55b0f9f1f29
         with:
           java: 17
-          distro: adopt
+          distro: temurin
 
       - name: Setup CHANGELOG parser
         uses: taiki-e/install-action@parse-changelog
@@ -80,6 +80,7 @@ jobs:
         run: |
           set -x
           echo "VERSION_TAG=v${{github.event.inputs.version}}" >> $GITHUB_ENV
+          echo "BUILD_TYPE=StandardRelease" >> $GITHUB_ENV
 
       # BETA
       - name: Prepare beta build
@@ -88,9 +89,14 @@ jobs:
           set -x
 
           BETA_COUNT=$(git tag -l --sort=refname "v${{github.event.inputs.version}}-b*" | tail -n1 | sed "s/^\S*-b//g")
-          [ "$BETA_COUNT" = "" ] && BETA_COUNT="1" || BETA_COUNT=$((BETA_COUNT+1))
+          if [ -z "$BETA_COUNT" ]; then
+            BETA_COUNT="1"
+          else
+            BETA_COUNT=$((BETA_COUNT+1))
+          fi
 
           echo "VERSION_TAG=v${{github.event.inputs.version}}-b${BETA_COUNT}" >> $GITHUB_ENV
+          echo "BUILD_TYPE=StandardBeta" >> $GITHUB_ENV
 
       # NIGHTLY
       - name: Prepare nightly build
@@ -98,23 +104,17 @@ jobs:
         run: |
           set -x
           echo "VERSION_TAG=r$(git rev-list --count HEAD)" >> $GITHUB_ENV
+          echo "BUILD_TYPE=StandardNightly" >> $GITHUB_ENV
           echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
           echo "COMMIT_SHORT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      # PROD
-      - name: Build release build and run tests
-        if: startsWith(env.VERSION_TAG, 'v') && github.event.inputs.beta != 'true'
-        run: ./gradlew assembleStandardRelease testReleaseUnitTest testStandardReleaseUnitTest
+      - name: Build the app
+        if: startsWith(env.BUILD_TYPE, 'Standard')
+        run: ./gradlew assemble${{ env.BUILD_TYPE }}
 
-      # BETA
-      - name: Build beta build and run tests
-        if: startsWith(env.VERSION_TAG, 'v') && github.event.inputs.beta == 'true'
-        run: ./gradlew assembleStandardBeta testReleaseUnitTest testStandardBetaUnitTest
-
-      # NIGHTLY
-      - name: Build nightly build and run tests
-        if: startsWith(env.VERSION_TAG, 'r')
-        run: ./gradlew assembleStandardNightly testReleaseUnitTest testStandardNightlyUnitTest
+      - name: Run unit tests
+        if: startsWith(env.BUILD_TYPE, 'Standard')
+        run: ./gradlew testReleaseUnitTest test${{ env.BUILD_TYPE }}UnitTest
 
       - name: Upload R8 APK to artifact
         uses: actions/upload-artifact@v4

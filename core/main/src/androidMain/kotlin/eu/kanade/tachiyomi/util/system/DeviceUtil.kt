@@ -67,9 +67,14 @@ object DeviceUtil {
 
     val invalidDefaultBrowsers = listOf(
         "android",
+        // Honor
         "com.hihonor.android.internal.app",
+        // Huawei
         "com.huawei.android.internal.app",
+        // Lenovo
         "com.zui.resolver",
+        // Infinix
+        "com.transsion.resolver",
     )
 
     @SuppressLint("PrivateApi")

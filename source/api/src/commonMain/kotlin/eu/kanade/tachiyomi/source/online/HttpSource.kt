@@ -25,7 +25,6 @@ import uy.kohesive.injekt.injectLazy
 /**
  * A simple implementation for sources from a website.
  */
-@Suppress("unused")
 abstract class HttpSource : CatalogueSource {
     private var delegate: DelegatedHttpSource? = null
 
@@ -38,6 +37,19 @@ abstract class HttpSource : CatalogueSource {
      * Base url of the website without the trailing slash, like: http://mysite.com
      */
     abstract val baseUrl: String
+
+    /**
+     * Returns the base (home) URL of the website as a string.
+     *
+     * This is typically the root address that serves as the main entry point
+     * to the site's content, such as "https://mihon.tech".
+     *
+     * This method is used in the browse screen to determine the URL
+     * opened when tapping "Open in WebView".
+     *
+     * @return The website’s home page URL. Defaults to [baseUrl].
+     */
+    open fun getHomeUrl(): String = baseUrl
 
     /**
      * Version id used to generate the source id. If the site completely changes and urls are
@@ -127,14 +139,22 @@ abstract class HttpSource : CatalogueSource {
      *
      * @param page the page number to retrieve.
      */
-    protected abstract fun popularMangaRequest(page: Int): Request
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun popularMangaRequest(page: Int): Request = throw UnsupportedOperationException()
 
     /**
      * Parses the response from the site and returns a [MangasPage] object.
      *
      * @param response the response from the site.
      */
-    protected abstract fun popularMangaParse(response: Response): MangasPage
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun popularMangaParse(response: Response): MangasPage = throw UnsupportedOperationException()
 
     /**
      * Returns an observable containing a page with a list of manga. Normally it's not needed to
@@ -171,18 +191,26 @@ abstract class HttpSource : CatalogueSource {
      * @param query the search query.
      * @param filters the list of filters to apply.
      */
-    protected abstract fun searchMangaRequest(
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun searchMangaRequest(
         page: Int,
         query: String,
         filters: FilterList,
-    ): Request
+    ): Request = throw UnsupportedOperationException()
 
     /**
      * Parses the response from the site and returns a [MangasPage] object.
      *
      * @param response the response from the site.
      */
-    protected abstract fun searchMangaParse(response: Response): MangasPage
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun searchMangaParse(response: Response): MangasPage = throw UnsupportedOperationException()
 
     /**
      * Returns an observable containing a page with a list of latest manga updates.
@@ -203,14 +231,22 @@ abstract class HttpSource : CatalogueSource {
      *
      * @param page the page number to retrieve.
      */
-    protected abstract fun latestUpdatesRequest(page: Int): Request
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun latestUpdatesRequest(page: Int): Request = throw UnsupportedOperationException()
 
     /**
      * Parses the response from the site and returns a [MangasPage] object.
      *
      * @param response the response from the site.
      */
-    protected abstract fun latestUpdatesParse(response: Response): MangasPage
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun latestUpdatesParse(response: Response): MangasPage = throw UnsupportedOperationException()
 
     /**
      * Get the updated details for a manga.
@@ -248,7 +284,11 @@ abstract class HttpSource : CatalogueSource {
      *
      * @param response the response from the site.
      */
-    protected abstract fun mangaDetailsParse(response: Response): SManga
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun mangaDetailsParse(response: Response): SManga = throw UnsupportedOperationException()
 
     /**
      * Get all the available chapters for a manga.
@@ -286,14 +326,22 @@ abstract class HttpSource : CatalogueSource {
      *
      * @param response the response from the site.
      */
-    protected abstract fun chapterListParse(response: Response): List<SChapter>
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun chapterListParse(response: Response): List<SChapter> = throw UnsupportedOperationException()
 
     /**
      * Parses the response from the site and returns a SChapter Object.
      *
      * @param response the response from the site.
      */
-    protected abstract fun chapterPageParse(response: Response): SChapter
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun chapterPageParse(response: Response): SChapter = throw UnsupportedOperationException()
 
     /**
      * Get the list of pages a chapter has. Pages should be returned
@@ -331,7 +379,11 @@ abstract class HttpSource : CatalogueSource {
      *
      * @param response the response from the site.
      */
-    protected abstract fun pageListParse(response: Response): List<Page>
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun pageListParse(response: Response): List<Page> = throw UnsupportedOperationException()
 
     /**
      * Returns an observable with the page containing the source url of the image. If there's any
@@ -367,7 +419,11 @@ abstract class HttpSource : CatalogueSource {
      *
      * @param response the response from the site.
      */
-    protected abstract fun imageUrlParse(response: Response): String
+    @Deprecated(
+        message = "The helper functions are inherently limiting and hides the underlying implementation. " +
+            "Source developers should make their own implementation according to their needs.",
+    )
+    protected open fun imageUrlParse(response: Response): String = throw UnsupportedOperationException()
 
     /**
      * Returns the response of the source image.

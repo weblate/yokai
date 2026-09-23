@@ -10,6 +10,8 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+## [1.10.2]
+
 ### Fixes
 - Use local URI for completed extension downloads (#686) (@pacoa-kdbg)
 - Prevent ClassCastException crashes (#666) (@Guflly)

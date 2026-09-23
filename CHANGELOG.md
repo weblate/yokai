@@ -10,6 +10,29 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Fixes
+- Use local URI for completed extension downloads (#686) (@pacoa-kdbg)
+- Prevent ClassCastException crashes (#666) (@Guflly)
+- Fix TopAppBar deadlock (@thiago8rocha)
+- Support numeric extension metadata (#685) (@pacoa-kdbg)
+- Use `getMangaUpdate` instead `getMangaDetails`, should fix some crashes when browsing sources
+
+### Other
+- Optimize TopAppBar by reducing recomposition triggers
+- Stop disk from being re-scanned on every recomposition (@thiago8rocha)
+- Update dependency com.squareup.okio:okio to v3.18.2 (#705)
+- Update softprops/action-gh-release action to v3 (#715)
+- Update mikepenz/action-junit-report action to v6 (#714)
+- Update actions/upload-artifact action to v7 (#713)
+- Update actions/checkout action to v7 (#712)
+- Update softprops/action-gh-release action to v3 (#715)
+- Update mikepenz/action-junit-report action to v6 (#714)
+- Update actions/upload-artifact action to v7 (#713)
+- Update actions/checkout action to v7 (#712)
+- Update null2264/actions action
+- Update JDK to v21
+- Use FlexibleAdapter published on MavenCentral instead of JitPack
+
 ## [1.10.1]
 
 ### Added

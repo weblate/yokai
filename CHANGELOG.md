@@ -10,6 +10,9 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ## [Unreleased]
 
+### Other
+- Turn `scanlators_view` to its own table (`excluded_scanlators`), should improve the app's performance quite a bit.
+
 ## [1.10.2]
 
 ### Fixes

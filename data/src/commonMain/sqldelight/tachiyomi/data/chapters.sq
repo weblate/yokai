@@ -25,7 +25,7 @@ CREATE INDEX chapters_unread_by_manga_index ON chapters(manga_id, read) WHERE re
 getChaptersByMangaId:
 SELECT C.*
 FROM chapters AS C
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE C.manga_id = :manga_id
@@ -40,7 +40,7 @@ WHERE _id = :id;
 getChaptersByUrl:
 SELECT C.*
 FROM chapters AS C
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE C.url = :url
@@ -51,7 +51,7 @@ AND (
 getChaptersByUrlAndMangaId:
 SELECT C.*
 FROM chapters AS C
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE C.url = :url AND C.manga_id = :manga_id
@@ -62,7 +62,7 @@ AND (
 findUnreadByMangaId:
 SELECT C.*
 FROM chapters AS C
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE C.manga_id = :manga_id AND C.read = 0
@@ -77,7 +77,7 @@ SELECT
 FROM mangas AS M
 JOIN chapters AS C
 ON M._id = C.manga_id
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE M.favorite = 1

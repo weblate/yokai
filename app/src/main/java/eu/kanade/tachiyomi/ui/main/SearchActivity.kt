@@ -156,7 +156,7 @@ class SearchActivity : MainActivity() {
                     val mangaId = extras.getLong(Constants.MANGA_EXTRA)
                     if (mangaId != 0L) {
                         runBlocking { getManga.awaitById(mangaId) }?.let { manga ->
-                            val chapters = runBlocking { getChapter.awaitAll(manga) }
+                            val chapters = runBlocking { getChapter.awaitAll(manga, true) }
                             val nextUnreadChapter = ChapterSort(manga).getNextUnreadChapter(chapters, false)
                             if (nextUnreadChapter != null) {
                                 val activity =

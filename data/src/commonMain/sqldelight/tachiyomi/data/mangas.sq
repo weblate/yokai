@@ -18,7 +18,6 @@ CREATE TABLE mangas(
     hide_title INTEGER AS Boolean NOT NULL,
     chapter_flags INTEGER NOT NULL,
     date_added INTEGER,
-    filtered_scanlators TEXT,
     update_strategy INTEGER NOT NULL DEFAULT 0,
     cover_last_modified INTEGER NOT NULL DEFAULT 0,
     memo TEXT NOT NULL DEFAULT '{}'
@@ -60,8 +59,8 @@ WHERE favorite = 0 AND _id IN (
 );
 
 insert:
-INSERT INTO mangas (source, url, artist, author, description, genre, title, status, thumbnail_url, favorite, last_update, initialized, viewer, hide_title, chapter_flags, date_added, filtered_scanlators, update_strategy, cover_last_modified, memo)
-VALUES (:source, :url, :artist, :author, :description, :genre, :title, :status, :thumbnailUrl, :favorite, :lastUpdate, :initialized, :viewer, :hideTitle, :chapterFlags, :dateAdded, :filteredScanlators, :updateStrategy, :coverLastModified, :memo);
+INSERT INTO mangas (source, url, artist, author, description, genre, title, status, thumbnail_url, favorite, last_update, initialized, viewer, hide_title, chapter_flags, date_added, update_strategy, cover_last_modified, memo)
+VALUES (:source, :url, :artist, :author, :description, :genre, :title, :status, :thumbnailUrl, :favorite, :lastUpdate, :initialized, :viewer, :hideTitle, :chapterFlags, :dateAdded, :updateStrategy, :coverLastModified, :memo);
 
 update:
 UPDATE mangas SET
@@ -81,7 +80,6 @@ UPDATE mangas SET
     hide_title = coalesce(:hideTitle, hide_title),
     chapter_flags = coalesce(:chapterFlags, chapter_flags),
     date_added = coalesce(:dateAdded, date_added),
-    filtered_scanlators = coalesce(:filteredScanlators, filtered_scanlators),
     update_strategy = coalesce(:updateStrategy, update_strategy),
     cover_last_modified = coalesce(:coverLastModified, cover_last_modified),
     memo = coalesce(:memo, memo)

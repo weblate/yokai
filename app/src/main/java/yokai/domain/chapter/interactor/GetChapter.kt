@@ -8,8 +8,8 @@ class GetChapter(
 ) {
     suspend fun awaitAll(mangaId: Long, filterScanlators: Boolean) =
         chapterRepository.getChapters(mangaId, filterScanlators)
-    suspend fun awaitAll(manga: Manga, filterScanlators: Boolean? = null) =
-        awaitAll(manga.id!!, filterScanlators ?: (manga.filtered_scanlators?.isNotEmpty() == true))
+    suspend fun awaitAll(manga: Manga, filterScanlators: Boolean) =
+        awaitAll(manga.id!!, filterScanlators)
 
     suspend fun awaitUnread(mangaId: Long, filterScanlators: Boolean) =
         chapterRepository.getUnread(mangaId, filterScanlators)

@@ -67,7 +67,7 @@ ON M._id = C.manga_id
 JOIN history AS H
 ON C._id = H.history_chapter_id
 AND H.history_last_read > 0
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE lower(M.title) LIKE '%' || :search || '%'
@@ -99,7 +99,7 @@ JOIN (
 ON C.manga_id = max_last_read.manga_id
 AND max_last_read.history_chapter_id = H.history_chapter_id
 AND max_last_read.history_last_read > 0
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE lower(M.title) LIKE '%' || :search || '%'
@@ -149,7 +149,7 @@ JOIN (
 ON C.manga_id = max_last_read.manga_id
 AND max_last_read.history_chapter_id = history.history_chapter_id
 AND max_last_read.history_last_read > 0
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE lower(title) LIKE '%' || :search || '%'
@@ -180,7 +180,7 @@ JOIN (
     GROUP BY C2.manga_id
 ) AS newest_chapter
 ON C.manga_id = newest_chapter.manga_id
-LEFT JOIN scanlators_view AS S
+LEFT JOIN excluded_scanlators AS S
 ON C.manga_id = S.manga_id
 AND C.scanlator = S.name
 WHERE favorite = 1

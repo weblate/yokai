@@ -20,6 +20,7 @@ import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.chapter.models.ChapterUpdate
 import yokai.domain.chapter.services.ChapterRecognition
 import yokai.domain.library.LibraryPreferences
+import yokai.domain.manga.interactor.GetExcludedScanlators
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
 
@@ -43,6 +44,7 @@ suspend fun syncChaptersWithSource(
     updateManga: UpdateManga = Injekt.get(),
     handler: DatabaseHandler = Injekt.get(),
     libraryPreferences: LibraryPreferences = Injekt.get(),
+    getExcludedScanlators: GetExcludedScanlators = Injekt.get(),
 ): Pair<List<Chapter>, List<Chapter>> {
     if (rawSourceChapters.isEmpty()) {
         throw Exception("No chapters found")
@@ -212,7 +214,7 @@ suspend fun syncChaptersWithSource(
         updateManga.await(MangaUpdate(manga.id!!, lastUpdate = manga.last_update))
     }
 
-    val filteredScanlators = ChapterUtil.getScanlators(manga.filtered_scanlators).toHashSet()
+    val filteredScanlators = manga.id?.let { getExcludedScanlators.await(it) }.orEmpty()
 
     return Pair(
         updatedToAdd.filterNot {

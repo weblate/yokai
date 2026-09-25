@@ -1322,7 +1322,7 @@ class LibraryPresenter(
     /** Returns first unread chapter of a manga */
     fun getFirstUnread(manga: Manga): Chapter? {
         // FIXME: Don't do blocking
-        val chapters = runBlocking { getChapter.awaitAll(manga) }
+        val chapters = runBlocking { getChapter.awaitAll(manga, true) }
         return ChapterSort(manga, chapterFilter, preferences).getNextUnreadChapter(chapters, false)
     }
 
@@ -1498,7 +1498,7 @@ class LibraryPresenter(
         presenterScope.launch {
             withContext(Dispatchers.IO) {
                 mangaList.forEach { list ->
-                    val chapters = getChapter.awaitAll(list).filter { !it.read }
+                    val chapters = getChapter.awaitAll(list, true).filter { !it.read }
                     downloadManager.downloadChapters(list, chapters)
                 }
             }
@@ -1515,7 +1515,7 @@ class LibraryPresenter(
         val mapMangaChapters = HashMap<Manga, List<Chapter>>()
         presenterScope.launchNonCancellableIO {
             mangaList.forEach { manga ->
-                val chapters = getChapter.awaitAll(manga)
+                val chapters = getChapter.awaitAll(manga, true)
                 val updates = chapters.copy().mapNotNull {
                     if (it.id == null) return@mapNotNull null
                     ChapterUpdate(it.id!!, read = markRead, lastPageRead = 0)
@@ -1659,7 +1659,8 @@ class LibraryPresenter(
             libraryManga.forEach { manga ->
                 if (manga.manga.id == null) return@forEach
                 if (manga.manga.date_added == 0L) {
-                    val chapters = getChapter.awaitAll(manga.manga.id!!, manga.manga.filtered_scanlators?.isNotBlank() == true)
+                    // Filter scanlators cuz we only care about chapters that visible
+                    val chapters = getChapter.awaitAll(manga.manga.id!!, true)
                     manga.manga.date_added = chapters.minByOrNull { it.date_fetch }?.date_fetch ?: 0L
                     updateManga.await(MangaUpdate(manga.manga.id!!, dateAdded = manga.manga.date_added))
                 }

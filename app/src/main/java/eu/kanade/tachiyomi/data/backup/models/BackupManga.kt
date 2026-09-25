@@ -120,7 +120,7 @@ data class BackupManga(
     }
 
     companion object {
-        fun copyFrom(manga: Manga, customMangaManager: CustomMangaManager?): BackupManga {
+        fun copyFrom(manga: Manga, excludedScanlators: Set<String>, customMangaManager: CustomMangaManager?): BackupManga {
             return BackupManga(
                 url = manga.url,
                 title = manga.originalTitle,
@@ -137,7 +137,7 @@ data class BackupManga(
                 viewer_flags = manga.viewer_flags.takeIf { it != -1 } ?: 0,
                 chapterFlags = manga.chapter_flags,
                 updateStrategy = manga.update_strategy,
-                excludedScanlators = ChapterUtil.getScanlators(manga.filtered_scanlators),
+                excludedScanlators = excludedScanlators.toList(),
                 memo = manga.safeMemo().encodeMemoBytes(),
             ).also { backupManga ->
                 customMangaManager?.getManga(manga)?.let {

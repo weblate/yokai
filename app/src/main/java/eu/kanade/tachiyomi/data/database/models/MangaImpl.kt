@@ -72,9 +72,6 @@ open class MangaImpl(
 
     override var update_strategy: UpdateStrategy = UpdateStrategy.ALWAYS_UPDATE
 
-    // TODO: It's probably fine to set this to non-null string in the future
-    override var filtered_scanlators: String? = ""
-
     @Transient
     override var memo: JsonObject = JsonObject(emptyMap())
 

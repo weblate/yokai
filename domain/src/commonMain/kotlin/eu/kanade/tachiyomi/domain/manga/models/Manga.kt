@@ -25,9 +25,6 @@ interface Manga : SManga {
     var chapter_flags: Int
 
     var hide_title: Boolean
-
-    var filtered_scanlators: String?
-
     var ogTitle: String
     var ogAuthor: String?
     var ogArtist: String?
@@ -217,7 +214,6 @@ interface Manga : SManga {
             hideTitle = hide_title,
             chapterFlags = chapter_flags,
             dateAdded = date_added,
-            filteredScanlators = filtered_scanlators,
             updateStrategy = update_strategy,
             memo = safeMemo().encodeMemo(),
         )

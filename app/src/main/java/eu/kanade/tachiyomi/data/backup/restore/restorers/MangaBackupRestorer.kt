@@ -26,6 +26,7 @@ import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.history.interactor.GetHistory
 import yokai.domain.history.interactor.UpsertHistory
 import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.manga.interactor.GetExcludedScanlators
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.InsertManga
 import yokai.domain.manga.interactor.UpdateManga
@@ -47,6 +48,7 @@ class MangaBackupRestorer(
     private val upsertHistory: UpsertHistory = Injekt.get(),
     private val getTrack: GetTrack = Injekt.get(),
     private val insertTrack: InsertTrack = Injekt.get(),
+    private val getExcludedScanlators: GetExcludedScanlators = Injekt.get(),
 ) {
     suspend fun restoreManga(
         backupManga: BackupManga,
@@ -72,7 +74,6 @@ class MangaBackupRestorer(
                 // Manga in database
                 // Copy information from manga already in database
                 manga.id = dbManga.id
-                manga.filtered_scanlators = dbManga.filtered_scanlators
                 manga.copyFrom(dbManga)
                 updateManga.await(manga.toMangaUpdate())
                 // Fetch rest of manga information
@@ -128,7 +129,7 @@ class MangaBackupRestorer(
     }
 
     private suspend fun restoreChapters(manga: Manga, chapters: List<Chapter>) {
-        val dbChapters = getChapter.awaitAll(manga)
+        val dbChapters = getChapter.awaitAll(manga, true)
 
         chapters.forEach { chapter ->
             val dbChapter = dbChapters.find { it.url == chapter.url }
@@ -277,7 +278,8 @@ class MangaBackupRestorer(
     }
 
     private suspend fun restoreFilteredScanlatorsForManga(manga: Manga, filteredScanlators: List<String>) {
-        val actualList = ChapterUtil.getScanlators(manga.filtered_scanlators) + filteredScanlators
-        MangaUtil.setScanlatorFilter(updateManga, manga, actualList.toSet())
+        val currentExcluded = manga.id?.let { getExcludedScanlators.await(it) }.orEmpty()
+        val actualList = currentExcluded + filteredScanlators
+        MangaUtil.setScanlatorFilter(manga, actualList.toSet())
     }
 }

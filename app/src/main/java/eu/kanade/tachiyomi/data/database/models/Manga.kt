@@ -149,7 +149,7 @@ fun Manga.copyFrom(other: SManga) {
 suspend fun Manga.isOneShotOrCompleted(): Boolean = withIOContext {
     val tags by lazy { genre?.split(",")?.map { it.trim().lowercase(Locale.US) } }
     val getChapter: GetChapter by injectLazy()
-    val chapters = getChapter.awaitAll(this@isOneShotOrCompleted)
+    val chapters = getChapter.awaitAll(this@isOneShotOrCompleted, true)
     val firstChapterName by lazy { chapters.firstOrNull()?.name?.lowercase() ?: "" }
 
     status == SManga.COMPLETED || tags?.contains("oneshot") == true ||
@@ -209,7 +209,6 @@ fun Manga.Companion.mapper(
     hideTitle: Boolean,
     chapterFlags: Long,
     dateAdded: Long?,
-    filteredScanlators: String?,
     updateStrategy: Long,
     coverLastModified: Long,
     memo: String,
@@ -228,7 +227,6 @@ fun Manga.Companion.mapper(
     this.chapter_flags = chapterFlags.toInt()
     this.hide_title = hideTitle
     this.date_added = dateAdded ?: 0L
-    this.filtered_scanlators = filteredScanlators
     this.update_strategy = updateStrategy.let(updateStrategyAdapter::decode)
     this.cover_last_modified = coverLastModified
     this.memo = memo.decodeMemo()

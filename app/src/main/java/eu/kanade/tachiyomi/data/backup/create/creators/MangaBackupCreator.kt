@@ -13,6 +13,7 @@ import yokai.data.DatabaseHandler
 import yokai.domain.category.interactor.GetCategories
 import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.history.interactor.GetHistory
+import yokai.domain.manga.interactor.GetExcludedScanlators
 import yokai.domain.track.interactor.GetTrack
 
 class MangaBackupCreator(
@@ -22,6 +23,7 @@ class MangaBackupCreator(
     private val getChapter: GetChapter = Injekt.get(),
     private val getHistory: GetHistory = Injekt.get(),
     private val getTrack: GetTrack = Injekt.get(),
+    private val getExcludedScanlators: GetExcludedScanlators = Injekt.get(),
 ) {
     suspend operator fun invoke(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
         return mangas.map {
@@ -37,8 +39,9 @@ class MangaBackupCreator(
      * @return [BackupManga] containing manga in a serializable form
      */
     private suspend fun backupManga(manga: Manga, options: BackupOptions): BackupManga {
+        val excludedScanlators = manga.id?.let { getExcludedScanlators.await(it) }.orEmpty()
         // Entry for this manga
-        val mangaObject = BackupManga.copyFrom(manga, if (options.customInfo) customMangaManager else null)
+        val mangaObject = BackupManga.copyFrom(manga, excludedScanlators, if (options.customInfo) customMangaManager else null)
 
         // Check if user wants chapter information in backup
         if (options.chapters) {

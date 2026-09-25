@@ -269,7 +269,7 @@ class ReaderViewModel(
         val manga = manga ?: return emptyList()
         chapterItems = withContext(Dispatchers.IO) {
             val chapterSort = ChapterSort(manga, chapterFilter, preferences)
-            val dbChapters = getChapter.awaitAll(manga)
+            val dbChapters = getChapter.awaitAll(manga, true)
             chapterSort.getChaptersSorted(
                 dbChapters,
                 filterForReader = true,
@@ -444,7 +444,7 @@ class ReaderViewModel(
 
     fun toggleRead(chapter: Chapter) {
         chapter.read = !chapter.read
-        val lastPageToSave = if (chapter.read) chapter.last_page_read.toLong() else 0L 
+        val lastPageToSave = if (chapter.read) chapter.last_page_read.toLong() else 0L
         viewModelScope.launchNonCancellableIO {
             updateChapter.await(
                 ChapterUpdate(

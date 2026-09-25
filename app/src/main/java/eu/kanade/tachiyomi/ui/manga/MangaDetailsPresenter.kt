@@ -81,6 +81,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -96,6 +97,7 @@ import yokai.domain.chapter.interactor.GetChapter
 import yokai.domain.chapter.interactor.UpdateChapter
 import yokai.domain.history.interactor.GetHistory
 import yokai.domain.library.custom.model.CustomMangaInfo
+import yokai.domain.manga.interactor.GetExcludedScanlators
 import yokai.domain.manga.interactor.GetManga
 import yokai.domain.manga.interactor.UpdateManga
 import yokai.domain.manga.models.MangaUpdate
@@ -127,6 +129,7 @@ class MangaDetailsPresenter(
     private val getTrack: GetTrack by injectLazy()
     private val insertTrack: InsertTrack by injectLazy()
     private val getHistory: GetHistory by injectLazy()
+    private val getExcludedScanlators: GetExcludedScanlators by injectLazy()
 
     private val networkPreferences: NetworkPreferences by injectLazy()
 
@@ -134,6 +137,7 @@ class MangaDetailsPresenter(
 //    val currentManga get() = currentMangaInternal.asStateFlow()
 
     lateinit var manga: Manga
+    var excludedScanlators: Set<String> = setOf()
     fun isMangaLateInitInitialized() = ::manga.isInitialized
 
     private val customMangaManager: CustomMangaManager by injectLazy()
@@ -189,7 +193,10 @@ class MangaDetailsPresenter(
         val controller = view ?: return
 
         isLockedFromSearch = controller.shouldLockIfNeeded && SecureActivityDelegate.shouldBeLocked()
-        if (!::manga.isInitialized) runBlocking { refreshMangaFromDb() }
+        if (!::manga.isInitialized) runBlocking {
+            setCurrentExcludedScanlators(getExcludedScanlators.await(mangaId))
+            refreshMangaFromDb()
+        }
         syncData()
 
         presenterScope.launchUI {
@@ -206,6 +213,11 @@ class MangaDetailsPresenter(
         }
         presenterScope.launchIO {
             downloadManager.queueState.collectLatest(::onQueueUpdate)
+        }
+        presenterScope.launchIO {
+            getExcludedScanlators.subscribe(mangaId)
+                .distinctUntilChanged()
+                .collect(::setCurrentExcludedScanlators)
         }
 
         runBlocking {
@@ -262,6 +274,10 @@ class MangaDetailsPresenter(
     fun setCurrentManga(manga: Manga?) {
 //        currentMangaInternal.update { manga }
         this.manga = manga!!
+    }
+
+    fun setCurrentExcludedScanlators(scanlators: Set<String>) {
+        this.excludedScanlators = scanlators
     }
 
     // TODO: Use flow to "sync" data instead
@@ -758,7 +774,7 @@ class MangaDetailsPresenter(
         withUIContext { view?.updateChapters() }
     }
 
-    private fun isScanlatorFiltered() = manga.filtered_scanlators?.isNotEmpty() == true
+    private fun isScanlatorFiltered() = excludedScanlators?.isNotEmpty() == true
 
     fun currentFilters(): String {
         val filtersId = mutableListOf<StringResource?>()
@@ -777,7 +793,6 @@ class MangaDetailsPresenter(
         presenterScope.launchNonCancellableIO {
             val manga = manga
             MangaUtil.setScanlatorFilter(
-                updateManga,
                 manga,
                 if (filteredScanlators.size == allChapterScanlators.size) emptySet() else filteredScanlators
             )

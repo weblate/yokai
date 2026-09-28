@@ -276,8 +276,9 @@ class MangaDetailsPresenter(
         this.manga = manga!!
     }
 
-    fun setCurrentExcludedScanlators(scanlators: Set<String>) {
+    suspend fun setCurrentExcludedScanlators(scanlators: Set<String>) {
         this.excludedScanlators = scanlators
+        asyncUpdateMangaAndChapters(true)
     }
 
     // TODO: Use flow to "sync" data instead

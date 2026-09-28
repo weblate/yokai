@@ -397,7 +397,10 @@ fun Context.isOnline(): Boolean {
 }
 
 fun Context.createFileInCacheDir(name: String): File {
-    val file = File(externalCacheDir, name)
+    // externalCacheDir can be null when external storage isn't mounted/ready yet; falling back
+    // to the internal cache dir keeps the result an absolute path FileProvider can resolve,
+    // instead of a bogus relative File(null, name) that fails "no configured root" later.
+    val file = File(externalCacheDir ?: cacheDir, name)
     if (file.exists()) {
         file.delete()
     }

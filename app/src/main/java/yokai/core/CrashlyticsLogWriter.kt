@@ -103,15 +103,18 @@ class CrashlyticsLogWriter : LogWriter() {
      * ("Chapter locked"), a browse query with no matches (NoResultsException), the related-
      * manga / deep-link path resolving to an uninstalled source (SourceNotFoundException), and
      * an online reader page's disk-cache entry being evicted between listing and reading it
-     * (FileNotFoundException under chapter_disk_cache - the page just reloads).
+     * (FileNotFoundException under chapter_disk_cache - the page just reloads), and a cover
+     * write racing the OS over the covers cache directory (FileNotFoundException under
+     * files/covers - the cover just fails to cache that one time).
      *
      * Also skips: any InterruptedIOException (an okhttp call timeout or cancellation - covers
      * the former SocketTimeoutException too), an okhttp connection dropped mid-request
      * (ConnectionShutdownException, "Canceled"), a local cover file that can't be opened
      * ("Can't open InputStream" - moved/permission revoked), a Cloudflare/WebView challenge
-     * that never resolved ("Timed out waiting for WebView"), and a local-library entry whose
+     * that never resolved ("Timed out waiting for WebView"), a local-library entry whose
      * folder is gone or holds a non-archive file ("… is not a valid directory",
-     * "Unrecognized archive format").
+     * "Unrecognized archive format"), and an extension signaling its own manga/chapter list
+     * needs a refresh before continuing ("Refresh manga").
      */
     internal fun Throwable.isIgnoredForCrashlytics(): Boolean {
         var current: Throwable? = this
@@ -143,7 +146,12 @@ class CrashlyticsLogWriter : LogWriter() {
                     return true
                 }
 
-                is FileNotFoundException -> if (current.message?.contains("chapter_disk_cache") == true) return true
+                is FileNotFoundException -> if (
+                    current.message?.contains("chapter_disk_cache") == true ||
+                    current.message?.contains("files/covers") == true
+                ) {
+                    return true
+                }
 
                 is IOException -> if (
                     current.message?.contains("SETTINGS preface") == true ||
@@ -186,13 +194,16 @@ class CrashlyticsLogWriter : LogWriter() {
                 }
             }
 
-            if (current.message == "Refresh Chapter List" || current.message == "Could not find manga") return true
+            if (current.message == "Refresh Chapter List" || current.message == "Could not find manga" || current.message == "Refresh manga") return true
             // A source's Cloudflare/WebView challenge not resolving in time, or a local-library
             // folder that was renamed/deleted or has a non-archive file in it - not a Rokku bug.
             if (current.message?.startsWith("Timed out waiting for WebView") == true) return true
             if (current.message?.endsWith("is not a valid directory") == true) return true
             if (current.message == "Unrecognized archive format") return true
             if (current.javaClass.simpleName == "ForegroundServiceStartNotAllowedException") return true
+            // WorkManager's own foreground-promotion service call (startService, not
+            // startForegroundService) getting the same OS-imposed background-start limit.
+            if (current.javaClass.simpleName == "BackgroundServiceStartNotAllowedException") return true
             if (current.javaClass.simpleName == "ConnectionShutdownException") return true
 
             current = current.cause?.takeIf { it !== current }

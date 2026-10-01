@@ -668,8 +668,9 @@ class MangaHeaderHolder(
         } else {
             stateListAnimator = null
             resetStrokeColor()
-            backgroundTintList =
-                ColorStateList.valueOf(context.getResourceColor(R.attr.background))
+            backgroundTintList = ColorStateList.valueOf(
+                adapter.delegate.pageBackgroundColor() ?: context.getResourceColor(R.attr.background),
+            )
         }
     }
 
@@ -699,6 +700,8 @@ class MangaHeaderHolder(
         binding.trueBackdrop.setBackgroundColor(vividColor)
         binding.backdropGradient.backgroundTintList = ColorStateList.valueOf(floorColor)
         binding.backdropFloor.setBackgroundColor(floorColor)
+        binding.moreBgGradient.backgroundTintList = ColorStateList.valueOf(floorColor)
+        binding.moreBgSolid.setBackgroundColor(floorColor)
     }
 
     fun updateColors(updateAll: Boolean = true) {

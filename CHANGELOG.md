@@ -40,6 +40,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fixed a source's text filters swapping or losing their typed values when scrolling the filter list, caused by recycled rows accumulating listeners from earlier filters ([@Hiirbaf](https://github.com/Hiirbaf))
 - Fixed saving a reader page (or a merged double-page spread) to storage failing with a confusing error when the destination file couldn't be created
 - Fixed the backup restore file picker relying on an outdated file selection API that could fail to open correctly on some devices
+- Fixed reading history occasionally double-counting a session's read time when a chapter was saved while another save for the same chapter was still in flight
 
 ### Other
 - Migrated FlexibleAdapter from JitPack to its MavenCentral release, removing a source of transient CI build failures when JitPack was unavailable

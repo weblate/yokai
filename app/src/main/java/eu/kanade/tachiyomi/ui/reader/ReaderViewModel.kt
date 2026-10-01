@@ -717,8 +717,8 @@ class ReaderViewModel(
             last_read = endTime
             time_read = sessionReadDuration
         }
-        upsertHistory.await(history)
         chapterReadStartTime = null
+        upsertHistory.await(history)
     }
 
     /**

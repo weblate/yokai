@@ -14,7 +14,7 @@ fun Source.includeLangInName(enabledLanguages: Set<String>, extensionManager: Ex
     val allExt = httpSource.getExtension(extManager)?.lang == "all"
     val onlyAll = httpSource.extOnlyHasAllLanguage(extManager)
     val isMultiLingual = enabledLanguages.filterNot { it == "all" }.size > 1
-    return (isMultiLingual && allExt) || (lang == "all" && !onlyAll)
+    return (isMultiLingual && allExt) || (lang == "all" && !onlyAll) || lang !in enabledLanguages
 }
 
 fun Source.nameBasedOnEnabledLanguages(enabledLanguages: Set<String>, extensionManager: ExtensionManager? = null): String {

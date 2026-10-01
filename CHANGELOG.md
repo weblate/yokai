@@ -47,6 +47,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Added the app ID to the debug info included in crash log dumps
 - Fixed the library's app bar sometimes landing in the wrong position after returning to the Library tab when "show all categories" was off and the library wasn't scrolled to the top
 - Fixed the action mode toolbar (shown while selecting items) overlapping a display cutout/notch in landscape
+- Fixed a source showing without its language tag in lists/search results when that language was disabled in settings
 
 ### Other
 - Migrated FlexibleAdapter from JitPack to its MavenCentral release, removing a source of transient CI build failures when JitPack was unavailable

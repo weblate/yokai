@@ -209,6 +209,7 @@ class FullCoverDialog(val controller: MangaDetailsController, drawable: Drawable
             dismiss()
             controller.openEditMangaDialogAndPickCover()
         }
+        binding.btnReplace.isVisible = controller.presenter.manga.favorite
 
         val expandedImageView = binding.mangaCoverFull
         expandedImageView.shapeAppearanceModel =

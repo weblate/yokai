@@ -433,19 +433,18 @@ class MangaDetailsController :
         setRefreshStyle()
     }
 
+    /**
+     * Transplants [hueOf]'s hue onto [satAndLumOf]'s chroma/tone using HCT rather than HSL:
+     * HSL's saturation isn't perceptually uniform across hues, so a cool hue (blue/cyan) at the
+     * same numeric saturation as a warm one (red/orange) reads as noticeably less colorful --
+     * HCT's chroma is built to look equally vivid regardless of hue, so themed covers of any
+     * colour tint the page by a consistent amount instead of blues barely showing up at all.
+     */
     @ColorInt
     private fun makeColorFrom(@ColorInt hueOf: Int, @ColorInt satAndLumOf: Int): Int {
-        val satLumArray = FloatArray(3)
-        val hueArray = FloatArray(3)
-        ColorUtils.colorToHSL(satAndLumOf, satLumArray)
-        ColorUtils.colorToHSL(hueOf, hueArray)
-        return ColorUtils.HSLToColor(
-            floatArrayOf(
-                hueArray[0],
-                satLumArray[1],
-                satLumArray[2],
-            ),
-        )
+        val base = Hct.fromInt(satAndLumOf)
+        val hue = Hct.fromInt(hueOf).hue
+        return Hct.from(hue, base.chroma, base.tone).toInt()
     }
 
     private fun setItemColors() {

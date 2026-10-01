@@ -20,6 +20,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 
 ### Fixes
 - Fixed the manga details screen's unmarked "Add to Library"/"Tracking" buttons and the "More" fade-out keeping the plain theme background instead of the cover-based page tint, leaving a visible seam when "Theme background based on cover" was on
+- Fixed cool-hued covers (blue/cyan/green) barely tinting the manga details page compared to warm ones, caused by HSL's saturation not being perceptually uniform across hues; the cover-tint blend now uses HCT instead
 - Fixed extension loading failing when a repository published its lib version or content warning metadata as a numeric type instead of a string ([@pacoa-kdbg](https://github.com/pacoa-kdbg))
 - Fixed "Show content in cutout area" doing nothing on Android 15+ (content still drew into the camera cutout/notch when the option was turned off)
 - Fixed a crash when updating all extensions with many updates pending (the work request's input data exceeded its size limit)

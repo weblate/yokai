@@ -508,16 +508,19 @@ open class MainActivity : BaseActivity<MainActivityBinding>() {
         content.doOnApplyWindowInsetsCompat { v, insets, _ ->
             setNavBarColor(insets)
             val systemInsets = insets.ignoredSystemInsets
+            val horizontalInsets = insets.getInsetsIgnoringVisibility(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout(),
+            )
             val contextView = window?.decorView?.findViewById<View>(R.id.action_mode_bar)
             contextView?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = systemInsets.left
-                rightMargin = systemInsets.right
+                leftMargin = horizontalInsets.left
+                rightMargin = horizontalInsets.right
             }
             // Consume any horizontal insets and pad all content in. There's not much we can do
             // with horizontal insets
             v.updatePadding(
-                left = systemInsets.left,
-                right = systemInsets.right,
+                left = horizontalInsets.left,
+                right = horizontalInsets.right,
             )
             binding.appBar.updatePadding(
                 top = systemInsets.top,

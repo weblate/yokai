@@ -42,6 +42,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fixed the backup restore file picker relying on an outdated file selection API that could fail to open correctly on some devices
 - Fixed reading history occasionally double-counting a session's read time when a chapter was saved while another save for the same chapter was still in flight
 - Fixed the about page's build time never actually showing a formatted date (the parser didn't match the timestamp format Rokku itself produces)
+- Fixed the date format preference not showing a live preview of each option, and some other list settings not refreshing their summary right after a change
 
 ### Other
 - Migrated FlexibleAdapter from JitPack to its MavenCentral release, removing a source of transient CI build failures when JitPack was unavailable

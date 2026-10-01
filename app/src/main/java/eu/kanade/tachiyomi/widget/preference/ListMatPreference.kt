@@ -79,6 +79,7 @@ open class ListMatPreference @JvmOverloads constructor(
                         notifyChanged()
                     } else {
                         sharedPreferences?.edit { putString(key, value) }
+                        notifyChanged()
                     }
                 } else {
                     tempValue = pos

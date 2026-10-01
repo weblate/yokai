@@ -148,13 +148,13 @@ class SettingsGeneralController : SettingsLegacyController() {
             listPreference(activity) {
                 key = Keys.dateFormat
                 titleRes = MR.strings.date_format
-                entryValues = listOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd")
+                val now = Date()
+                entryValues =
+                    listOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
                 entries = entryValues.map { value ->
-                    if (value == "") {
-                        context.getString(MR.strings.system_default)
-                    } else {
-                        value
-                    }
+                    val displayName = value.ifEmpty { context.getString(MR.strings.system_default) }
+                    val formattedDate = preferences.dateFormat(value).format(now)
+                    "$displayName ($formattedDate)"
                 }
                 defaultValue = ""
             }

@@ -190,6 +190,9 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun lastUsedCategory() = preferenceStore.getInt(Keys.lastUsedCategory, 0)
 
+    /** Whether [lastUsedCategory] was the first header actually rendered in the library the last time it was saved. */
+    fun lastUsedCategoryAtTop() = preferenceStore.getBoolean(Keys.lastUsedCategoryAtTop, true)
+
     // TODO: SourcePref
     fun lastUsedSources() = preferenceStore.getStringSet("last_used_sources", emptySet())
 

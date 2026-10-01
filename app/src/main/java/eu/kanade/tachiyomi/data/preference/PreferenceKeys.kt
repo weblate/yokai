@@ -99,6 +99,8 @@ object PreferenceKeys {
 
     const val lastUsedCategory = "last_used_category"
 
+    const val lastUsedCategoryAtTop = "last_used_category_at_top"
+
     const val catalogueAsList = "pref_display_catalogue_as_list"
 
     const val enabledLanguages = "source_languages"

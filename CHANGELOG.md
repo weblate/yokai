@@ -45,6 +45,7 @@ The format is simplified version of [Keep a Changelog](https://keepachangelog.co
 - Fixed the date format preference not showing a live preview of each option, and some other list settings not refreshing their summary right after a change
 - Fixed the full-size cover viewer's replace button showing even for manga not in your library, where it can't actually be used
 - Added the app ID to the debug info included in crash log dumps
+- Fixed the library's app bar sometimes landing in the wrong position after returning to the Library tab when "show all categories" was off and the library wasn't scrolled to the top
 
 ### Other
 - Migrated FlexibleAdapter from JitPack to its MavenCentral release, removing a source of transient CI build failures when JitPack was unavailable
